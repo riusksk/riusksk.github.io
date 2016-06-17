@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2016-06-08T03:28:26.000Z</updated>
+  <updated>2016-06-17T07:59:40.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,37 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>多平台恶意软件行为分析</title>
+    <link href="http://riusksk.github.io/2016/06/17/malware-analyze/"/>
+    <id>http://riusksk.github.io/2016/06/17/malware-analyze/</id>
+    <published>2016-06-17T07:54:49.000Z</published>
+    <updated>2016-06-17T07:59:40.000Z</updated>
+    
+    <content type="html">
+
+	&lt;div class=&quot;row&quot;&gt;
+	  &lt;iframe src=&quot;http://nagland.github.io/viewer/web/viewer.html?val=/media/多平台恶意文件行为分析技巧.pdf&quot; style=&quot;width:100%; height:550px&quot;&gt;&lt;/iframe&gt;
+	&lt;/div&gt;
+
+
+
+</content>
+    
+    <summary type="html">
+    
+      
+
+	&lt;div class=&quot;row&quot;&gt;
+	  &lt;iframe src=&quot;http://nagland.github.io/viewer/web/viewer.html?val=/media/多平台恶意文件行为分析技巧.pdf&quot; style=&quot;width:100%; height
+    
+    </summary>
+    
+    
+      <category term="恶意软件" scheme="http://riusksk.github.io/tags/%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6/"/>
+    
+  </entry>
   
   <entry>
     <title>购书心得</title>
