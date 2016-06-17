@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2016-06-17T08:17:13.000Z</updated>
+  <updated>2016-06-17T08:24:10.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -20,9 +20,9 @@
     <link href="http://riusksk.github.io/2016/06/17/add-articles/"/>
     <id>http://riusksk.github.io/2016/06/17/add-articles/</id>
     <published>2016-06-17T08:11:06.000Z</published>
-    <updated>2016-06-17T08:17:13.000Z</updated>
+    <updated>2016-06-17T08:24:10.000Z</updated>
     
-    <content type="html">&lt;p&gt;由于博客大巴体验太差，因此开始启用github去写博客，用markdown+hexo写静态博客的感觉也挺好的，而且更安全。&lt;br&gt;后面我会把以前写的技术文章迁移到本博客，顺便把买来很久一直未用的riusksk.me域名给派上用场了，之前是因为备案流程过于繁琐，才导致一直未使用，使用riusksk.me解析到riusksk.github.io，似乎就不用备案了。&lt;br&gt;近日，我已在本博客上添加RSS订阅和评论功能，欢迎大家订阅和交流。&lt;/p&gt;
+    <content type="html">&lt;p&gt;由于博客大巴体验太差，因此开始启用github去写博客，用markdown+hexo写静态博客的感觉也挺好的，而且更安全。&lt;br&gt;后面我会把以前写的技术文章迁移到本博客，顺便把买来很久一直未用的riusksk.me域名给派上用场了，之前是因为备案流程过于繁琐，才导致一直未使用，使用 &lt;a href=&quot;http://riusksk.me&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://riusksk.me&lt;/a&gt; 解析到 &lt;a href=&quot;http://riusksk.github.io&quot;&gt;http://riusksk.github.io&lt;/a&gt; ，似乎就不用备案了。&lt;br&gt;近日，我已在本博客上添加RSS订阅和评论功能，欢迎大家订阅和交流。&lt;/p&gt;
 </content>
     
     <summary type="html">
