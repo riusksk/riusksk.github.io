@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2016-06-17T08:06:52.000Z</updated>
+  <updated>2016-06-17T08:17:13.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,27 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>迁移技术文章</title>
+    <link href="http://riusksk.github.io/2016/06/17/add-articles/"/>
+    <id>http://riusksk.github.io/2016/06/17/add-articles/</id>
+    <published>2016-06-17T08:11:06.000Z</published>
+    <updated>2016-06-17T08:17:13.000Z</updated>
+    
+    <content type="html">&lt;p&gt;由于博客大巴体验太差，因此开始启用github去写博客，用markdown+hexo写静态博客的感觉也挺好的，而且更安全。&lt;br&gt;后面我会把以前写的技术文章迁移到本博客，顺便把买来很久一直未用的riusksk.me域名给派上用场了，之前是因为备案流程过于繁琐，才导致一直未使用，使用riusksk.me解析到riusksk.github.io，似乎就不用备案了。&lt;br&gt;近日，我已在本博客上添加RSS订阅和评论功能，欢迎大家订阅和交流。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;由于博客大巴体验太差，因此开始启用github去写博客，用markdown+hexo写静态博客的感觉也挺好的，而且更安全。&lt;br&gt;后面我会把以前写的技术文章迁移到本博客，顺便把买来很久一直未用的riusksk.me域名给派上用场了，之前是因为备案流程过于繁琐，才导致一直未使
+    
+    </summary>
+    
+      <category term="随笔杂谈" scheme="http://riusksk.github.io/categories/%E9%9A%8F%E7%AC%94%E6%9D%82%E8%B0%88/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>多平台恶意软件行为分析</title>
