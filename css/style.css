@@ -784,10 +784,18 @@ pre .template_comment,
 pre .diff .header,
 pre .doctype,
 pre .pi,
-pre .lisp .string,
+pre .lisp,
 pre .javadoc {
-  color: #93a1a1;
+  color: #0f0;
   font-style: italic;
+}
+pre .string,
+pre .value,
+pre .inheritance,
+pre .header,
+pre .ruby .symbol,
+pre .xml .cdata {
+  color: #e6db74;
 }
 pre .keyword,
 pre .winutils,
@@ -797,17 +805,16 @@ pre .css .tag,
 pre .request,
 pre .status,
 pre .nginx .title {
-  color: #859900;
+  color: #66d9ef;
 }
 pre .number,
 pre .command,
-pre .string,
 pre .tag .value,
 pre .phpdoc,
 pre .tex .formula,
 pre .regexp,
 pre .hexcolor {
-  color: #2aa198;
+  color: #ae81ff;
 }
 pre .title,
 pre .localvars,
@@ -818,7 +825,7 @@ pre .identifier,
 pre .vhdl,
 pre .literal,
 pre .id {
-  color: #268bd2;
+  color: #f92672;
 }
 pre .attribute,
 pre .variable,
@@ -828,7 +835,7 @@ pre .constant,
 pre .class .title,
 pre .parent,
 pre .haskell .type {
-  color: #b58900;
+  color: #a6e22e;
 }
 pre .preprocessor,
 pre .preprocessor .keyword,
@@ -842,8 +849,21 @@ pre .important,
 pre .subst,
 pre .cdata,
 pre .clojure .title {
-  color: #cb4b16;
+  color: #66d9ef;
 }
 pre .deletion {
   color: #dc322f;
+}
+pre .title,
+pre .variable,
+pre .regexp,
+pre .ruby .constant,
+pre .xml .tag .title,
+pre .xml .pi,
+pre .xml .doctype,
+pre .html .doctype,
+pre .css .id,
+pre .css .class,
+pre .css .pseudo {
+  color: #f92672;
 }
