@@ -41,7 +41,7 @@
     <link href="http://riusksk.github.io/2016/06/17/malware-analyze/"/>
     <id>http://riusksk.github.io/2016/06/17/malware-analyze/</id>
     <published>2016-06-17T07:54:49.000Z</published>
-    <updated>2016-06-17T08:26:34.000Z</updated>
+    <updated>2016-06-18T10:48:50.000Z</updated>
     
     <content type="html">
 
@@ -61,6 +61,8 @@
 	  &lt;iframe src=&quot;http://nagland.github.io/viewer/web/viewer.html?val=http://riusksk.me/media/malware_analyze.pdf&quot; style=
     
     </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
     
     
       <category term="恶意软件" scheme="http://riusksk.github.io/tags/%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6/"/>
