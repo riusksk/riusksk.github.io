@@ -77,6 +77,95 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2016-06-18T11:43:11.000Z"><a href="/2016/06/18/android_malware_sandbox/">2016-06-18</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2016/06/18/android_malware_sandbox/">Android沙盘原理与实现</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>【作者】：riusksk（泉哥）<br>【团队】：腾讯安全应急响应中心<br>【日期】：2012年10月2日</p>
+<h3 id="一、-前言"><a href="#一、-前言" class="headerlink" title="一、    前言"></a>一、    前言</h3><p>据网秦发布的《2012年上半年全球手机安全报告》，2012年上半年Android病毒感染量增长迅猛，尤以5、6月最为突出，上半年感染手机1283万部，比2011年下半年增长62%。在全球范围内，中国大陆地区被感染率占居首位。面对增长如此迅速的Android软件，安全研究人员常常需要逆向分析样本，分析出其恶意行为，但手工分析较费时间。在DEX文件反混淆技术的不遍推广和普及下，比如今年的BlackHat就有DEX反混淆的专题及相应工具公布，现在已有很多恶意软件使用到这些反混淆技术，这就加大了样本分析的难度及所花费的时间。本文主要讲述如何利用Android沙盘实现自动化分析恶意软件的方法，其中介绍了Android沙盘的原理，以及由笔者编写的Android沙盘——MalDroidAnalyzer，后面会提供由MalDroidAnalyzer分析真实病毒时自动生成的分析报告。</p>
+<h3 id="二、-Android常见恶意软件行为"><a href="#二、-Android常见恶意软件行为" class="headerlink" title="二、    Android常见恶意软件行为"></a>二、    Android常见恶意软件行为</h3><h4 id="1、-恶意扣费"><a href="#1、-恶意扣费" class="headerlink" title="1、    恶意扣费"></a>1、    恶意扣费</h4><p>病毒在后台发送扣费短信、拔打电话进行恶意扣费，同时会对服务商发回的服务短信进行屏蔽，破坏系统的正常功能，同时对用户造成资费损失。</p>
+<h4 id="2、隐私窃取"><a href="#2、隐私窃取" class="headerlink" title="2、隐私窃取"></a>2、隐私窃取</h4><p>病毒通过后台服务窃取用户隐私信息，包括通话录音、短信内容、IMEI、IMSI、地理位置、通讯录、浏览器历史记录等信息，然后上传到黑客控制的远程服务器。</p>
+<h4 id="3、远程控制"><a href="#3、远程控制" class="headerlink" title="3、远程控制"></a>3、远程控制</h4><p>病毒在后台开机自动，并与C&amp;C服务器进行通讯，并从中获取加密的指令，解密后执行相应的恶意操作，也有通过SMS进行控制，构造出botnet，从而大规模地远程控制用户的手机。比如之前著名的AnserverBot病毒，就是通过新浪博客进行远程控制，也是首个利用第三方站点作为C&amp;C服务器的Android病毒。</p>
+<h4 id="4、系统破坏"><a href="#4、系统破坏" class="headerlink" title="4、系统破坏"></a>4、系统破坏</h4><p>病毒通过系统漏洞进行ROOT提权，并执行高权限操作，在后台静默安装子程序包，或者通过伪造成杀毒软件、提示更新等方式欺骗用户安装第三方恶意程序。病毒可能会更改网络状态、APN，或者替换系统文件、添加恶意书签、屏蔽运营商短信、中止杀软进程等方式进行系统破坏。</p>
+<h4 id="5、其它"><a href="#5、其它" class="headerlink" title="5、其它"></a>5、其它</h4><p>病毒在后台联网下载大量软件，消耗用户手机流量，或者执行一些比较耗电的操作来消耗手机电量，进而影响正常的手机通信。也有些一些病毒通过钓鱼欺骗等方式，诱骗用户下载伪装软件，导致帐户密码失窃。</p>
+<h3 id="三、-Android沙盘原理"><a href="#三、-Android沙盘原理" class="headerlink" title="三、    Android沙盘原理"></a>三、    Android沙盘原理</h3><p>本文主要介绍一款Android恶意软件行为自动分析平台——MalDroidAnalyzer，其主要结合静态分析和动态分析技术来实现恶意软件行为自动化分析。MalDroidAnalyzer是笔者使用Perl语言编写的，用于辅助分析Android软件行为，提高恶意软件的分析效率。</p>
+<p>首先，MalDroidAnalyzer直接以apk文件作为输入，整个分析过程主要分析两部分：静态分析和动态分析。静态分析会通过反编译apk文件，分析其中的权限、组件、敏感函数等信息，这些可以弥补动态分析中因未触发恶意行为而漏掉的行为。动态分析主要通过在模拟器运行Android软件，然后再对软件进行一些操作以触发尽可能多的恶意行为，接着输出到log中，再通过脚本对日志进行分析。由于Android系统默认情况下，一些输出日志里面缺乏我们所需的信息，比如发送短信时，只在log中记录手机号，而没有短信内容，此时就需要通过修改Android源码或者反汇编system.img中的相关类或者库进行修改，可以在短信发送函数sendTextMessage（位于system.img中的framework/framework.jar）里面添加短信内容的日志输出：</p>
+<p><img src="/media/android_malware_analyze/1.png" alt=""></p>
+<p>下面是可能需要修改的相关文件，包括源码位置和编译后所对应的相关文件，可根据自身需要进行修改：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">发送短信：android.telephony.SmsManager（system.img中的framework/framework.jar）</span><br><span class="line">文件操作：org.apache.harmony.luni.platform.OSFileSystem（system.img中的framework/core.jar）</span><br><span class="line">网络操作：org.apache.harmony.luni.platform.OSNetworkSystem（system.img中的framework/core.jar）</span><br><span class="line">拔打电话：android.app.Activity（system.img中的framework/framework.jar）</span><br><span class="line">启动服务：android.content.ContextWrapper（system.img中的framework/framework.jar）</span><br><span class="line">数据加解密：javax.crypto.Cipher（system.img中的framework/core.jar）</span><br><span class="line">核心库：dalvik/vm/native（system.img中的lib/libdvm.so）</span><br></pre></td></tr></table></figure>
+<p>关于apk文件及MalDroidAnalyzer的工作流程如下图所示：</p>
+<p><img src="/media/android_malware_analyze/2.png" alt=""> </p>
+<h4 id="1、静态分析"><a href="#1、静态分析" class="headerlink" title="1、静态分析"></a>1、静态分析</h4><p>沙盘MalDroidAnalyzer主要在电脑端对APK进行静态分析，通过apktool先进行反编译处理。正常的APK文件主要是以zip格式进行压缩捆绑的文档，里面主要包含AndroidManifest.xml、Classes.dex和res等文件。在反编译后会得到明文的AndroidManifest.xml，里面定义各组件、组件权限和启动位置、软件基本信息等，通过对该xml文件的分析，可以获取到软件名称、包名等基本信息，同时对包含的各个组件进行分析，特别是Broadcast Receiver组件的触发条件，可能就包含有开机自启动项用于启动后台服务，这些在报告中都会被高亮显示出来。</p>
+<p>在动态分析过程中，可能由于恶意行为的时间限制，或者模拟器的功能限制（比如蓝牙、Wifi），导致病毒的一些恶意行为无法触发。此时，我们通过检测Android软件调用的API函数可弥补这里的不足，比如发送扣费短信通常会调用sendTextMessage()函数，执行外部命令可能会调用java.lang.Runtime.exec()。下面是笔者收集整理的一些敏感API函数列表，欢迎各位读者补充和改进：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">my %apis = (</span><br><span class="line">	&quot;IActivityManager\$Stub\$Proxy\;\-\&gt;shutdown&quot; =&gt; &apos;关机&apos;,</span><br><span class="line">	&quot;ActivityManager\;\-\&gt;killBackgroundProcesses&quot; =&gt; &apos;中断进程，可用于关闭杀软&apos;,</span><br><span class="line">	&apos;ActivityManagerNative;-&gt;killBackgroundProcesses&apos; =&gt; &apos;中断进程，可用于关闭杀软&apos;,</span><br><span class="line">	&apos;ActivityManagerNative;-&gt;restartPackage&apos; =&gt; &apos; 中断进程，可用于关闭杀软&apos;,</span><br><span class="line">	&apos;ActivityManager;-&gt;restartPackage&apos; =&gt; &apos; 中断进程，可用于关闭杀软&apos;,</span><br><span class="line">	#&quot;BluetoothAdapter\;\-\&gt;enable&quot; =&gt; &apos;开启蓝牙&apos;,</span><br><span class="line">	#&quot;BluetoothSocket\;\-\&gt;connect&quot; =&gt; &apos;连接蓝牙&apos;,</span><br><span class="line">	#&quot;IBluetoothPbap\$Stub\$Proxy\;\-\&gt;connect&quot; =&gt; &apos;连接蓝牙&apos;,</span><br><span class="line">	&quot;ContentResolver\;\-\&gt;query&quot; =&gt; &apos;读取联系人、短信等数据库&apos;,</span><br><span class="line">	&quot;ContentService\;\-\&gt;dump&quot; =&gt; &apos;转储联系人、短信等信息&apos;,</span><br><span class="line">	&quot;PackageManager\;\-\&gt;installPackage&quot; =&gt; &apos;安装apk包&apos;,</span><br><span class="line">	&quot;Camera\;\-\&gt;open&quot; =&gt; &apos;开启相机&apos;,</span><br><span class="line">	&quot;MediaRecorder\;\-\&gt;setAudioSource&quot; =&gt; &apos;开启录音功能&apos;,</span><br><span class="line">	&quot;MediaRecorder\;\-\&gt;setVideoSource&quot; =&gt; &apos;开启视频录制&apos;,</span><br><span class="line">	&quot;LocationManager\;\-\&gt;getLastKnownLocation&quot; =&gt; &apos;获取地址位置&apos;,</span><br><span class="line">	&quot;Downloads\$ByUri\;\-\&gt;startDownloadByUri&quot; =&gt; &apos;下载文件&apos;,</span><br><span class="line">	&quot;Downloads\$DownloadBase\;\-\&gt;startDownloadByUri&quot; =&gt; &apos;下载文件&apos;,</span><br><span class="line">	&quot;PowerManager\;\-\&gt;reboot&quot; =&gt; &apos;重启手机&apos;,</span><br><span class="line">	&quot;Settings\$Bookmarks\;\-\&gt;add&quot; =&gt; &apos;添加浏览器书签&apos;,</span><br><span class="line">	&quot;TelephonyManager\;\-\&gt;getDeviceId&quot; =&gt; &apos;搜集用户手机IMEI码、电话号码、系统版本号等信息&apos;,</span><br><span class="line">	&quot;TelephonyManager\;\-\&gt;getSimSerialNumber()&quot; =&gt; &apos;获取SIM序列号&apos;,</span><br><span class="line">	&quot;Telephony\$Mms\;\-\&gt;query&quot; =&gt; &apos;读取短信&apos;,</span><br><span class="line">	&quot;TelephonyManager\;\-\&gt;getLine1Number&quot; =&gt; &apos;获取手机号&apos;,</span><br><span class="line">	&quot;SpeechRecognizer\;\-\&gt;startListening&quot; =&gt; &apos;开启麦克风&apos;,</span><br><span class="line">	&quot;WifiManager\;\-\&gt;setWifiEnabled&quot; =&gt; &apos;开启WIFI&apos;,</span><br><span class="line">	&quot;SmsManager\;\-\&gt;getAllMessagesFromSim&quot; =&gt; &apos;获取sim卡上的短信&apos;,</span><br><span class="line">	&quot;SmsManager\;\-\&gt;sendDataMessage&quot; =&gt; &apos;发送二进制消息&apos;,</span><br><span class="line">	&quot;SmsManager\;\-\&gt;sendMultipartTextMessage&quot; =&gt; &apos;发送彩信&apos;,</span><br><span class="line">	&quot;SmsManager\;\-\&gt;sendTextMessage&quot; =&gt; &apos;发送普通短信&apos;,</span><br><span class="line">	#&quot;http/multipart/FilePart;-&gt;sendData&quot; =&gt; &apos;发送http请求&apos;,</span><br><span class="line">	#&quot;http/multipart/Part\;\-\&gt;send&quot; =&gt; &apos;发送http请求&apos;,</span><br><span class="line">	#&quot;http/multipart/Part\;\-\&gt;sendParts&quot; =&gt; &apos;发送http请求&apos;,</span><br><span class="line">	#&quot;http/multipart/StringPart\;\-\&gt;sendData&quot; =&gt; &apos;发送http请求&apos;,</span><br><span class="line">	&quot;internal/telephony/ISms\$Stub\$Proxy\;\-\&gt;sendData&quot; =&gt; &apos;发送短信&apos;,</span><br><span class="line">	&quot;internal/telephony/ISms\$Stub\$Proxy\;\-\&gt;sendMultipartText&quot; =&gt; &apos;发送短信&apos;,</span><br><span class="line">	&quot;internal/telephony/ISms\$Stub\$Proxy\;\-\&gt;sendText&quot; =&gt; &apos;发送短信&apos;,</span><br><span class="line">	&quot;internal/telephony/ITelephony\$Stub\$Proxy\;\-\&gt;call&quot; =&gt; &apos;拔打电话&apos;,</span><br><span class="line">	&quot;java/lang/Runtime\;\-\&gt;exec&quot; =&gt; &apos;执行字符串命令&apos;,</span><br><span class="line">	&quot;java/net/HttpURLConnection\;\-\&gt;connect&quot; =&gt; &apos;连接URL&apos;,</span><br><span class="line">	#&quot;java/net/URL\;\-\&gt;getContent&quot; =&gt; &apos;获取网页内容&apos;,</span><br><span class="line">	&quot;java/net/URL\;\-\&gt;openConnection&quot; =&gt; &apos;连接URL&apos;,</span><br><span class="line">	&quot;java/net/URLConnection\;\-\&gt;connect&quot; =&gt; &apos;连接URL&apos;,</span><br><span class="line">	&quot;DefaultHttpClient\;\-\&gt;execute&quot; =&gt; &apos;发送HTTP请求&apos;,</span><br><span class="line">	&quot;HttpClient\;\-\&gt;execute&quot; =&gt; &apos;请求远程服务器&apos;,	&apos;android/app/NotificationManager;-&gt;notify&apos; =&gt; &apos;信息通知栏&apos;,</span><br><span class="line">	&quot;SmsReceiver\;\-\&gt;abortBroadcast&quot; =&gt; &apos;拦截短信接收&apos;,</span><br><span class="line">	&quot;ContentResolver\;\-\&gt;delete&quot; =&gt; &apos;删除短信、联系人&apos;,</span><br><span class="line">	&quot;chmod &quot; =&gt; &apos;更改文件权限&apos;,</span><br><span class="line">	&quot;getRuntime&quot; =&gt; &apos;获取命令行环境&apos;,</span><br><span class="line">	#&apos;content://telephony/carriers&apos; =&gt; &apos;获取所有的APN（网络接入点）配置信息&apos;,</span><br><span class="line">	&apos;content://telephony/carriers/preferapn&apos; =&gt; &apos;可能用于篡改APN（网络接入点）以调用应用市场M-Market扣费接口并验证&apos;,</span><br><span class="line">	&apos;content://sms&apos; =&gt; &apos;获取短信数据库&apos;,</span><br><span class="line">	&apos;content://browser/bookmarks&apos; =&gt; &apos;获取浏览器书签&apos;,</span><br><span class="line">	&apos;mount -o remount&apos; =&gt; &apos;重新挂载档案系统&apos;,</span><br><span class="line">	&apos;/system/bin/sh&apos; =&gt; &apos;执行shell&apos;,</span><br><span class="line">	&apos;/proc/mounts&apos; =&gt; &apos;加载文件系统&apos;,</span><br><span class="line">	&apos;/system/bin/cp&apos; =&gt; &apos;复制文件&apos;,</span><br><span class="line">	&apos;/root/su&apos; =&gt; &apos;切换用户&apos;,</span><br><span class="line">&apos;/system/bin/rm &apos; =&gt; &apos;删除文件&apos;,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<h4 id="2、动态分析"><a href="#2、动态分析" class="headerlink" title="2、动态分析"></a>2、动态分析</h4><p>动态分析是Android沙盘的主要功能，主要使用Google Android模拟器作为沙盘环境，同时以前面修改过的system.img来启动模拟器，以在操作过程中生成我们所需的日志信息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">system(&apos;start emulator -avd MalDroidAnalyzer -scale 0.8  -system images/root-system.img -ramdisk images/ramdisk.img -kernel images/zImage  -prop dalvik.vm.execution-mode=int:portable &amp;&apos;);</span><br></pre></td></tr></table></figure>
+<p>这里的root-system.img是经过root的，默认情况下，Android模拟器是没有root权限的，需要自己手工修改，这个可通过YAFFS2 img浏览器来修改system.img，将su和superuser放置到系统应用目录下，并将build.prop中的ro.config.nocheckin=yes注释掉，将修改后的system.img替换原文件即可。。这样在一些需要root权限的病毒才能正常地模拟器运行，以触发更多的恶意行为。</p>
+<p>启动模拟器后，利用adb安装APK到模拟器上。业界多数沙盘是通过monkey去自动操作软件以触发恶意行为，但这种做法过于盲目，不容易触发恶意行为，同时当操作过于频繁时容易导致程序崩溃，因此在MalDroidAnalyzer中选择由用户自主手工操作，操作时间由用户自己把握。手工操作可能更有利于触发恶意行为，因为病毒作者通常会更多地依赖用户的操作习惯来触发恶意行为，比如点击、拔打电话等行为。<br>为了避免生成过多的无用日志，因此在使用logcat命令时可提前过滤下，并输出到log.txt文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">system(&quot;adb logcat -v time ActivityManager:I camera:V AudioHardware:D Telephony:V CallNotifier:D su:D MediaProvider:V videocamera:V BluetoothEnabler:V BluetoothHIDService:I dalvikvm:W *:S  &gt; log.txt&quot;);</span><br></pre></td></tr></table></figure>
+<p>最后对生成的日志log.txt进行分析，由于修改过system.img，它会按照json格式输出我们所需的信息，而有些原本Android系统输出的日志可直接拿来作行为检测，就未作修改。日志格式如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">09-16 10:18:04.583 W/dalvikvm(  299): MalDroid: &#123; &quot;DexClassLoader&quot;: &#123; &quot;path&quot;: &quot;/data/data/com.test/files/anserverb.db&quot; &#125; &#125;</span><br><span class="line">09-16 10:17:27.963 W/dalvikvm(  281): MalDroid: &#123; &quot;SendNet&quot;: &#123; &quot;desthost&quot;: &quot;www.google.com&quot;, &quot;destport&quot;: &quot;80&quot;, &quot;data&quot;: &quot;7b2263656c6c5f746f77657273223a5b7b226d6f62696c655f6e6574776f726b5f636f6465223a32362c226c6f636174696f6e5f617265615f636f6465223a2d312c226d6f62696c655f636f756e7472795f636f6465223a3331302c2263656c6c5f6964223a2d317d5d2c22726571756573745f61646472657373223a747275652c22686f7374223a226d6170732e676f6f676c652e636f6d222c2276657273696f6e223a22312e312e30227d&quot; &#125; &#125;</span><br><span class="line">09-09 08:37:10.371 W/dalvikvm(  191): MalDroid: &#123; &quot;CryptoUsage&quot;: &#123; &quot;operation&quot;: &quot;keyalgo&quot;, &quot;key&quot;: &quot;53, 52, 67, 68, 65, 48, 54, 51, 67, 68, 53, 56, 68, 56, 53, 70&quot;, &quot;algorithm&quot;: &quot;AES&quot; &#125; &#125;</span><br><span class="line">09-09 08:37:12.560 W/dalvikvm(  191): MalDroid: &#123; &quot;CryptoUsage&quot;: &#123; &quot;operation&quot;: &quot;encryption&quot;, &quot;algorithm&quot;: &quot;AES/CBC/PKCS5Padding&quot;, &quot;data&quot;: &quot;ylmftg6&quot; &#125; &#125;</span><br><span class="line">09-17 20:17:14.302 W/dalvikvm(  274): MalDroid: &#123; &quot;ServiceStart&quot;: &#123; &quot;name&quot;: &quot;com.android.md5.Settings&quot; &#125; &#125;</span><br><span class="line">09-17 20:24:24.944 W/dalvikvm(  126): MalDroid: &#123; &quot;FdAccess&quot;: &#123; &quot;path&quot;: &quot;2f646174612f646174612f636f6d2e616e64726f69642e6c61756e636865722f66696c65732f6c61756e636865722e707265666572656e636573&quot;, &quot;id&quot;: &quot;588716465&quot; &#125; &#125;</span><br><span class="line">09-17 20:24:24.965 W/dalvikvm(  126): MalDroid: &#123; &quot;FileRW&quot;: &#123; &quot;operation&quot;: &quot;read&quot;, &quot;data&quot;: &quot;0005&quot;, &quot;id&quot;: &quot;588716465&quot; &#125; &#125;</span><br></pre></td></tr></table></figure>
+<p>生成日志后，MalDroidAnalyzer会去分析日志，生成统计图数据，然后生成报告。下面是一些真实病毒样本的恶意行为记录：</p>
+<p>1、窃取通讯录： </p>
+<p><img src="/media/android_malware_analyze/3.png" alt=""></p>
+<p>2、通话录音： </p>
+<p><img src="/media/android_malware_analyze/4.png" alt=""></p>
+<p>3、发送收费短信：</p>
+<p><img src="/media/android_malware_analyze/5.png" alt=""> </p>
+<p>4、动态加载类文件：</p>
+<p><img src="/media/android_malware_analyze/6.png" alt=""></p>
+<p>5、Root提权：</p>
+<p><img src="/media/android_malware_analyze/7.png" alt=""></p>
+<h3 id="四、-真实案例"><a href="#四、-真实案例" class="headerlink" title="四、    真实案例"></a>四、    真实案例</h3><p>在Google Android官方市场上，曾出现过多起应用程序嵌入恶意代码的事件，比如“功夫病毒”，可进行root提权，并破坏文件系统，同时窃取用户隐私信息，感染了上百万用户，危害甚广。病毒作者通过对知名软件进行修改，嵌入恶意代码然后重打包，然后诱骗用户下载这些伪造软件。除“功夫病毒”外，还有DroidDream、AnserverBot、PhoneSpy等恶意软件。下面是MalDroidAnalyzer针对PhoneSpy病毒Gmail.apk给出的分析报告，该病毒会窃取用户隐私信息、通话录音等恶意行为。由于该病毒无GUI界面，而是以后台服务在运行，因此报告中的截图是主页界面：</p>
+<p><img src="/media/android_malware_analyze/8.png" alt=""><br><img src="/media/android_malware_analyze/9.png" alt=""><br><img src="/media/android_malware_analyze/10.png" alt=""><br><img src="/media/android_malware_analyze/11.png" alt=""> </p>
+<h3 id="五、-总结"><a href="#五、-总结" class="headerlink" title="五、    总结"></a>五、    总结</h3><p>当前手机用户量增长越来越快，尤其是中国，手机用户量已超10亿，即大约75%的中国人拥有自己的手机。正因为手机越来越智能化，携带也方便，因此许多人将隐私信息存储在手机上，且在多处场景下无形地公开化，而这些信息正是许多病毒作者所热衷的。在移动终端上的安全也将比电脑终端越来越重要，移动安全也已成为安全领域的另一新战场。</p>
+<h3 id="六、-鸣谢"><a href="#六、-鸣谢" class="headerlink" title="六、    鸣谢"></a>六、    鸣谢</h3><p>感谢Dflower同学（0day2作者之一）在笔者编写MalDroidAnalyzer过程中给予的帮助。</p>
+<h3 id="七、-参考资料"><a href="#七、-参考资料" class="headerlink" title="七、    参考资料"></a>七、    参考资料</h3><p>1、    DroidBox：<a href="http://code.google.com/p/droidbox" target="_blank" rel="external">http://code.google.com/p/droidbox</a><br>2、    SandDroid：<a href="http://sanddroid.xjtu.edu.cn" target="_blank" rel="external">http://sanddroid.xjtu.edu.cn</a><br>3、    apktool：<a href="http://code.google.com/p/android-apktool" target="_blank" rel="external">http://code.google.com/p/android-apktool</a><br>4、    网秦《2012年上半年全球手机安全报告》：<a href="http://cn.nq.com/neirong/2012shang.pdf" target="_blank" rel="external">http://cn.nq.com/neirong/2012shang.pdf</a><br>5、    Android权限中文描述大全：<a href="http://wenku.baidu.com/view/b1f6f9ff0242a8956bece4e7.html" target="_blank" rel="external">http://wenku.baidu.com/view/b1f6f9ff0242a8956bece4e7.html</a><br>6、    Android Permission Map：<a href="http://www.android-permissions.org/permissionmap.html" target="_blank" rel="external">http://www.android-permissions.org/permissionmap.html</a></p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2016/06/18/android_malware_sandbox/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Android-恶意软件/">Android 恶意软件</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2016-06-17T16:00:00.000Z"><a href="/2016/06/18/android-auto-auditor/">2016-06-18</a></time>
       
       
@@ -648,6 +737,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2016/06/18/android_malware_sandbox/">Android沙盘原理与实现</a>
+      </li>
+    
+      <li>
         <a href="/2016/06/18/android-auto-auditor/">浅谈Android软件安全自动化审计</a>
       </li>
     
@@ -663,10 +756,6 @@
         <a href="/2016/06/08/buybook/">购书心得</a>
       </li>
     
-      <li>
-        <a href="/2016/06/05/osx_rootkit_rubilyn_analyze/">Mac OSX rootkit rubilyn 源码分析</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -676,7 +765,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>6</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>7</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>2</small></li>
   
@@ -688,7 +777,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/Android/" style="font-size: 10px;">Android</a> <a href="/tags/BlackHat/" style="font-size: 10px;">BlackHat</a> <a href="/tags/CanSecWest/" style="font-size: 10px;">CanSecWest</a> <a href="/tags/OSX/" style="font-size: 10px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/rootkit/" style="font-size: 10px;">rootkit</a> <a href="/tags/书籍/" style="font-size: 10px;">书籍</a> <a href="/tags/安全审计/" style="font-size: 10px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 10px;">恶意软件</a>
+    <a href="/tags/Android/" style="font-size: 10px;">Android</a> <a href="/tags/Android-恶意软件/" style="font-size: 10px;">Android 恶意软件</a> <a href="/tags/BlackHat/" style="font-size: 10px;">BlackHat</a> <a href="/tags/CanSecWest/" style="font-size: 10px;">CanSecWest</a> <a href="/tags/OSX/" style="font-size: 10px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/rootkit/" style="font-size: 10px;">rootkit</a> <a href="/tags/书籍/" style="font-size: 10px;">书籍</a> <a href="/tags/安全审计/" style="font-size: 10px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 10px;">恶意软件</a>
   </div>
 </div>
 
