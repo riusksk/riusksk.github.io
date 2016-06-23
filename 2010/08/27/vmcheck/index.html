@@ -139,7 +139,9 @@
 <center><br><img src="/media/vmcheck/9.png" alt=""><br>                                 图9<br></center>
 
 <p>但由于这些可经过修改配置文件来绕过检测。另外，还可通过检测特定的硬件控制器，BIOS，USB控制器，显卡，网卡等特征字符串进行检测，这些在前面使用注册表检测方法中已有所涉及。另外之前在看雪论坛上也有朋友提到通过检测硬盘Model Number是否含有“vmware”或“virtual”等字样来实现检测虚拟机的功能，网址见这（附源码）：<a href="http://bbs.pediy.com/showthread.php?t=110046。" target="_blank" rel="external">http://bbs.pediy.com/showthread.php?t=110046。</a></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>国外SANS安全组织的研究人员总结出当前各种虚拟机检测手段不外乎以下四类：<br>● 搜索虚拟环境中的进程，文件系统，注册表；<br>● 搜索虚拟环境中的内存<br>● 搜索虚拟环境中的特定虚拟硬件<br>● 搜索虚拟环境中的特定处理器指令和功能<br>因为现代计算系统大多是由文件系统，内存，处理器及各种硬件组件构成的，上面提到的四种检测手段均包含了这些因素。纵观前面各种检测方法，也均在此四类当中。除此之外，也有人提出通过网络来检测虚拟机，比如搜索ICMP和TCP数据通讯的时间差异，IP ID数据包差异以及数据包中的异常头信息等等。随着技术研究的深入，相信会有更多的检测手段出现，与此同时，虚拟机厂商也会不断进化它们的产品，以增加anti-vmware的难度，这不也正是一场永无休止的无烟战争！</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>国外SANS安全组织的研究人员总结出当前各种虚拟机检测手段不外乎以下四类：</p>
+<p>● 搜索虚拟环境中的进程，文件系统，注册表；<br>● 搜索虚拟环境中的内存<br>● 搜索虚拟环境中的特定虚拟硬件<br>● 搜索虚拟环境中的特定处理器指令和功能</p>
+<p>因为现代计算系统大多是由文件系统，内存，处理器及各种硬件组件构成的，上面提到的四种检测手段均包含了这些因素。纵观前面各种检测方法，也均在此四类当中。除此之外，也有人提出通过网络来检测虚拟机，比如搜索ICMP和TCP数据通讯的时间差异，IP ID数据包差异以及数据包中的异常头信息等等。随着技术研究的深入，相信会有更多的检测手段出现，与此同时，虚拟机厂商也会不断进化它们的产品，以增加anti-vmware的难度，这不也正是一场永无休止的无烟战争！</p>
 
       
     </div>
@@ -203,6 +205,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2016/06/23/ios-auditor/">浅谈iOS应用安全自动化审计</a>
+      </li>
+    
+      <li>
         <a href="/2016/06/17/add-articles/">迁移技术文章</a>
       </li>
     
@@ -238,10 +244,6 @@
         <a href="/2011/08/20/malware-analyze/">多平台恶意软件行为分析技巧</a>
       </li>
     
-      <li>
-        <a href="/2011/03/26/win-overflow-protect-and-bypass/">Windows溢出保护原理与绕过方法概览</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -251,7 +253,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>9</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>10</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>2</small></li>
   
@@ -263,7 +265,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/BlackHat/" style="font-size: 10px;">BlackHat</a> <a href="/tags/CanSecWest/" style="font-size: 10px;">CanSecWest</a> <a href="/tags/OSX/" style="font-size: 10px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Windows/" style="font-size: 10px;">Windows</a> <a href="/tags/rootkit/" style="font-size: 10px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/书籍/" style="font-size: 10px;">书籍</a> <a href="/tags/安全审计/" style="font-size: 10px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 20px;">恶意软件</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a>
+    <a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/BlackHat/" style="font-size: 10px;">BlackHat</a> <a href="/tags/CanSecWest/" style="font-size: 10px;">CanSecWest</a> <a href="/tags/OSX/" style="font-size: 10px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Windows/" style="font-size: 10px;">Windows</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/rootkit/" style="font-size: 10px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/书籍/" style="font-size: 10px;">书籍</a> <a href="/tags/安全审计/" style="font-size: 20px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 20px;">恶意软件</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a>
   </div>
 </div>
 

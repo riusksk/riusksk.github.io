@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2016-06-17T08:24:10.000Z</updated>
+  <updated>2016-06-23T06:23:41.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,107 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>浅谈iOS应用安全自动化审计</title>
+    <link href="http://riusksk.github.io/2016/06/23/ios-auditor/"/>
+    <id>http://riusksk.github.io/2016/06/23/ios-auditor/</id>
+    <published>2016-06-22T16:00:00.000Z</published>
+    <updated>2016-06-23T06:23:41.000Z</updated>
+    
+    <content type="html">&lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;此前有人统计过2015年漏洞最多的产品，苹果的OSX与iOS系统分别占据第一二名，虽有人怀疑统计数据可能存在重复的不准确情况，但相信大趋势是不会变的。&lt;/p&gt;
+&lt;p&gt;2015年在iOS平台上也发生过不少安全大事，比如“XcodeGhost”事件、iOS9越狱、“iBackDoor“、“YouMi“事件等等，尤其是XcodeGhost影响甚大，注定要在iOS安全史上留下重重的一笔。&lt;/p&gt;
+&lt;p&gt;结合CVEDetails站点上对iOS系统漏洞的统计情况【图1】，整体处于上升的趋势，尤其是2015年增长迅速，是2014年的3倍多，由此也可以预见iOS平台上的安全漏洞正在快速增长，iOS应用亦然。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;/media/ios_auditor/1.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图1：iOS系统历年漏洞数量统计图&lt;br&gt;&lt;/center&gt;
+
+&lt;p&gt;腾讯也有很多iOS应用产品，基本上android上有的，对应的同款应用在iOS上也会有。目前Android应用的审计技术在业界都已经于相对成熟，而iOS应用漏洞审计系统在国内还是比较欠缺的，一些公司可能内部有开发，只是未公开。&lt;/p&gt;
+&lt;p&gt;此前腾讯iOS产品也是未能做有效的上线前审计，遗留一些安全隐患，因此我们对此专门研发了一款针对iOS应用的自动化审计系统。除了日常的应用审计外，同时也是希望它能够在安全应急上起到辅助的作用。本文主要就是针对它使用到的一些技术进行浅谈，以希望可以起到抛砖引玉的效果。&lt;/p&gt;
+&lt;h3 id=&quot;开发环境&quot;&gt;&lt;a href=&quot;#开发环境&quot; class=&quot;headerlink&quot; title=&quot;开发环境&quot;&gt;&lt;/a&gt;开发环境&lt;/h3&gt;&lt;p&gt;• Mac OS X 10.11&lt;br&gt;• Python 开发环境：PyCharm5&lt;br&gt;• Objective-C 开发环境：Xcode7 + iOSOpenDev&lt;br&gt;• 支持 iOS 8.1 以上的越狱系统&lt;/p&gt;
+&lt;h3 id=&quot;系统架构&quot;&gt;&lt;a href=&quot;#系统架构&quot; class=&quot;headerlink&quot; title=&quot;系统架构&quot;&gt;&lt;/a&gt;系统架构&lt;/h3&gt;&lt;p&gt;整个iOS应用审计系统主要分两部分：静态审计和动态审计【图2】。静态审计包括Bin文件漏洞审计、第三方库检测以及私有API静态检测等功能；动态审计主要通过Hook去监控网络数据包、SSL中间人检测，以及实现ipa的动态安装和运行、文件上传下载等基本功能。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;/media/ios_auditor/2.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图2：iOS应用审计系统架构图&lt;br&gt;&lt;/center&gt;
+
+&lt;h3 id=&quot;基本审计功能&quot;&gt;&lt;a href=&quot;#基本审计功能&quot; class=&quot;headerlink&quot; title=&quot;基本审计功能&quot;&gt;&lt;/a&gt;基本审计功能&lt;/h3&gt;&lt;p&gt;通过静态审计提取基本的文件信息，并以较好的展示效果输出到报告页面上【图3】，也方便后面的二次扫描，以及鉴别不同的ipa文件。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;/media/ios_auditor/3.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;    图3：文件信息及漏洞统计图&lt;br&gt;    &lt;/center&gt;
+
+&lt;p&gt;在静态审计里最重要的就是Bin文件漏洞检测功能【图4】，像编译选项和使用函数的信息，借助otool即可很容易检测。&lt;/p&gt;
+&lt;p&gt;应用漏洞检测主要针对目前已公开的漏洞/恶意后门进行检测，比如XcodeGhost、iBackDoor、AFNetworking等等，先通过分析样本来制定静态检测规则，多数通过关键字符串即可检测出，而对于AFNetworking SSL中间人漏洞，笔者是采用检测漏洞相关的ARM指令。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;/media/ios_auditor/4.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图4：BIN静态审计功能&lt;br&gt;&lt;/center&gt;
+
+&lt;p&gt;下面是AFNetworking某个漏洞版本的ARM指令【图5】，不同版本会有一定差异，所以还是需要对比多个不同版本，提取通用的检测规则（单纯检测下图标红的ARM指令会误报）。除此之外，还要对比修复版本的代码，避免误报。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;/media/ios_auditor/5.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图5：AFNetworking SSL 中间人漏洞代码&lt;br&gt;&lt;/center&gt;
+
+&lt;p&gt;由于iOS应用为了兼容性，都会包含32位与64位程序，很少会单纯只使用64位编译的应用，所以检测时可以暂不用考虑64位问题。&lt;/p&gt;
+&lt;p&gt;除图4上的应用漏洞之外，还支持自定义审计功能【图6】，主要是为了在应急时，可以及时即时制定规则进行批量扫描【图7】，我们也专门针对公司业务情况添加了一些规则，此处就不赘述了。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;/media/ios_auditor/6.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图6：自定义审计规则示例（非实际运用规则）&lt;br&gt;&lt;br&gt;&lt;img src=&quot;/media/ios_auditor/7.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图7：应用批量扫描&lt;br&gt;&lt;/center&gt;
+
+&lt;p&gt;上面【图6】只是一份示例的规则，并非在系统上实际运用的，只是作为演示，它支持二进制、数据库及文件的扫描，里面可以使用linux命令去辅助检测，当然你也可以笑称它为“后门”。&lt;/p&gt;
+&lt;p&gt;另外，数据存储安全和网络传输安全都在动态审计部分完成，审计规则在自定义规则里面定义的。其中网络实时检测功能主要是基于Hook实现的，针对发包函数进行监控，比如NSURLConnection:sendSynchronousRequest 或者UIApplication:openURL等等【图8】。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;/media/ios_auditor/8.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图8：通过Hook网络相关API实现监听&lt;br&gt;&lt;/center&gt;
+
+&lt;p&gt;程序会实时监听HTTP、HTTPS甚至是自定义伪协议的请求，而且为方便后续测试会记录cookie值，然后完整地输出到报告上【图9】，后续也可以把它导入扫描器作WEB漏洞扫描。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;/media/ios_auditor/9.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图9：网络请求实时监控&lt;br&gt;&lt;/center&gt;
+
+&lt;p&gt;由于著名第三方库AFNetwork经常被使用，因此笔者也增加了对它的网络监控。&lt;/p&gt;
+&lt;h3 id=&quot;UI界面遍历&quot;&gt;&lt;a href=&quot;#UI界面遍历&quot; class=&quot;headerlink&quot; title=&quot;UI界面遍历&quot;&gt;&lt;/a&gt;UI界面遍历&lt;/h3&gt;&lt;p&gt;为了触发更多地程序逻辑，增加代码覆盖率，在动态检测时，就需要去遍历各个UI界面。对于这种情况，我们选用appcrawler工具进行UI遍历，它同时支持Android与iOS应用，而在其提供的config.json配置文件里面，可根据自身需要去灵活配置，比如遍历的深度，匹配文本框关键字进行输入（如登录帐号），这些规则需要自己多测试应用去完善它。【图10】是遍历微信UI的部分截图效果，由于只遍历了10分钟，所以截图相对较少一些，整体效果还是不错的。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;/media/ios_auditor/10.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图10：遍历微信UI的部分截图&lt;br&gt;&lt;/center&gt;
+
+&lt;h3 id=&quot;SSL中间人检测&quot;&gt;&lt;a href=&quot;#SSL中间人检测&quot; class=&quot;headerlink&quot; title=&quot;SSL中间人检测&quot;&gt;&lt;/a&gt;SSL中间人检测&lt;/h3&gt;&lt;p&gt;在移动APP中，无论是Android还是iOS平台，SSL中间人攻击都是一种常见漏洞，经常是由于证书校验不严谨导致的。虽然是中间人攻击，但在一定场景下还可以造成很大的危害，尤其是金融场所里面的WiFi，常常是最好的攻击点。&lt;/p&gt;
+&lt;p&gt;针对SSL中间人漏洞，如果采用静态代码检测，可能误报率会比较高，笔者在此处是通过Hook做静态检测，在运行时注入证书异常站点的请求，然后再去检测是否访问成功【图11】。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;/media/ios_auditor/11.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图11：SSL中间人动态检测原理&lt;br&gt;&lt;/center&gt;
+
+&lt;p&gt;以QQ浏览器HD为例，注入异常站点后会弹出【图12】中的提示，说明不会自动连接此站点，因此不存在SSL中间人漏洞。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;/media/ios_auditor/12.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图12：检测效果&lt;br&gt;&lt;/center&gt;
+
+&lt;p&gt;不过对于使用第三方SSL库的应用可能会漏报，另一种替代方案是使用证书替换的检测方式，不过这会导致访问异常，最终可能导致应用无法正常使用，后续的审计动作也将被中止。各有各的弊端，可以暂时两者分开地使用，如果各位同仁有更好的检测方法，也欢迎在下面回复讨论。&lt;/p&gt;
+&lt;h3 id=&quot;私有API检测&quot;&gt;&lt;a href=&quot;#私有API检测&quot; class=&quot;headerlink&quot; title=&quot;私有API检测&quot;&gt;&lt;/a&gt;私有API检测&lt;/h3&gt;&lt;p&gt;虽说调用私有API不算漏洞，但因为苹果严格的审计机制，一经发现调用私有API会直接下架应用，对业务影响也是很大。&lt;/p&gt;
+&lt;p&gt;另外从安全角度看，如果应用的漏洞修复版本需要发布，但多次因为调用私有API也被苹果官方拒绝上架，就会导致漏洞无法得到及时的修复。&lt;/p&gt;
+&lt;p&gt;检测私有API的难点主要在于苹果未公开这份私有API列表，因此在检测时只能自己提取，但也导致会因此存在一定的漏报和误报的情况。&lt;/p&gt;
+&lt;p&gt;网络上有个提取私有API的公式：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;私有的api ＝ (class-dump Framework下的库生成的头文件中的api - (Framework下的头文件里的api = 有文档的api + 没有文档的api)) + PrivateFramework下的api&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;其实这是不完全正确的，如果你单纯按照这种方法提取，会出现很高的误报和漏报情况。因为私有类里面有公有API，公有类里面有私有API。但上面的公式是提取私有API的第一步，之后就需要再做很多提取规则逐步完善，比如一些纯小写字母的api，大多是一些c库函数，可以再过滤一大批。&lt;/p&gt;
+&lt;p&gt;这种没有什么特别好的方法，只能多扫应用，根据结果多优化规则。&lt;/p&gt;
+&lt;p&gt;Github上面也有用于检测私有API的开源项目，但基本上没有一个可以满足测试需求的，误报率和漏报率太高，而且支持iOS版本较低。iOS9 SDK以上版本，也不能直接使用classdump去提取头文件，因为应用的符号表已经被去掉这些信息，笔者是采用nm去解决的。&lt;/p&gt;
+&lt;p&gt;最初笔者是打算把动态检测私有API也做了，但后面考虑审计系统主要是面向公司内部，因此不存在那种恶意绕过私有API检测的行为，然后就把写了一半的动态检测功能给注释掉。&lt;/p&gt;
+&lt;p&gt;如果读者要做动态检测私有API，那么误报和性能就是首要考虑的问题。hook太深，则消息过多，时耗过多，而且有些是系统自身调用的私有API，就无法正确区分是应用还是系统调用的；hook太浅，又达不到效果，没法监测到私有API的行为。这里抛张动态检测的半成品截图【图13】，大家可以继续发挥。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;/media/ios_auditor/13.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图13：动态检测私有API时的Hook日志（半成品）&lt;br&gt;&lt;/center&gt;
+
+&lt;p&gt;为了提高静态检测的准确率，笔者就把静态拼接API字符串的情况也支持【图14】，因为正常情况下，两个字符串都是相邻的，组合起来再与私有API库作比较即可。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;![](/media/ios_auditor/14.png&lt;br&gt;图14：字符串拼接绕过私有API检测&lt;br&gt;&lt;/center&gt;
+
+&lt;p&gt;好了，说了这么多，直接上一张实战图。下面【图15】是针对去年曝光的一款iOS病毒TinyV做的检测（感谢ClaudXiao分享的样本），可以看到它调用LSApplicationWorkspace和MobileInstallation中的私有API去查看安装程序列表，安装和卸载应用。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;/media/ios_auditor/15.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图15：iOS病毒TinyV的私有API检测结果&lt;br&gt;&lt;/center&gt;
+
+&lt;h3 id=&quot;第三方库检测&quot;&gt;&lt;a href=&quot;#第三方库检测&quot; class=&quot;headerlink&quot; title=&quot;第三方库检测&quot;&gt;&lt;/a&gt;第三方库检测&lt;/h3&gt;&lt;p&gt;有时外界会曝光一些第三方开源库的漏洞，影响经常是跨平台的，包括iOS应用。因此我们专门收集上百个常用第三方库信息作为检测内容，在日常审计应用时，能够维护一份哪些公司产品使用到哪些第三方库的信息【图16】，在外部曝光漏洞后，我们可以快速定位受影响的产品及危害范围。&lt;/p&gt;
+&lt;p&gt;不过目前缺乏相应的版本信息，因为有些库编译出来后是不带版本字符串，需要针对不同版本作指纹库检测，也是个不少工程量，如果业界有好心人愿意造服群众的话，可以试试做个第三方库的指纹库出来。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;/media/ios_auditor/16.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图16：第三方库检测&lt;br&gt;&lt;/center&gt;
+
+&lt;h3 id=&quot;开放端口检测&quot;&gt;&lt;a href=&quot;#开放端口检测&quot; class=&quot;headerlink&quot; title=&quot;开放端口检测&quot;&gt;&lt;/a&gt;开放端口检测&lt;/h3&gt;&lt;p&gt;之所以做开放端口检测这个功能，主要是基于此前曝光的“WormHole”漏洞，此类因开放端口导致的安全漏洞，在Android应用上已经有过不少案例，搜索乌云就能找到。&lt;/p&gt;
+&lt;p&gt;检测开放端口其实一条命令就足够了，然后定期轮循即可：&lt;br&gt;lsof -i | grep ‘“+appname+”‘ | awk ‘{print $1,$8,$9,$10}’&lt;/p&gt;
+&lt;p&gt;直接上效果图，如【图17】所示：&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;/media/ios_auditor/17.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图17：开放端口审计&lt;br&gt;&lt;/center&gt;
+
+&lt;h3 id=&quot;审计效果&quot;&gt;&lt;a href=&quot;#审计效果&quot; class=&quot;headerlink&quot; title=&quot;审计效果&quot;&gt;&lt;/a&gt;审计效果&lt;/h3&gt;&lt;p&gt;我们随机抽取了公司60款iOS应用，审计后共发现10款产品存在中高危漏洞【图18】，其中主要是SSL中间人漏洞和授权密钥泄露漏洞居多。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;/media/ios_auditor/18.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图18：审计结果&lt;br&gt;&lt;/center&gt;
+
+&lt;h3 id=&quot;后记&quot;&gt;&lt;a href=&quot;#后记&quot; class=&quot;headerlink&quot; title=&quot;后记&quot;&gt;&lt;/a&gt;后记&lt;/h3&gt;&lt;p&gt;本文主要针对笔者在开发iOS应用自动审计系统时运用的一些技术作个分享，希望能起到抛砖引玉的作用。系统本身也还有一些有待完善的地方，欢迎各位业界同仁共同交流探讨。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;此前有人统计过2015年漏洞最多的产品，苹果的OSX与iOS系统分别占据第一二名，虽有人怀疑统计数据可能存在重复的不准确情况，但相信大趋势是
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+      <category term="iOS" scheme="http://riusksk.github.io/tags/iOS/"/>
+    
+      <category term="安全审计" scheme="http://riusksk.github.io/tags/%E5%AE%89%E5%85%A8%E5%AE%A1%E8%AE%A1/"/>
+    
+  </entry>
   
   <entry>
     <title>迁移技术文章</title>
@@ -363,9 +464,9 @@
       <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
     
     
-      <category term="Android" scheme="http://riusksk.github.io/tags/Android/"/>
-    
       <category term="恶意软件" scheme="http://riusksk.github.io/tags/%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6/"/>
+    
+      <category term="Android" scheme="http://riusksk.github.io/tags/Android/"/>
     
   </entry>
   
@@ -398,9 +499,9 @@
       <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
     
     
-      <category term="Android" scheme="http://riusksk.github.io/tags/Android/"/>
-    
       <category term="安全审计" scheme="http://riusksk.github.io/tags/%E5%AE%89%E5%85%A8%E5%AE%A1%E8%AE%A1/"/>
+    
+      <category term="Android" scheme="http://riusksk.github.io/tags/Android/"/>
     
   </entry>
   
@@ -619,7 +720,7 @@
     <link href="http://riusksk.github.io/2010/08/27/vmcheck/"/>
     <id>http://riusksk.github.io/2010/08/27/vmcheck/</id>
     <published>2010-08-26T16:00:00.000Z</published>
-    <updated>2016-06-23T02:46:43.000Z</updated>
+    <updated>2016-06-23T03:00:16.000Z</updated>
     
     <content type="html">&lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;在当今信息安全领域，特别是恶意软件分析中，经常需要利用到虚拟机技术，以提高病毒分析过程的安全性以及硬件资源的节约性，因此它在恶意软件领域中是应用越来越来广泛。这里我们所谓的虚拟机（Virtual Machine）是指通过软件模拟的具有完整硬件系统功能的、运行在一个完全隔离环境中的完整计算机系统。通过虚拟机软件（比如VMware，Virtual PC ,VirtualBox），你可以在一台物理计算机上模拟出一台或多台虚拟的计算机，这些虚拟机完全就像真正的计算机那样进行工作，例如你可以安装操作系统、安装应用程序、访问网络资源等等。攻击者为了提高恶意程序的隐蔽性以及破坏真实主机的成功率，他们都在恶意程序中加入检测虚拟机的代码，以判断程序所处的运行环境。当发现程序处于虚拟机（特别是蜜罐系统）中时，它就会改变操作行为或者中断执行，以此提高反病毒人员分析恶意软件行为的难度。本文主要针对基于Intel CPU的虚拟环境VMware中的Windows XP SP3系统进行检测分析，并列举出当前常见的几种虚拟机检测方法。&lt;/p&gt;
 &lt;h3 id=&quot;方法一：通过执行特权指令来检测虚拟机&quot;&gt;&lt;a href=&quot;#方法一：通过执行特权指令来检测虚拟机&quot; class=&quot;headerlink&quot; title=&quot;方法一：通过执行特权指令来检测虚拟机&quot;&gt;&lt;/a&gt;方法一：通过执行特权指令来检测虚拟机&lt;/h3&gt;&lt;p&gt;Vmware为真主机与虚拟机之间提供了相互沟通的通讯机制，它使用“IN”指令来读取特定端口的数据以进行两机通讯，但由于IN指令属于特权指令，在处于保护模式下的真机上执行此指令时，除非权限允许，否则将会触发类型为“EXCEPTION_PRIV_INSTRUCTION”的异常，而在虚拟机中并不会发生异常，在指定功能号0A（获取VMware版本）的情况下，它会在EBX中返回其版本号“VMXH”；而当功能号为0x14时，可用于获取VMware内存大小，当大于0时则说明处于虚拟机中。VMDetect正是利用前一种方法来检测VMware的存在，其检测代码分析如下：&lt;/p&gt;
@@ -672,7 +773,9 @@
 &lt;center&gt;&lt;br&gt;&lt;img src=&quot;/media/vmcheck/9.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;                                 图9&lt;br&gt;&lt;/center&gt;
 
 &lt;p&gt;但由于这些可经过修改配置文件来绕过检测。另外，还可通过检测特定的硬件控制器，BIOS，USB控制器，显卡，网卡等特征字符串进行检测，这些在前面使用注册表检测方法中已有所涉及。另外之前在看雪论坛上也有朋友提到通过检测硬盘Model Number是否含有“vmware”或“virtual”等字样来实现检测虚拟机的功能，网址见这（附源码）：&lt;a href=&quot;http://bbs.pediy.com/showthread.php?t=110046。&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://bbs.pediy.com/showthread.php?t=110046。&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id=&quot;总结&quot;&gt;&lt;a href=&quot;#总结&quot; class=&quot;headerlink&quot; title=&quot;总结&quot;&gt;&lt;/a&gt;总结&lt;/h3&gt;&lt;p&gt;国外SANS安全组织的研究人员总结出当前各种虚拟机检测手段不外乎以下四类：&lt;br&gt;● 搜索虚拟环境中的进程，文件系统，注册表；&lt;br&gt;● 搜索虚拟环境中的内存&lt;br&gt;● 搜索虚拟环境中的特定虚拟硬件&lt;br&gt;● 搜索虚拟环境中的特定处理器指令和功能&lt;br&gt;因为现代计算系统大多是由文件系统，内存，处理器及各种硬件组件构成的，上面提到的四种检测手段均包含了这些因素。纵观前面各种检测方法，也均在此四类当中。除此之外，也有人提出通过网络来检测虚拟机，比如搜索ICMP和TCP数据通讯的时间差异，IP ID数据包差异以及数据包中的异常头信息等等。随着技术研究的深入，相信会有更多的检测手段出现，与此同时，虚拟机厂商也会不断进化它们的产品，以增加anti-vmware的难度，这不也正是一场永无休止的无烟战争！&lt;/p&gt;
+&lt;h3 id=&quot;总结&quot;&gt;&lt;a href=&quot;#总结&quot; class=&quot;headerlink&quot; title=&quot;总结&quot;&gt;&lt;/a&gt;总结&lt;/h3&gt;&lt;p&gt;国外SANS安全组织的研究人员总结出当前各种虚拟机检测手段不外乎以下四类：&lt;/p&gt;
+&lt;p&gt;● 搜索虚拟环境中的进程，文件系统，注册表；&lt;br&gt;● 搜索虚拟环境中的内存&lt;br&gt;● 搜索虚拟环境中的特定虚拟硬件&lt;br&gt;● 搜索虚拟环境中的特定处理器指令和功能&lt;/p&gt;
+&lt;p&gt;因为现代计算系统大多是由文件系统，内存，处理器及各种硬件组件构成的，上面提到的四种检测手段均包含了这些因素。纵观前面各种检测方法，也均在此四类当中。除此之外，也有人提出通过网络来检测虚拟机，比如搜索ICMP和TCP数据通讯的时间差异，IP ID数据包差异以及数据包中的异常头信息等等。随着技术研究的深入，相信会有更多的检测手段出现，与此同时，虚拟机厂商也会不断进化它们的产品，以增加anti-vmware的难度，这不也正是一场永无休止的无烟战争！&lt;/p&gt;
 </content>
     
     <summary type="html">
