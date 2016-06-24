@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2016-06-23T06:23:41.000Z</updated>
+  <updated>2016-06-24T14:47:51.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -20,13 +20,14 @@
     <link href="http://riusksk.github.io/2016/06/23/ios-auditor/"/>
     <id>http://riusksk.github.io/2016/06/23/ios-auditor/</id>
     <published>2016-06-22T16:00:00.000Z</published>
-    <updated>2016-06-23T06:23:41.000Z</updated>
+    <updated>2016-06-24T14:47:51.000Z</updated>
     
     <content type="html">&lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;此前有人统计过2015年漏洞最多的产品，苹果的OSX与iOS系统分别占据第一二名，虽有人怀疑统计数据可能存在重复的不准确情况，但相信大趋势是不会变的。&lt;/p&gt;
 &lt;p&gt;2015年在iOS平台上也发生过不少安全大事，比如“XcodeGhost”事件、iOS9越狱、“iBackDoor“、“YouMi“事件等等，尤其是XcodeGhost影响甚大，注定要在iOS安全史上留下重重的一笔。&lt;/p&gt;
 &lt;p&gt;结合CVEDetails站点上对iOS系统漏洞的统计情况【图1】，整体处于上升的趋势，尤其是2015年增长迅速，是2014年的3倍多，由此也可以预见iOS平台上的安全漏洞正在快速增长，iOS应用亦然。&lt;/p&gt;
 &lt;center&gt;&lt;br&gt;&lt;img src=&quot;/media/ios_auditor/1.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图1：iOS系统历年漏洞数量统计图&lt;br&gt;&lt;/center&gt;
 
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
 &lt;p&gt;腾讯也有很多iOS应用产品，基本上android上有的，对应的同款应用在iOS上也会有。目前Android应用的审计技术在业界都已经于相对成熟，而iOS应用漏洞审计系统在国内还是比较欠缺的，一些公司可能内部有开发，只是未公开。&lt;/p&gt;
 &lt;p&gt;此前腾讯iOS产品也是未能做有效的上线前审计，遗留一些安全隐患，因此我们对此专门研发了一款针对iOS应用的自动化审计系统。除了日常的应用审计外，同时也是希望它能够在安全应急上起到辅助的作用。本文主要就是针对它使用到的一些技术进行浅谈，以希望可以起到抛砖引玉的效果。&lt;/p&gt;
 &lt;h3 id=&quot;开发环境&quot;&gt;&lt;a href=&quot;#开发环境&quot; class=&quot;headerlink&quot; title=&quot;开发环境&quot;&gt;&lt;/a&gt;开发环境&lt;/h3&gt;&lt;p&gt;• Mac OS X 10.11&lt;br&gt;• Python 开发环境：PyCharm5&lt;br&gt;• Objective-C 开发环境：Xcode7 + iOSOpenDev&lt;br&gt;• 支持 iOS 8.1 以上的越狱系统&lt;/p&gt;
@@ -103,16 +104,19 @@
     
     <summary type="html">
     
-      &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;此前有人统计过2015年漏洞最多的产品，苹果的OSX与iOS系统分别占据第一二名，虽有人怀疑统计数据可能存在重复的不准确情况，但相信大趋势是
+      &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;此前有人统计过2015年漏洞最多的产品，苹果的OSX与iOS系统分别占据第一二名，虽有人怀疑统计数据可能存在重复的不准确情况，但相信大趋势是不会变的。&lt;/p&gt;
+&lt;p&gt;2015年在iOS平台上也发生过不少安全大事，比如“XcodeGhost”事件、iOS9越狱、“iBackDoor“、“YouMi“事件等等，尤其是XcodeGhost影响甚大，注定要在iOS安全史上留下重重的一笔。&lt;/p&gt;
+&lt;p&gt;结合CVEDetails站点上对iOS系统漏洞的统计情况【图1】，整体处于上升的趋势，尤其是2015年增长迅速，是2014年的3倍多，由此也可以预见iOS平台上的安全漏洞正在快速增长，iOS应用亦然。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;/media/ios_auditor/1.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图1：iOS系统历年漏洞数量统计图&lt;br&gt;&lt;/center&gt;
     
     </summary>
     
       <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
     
     
-      <category term="安全审计" scheme="http://riusksk.github.io/tags/%E5%AE%89%E5%85%A8%E5%AE%A1%E8%AE%A1/"/>
-    
       <category term="iOS" scheme="http://riusksk.github.io/tags/iOS/"/>
+    
+      <category term="安全审计" scheme="http://riusksk.github.io/tags/%E5%AE%89%E5%85%A8%E5%AE%A1%E8%AE%A1/"/>
     
   </entry>
   
@@ -142,13 +146,13 @@
     <link href="http://riusksk.github.io/2016/05/25/PHDays-2016/"/>
     <id>http://riusksk.github.io/2016/05/25/PHDays-2016/</id>
     <published>2016-05-25T02:09:17.000Z</published>
-    <updated>2016-06-05T02:45:15.000Z</updated>
+    <updated>2016-06-24T14:47:33.000Z</updated>
     
     <content type="html">&lt;h2 id=&quot;大会简介&quot;&gt;&lt;a href=&quot;#大会简介&quot; class=&quot;headerlink&quot; title=&quot;大会简介&quot;&gt;&lt;/a&gt;大会简介&lt;/h2&gt;&lt;p&gt;PHDays（Positive Hack Days）,俄罗斯著名的黑客大会，内容涵盖硬件安全、WEB安全、移动安全、网络安全等诸多专业安全领域，并且会议期间设有CTF夺旗竞技赛。&lt;/p&gt;
 &lt;p&gt;今年会议主要围绕以下主题：关键信息系统的安全性、欺诈管理、网络犯罪和事故调查、维基解密时代的政府与企业安全、网络战和网络间谍。同时，还设有安全论坛，云计算和虚拟基础设施的保护，0day攻防、DDOS防御、工控安全、业务应用和通信网络安全。&lt;/p&gt;
 &lt;h2 id=&quot;议题分析&quot;&gt;&lt;a href=&quot;#议题分析&quot; class=&quot;headerlink&quot; title=&quot;议题分析&quot;&gt;&lt;/a&gt;议题分析&lt;/h2&gt;&lt;p&gt;关于大会议题的在线视频参见：&lt;a href=&quot;http://www.phdays.com/broadcast/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://www.phdays.com/broadcast/&lt;/a&gt;&lt;/p&gt;
 &lt;h3 id=&quot;1、《Building-Honeypots-to-Monitor-DDoS》&quot;&gt;&lt;a href=&quot;#1、《Building-Honeypots-to-Monitor-DDoS》&quot; class=&quot;headerlink&quot; title=&quot;1、《Building Honeypots to Monitor DDoS》&quot;&gt;&lt;/a&gt;1、《Building Honeypots to Monitor DDoS》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/14641421571387/14641437211481.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;作者通过搭建存在DDoS漏洞服务的网络蜜罐，从互联网中提取可视化信息，然后将数据反馈给ELK（Elasticsearch、Logstash、Kibana日志集中分析平台，为保护真实网络财产的系统提供数据支撑。据说，后面作者会开源一个网络管理系统，用于统计外部网络的一些反射DDoS攻击的数据。&lt;/p&gt;
+&lt;p&gt;作者通过搭建存在DDoS漏洞服务的网络蜜罐，从互联网中提取可视化信息，然后将数据反馈给ELK（Elasticsearch、Logstash、Kibana日志集中分析平台，为保护真实网络财产的系统提供数据支撑。据说，后面作者会开源一个网络管理系统，用于统计外部网络的一些反射DDoS攻击的数据。&lt;br&gt;&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;h3 id=&quot;2、《Waf-js：How-to-Protect-Web-Applications-using-JavaScript》&quot;&gt;&lt;a href=&quot;#2、《Waf-js：How-to-Protect-Web-Applications-using-JavaScript》&quot; class=&quot;headerlink&quot; title=&quot;2、《Waf.js：How to Protect Web Applications using JavaScript》&quot;&gt;&lt;/a&gt;2、《Waf.js：How to Protect Web Applications using JavaScript》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/14641421571387/14641534353049.jpg&quot; alt=&quot;&quot;&gt;&lt;br&gt;使用Javascript代码去防御DOM XSS、CSRF、点击劫持，以及其它攻击环境检测（Beef、Xbackdoor、Acunetix等等）的工具，与Server组使用js防御dom xss的思路类似，只是多了其它几项功能。文档下载：&lt;a href=&quot;http://www.slideshare.net/DenisKolegov/wafjs-how-to-protect-web-applications-using-javascript&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://www.slideshare.net/DenisKolegov/wafjs-how-to-protect-web-applications-using-javascript&lt;/a&gt;&lt;/p&gt;
 &lt;h3 id=&quot;3、《Scalable-and-Effective-Fuzzing-of-Google-Chrome-Browser》&quot;&gt;&lt;a href=&quot;#3、《Scalable-and-Effective-Fuzzing-of-Google-Chrome-Browser》&quot; class=&quot;headerlink&quot; title=&quot;3、《Scalable and Effective Fuzzing of Google Chrome Browser》&quot;&gt;&lt;/a&gt;3、《Scalable and Effective Fuzzing of Google Chrome Browser》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/14641421571387/14641573779613.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;介绍Google的分布式Fuzzing系统——CluterFuzz，采用集群服务器进行分布式Fuzzing，大概4000多台机器，不排除使用虚拟机的情况。议题介绍了一些Fuzz变异算法、漏洞类型识别、代码覆盖率问题、自动化精简样本，以及各种sanitizers功能的使用，比较常用的还是Address Sanitizer，且各平台通用。&lt;/p&gt;
@@ -166,7 +170,11 @@
     
     <summary type="html">
     
-      &lt;h2 id=&quot;大会简介&quot;&gt;&lt;a href=&quot;#大会简介&quot; class=&quot;headerlink&quot; title=&quot;大会简介&quot;&gt;&lt;/a&gt;大会简介&lt;/h2&gt;&lt;p&gt;PHDays（Positive Hack Days）,俄罗斯著名的黑客大会，内容涵盖硬件安全、WEB安全、移动安全、网络安全
+      &lt;h2 id=&quot;大会简介&quot;&gt;&lt;a href=&quot;#大会简介&quot; class=&quot;headerlink&quot; title=&quot;大会简介&quot;&gt;&lt;/a&gt;大会简介&lt;/h2&gt;&lt;p&gt;PHDays（Positive Hack Days）,俄罗斯著名的黑客大会，内容涵盖硬件安全、WEB安全、移动安全、网络安全等诸多专业安全领域，并且会议期间设有CTF夺旗竞技赛。&lt;/p&gt;
+&lt;p&gt;今年会议主要围绕以下主题：关键信息系统的安全性、欺诈管理、网络犯罪和事故调查、维基解密时代的政府与企业安全、网络战和网络间谍。同时，还设有安全论坛，云计算和虚拟基础设施的保护，0day攻防、DDOS防御、工控安全、业务应用和通信网络安全。&lt;/p&gt;
+&lt;h2 id=&quot;议题分析&quot;&gt;&lt;a href=&quot;#议题分析&quot; class=&quot;headerlink&quot; title=&quot;议题分析&quot;&gt;&lt;/a&gt;议题分析&lt;/h2&gt;&lt;p&gt;关于大会议题的在线视频参见：&lt;a href=&quot;http://www.phdays.com/broadcast/&quot;&gt;http://www.phdays.com/broadcast/&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&quot;1、《Building-Honeypots-to-Monitor-DDoS》&quot;&gt;&lt;a href=&quot;#1、《Building-Honeypots-to-Monitor-DDoS》&quot; class=&quot;headerlink&quot; title=&quot;1、《Building Honeypots to Monitor DDoS》&quot;&gt;&lt;/a&gt;1、《Building Honeypots to Monitor DDoS》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/14641421571387/14641437211481.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;作者通过搭建存在DDoS漏洞服务的网络蜜罐，从互联网中提取可视化信息，然后将数据反馈给ELK（Elasticsearch、Logstash、Kibana日志集中分析平台，为保护真实网络财产的系统提供数据支撑。据说，后面作者会开源一个网络管理系统，用于统计外部网络的一些反射DDoS攻击的数据。&lt;br&gt;
     
     </summary>
     
@@ -182,12 +190,13 @@
     <link href="http://riusksk.github.io/2016/04/13/CanSecWest_2016/"/>
     <id>http://riusksk.github.io/2016/04/13/CanSecWest_2016/</id>
     <published>2016-04-13T03:47:32.000Z</published>
-    <updated>2016-06-05T02:44:50.000Z</updated>
+    <updated>2016-06-24T14:48:30.000Z</updated>
     
     <content type="html">&lt;p&gt;本周分析的安全大会主要以2016年CanSecWest黑客大会上的精彩议题为主，整体上，议题主要偏向于&lt;strong&gt;系统/软件漏洞挖掘与利用技术&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;各议题下载链接参见：&lt;a href=&quot;http://www.slideshare.net/CanSecWest/presentations&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://www.slideshare.net/CanSecWest/presentations&lt;/a&gt;&lt;/p&gt;
 &lt;h3 id=&quot;1、《Sandbox-Escape-with-Generous-Help-from-Security-Software》&quot;&gt;&lt;a href=&quot;#1、《Sandbox-Escape-with-Generous-Help-from-Security-Software》&quot; class=&quot;headerlink&quot; title=&quot;1、《Sandbox Escape with Generous Help from Security Software》&quot;&gt;&lt;/a&gt;1、《Sandbox Escape with Generous Help from Security Software》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/14605192523708/14605295530449.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;腾讯玄武实验室分享的杀毒软件漏洞挖掘技巧，比如BitDefender、Comodo、Avast、Kaspersky等等国外知名杀软厂商，大多是一些敏感功能未鉴权导致的代码执行或者信息泄露的问题，比如攻击者伪造IO请求去读写、执行本地文件。这里比较好的一点是在漏洞利用场景上，他们将杀软漏洞用来绕过沙盒保护，因为杀软漏洞可以直接以System最高权限执行，允许直接关闭一些软件的沙盒防护。&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
 &lt;h3 id=&quot;2、《Don’t-Trust-Your-Eye-Apple-Graphics-Is-Compromised》&quot;&gt;&lt;a href=&quot;#2、《Don’t-Trust-Your-Eye-Apple-Graphics-Is-Compromised》&quot; class=&quot;headerlink&quot; title=&quot;2、《Don’t Trust Your Eye-  Apple Graphics Is Compromised》&quot;&gt;&lt;/a&gt;2、《Don’t Trust Your Eye-  Apple Graphics Is Compromised》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/14605192523708/14605302948646.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;腾讯科恩实验室分享的关于OSX/iOS内核驱动漏洞挖掘的方法，主要介绍了两种Fuzzing策略：&lt;/p&gt;
 &lt;ul&gt;
@@ -228,7 +237,9 @@
     <summary type="html">
     
       &lt;p&gt;本周分析的安全大会主要以2016年CanSecWest黑客大会上的精彩议题为主，整体上，议题主要偏向于&lt;strong&gt;系统/软件漏洞挖掘与利用技术&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;各议题下载链接参见：&lt;a href=&quot;http://www.slideshare.net/C
+&lt;p&gt;各议题下载链接参见：&lt;a href=&quot;http://www.slideshare.net/CanSecWest/presentations&quot;&gt;http://www.slideshare.net/CanSecWest/presentations&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&quot;1、《Sandbox-Escape-with-Generous-Help-from-Security-Software》&quot;&gt;&lt;a href=&quot;#1、《Sandbox-Escape-with-Generous-Help-from-Security-Software》&quot; class=&quot;headerlink&quot; title=&quot;1、《Sandbox Escape with Generous Help from Security Software》&quot;&gt;&lt;/a&gt;1、《Sandbox Escape with Generous Help from Security Software》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/14605192523708/14605295530449.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;腾讯玄武实验室分享的杀毒软件漏洞挖掘技巧，比如BitDefender、Comodo、Avast、Kaspersky等等国外知名杀软厂商，大多是一些敏感功能未鉴权导致的代码执行或者信息泄露的问题，比如攻击者伪造IO请求去读写、执行本地文件。这里比较好的一点是在漏洞利用场景上，他们将杀软漏洞用来绕过沙盒保护，因为杀软漏洞可以直接以System最高权限执行，允许直接关闭一些软件的沙盒防护。&lt;/p&gt;
     
     </summary>
     
@@ -244,10 +255,10 @@
     <link href="http://riusksk.github.io/2016/04/05/bh-asia-2016/"/>
     <id>http://riusksk.github.io/2016/04/05/bh-asia-2016/</id>
     <published>2016-04-05T02:27:11.000Z</published>
-    <updated>2016-06-05T02:44:38.000Z</updated>
+    <updated>2016-06-24T14:48:46.000Z</updated>
     
     <content type="html">&lt;h2 id=&quot;1、《A-New-CVE-2015-0057-Exploit-Technology》&quot;&gt;&lt;a href=&quot;#1、《A-New-CVE-2015-0057-Exploit-Technology》&quot; class=&quot;headerlink&quot; title=&quot;1、《A New CVE-2015-0057 Exploit Technology》&quot;&gt;&lt;/a&gt;1、《A New CVE-2015-0057 Exploit Technology》&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14598336783953.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;来自FireEye公司分享的一种针对微软内核 win32k!xxxEnableWndSBArrows tagSBINFO/tagPROPLIST UAF漏洞CVE-2015-0057/MS15-010的利用方法，是被FireEye捕获到的一款Dyre银行木马变种所采用的利用技术,分为32位和64位不同平台下的方法。&lt;br&gt;&lt;strong&gt;【传统攻击方法】&lt;/strong&gt;：原有的攻击方法是由NCC Group安全组织公布的，采用”占坑“的攻击方式，用可控数据去填充已释放的tagPROPLIST，然后在32位下用SetScrollInfo去操作指向tagWND.strName.Buffer的tagWND.pSBInfo，而在64位下伪造的堆头结构_HEAP_ENTRY去指向tagWND.strName.Buffer，完成数据的覆盖，从而转化为任意地址读写。&lt;br&gt;&lt;strong&gt;【新型攻击方法】&lt;/strong&gt;：在32位系统下，== 采用tagMENU对象去填充已tagPROPLIST，然后借助tagMENU.cItems和tagMENU.rgItems来完成控制 ==;而在64位系统下，既借鉴了NCC使用tagWND去操作tagPROPLIST，又使用tagMENU去覆盖tagMENU.rgItems，因为rgItems数组指针指向的第一个元素是wID，通过SetMenuItemInfo()可实现完全控制,最终实现任意地址读写。&lt;/p&gt;
+&lt;p&gt;来自FireEye公司分享的一种针对微软内核 win32k!xxxEnableWndSBArrows tagSBINFO/tagPROPLIST UAF漏洞CVE-2015-0057/MS15-010的利用方法，是被FireEye捕获到的一款Dyre银行木马变种所采用的利用技术,分为32位和64位不同平台下的方法。&lt;br&gt;&lt;strong&gt;【传统攻击方法】&lt;/strong&gt;：原有的攻击方法是由NCC Group安全组织公布的，采用”占坑“的攻击方式，用可控数据去填充已释放的tagPROPLIST，然后在32位下用SetScrollInfo去操作指向tagWND.strName.Buffer的tagWND.pSBInfo，而在64位下伪造的堆头结构_HEAP_ENTRY去指向tagWND.strName.Buffer，完成数据的覆盖，从而转化为任意地址读写。&lt;br&gt;&lt;strong&gt;【新型攻击方法】&lt;/strong&gt;：在32位系统下，== 采用tagMENU对象去填充已tagPROPLIST，然后借助tagMENU.cItems和tagMENU.rgItems来完成控制 ==;而在64位系统下，既借鉴了NCC使用tagWND去操作tagPROPLIST，又使用tagMENU去覆盖tagMENU.rgItems，因为rgItems数组指针指向的第一个元素是wID，通过SetMenuItemInfo()可实现完全控制,最终实现任意地址读写。&lt;br&gt;&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;h3 id=&quot;2、《Automated-Detection-Of-Firefox-Extension-reuse-Vulnerabilities》&quot;&gt;&lt;a href=&quot;#2、《Automated-Detection-Of-Firefox-Extension-reuse-Vulnerabilities》&quot; class=&quot;headerlink&quot; title=&quot;2、《Automated Detection Of Firefox Extension-reuse Vulnerabilities》&quot;&gt;&lt;/a&gt;2、《Automated Detection Of Firefox Extension-reuse Vulnerabilities》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14598369926110.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;东北大学（美国）的4位安全研究员开发出一款叫CrossFire的轻量级静态分析工具，用于自动化挖掘Firefox插件漏洞（对方称为”Externsion-reuse“漏洞），其实就是利用插件原有的敏感功能去执行恶意行为，比如窃取cookie、历史记录等敏感信息。Firefox插件是通过Javascript调用Friefox提供的API实现的附加功能，因此CrossFire是通过静态分析插件的JS代码，构建出抽象语法树，然后跟收集的敏感API数据库做综合分析，API数据库就是定义输入源（source）和输出目标（sink）的内容，然后基于污点传播的思路去做判断，如果检测到漏洞还可以根据原定规则生成exploit。&lt;br&gt;&lt;strong&gt;【PS】&lt;/strong&gt;:==基于污点传播的静态分析思路，偏学术研究，估计误报会比较多，往往还需要人工介入排查，效果不见得会很好。==&lt;/p&gt;
 &lt;h3 id=&quot;3、《Break-Out-Of-The-Truman-Show：Active-Detection-And-Escape-Of-Dynamic-Binary-Instrumentation》&quot;&gt;&lt;a href=&quot;#3、《Break-Out-Of-The-Truman-Show：Active-Detection-And-Escape-Of-Dynamic-Binary-Instrumentation》&quot; class=&quot;headerlink&quot; title=&quot;3、《Break Out Of The Truman Show：Active Detection And Escape Of Dynamic Binary Instrumentation》&quot;&gt;&lt;/a&gt;3、《Break Out Of The Truman Show：Active Detection And Escape Of Dynamic Binary Instrumentation》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14598401954245.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
@@ -307,7 +318,8 @@
     
     <summary type="html">
     
-      &lt;h2 id=&quot;1、《A-New-CVE-2015-0057-Exploit-Technology》&quot;&gt;&lt;a href=&quot;#1、《A-New-CVE-2015-0057-Exploit-Technology》&quot; class=&quot;headerlink&quot; title=&quot;1、《A New
+      &lt;h2 id=&quot;1、《A-New-CVE-2015-0057-Exploit-Technology》&quot;&gt;&lt;a href=&quot;#1、《A-New-CVE-2015-0057-Exploit-Technology》&quot; class=&quot;headerlink&quot; title=&quot;1、《A New CVE-2015-0057 Exploit Technology》&quot;&gt;&lt;/a&gt;1、《A New CVE-2015-0057 Exploit Technology》&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14598336783953.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;来自FireEye公司分享的一种针对微软内核 win32k!xxxEnableWndSBArrows tagSBINFO/tagPROPLIST UAF漏洞CVE-2015-0057/MS15-010的利用方法，是被FireEye捕获到的一款Dyre银行木马变种所采用的利用技术,分为32位和64位不同平台下的方法。&lt;br&gt;&lt;strong&gt;【传统攻击方法】&lt;/strong&gt;：原有的攻击方法是由NCC Group安全组织公布的，采用”占坑“的攻击方式，用可控数据去填充已释放的tagPROPLIST，然后在32位下用SetScrollInfo去操作指向tagWND.strName.Buffer的tagWND.pSBInfo，而在64位下伪造的堆头结构_HEAP_ENTRY去指向tagWND.strName.Buffer，完成数据的覆盖，从而转化为任意地址读写。&lt;br&gt;&lt;strong&gt;【新型攻击方法】&lt;/strong&gt;：在32位系统下，== 采用tagMENU对象去填充已tagPROPLIST，然后借助tagMENU.cItems和tagMENU.rgItems来完成控制 ==;而在64位系统下，既借鉴了NCC使用tagWND去操作tagPROPLIST，又使用tagMENU去覆盖tagMENU.rgItems，因为rgItems数组指针指向的第一个元素是wID，通过SetMenuItemInfo()可实现完全控制,最终实现任意地址读写。&lt;br&gt;
     
     </summary>
     

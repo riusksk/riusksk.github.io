@@ -8,7 +8,9 @@
 
   
   <meta name="description" content="前言此前有人统计过2015年漏洞最多的产品，苹果的OSX与iOS系统分别占据第一二名，虽有人怀疑统计数据可能存在重复的不准确情况，但相信大趋势是不会变的。
-2015年在iOS平台上也发生过不少安全大事，比如“XcodeGhost”事件、iOS9越狱、“iBackDoor“、“YouMi“事件等等，尤" />
+2015年在iOS平台上也发生过不少安全大事，比如“XcodeGhost”事件、iOS9越狱、“iBackDoor“、“YouMi“事件等等，尤其是XcodeGhost影响甚大，注定要在iOS安全史上留下重重的一笔。
+结合CVEDetails站点上对iOS系统漏洞的统计情况【图1】，整体处于上升的趋势，尤其是2015年增长迅速，是2014年的3倍多，由此也可以预见iOS平台上的安全漏洞正在快速增长，iOS应用亦然。
+图1：iOS系统历年漏洞数量统计图" />
   
 
   
@@ -94,6 +96,7 @@
 <p>结合CVEDetails站点上对iOS系统漏洞的统计情况【图1】，整体处于上升的趋势，尤其是2015年增长迅速，是2014年的3倍多，由此也可以预见iOS平台上的安全漏洞正在快速增长，iOS应用亦然。</p>
 <center><br><img src="/media/ios_auditor/1.png" alt=""><br>图1：iOS系统历年漏洞数量统计图<br></center>
 
+<a id="more"></a>
 <p>腾讯也有很多iOS应用产品，基本上android上有的，对应的同款应用在iOS上也会有。目前Android应用的审计技术在业界都已经于相对成熟，而iOS应用漏洞审计系统在国内还是比较欠缺的，一些公司可能内部有开发，只是未公开。</p>
 <p>此前腾讯iOS产品也是未能做有效的上线前审计，遗留一些安全隐患，因此我们对此专门研发了一款针对iOS应用的自动化审计系统。除了日常的应用审计外，同时也是希望它能够在安全应急上起到辅助的作用。本文主要就是针对它使用到的一些技术进行浅谈，以希望可以起到抛砖引玉的效果。</p>
 <h3 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h3><p>• Mac OS X 10.11<br>• Python 开发环境：PyCharm5<br>• Objective-C 开发环境：Xcode7 + iOSOpenDev<br>• 支持 iOS 8.1 以上的越狱系统</p>
@@ -186,7 +189,7 @@
         
   
   <div class="tags">
-    <a href="/tags/安全审计/">安全审计</a>, <a href="/tags/iOS/">iOS</a>
+    <a href="/tags/iOS/">iOS</a>, <a href="/tags/安全审计/">安全审计</a>
   </div>
 
         <!-- partial('post/share') -->
