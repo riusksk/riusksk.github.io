@@ -3,18 +3,20 @@
 <head>
   <meta charset="utf-8" />
   
-  <title>迁移技术文章 | riusksk&#39;s blog</title>
+  <title>Heap Spray 技术要点 | riusksk&#39;s blog</title>
   <meta name="author" content="riusksk" />
 
   
-  <meta name="description" content="由于博客大巴体验太差，因此开始启用github去写博客，用markdown+hexo写静态博客的感觉也挺好的，而且更安全。后面我会把以前写的技术文章迁移到本博客，顺便把买来很久一直未用的riusksk.me域名给派上用场了，之前是因为备案流程过于繁琐，才导致一直未使用，使用 http://riusk" />
+  <meta name="description" content="1、堆喷射堆块大小 ≈ 程序堆块分配大小，以减小堆空隙大小。
+2、不能使用堆缓存块，否则可能破坏地址的可预测性，可通过申请6块相应大小的堆块来清空缓存。
+3、精确定位ROP地址，目标地址如0x0c0c0c0c至堆块数据起始地址的offset = ( 0x0c0c0c0c - UserPtr（堆数据起" />
   
 
   
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-  <meta property="og:title" content="迁移技术文章" />
+  <meta property="og:title" content="Heap Spray 技术要点" />
   <meta property="og:site_name" content="riusksk&#39;s blog" />
 
   
@@ -78,17 +80,26 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-06-17T08:11:06.000Z"><a href="/2016/06/17/add-articles/">2016-06-17</a></time>
+        <time datetime="2012-10-08T16:00:00.000Z"><a href="/2012/10/09/Heap-Spray-技术要点/">2012-10-09</a></time>
       
       
   
-    <h1 class="title">迁移技术文章</h1>
+    <h1 class="title">Heap Spray 技术要点</h1>
   
 
     </header>
     <div class="entry">
       
-        <p>由于博客大巴体验太差，因此开始启用github去写博客，用markdown+hexo写静态博客的感觉也挺好的，而且更安全。<br>后面我会把以前写的技术文章迁移到本博客，顺便把买来很久一直未用的riusksk.me域名给派上用场了，之前是因为备案流程过于繁琐，才导致一直未使用，使用 <a href="http://riusksk.me" target="_blank" rel="external">http://riusksk.me</a> 解析到 <a href="http://riusksk.github.io">http://riusksk.github.io</a> ，似乎就不用备案了。<br>近日，我已在本博客上添加RSS订阅和评论功能，欢迎大家订阅和交流。</p>
+        <p>1、堆喷射堆块大小 ≈ 程序堆块分配大小，以减小堆空隙大小。</p>
+<p>2、不能使用堆缓存块，否则可能破坏地址的可预测性，可通过申请6块相应大小的堆块来清空缓存。</p>
+<p>3、精确定位ROP地址，目标地址如<code>0x0c0c0c0c</code>至堆块数据起始地址的<code>offset = ( 0x0c0c0c0c - UserPtr（堆数据起始地址）)/2，IE7：0x5FA，IE8：0x5F4/0x5F6，IE9：0x5FC/0x5FE，Firefox9：0x606</code>，可能不同语言版本会存在偏差。</p>
+<p>4、不同系统、不同浏览器版本喷射块大小：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">XP SP3 – IE7    block = shellcode.substring(2,0x10000-0×21);</span><br><span class="line">XP SP3 – IE8    block = shellcode.substring(2, 0x40000-0×21);</span><br><span class="line">Vista SP2 – IE7  block = shellcode.substring(0, (0x40000-6)/2);</span><br><span class="line">Vista SP2 – IE8  block = shellcode.substring(0, (0x40000-6)/2);</span><br><span class="line">Win7 – IE8    block = shellcode.substring(0, (0x80000-6)/2);</span><br><span class="line">Vista/Win7 – IE9  block = shellcode.substring(0, (0x40000-6)/2);</span><br><span class="line">XP SP3/VISTA SP2/WIN7 - Firefox9  block = shellcode.substring(0, (0x40000-6)/2);</span><br></pre></td></tr></table></figure>
+<p>5、<code>Nozzle</code>保护机制（IE）：检测是否存在重复可转换成汇编代码的字段，若存在则阻止其内存申请。</p>
+<p>6、<code>BuBBle</code>保护机制（Firefox）：检测JavaScript是否尝试重复申请 <code>NOPs + shellcode (padding + rop chain + shellcode + padding)</code>的内存块，若发现包含这些字段则阻止其内存申请。</p>
+<p>7、分配 <code>随机数 + rop + shellcode + 随机数</code> 的堆块，以保证各分配块都是不同的，以此绕过上述保护机制，主要针对IE9。</p>
+<p>8、利用<code>随机变量名 + 随机块</code>绕过 Firefox9 的保护。</p>
+<p>9、<code>HTML5 Heap Spray</code>：EUSecWest2012上的演讲主题，通杀Chrome、Firefox、IE9和Safari<br>a、利用<code>canvas</code>标签定义图形，通过脚本控制每个像素的数据再进行喷射；<br>b、利用<code>Web Worker</code>的多线程功能，加速堆喷射过程，但IE不支持Worker.</p>
 
       
     </div>
@@ -96,17 +107,22 @@
     <footer>
         <div class="alignright">
           
-          <a href="/2016/06/17/add-articles/#comment" class="comment-link">评论</a>
+          <a href="/2012/10/09/Heap-Spray-技术要点/#comment" class="comment-link">评论</a>
           
           <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
         </div>
         
   
   <div class="categories">
-    <a href="/categories/随笔杂谈/">随笔杂谈</a>
+    <a href="/categories/技术分享/">技术分享</a>
   </div>
 
         
+  
+  <div class="tags">
+    <a href="/tags/Heap-Spray/">Heap Spray</a>
+  </div>
+
         <!-- partial('post/share') -->
       <div class="clearfix"></div>
     </footer>
@@ -118,7 +134,7 @@
   <h1 class="title">留言</h1>
 
   <!-- 多说评论框 start -->
-  <div class="ds-thread" data-thread-key="post-add-articles" data-title="迁移技术文章" data-url="http://riusksk.github.io/2016/06/17/add-articles/"></div>
+  <div class="ds-thread" data-thread-key="post-Heap-Spray-技术要点" data-title="Heap Spray 技术要点" data-url="http://riusksk.github.io/2012/10/09/Heap-Spray-技术要点/"></div>
   <!-- 多说评论框 end -->
   <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
   <script type="text/javascript">
