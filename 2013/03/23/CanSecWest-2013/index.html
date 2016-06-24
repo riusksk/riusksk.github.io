@@ -1,0 +1,302 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8" />
+  
+  <title>关于CanSecWest 2013大会 | riusksk&#39;s blog</title>
+  <meta name="author" content="riusksk" />
+
+  
+  <meta name="description" content="文档下载：http://cansecwest.com/csw13archive.html
+此次CanSecWest 2013大会的质量明显要高出BlackHat EU 2013很多，主要还是软件/系统安全为主，涉及漏洞利用和挖掘等技术。
+1、《Fuzzing for logic and state " />
+  
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <meta property="og:title" content="关于CanSecWest 2013大会" />
+  <meta property="og:site_name" content="riusksk&#39;s blog" />
+
+  
+  
+
+  
+    <meta property="og:image" content="undefined" />
+  
+
+  
+  <link href="/css/images/favicon.ico" rel="icon" />
+  
+
+  <link rel="alternate" href="/atom.xml" title="riusksk&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78773323-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+
+  <!-- baidu webmaster push -->
+  <script src='//push.zhanzhang.baidu.com/push.js'></script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">riusksk&#39;s blog</a></h1>
+  <h2><a href="/">攀蟾折桂摄寰宇，摘星揽月御乾坤。踏云踩雾骋宵壤，驱风逐日闯天地。 ------泉哥</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/atom.xml">RSS订阅</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2013-03-22T16:00:00.000Z"><a href="/2013/03/23/CanSecWest-2013/">2013-03-23</a></time>
+      
+      
+  
+    <h1 class="title">关于CanSecWest 2013大会</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>文档下载：<a href="http://cansecwest.com/csw13archive.html" target="_blank" rel="external">http://cansecwest.com/csw13archive.html</a></p>
+<p>此次CanSecWest 2013大会的质量明显要高出BlackHat EU 2013很多，主要还是软件/系统安全为主，涉及漏洞利用和挖掘等技术。</p>
+<h3 id="1、《Fuzzing-for-logic-and-state-issues》"><a href="#1、《Fuzzing-for-logic-and-state-issues》" class="headerlink" title="1、《Fuzzing for logic and state issues》"></a>1、《Fuzzing for logic and state issues》</h3><p>Peach Fuzzer框架的作者写的，主要是介绍peach3的新增特性，增加逻辑漏洞和无效的状态转换等问题，比如一些WEB认证的逻辑漏洞，PPT写得比较简洁，纯文字描述，不好完整理解，建议还是上官网看peach3的使用文档吧：<a href="http://peachfuzzer.com/v3/PeachPit.html" target="_blank" rel="external">http://peachfuzzer.com/v3/PeachPit.html</a> ，上个月作者刚更新的，写得比较详细。</p>
+<h3 id="2、《DEP-ASLR-bypass-without-ROP-JIT》"><a href="#2、《DEP-ASLR-bypass-without-ROP-JIT》" class="headerlink" title="2、《DEP ASLR bypass without ROP JIT》"></a>2、《DEP ASLR bypass without ROP JIT》</h3><p>绿盟的TK讲的，里面的思路最早是在2009年的中国软件安全峰会《Vulnerability: The next 10 years》中提到的，主要是利用 SharedUserData 地址 0x7ffe0000 在win上是固定不变的，再通过它找到SystemCall，然后设置其参数，来调用指定的系统函数。在安全峰会上，作者是调用NtUserLockWorkStation这一函数来设置锁屏，而在此次CSW大会上，作者是通过LdrHotPatchRoutine索引到LdrLoadDll来加载外部的DLL，实现任意代码执行，这种方法只工作在winx64上的32位程序，且在win8上微软已经修复此问题。</p>
+<h3 id="3、《Adobe-Sandbox-WHEN-THE-BROKER-IS-BROKEN》"><a href="#3、《Adobe-Sandbox-WHEN-THE-BROKER-IS-BROKEN》" class="headerlink" title="3、《Adobe Sandbox WHEN THE BROKER IS BROKEN》"></a>3、《Adobe Sandbox WHEN THE BROKER IS BROKEN》</h3><p>exploit系列教程的作者peter写的议题，在以前的一些大会上，也有人做过关于adobe sandbox的分享，但总觉得PPT写得不过详细，这次peter的议题，我觉得写得挺详细的，由浅入深，从介绍沙盒的相关术语、client与broker之间的通讯原理开始讲起，并提起一些沙盒逃逸的攻击面，分析和提取cross call函数等信息，同时也提供一些demo，可惜只有ppt，要是能提供paper和code就更好了。</p>
+<h3 id="4、《An-Android-Hacker’s-Journey-Challenges-in-Android-Security-Research》"><a href="#4、《An-Android-Hacker’s-Journey-Challenges-in-Android-Security-Research》" class="headerlink" title="4、《An Android Hacker’s Journey- Challenges in Android Security Research》"></a>4、《An Android Hacker’s Journey- Challenges in Android Security Research》</h3><p>对我而言，里面让我最感兴趣的是作者即将出版的《Android Hacker’s Handbook》这个系列的书都很经典，包括shellcode、web、macosx以及ios等书，都是相当经典的，上面4本除了ios那书只看了一小部分之外，其它3本我都详细阅读过，值得推荐，前两本国内早有中译本了。<br>这个议题里面讲了一些android软件漏洞，包括一些组件权限设置问题导致的信息泄露，以及linux内核漏洞，其中还有一张赛门铁克提供的移动设备威胁图表，列出了移动设备可能面临的各种安全威胁，做得挺不错的。最后讲述了一些android平台的调试技巧，包括远程调试、源码调试等，有兴趣的朋友可以看下。</p>
+<h3 id="5、《Assessing-the-Linux-Desktop’s-Security》"><a href="#5、《Assessing-the-Linux-Desktop’s-Security》" class="headerlink" title="5、《Assessing the Linux Desktop’s Security》"></a>5、《Assessing the Linux Desktop’s Security》</h3><p>感觉一般，对这议题也不是很感兴趣。</p>
+<h3 id="6、《MS-SQL-Post-Exploitation-Shenanigans-You’re-In-Now-What-》"><a href="#6、《MS-SQL-Post-Exploitation-Shenanigans-You’re-In-Now-What-》" class="headerlink" title="6、《MS SQL Post Exploitation Shenanigans: You’re In, Now What?》"></a>6、《MS SQL Post Exploitation Shenanigans: You’re In, Now What?》</h3><p>讲述 MS SQL Server 利用技术，主要是利用扩展存储过程API来利用MSSQL，包括获取密码hash，内存搜索hash替换，编写poc创建后门，以及利用msf来控制shell等方式。在实际的渗透测试中，相信大多数的企业还是会选择使用php + mysql，特别是近些年来，这一组合的比例一直在扩大，所以估计对此文感兴趣的人不会太多。</p>
+<h3 id="7、《Cracking-and-Analyzing-Apple-iCloud-backups-Find-My-iPhone-Document-Storage》"><a href="#7、《Cracking-and-Analyzing-Apple-iCloud-backups-Find-My-iPhone-Document-Storage》" class="headerlink" title="7、《Cracking and Analyzing Apple iCloud backups, Find My iPhone, Document Storage》"></a>7、《Cracking and Analyzing Apple iCloud backups, Find My iPhone, Document Storage》</h3><p>基本就是在讲苹果的icloud服务及其原理，跟安全相关的内容不多，爱看不看。</p>
+<h3 id="8、《UPnP-Vulnerabilities》"><a href="#8、《UPnP-Vulnerabilities》" class="headerlink" title="8、《UPnP Vulnerabilities》"></a>8、《UPnP Vulnerabilities》</h3><p>PPT写得很是简单，内容也不是感兴趣，爱看不看。</p>
+<h3 id="9、《Analysis-of-a-Windows-Kernel-Vulnerability》"><a href="#9、《Analysis-of-a-Windows-Kernel-Vulnerability》" class="headerlink" title="9、《Analysis of a Windows Kernel Vulnerability》"></a>9、《Analysis of a Windows Kernel Vulnerability》</h3><p>共有273页，这是我见过最长的PPT文档。主要讲Duqu病毒所使用的 CVE-2011-3402：Windows win32k.sys TrueType 字体解析数组越界漏洞，从TTF字体格式开始分析，解释漏洞成因，以及漏洞的利用技术。在去年的syscan大会上，360的人也针对此漏洞分析过其原理及利用技术，可以交互参考阅读。国内最早分析并公开细节的应该是启明星辰，其在博客上也帖出了相应的分析文章，看雪和binvul论坛均有人发表相关的漏洞分析文章。</p>
+<h3 id="10、《iOS-6-Exploitation-280-Days-Later》"><a href="#10、《iOS-6-Exploitation-280-Days-Later》" class="headerlink" title="10、《iOS 6 Exploitation 280 Days Later》"></a>10、《iOS 6 Exploitation 280 Days Later》</h3><p>作者之前搞了近10年的WEB安全，2010年中才开始搞iphone安全，但他98年就开始接触安全，也算是安全界的老一辈革命家了。讲了2012年之后出现过的一些ios漏洞，以及关于ios安全相关的资料和书籍，同时介绍苹果对此采取的一些保护机制（cookie、ASLR、程序目录权限限制……），大部分篇幅还是在介绍ios的保护机制。</p>
+<h3 id="11、《Evil-Maid-Just-Got-Angrier：Why-Full-Disk-Encryption-With-TPM-is-Insecure-on-Many-Systems》"><a href="#11、《Evil-Maid-Just-Got-Angrier：Why-Full-Disk-Encryption-With-TPM-is-Insecure-on-Many-Systems》" class="headerlink" title="11、《Evil Maid Just Got Angrier：Why Full-Disk Encryption With TPM is Insecure on Many Systems》"></a>11、《Evil Maid Just Got Angrier：Why Full-Disk Encryption With TPM is Insecure on Many Systems》</h3><p>讲述关于bios那些底层的东东，看不懂，真心看不懂！</p>
+<h3 id="12、《Physical-Privilege-Escalation-and-Mitigation-in-the-x86-World》"><a href="#12、《Physical-Privilege-Escalation-and-Mitigation-in-the-x86-World》" class="headerlink" title="12、《Physical Privilege Escalation and Mitigation in the x86 World》"></a>12、《Physical Privilege Escalation and Mitigation in the x86 World》</h3><p>硬件hacking一类的议题，PPT也大多是贴图，不好理解，反正是没看懂这PPT</p>
+<h3 id="13、《Smart-TV-Security》"><a href="#13、《Smart-TV-Security》" class="headerlink" title="13、《Smart TV Security》"></a>13、《Smart TV Security》</h3><p>一个有趣的议题，主要讲关于智能电视安全，包括智能电视机上面的app漏洞，以及恶意app感染、网络通讯安全等问题，同时还介绍智能电视固件rootkit的开发，如何留取后门。控制智能电视后最大的风险就是用它来监控和窃听你的行为，因为智能电视都配有摄像头。最后，还介绍一些调试等逆向相关技术，以及操作电视的一些API函数。</p>
+<h3 id="14、《The-Evolution-of-BlackHole》"><a href="#14、《The-Evolution-of-BlackHole》" class="headerlink" title="14、《The Evolution of BlackHole》"></a>14、《The Evolution of BlackHole》</h3><p>总觉得这是BlackHol exploit kit的广告帖，介绍BlackHole这一漏洞利用工具包的一些功能，一套售价冒似是1500美元，不过里面的一些功能看起来还是不错的。 </p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2013/03/23/CanSecWest-2013/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/CanSecWest/">CanSecWest</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  <!-- 多说评论框 start -->
+  <div class="ds-thread" data-thread-key="post-CanSecWest-2013" data-title="关于CanSecWest 2013大会" data-url="http://riusksk.github.io/2013/03/23/CanSecWest-2013/"></div>
+  <!-- 多说评论框 end -->
+  <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+  <script type="text/javascript">
+  var duoshuoQuery = {short_name:'riusksk'};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+       || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+  <!-- 多说公共JS代码 end -->
+
+</section>
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:riusksk.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2016/06/23/ios-auditor/">浅谈iOS应用安全自动化审计</a>
+      </li>
+    
+      <li>
+        <a href="/2016/06/17/add-articles/">迁移技术文章</a>
+      </li>
+    
+      <li>
+        <a href="/2016/05/25/PHDays-2016/">PHDays安全大会议题分析</a>
+      </li>
+    
+      <li>
+        <a href="/2016/04/13/CanSecWest_2016/">CanSecWest 2016 大会议题分析</a>
+      </li>
+    
+      <li>
+        <a href="/2016/04/05/bh-asia-2016/">BlackHat Asia 2016 大会议题分析报告</a>
+      </li>
+    
+      <li>
+        <a href="/2014/03/21/buybook/">购书心得</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/23/CanSecWest-2013/">关于CanSecWest 2013大会</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/20/BlackHat-EU-2013/">关于BlackHat EU 2013大会</a>
+      </li>
+    
+      <li>
+        <a href="/2013/01/01/osx_rootkit_rubilyn_analyze/">Mac OSX rootkit rubilyn 源码分析</a>
+      </li>
+    
+      <li>
+        <a href="/2012/10/02/android_malware_sandbox/">Android恶意软件沙盒自动化分析原理与实现</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/技术分享/">技术分享</a><small>13</small></li>
+  
+    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/BlackHat/" style="font-size: 20px;">BlackHat</a> <a href="/tags/CanSecWest/" style="font-size: 20px;">CanSecWest</a> <a href="/tags/Fuzz/" style="font-size: 10px;">Fuzz</a> <a href="/tags/OSX/" style="font-size: 10px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Windows/" style="font-size: 10px;">Windows</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/rootkit/" style="font-size: 10px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/书籍/" style="font-size: 10px;">书籍</a> <a href="/tags/安全审计/" style="font-size: 20px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 20px;">恶意软件</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 10px;">漏洞</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+    <h3 class="title">最新评论</h3>
+    <ul class="entry">
+        <!-- 多说最新评论 start -->
+                <div class="ds-recent-comments" data-num-items="5" data-show-avatars="1" data-show-time="1" data-show-title="1" data-show-admin="1" data-excerpt-length="70"></div>
+        <!-- 多说最新评论 end -->
+        <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+        <script type="text/javascript">
+        var duoshuoQuery = {short_name:"riusksk"};
+                (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';ds.async = true;
+                        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] 
+                         || document.getElementsByTagName('body')[0]).appendChild(ds);
+                })();
+                </script>
+        <!-- 多说公共JS代码 end -->
+    </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  <p>
+  
+  &copy; 2016 riusksk
+  
+  All rights reserved.</p>
+  <p>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+  & Hosted by <a href="http://github.com" target="_blank">GitHub</a>
+  <!--<span id="busuanzi_container_site_pv" >
+    ，本站总访问量<span id="busuanzi_value_site_pv" ></span>次
+  </span>
+  -->
+  </p>
+</div>
+<div class="clearfix"></div>
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+</footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div id='bg'></div>
+</body>
+</html>

