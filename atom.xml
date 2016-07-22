@@ -458,9 +458,9 @@
     <link href="http://riusksk.github.io/2014/10/09/Android-Webview-UXSS-%E6%BC%8F%E6%B4%9E%E6%94%BB%E9%98%B2/"/>
     <id>http://riusksk.github.io/2014/10/09/Android-Webview-UXSS-漏洞攻防/</id>
     <published>2014-10-08T16:00:00.000Z</published>
-    <updated>2016-07-22T13:01:39.000Z</updated>
+    <updated>2016-07-22T13:05:00.000Z</updated>
     
-    <content type="html">&lt;center&gt;“前事之不忘，后事之师”—— 《战国策·赵策》&lt;/center&gt;
+    <content type="html">&lt;center&gt;&lt;br&gt;“前事之不忘，后事之师”—— 《战国策·赵策》&lt;br&gt;&lt;/center&gt;
 
 &lt;h3 id=&quot;【开篇：前车之鉴】&quot;&gt;&lt;a href=&quot;#【开篇：前车之鉴】&quot; class=&quot;headerlink&quot; title=&quot;【开篇：前车之鉴】&quot;&gt;&lt;/a&gt;【开篇：前车之鉴】&lt;/h3&gt;&lt;p&gt;随着移动互联网的发展，很多PC端的安全问题也在移动端逐步出现。比如，使用WebKit内核的Chrome浏览器此前就出现过各种通用型的XSS（即UXSS，见文末附注）【如图1】，现在Android上也出现同类漏洞。Google把WebKit移植到了Android上，并将其作为WebView组件封装在SDK中，但官方忘记了“前车之鉴”，导致曾经在WebKit出现过的漏洞，在Android系统上再一次重现，即使该漏洞在PC版Chrome上已修复过。&lt;/p&gt;
 &lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://security.tencent.com/uploadimg_dir/201410/acfe50e658aa8b811fb79f15698c4641.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图1 ：Chrome UXSS漏洞列表&lt;br&gt;&lt;/center&gt;&lt;br&gt;目前，许多Android应用是直接使用系统自带的WebView，进而导致系统上安装的各类应用可能受到WebView漏洞的影响，这就进一步将漏洞影响范围扩大化，使得各种主流应用都受其影响，一场未见销烟的血雨腥风就此展开。&lt;br&gt;&lt;br&gt;### 【中篇：血雨腥风】&lt;br&gt;&lt;br&gt;从2011年开始，Google的chromium项目的Bug列表就陆续被报告webkit存在一些UXSS漏洞。比如CVE-2011-3881 WebKitHTMLObjectElement UXSS漏洞，其对应的PoC代码【如图2】：&lt;br&gt;&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://security.tencent.com/uploadimg_dir/201410/b5d36aab10d190d2baae741828d25e17.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图2：CVE-2011-3881 PoC代码&lt;br&gt;&lt;/center&gt;&lt;br&gt;该漏洞主要由于HTMLPlugInImageElement::allowedToLoadFrameURL函数中对Javascript URL地址校验不足导致的跨域问题。查看下修复前后的代码对比【如图3】，可以发现修复代码对使用Javascript伪协议的URL增加了安全检测，只有当前域与内嵌ifame域的serucityOrigin安全信息（比如protocol、domain、host、port等等）在许可范围内才能互相访问，即浏览器的“同源策略“。&lt;br&gt;&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://security.tencent.com/uploadimg_dir/201410/4e487d10cc5b5d8ec5cb4dac16c25ea6.jpg&quot; alt=&quot;&quot;&gt;&lt;br&gt;图3：补丁代码对比&lt;br&gt;&lt;/center&gt;&lt;br&gt;补丁代码是调用securityOrigin::canAccess来检测是否同源，对应代码【如图4】。该函数主要执行以下操作：&lt;br&gt;&lt;br&gt;1. 先判断两个securityOrigin信息是否相同，是否具备唯一性，相同时则返回真，不相同时又会根据是否设置document.domain进行不同的检测；&lt;br&gt;2. 当两者均未设置document.domain时，则检测URL中的scheme、host、port是否相同，相同则返回真；&lt;br&gt;3. 当均设置document.domain时，则检测URL的domain与scheme是否相同，相同则返回真；&lt;br&gt;4. 若是打开本地文件，则执行其它文件安全检查。&lt;br&gt;&lt;br&gt;&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://security.tencent.com/uploadimg_dir/201410/27696966075c0f85cffae8efff453948.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图4：SecurityOrigin::canAccess函数代码&lt;br&gt;&lt;/center&gt; 
@@ -482,9 +482,9 @@
     
     <summary type="html">
     
-      &lt;center&gt;“前事之不忘，后事之师”—— 《战国策·赵策》&lt;/center&gt;
+      &lt;center&gt;&lt;br&gt;“前事之不忘，后事之师”—— 《战国策·赵策》&lt;br&gt;&lt;/center&gt;
 
-&lt;h3 id=&quot;【开篇：前车之鉴】&quot;&gt;&lt;a href=&quot;#【开篇：前车之鉴】&quot; class=&quot;headerlink&quot; title=&quot;【开篇：前车之鉴】&quot;&gt;&lt;/a&gt;【开篇：前车之鉴】&lt;/h3&gt;&lt;p&gt;
+&lt;h3 id=&quot;【开篇：前车之鉴】&quot;&gt;&lt;a href=&quot;#【开篇：前车之鉴】&quot; class=&quot;headerlink&quot; title=&quot;【开篇：前车之鉴】&quot;&gt;&lt;/a&gt;【开篇：前车之鉴】
     
     </summary>
     
