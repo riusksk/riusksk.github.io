@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2016-07-17T12:29:56.000Z</updated>
+  <updated>2016-07-23T05:19:09.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,38 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>China-Pub计算类图书畅销榜第一</title>
+    <link href="http://riusksk.github.io/2016/07/23/China-Pub%E8%AE%A1%E7%AE%97%E7%B1%BB%E5%9B%BE%E4%B9%A6%E7%95%85%E9%94%80%E6%A6%9C%E7%AC%AC%E4%B8%80/"/>
+    <id>http://riusksk.github.io/2016/07/23/China-Pub计算类图书畅销榜第一/</id>
+    <published>2016-07-23T05:06:02.000Z</published>
+    <updated>2016-07-23T05:19:09.000Z</updated>
+    
+    <content type="html">&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/book_chinapub.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;当初编辑联系我出书时，我就曾提前对其说过这类书籍可能受众有限，而且非入门书籍，可能销量不会太理想。&lt;/p&gt;
+&lt;p&gt;同时自己觉得，现在安全入门书籍，无论是web还是二进制，其实都已经足够了，没必要再写。&lt;/p&gt;
+&lt;p&gt;若是纯粹地追求销量，而忽略书籍的本质内容，还是太对不起自己，也对不起读者，虽然排行磅前列的几名经常被《XXX从入门到精通》给霸占着。&lt;/p&gt;
+&lt;p&gt;所以，出书的初衷就是记录自己学习历程中点点滴滴，也是为了备忘，算是一本写给自己的书籍。&lt;/p&gt;
+&lt;p&gt;出版后，内心的梗算是放下了，但还是挺忐忑的，后来一位编辑说，基本每一本书的出版都会被骂，然后我就释怀了。&lt;/p&gt;
+&lt;p&gt;目前，新书的销售情况还算可观，已经准备再印了，比我想像中的要好，特别感谢各位业界同行的支持！&lt;/p&gt;
+&lt;p&gt;当然也有一些非技术的同学也买了，只因前言中的”情怀“，也感谢这些同学的支持。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/book_chinapub.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;当初编辑联系我出书时，我就曾提前对其说过这类书籍可能受众有限，而且非入门书籍，可能销量不会太理想。&lt;/p&gt;
+&lt;p&gt;同时自己觉得，现在安全入
+    
+    </summary>
+    
+      <category term="随笔杂谈" scheme="http://riusksk.github.io/categories/%E9%9A%8F%E7%AC%94%E6%9D%82%E8%B0%88/"/>
+    
+    
+      <category term="书籍" scheme="http://riusksk.github.io/tags/%E4%B9%A6%E7%B1%8D/"/>
+    
+  </entry>
   
   <entry>
     <title>《漏洞战争：软件漏洞分析精要》勘误表</title>
@@ -903,41 +935,6 @@
     
     
       <category term="内核" scheme="http://riusksk.github.io/tags/%E5%86%85%E6%A0%B8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>基于SPIKE的网络协议Fuzzing技术</title>
-    <link href="http://riusksk.github.io/2011/12/30/spike-fuzz/"/>
-    <id>http://riusksk.github.io/2011/12/30/spike-fuzz/</id>
-    <published>2011-12-29T16:00:00.000Z</published>
-    <updated>2016-06-26T10:29:29.000Z</updated>
-    
-    <content type="html">
-
-	&lt;div class=&quot;row&quot;&gt;
-	  &lt;iframe src=&quot;http://nagland.github.io/viewer/web/viewer.html?val=http://riusksk.me/media/spike_fuzz.pdf&quot; style=&quot;width:100%; height:550px&quot;&gt;&lt;/iframe&gt;
-	&lt;/div&gt;
-
-
-
-</content>
-    
-    <summary type="html">
-    
-      
-
-	&lt;div class=&quot;row&quot;&gt;
-	  &lt;iframe src=&quot;http://nagland.github.io/viewer/web/viewer.html?val=http://riusksk.me/media/spike_fuzz.pdf&quot; style=&quot;widt
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
-    
-      <category term="Fuzzing" scheme="http://riusksk.github.io/tags/Fuzzing/"/>
-    
-      <category term="漏洞" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E/"/>
     
   </entry>
   
