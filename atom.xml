@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2016-09-13T07:53:49.000Z</updated>
+  <updated>2016-09-13T08:01:51.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -20,9 +20,10 @@
     <link href="http://riusksk.github.io/2016/09/13/Vulnerability-War-The-Essence-of-Software-Vulnerabilities-Analysis/"/>
     <id>http://riusksk.github.io/2016/09/13/Vulnerability-War-The-Essence-of-Software-Vulnerabilities-Analysis/</id>
     <published>2016-09-13T07:18:21.000Z</published>
-    <updated>2016-09-13T07:53:49.000Z</updated>
+    <updated>2016-09-13T08:01:51.000Z</updated>
     
     <content type="html">&lt;p&gt;By riusksk(@riusksk)&lt;/p&gt;
+&lt;p&gt;想出英文版的，但苦于目前出版社找不到译者，所以把内容简介和目录的英文版发出来给老外看，国内朋友如有有合适且有意愿的也欢迎留言！&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/vul_war_eng.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;h2 id=&quot;Content-Abstract&quot;&gt;&lt;a href=&quot;#Content-Abstract&quot; class=&quot;headerlink&quot; title=&quot;Content Abstract&quot;&gt;&lt;/a&gt;Content Abstract&lt;/h2&gt;&lt;p&gt;Vulnerability War: The Essence of Software Vulnerabilities Analysis systematically explain all kinds of tools, techniques and practical methods in software vulnerability analysis and exploit, mainly related to Windows and Android platform. The book is classfied according to the different vulnerabilities, such as stack overflow, sandbox escape, types confusion, UAF , kernel vulnerability etc., at the same time, in view of the current popular mobile security, add Android platform vulnerability analysis and exploit into it. The author carefully chosen classic Vulnerabilities to share analysis techniques and tools about the cause of these vulnerabilities analysis, exploit and fix methods in detail. The biggest characteristic of this book is the actual combat based on the various types of classical vulnerabilities and discard useless theory, it’s almost “a book written out by debugger”.&lt;/p&gt;
 &lt;p&gt;This book is suitable for students of computer science related, somebody worked in information security, software security and mobile security related areas, software developer and hackers to read.&lt;/p&gt;
@@ -47,6 +48,7 @@
     <summary type="html">
     
       &lt;p&gt;By riusksk(@riusksk)&lt;/p&gt;
+&lt;p&gt;想出英文版的，但苦于目前出版社找不到译者，所以把内容简介和目录的英文版发出来给老外看，国内朋友如有有合适且有意愿的也欢迎留言！&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/vul_war_eng.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;h2 id=&quot;Content-Abstract&quot;&gt;&lt;a href=&quot;#Content-Abstract&quot; class=&quot;headerlink&quot; title=&quot;Content Abstract&quot;&gt;&lt;/a&gt;Content Abstract&lt;/h2&gt;&lt;p&gt;Vulnerability War: The Essence of Software Vulnerabilities Analysis systematically explain all kinds of tools, techniques and practical methods in software vulnerability analysis and exploit, mainly related to Windows and Android platform. The book is classfied according to the different vulnerabilities, such as stack overflow, sandbox escape, types confusion, UAF , kernel vulnerability etc., at the same time, in view of the current popular mobile security, add Android platform vulnerability analysis and exploit into it. The author carefully chosen classic Vulnerabilities to share analysis techniques and tools about the cause of these vulnerabilities analysis, exploit and fix methods in detail. The biggest characteristic of this book is the actual combat based on the various types of classical vulnerabilities and discard useless theory, it’s almost “a book written out by debugger”.&lt;/p&gt;
 &lt;p&gt;This book is suitable for students of computer science related, somebody worked in information security, software security and mobile security related areas, software developer and hackers to read.&lt;/p&gt;
