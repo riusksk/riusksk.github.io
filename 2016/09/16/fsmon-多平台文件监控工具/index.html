@@ -3,16 +3,18 @@
 <head>
   <meta charset="utf-8" />
   
-  <title>OSX | riusksk&#39;s blog</title>
+  <title>fsmon:多平台文件监控工具 | riusksk&#39;s blog</title>
   <meta name="author" content="riusksk" />
 
+  
+  <meta name="description" content="近日在Mac上跑测试，时间一长就硬盘空间就被占用完了，几小时就生成10多G文件，导致系统卡死，程序也没法继续运行，但一直没找到生成的文件路径。于是在Github上找到fsmon(https://github.com/nowsecure/fsmon)这个工具，一款多平台下文件监控工具，最后终于找到生成" />
   
 
   
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-  
+  <meta property="og:title" content="fsmon:多平台文件监控工具" />
   <meta property="og:site_name" content="riusksk&#39;s blog" />
 
   
@@ -70,25 +72,72 @@
 </nav>
 <div class="clearfix"></div></header>
   <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper">
-<h2 class="archive-title tag">OSX</h2>
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-09-16T05:54:53.000Z"><a href="/2016/09/16/fsmon-多平台文件监控工具/">2016-09-16</a></time>
+      
+      
+  
+    <h1 class="title">fsmon:多平台文件监控工具</h1>
+  
 
+    </header>
+    <div class="entry">
+      
+        <p>近日在Mac上跑测试，时间一长就硬盘空间就被占用完了，几小时就生成10多G文件，导致系统卡死，程序也没法继续运行，但一直没找到生成的文件路径。<br>于是在Github上找到fsmon(<a href="https://github.com/nowsecure/fsmon)这个工具，一款多平台下文件监控工具，最后终于找到生成垃圾文件的路径：`/private/var/folders/`，原来是`QuickLook`缓存文件，后面写个定时脚本清除即可。" target="_blank" rel="external">https://github.com/nowsecure/fsmon)这个工具，一款多平台下文件监控工具，最后终于找到生成垃圾文件的路径：`/private/var/folders/`，原来是`QuickLook`缓存文件，后面写个定时脚本清除即可。</a></p>
+<p><img src="http://riusksk.me/media/fsmon.png" alt=""></p>
 
-  <div class="archive">
+      
+    </div>
     
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2012-12-31T16:00:00.000Z"><a href="/2013/01/01/osx_rootkit_rubilyn_analyze/">2013-01-01</a></time>
-            
-              <h1 class="title"><a href="/2013/01/01/osx_rootkit_rubilyn_analyze/">Mac OSX rootkit rubilyn 源码分析</a></h1>
-            
-          </header>
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2016/09/16/fsmon-多平台文件监控工具/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
         </div>
-      </article>
-    
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
   </div>
+
+        
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  <!-- 多说评论框 start -->
+  <div class="ds-thread" data-thread-key="post-fsmon-多平台文件监控工具" data-title="fsmon:多平台文件监控工具" data-url="http://riusksk.github.io/2016/09/16/fsmon-多平台文件监控工具/"></div>
+  <!-- 多说评论框 end -->
+  <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+  <script type="text/javascript">
+  var duoshuoQuery = {short_name:'riusksk'};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+       || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+  <!-- 多说公共JS代码 end -->
+
+</section>
+
+
 </div></div>
     <aside id="sidebar" class="alignright">
   <div class="search">

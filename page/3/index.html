@@ -77,6 +77,65 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2012-10-08T16:00:00.000Z"><a href="/2012/10/09/Heap-Spray-技术要点/">2012-10-09</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2012/10/09/Heap-Spray-技术要点/">Heap Spray 技术要点</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>1、堆喷射堆块大小 ≈ 程序堆块分配大小，以减小堆空隙大小。</p>
+<p>2、不能使用堆缓存块，否则可能破坏地址的可预测性，可通过申请6块相应大小的堆块来清空缓存。</p>
+<p>3、精确定位ROP地址，目标地址如<code>0x0c0c0c0c</code>至堆块数据起始地址的<code>offset = ( 0x0c0c0c0c - UserPtr（堆数据起始地址）)/2，IE7：0x5FA，IE8：0x5F4/0x5F6，IE9：0x5FC/0x5FE，Firefox9：0x606</code>，可能不同语言版本会存在偏差。</p>
+<p>4、不同系统、不同浏览器版本喷射块大小：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">XP SP3 – IE7    block = shellcode.substring(2,0x10000-0×21);</span><br><span class="line">XP SP3 – IE8    block = shellcode.substring(2, 0x40000-0×21);</span><br><span class="line">Vista SP2 – IE7  block = shellcode.substring(0, (0x40000-6)/2);</span><br><span class="line">Vista SP2 – IE8  block = shellcode.substring(0, (0x40000-6)/2);</span><br><span class="line">Win7 – IE8    block = shellcode.substring(0, (0x80000-6)/2);</span><br><span class="line">Vista/Win7 – IE9  block = shellcode.substring(0, (0x40000-6)/2);</span><br><span class="line">XP SP3/VISTA SP2/WIN7 - Firefox9  block = shellcode.substring(0, (0x40000-6)/2);</span><br></pre></td></tr></table></figure>
+<p>5、<code>Nozzle</code>保护机制（IE）：检测是否存在重复可转换成汇编代码的字段，若存在则阻止其内存申请。</p>
+<p>6、<code>BuBBle</code>保护机制（Firefox）：检测JavaScript是否尝试重复申请 <code>NOPs + shellcode (padding + rop chain + shellcode + padding)</code>的内存块，若发现包含这些字段则阻止其内存申请。</p>
+<p>7、分配 <code>随机数 + rop + shellcode + 随机数</code> 的堆块，以保证各分配块都是不同的，以此绕过上述保护机制，主要针对IE9。</p>
+<p>8、利用<code>随机变量名 + 随机块</code>绕过 Firefox9 的保护。</p>
+<p>9、<code>HTML5 Heap Spray</code>：EUSecWest2012上的演讲主题，通杀Chrome、Firefox、IE9和Safari<br>a、利用<code>canvas</code>标签定义图形，通过脚本控制每个像素的数据再进行喷射；<br>b、利用<code>Web Worker</code>的多线程功能，加速堆喷射过程，但IE不支持Worker.</p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2012/10/09/Heap-Spray-技术要点/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Heap-Spray/">Heap Spray</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2012-10-01T16:00:00.000Z"><a href="/2012/10/02/android_malware_sandbox/">2012-10-02</a></time>
       
       
@@ -775,63 +834,6 @@
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2010-04-18T16:00:00.000Z"><a href="/2010/04/19/攻击网络打印机/">2010-04-19</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2010/04/19/攻击网络打印机/">攻击网络打印机</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        
-
-	<div class="row">
-	  <iframe src="http://nagland.github.io/viewer/web/viewer.html?val=http://riusksk.me/media/attack_printer.pdf" style="width:100%; height:550px"></iframe>
-	</div>
-
-
-
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2010/04/19/攻击网络打印机/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/打印机/">打印机</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -853,6 +855,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2016/09/16/fsmon-多平台文件监控工具/">fsmon:多平台文件监控工具</a>
+      </li>
     
       <li>
         <a href="/2016/09/13/Vulnerability-War-The-Essence-of-Software-Vulnerabilities-Analysis/">Vulnerability War: The Essence of Software Vulnerabilities Analysis</a>
@@ -890,10 +896,6 @@
         <a href="/2016/05/25/PHDays-2016/">PHDays安全大会议题分析</a>
       </li>
     
-      <li>
-        <a href="/2016/04/13/CanSecWest_2016/">CanSecWest 2016 大会议题分析</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -903,7 +905,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>27</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>28</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>4</small></li>
   

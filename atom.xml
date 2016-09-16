@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2016-09-13T09:43:27.000Z</updated>
+  <updated>2016-09-16T06:00:26.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,28 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>fsmon:多平台文件监控工具</title>
+    <link href="http://riusksk.github.io/2016/09/16/fsmon-%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%96%87%E4%BB%B6%E7%9B%91%E6%8E%A7%E5%B7%A5%E5%85%B7/"/>
+    <id>http://riusksk.github.io/2016/09/16/fsmon-多平台文件监控工具/</id>
+    <published>2016-09-16T05:54:53.000Z</published>
+    <updated>2016-09-16T06:00:26.000Z</updated>
+    
+    <content type="html">&lt;p&gt;近日在Mac上跑测试，时间一长就硬盘空间就被占用完了，几小时就生成10多G文件，导致系统卡死，程序也没法继续运行，但一直没找到生成的文件路径。&lt;br&gt;于是在Github上找到fsmon(&lt;a href=&quot;https://github.com/nowsecure/fsmon)这个工具，一款多平台下文件监控工具，最后终于找到生成垃圾文件的路径：`/private/var/folders/`，原来是`QuickLook`缓存文件，后面写个定时脚本清除即可。&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/nowsecure/fsmon)这个工具，一款多平台下文件监控工具，最后终于找到生成垃圾文件的路径：`/private/var/folders/`，原来是`QuickLook`缓存文件，后面写个定时脚本清除即可。&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/fsmon.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;近日在Mac上跑测试，时间一长就硬盘空间就被占用完了，几小时就生成10多G文件，导致系统卡死，程序也没法继续运行，但一直没找到生成的文件路径。&lt;br&gt;于是在Github上找到fsmon(&lt;a href=&quot;https://github.com/nowsecure/fsmon)
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>Vulnerability War: The Essence of Software Vulnerabilities Analysis</title>
@@ -881,40 +903,6 @@
       <category term="OSX" scheme="http://riusksk.github.io/tags/OSX/"/>
     
       <category term="rootkit" scheme="http://riusksk.github.io/tags/rootkit/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Heap Spray 技术要点</title>
-    <link href="http://riusksk.github.io/2012/10/09/Heap-Spray-%E6%8A%80%E6%9C%AF%E8%A6%81%E7%82%B9/"/>
-    <id>http://riusksk.github.io/2012/10/09/Heap-Spray-技术要点/</id>
-    <published>2012-10-08T16:00:00.000Z</published>
-    <updated>2016-06-24T14:30:27.000Z</updated>
-    
-    <content type="html">&lt;p&gt;1、堆喷射堆块大小 ≈ 程序堆块分配大小，以减小堆空隙大小。&lt;/p&gt;
-&lt;p&gt;2、不能使用堆缓存块，否则可能破坏地址的可预测性，可通过申请6块相应大小的堆块来清空缓存。&lt;/p&gt;
-&lt;p&gt;3、精确定位ROP地址，目标地址如&lt;code&gt;0x0c0c0c0c&lt;/code&gt;至堆块数据起始地址的&lt;code&gt;offset = ( 0x0c0c0c0c - UserPtr（堆数据起始地址）)/2，IE7：0x5FA，IE8：0x5F4/0x5F6，IE9：0x5FC/0x5FE，Firefox9：0x606&lt;/code&gt;，可能不同语言版本会存在偏差。&lt;/p&gt;
-&lt;p&gt;4、不同系统、不同浏览器版本喷射块大小：&lt;/p&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;XP SP3 – IE7    block = shellcode.substring(2,0x10000-0×21);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;XP SP3 – IE8    block = shellcode.substring(2, 0x40000-0×21);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Vista SP2 – IE7  block = shellcode.substring(0, (0x40000-6)/2);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Vista SP2 – IE8  block = shellcode.substring(0, (0x40000-6)/2);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Win7 – IE8    block = shellcode.substring(0, (0x80000-6)/2);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Vista/Win7 – IE9  block = shellcode.substring(0, (0x40000-6)/2);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;XP SP3/VISTA SP2/WIN7 - Firefox9  block = shellcode.substring(0, (0x40000-6)/2);&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;5、&lt;code&gt;Nozzle&lt;/code&gt;保护机制（IE）：检测是否存在重复可转换成汇编代码的字段，若存在则阻止其内存申请。&lt;/p&gt;
-&lt;p&gt;6、&lt;code&gt;BuBBle&lt;/code&gt;保护机制（Firefox）：检测JavaScript是否尝试重复申请 &lt;code&gt;NOPs + shellcode (padding + rop chain + shellcode + padding)&lt;/code&gt;的内存块，若发现包含这些字段则阻止其内存申请。&lt;/p&gt;
-&lt;p&gt;7、分配 &lt;code&gt;随机数 + rop + shellcode + 随机数&lt;/code&gt; 的堆块，以保证各分配块都是不同的，以此绕过上述保护机制，主要针对IE9。&lt;/p&gt;
-&lt;p&gt;8、利用&lt;code&gt;随机变量名 + 随机块&lt;/code&gt;绕过 Firefox9 的保护。&lt;/p&gt;
-&lt;p&gt;9、&lt;code&gt;HTML5 Heap Spray&lt;/code&gt;：EUSecWest2012上的演讲主题，通杀Chrome、Firefox、IE9和Safari&lt;br&gt;a、利用&lt;code&gt;canvas&lt;/code&gt;标签定义图形，通过脚本控制每个像素的数据再进行喷射；&lt;br&gt;b、利用&lt;code&gt;Web Worker&lt;/code&gt;的多线程功能，加速堆喷射过程，但IE不支持Worker.&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;1、堆喷射堆块大小 ≈ 程序堆块分配大小，以减小堆空隙大小。&lt;/p&gt;
-&lt;p&gt;2、不能使用堆缓存块，否则可能破坏地址的可预测性，可通过申请6块相应大小的堆块来清空缓存。&lt;/p&gt;
-&lt;p&gt;3、精确定位ROP地址，目标地址如&lt;code&gt;0x0c0c0c0c&lt;/code&gt;至堆块数据起
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
-    
-      <category term="Heap Spray" scheme="http://riusksk.github.io/tags/Heap-Spray/"/>
     
   </entry>
   
