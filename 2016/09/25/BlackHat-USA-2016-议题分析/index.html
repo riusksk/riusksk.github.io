@@ -1,0 +1,412 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8" />
+  
+  <title>BlackHat USA 2016 议题分析 | riusksk&#39;s blog</title>
+  <meta name="author" content="riusksk" />
+
+  
+  <meta name="description" content="￼
+
+大会概述BlackHat USA 是世界上最著名的黑客大会BlackHat的主场，规模远超亚洲、欧洲等分会，今年大约有15000人参会，依然在美国拉斯维加斯举办。
+大会全程共6天，包括 Training 培训、Keynote 议题分享、Arsenal 工具展示以及素有”黑客奥斯卡“之称的 Pwnie Awards 颁奖。
+今年有上百个议题入选，涉及的安全领域也是相当广泛全面，包括移动安全、物联网、软件安全、加密、工控、企业安全、Web安全、逆向工程、恶意软件等等，整体上跟往年的议题类型差不多。
+每年的BlackHat USA都代表着一个安全技术发展的”风向标“，在这可以看到全球顶端安全研究人员的研究成果，以及业界安全发展趋势。不少政府人员，比如FBI经常会出现在会场，以前也有FBI在现场带走一些有犯罪记录的人员，或者禁止涉及过于敏感内容的演讲，但一般是在BlackHat的兄弟会议Defcon上下手，比如曾经某黑客在Defcon演讲完后，在回旅馆的路上被抓了，还有之前MIT学生破解波士顿地铁免费乘坐地铁的演讲也被禁止掉。
+精彩议题分析笔者针对BlackHat官网上公布的各个议题pdf筛选了一遍，挑选出一些大家可能感兴趣，或者技术新颖有兴趣的议题作简要介绍和点评。
+1、《Using EMET to Disable EMET》——绕过微软EMET防护工具实现软件漏洞利用的方法￼图1：禁用EMET前后LoadLibraryA函数入口代码的对比情况
+
+该议题来自国外著名安全公司FireEye的分享，是一家专门为企业提供安全防护产品的公司，该公司曾发现许多0Day漏洞以及APT攻击事件。
+【内容简介】
+Microsoft’s Enhanced Mitigation Experience Toolkit (EMET)是一款针对用户程序的内存防护工具，可以提高软件的漏洞利用难度。FireEye安全研究人员介绍了一种新型的禁用EMET技术，同时举例了一些以前针对EMET的攻击方式。他们介绍的新型绕过技术主要是利用ROP技术找到DLLMain函数入口，然后实现以下代码的调用：
+1BOOL WINAPI DllMain (GetModuleHandleA(&quot;EMET.dll&quot;) , DLL_PROCESS_DETACH , NULL);
+EMET主要通过向保护的用户进程注入emet.dll或者emet64.dll，同时因为GetModuleHandleA 未被Hook，所以使用以上方法去卸载EMET.dll中的各种API Hook，虽然这不会将EMET从内存中移除，但已经足够禁用它的所有防护功能。
+【点评】
+在著名的黑客赛事Pwn2Own中，微软要求必须绕过EMET和沙盒保护攻下64位IE浏览器才算成功，因此绕过EMET成了攻破IE的必经之路。
+不过，由于EMET并非默认在系统上开启的，需要用户自行安装，因此实际上使用EMET来保护系统软件的用户并不会太多，甚至包括一些安全人员也很少使用它，在诸多实际攻击案例中，大多不用绕过EMET就可以攻下系统。" />
+  
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <meta property="og:title" content="BlackHat USA 2016 议题分析" />
+  <meta property="og:site_name" content="riusksk&#39;s blog" />
+
+  
+  
+
+  
+    <meta property="og:image" content="undefined" />
+  
+
+  
+  <link href="/css/images/favicon.ico" rel="icon" />
+  
+
+  <link rel="alternate" href="/atom.xml" title="riusksk&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78773323-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+
+  <!-- baidu webmaster push -->
+  <script src='//push.zhanzhang.baidu.com/push.js'></script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">riusksk&#39;s blog</a></h1>
+  <h2><a href="/">攀蟾折桂摄寰宇，摘星揽月御乾坤。踏云踩雾骋宵壤，驱风逐日闯天地。 ------泉哥</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/atom.xml">RSS订阅</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-09-25T06:42:47.000Z"><a href="/2016/09/25/BlackHat-USA-2016-议题分析/">2016-09-25</a></time>
+      
+      
+  
+    <h1 class="title">BlackHat USA 2016 议题分析</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <center><br><img src="http://riusksk.me/media/14710526596463/14713134215430.jpg" alt="">￼<br></center>
+
+<h2 id="大会概述"><a href="#大会概述" class="headerlink" title="大会概述"></a>大会概述</h2><p>BlackHat USA 是世界上最著名的黑客大会BlackHat的主场，规模远超亚洲、欧洲等分会，今年大约有15000人参会，依然在美国拉斯维加斯举办。</p>
+<p>大会全程共6天，包括 Training 培训、Keynote 议题分享、Arsenal 工具展示以及素有”黑客奥斯卡“之称的 Pwnie Awards 颁奖。</p>
+<p>今年有上百个议题入选，涉及的安全领域也是相当广泛全面，包括移动安全、物联网、软件安全、加密、工控、企业安全、Web安全、逆向工程、恶意软件等等，整体上跟往年的议题类型差不多。</p>
+<p>每年的BlackHat USA都代表着一个安全技术发展的”风向标“，在这可以看到全球顶端安全研究人员的研究成果，以及业界安全发展趋势。不少政府人员，比如FBI经常会出现在会场，以前也有FBI在现场带走一些有犯罪记录的人员，或者禁止涉及过于敏感内容的演讲，但一般是在BlackHat的兄弟会议Defcon上下手，比如曾经某黑客在Defcon演讲完后，在回旅馆的路上被抓了，还有之前MIT学生破解波士顿地铁免费乘坐地铁的演讲也被禁止掉。</p>
+<h2 id="精彩议题分析"><a href="#精彩议题分析" class="headerlink" title="精彩议题分析"></a>精彩议题分析</h2><p>笔者针对BlackHat官网上公布的各个议题pdf筛选了一遍，挑选出一些大家可能感兴趣，或者技术新颖有兴趣的议题作简要介绍和点评。</p>
+<h3 id="1、《Using-EMET-to-Disable-EMET》——绕过微软EMET防护工具实现软件漏洞利用的方法"><a href="#1、《Using-EMET-to-Disable-EMET》——绕过微软EMET防护工具实现软件漏洞利用的方法" class="headerlink" title="1、《Using EMET to Disable EMET》——绕过微软EMET防护工具实现软件漏洞利用的方法"></a>1、《Using EMET to Disable EMET》——绕过微软EMET防护工具实现软件漏洞利用的方法</h3><center><br><img src="http://riusksk.me/media/14710526596463/14711374846572.jpg" alt="">￼<br>图1：禁用EMET前后LoadLibraryA函数入口代码的对比情况<br></center>
+
+<p>该议题来自国外著名安全公司FireEye的分享，是一家专门为企业提供安全防护产品的公司，该公司曾发现许多0Day漏洞以及APT攻击事件。</p>
+<p><strong>【内容简介】</strong></p>
+<p>Microsoft’s Enhanced Mitigation Experience Toolkit (EMET)是一款针对用户程序的内存防护工具，可以提高软件的漏洞利用难度。<br>FireEye安全研究人员介绍了一种新型的禁用EMET技术，同时举例了一些以前针对EMET的攻击方式。他们介绍的新型绕过技术主要是利用ROP技术找到DLLMain函数入口，然后实现以下代码的调用：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BOOL WINAPI DllMain (GetModuleHandleA("EMET.dll") , DLL_PROCESS_DETACH , NULL);</span><br></pre></td></tr></table></figure>
+<p>EMET主要通过向保护的用户进程注入emet.dll或者emet64.dll，同时因为<code>GetModuleHandleA</code> 未被Hook，所以使用以上方法去卸载EMET.dll中的各种API Hook，虽然这不会将EMET从内存中移除，但已经足够禁用它的所有防护功能。</p>
+<p><strong>【点评】</strong></p>
+<p>在著名的黑客赛事Pwn2Own中，微软要求必须绕过EMET和沙盒保护攻下64位IE浏览器才算成功，因此绕过EMET成了攻破IE的必经之路。</p>
+<p>不过，由于EMET并非默认在系统上开启的，需要用户自行安装，因此实际上使用EMET来保护系统软件的用户并不会太多，甚至包括一些安全人员也很少使用它，在诸多实际攻击案例中，大多不用绕过EMET就可以攻下系统。<br><a id="more"></a></p>
+<h3 id="2、《Exploiting-Curiosity-and-Context》——针对陌生链接点击情况的安全调查报告"><a href="#2、《Exploiting-Curiosity-and-Context》——针对陌生链接点击情况的安全调查报告" class="headerlink" title="2、《Exploiting Curiosity and Context》——针对陌生链接点击情况的安全调查报告"></a>2、《Exploiting Curiosity and Context》——针对陌生链接点击情况的安全调查报告</h3><center><br><img src="http://riusksk.me/media/14710526596463/14711403836865.jpg" alt="">￼<br>图2：在Facebook和邮件上普通民众对陌生链接的点击比率<br></center>
+
+<p>该议题来自德国萨尔州大学和埃尔朗根-纽伦堡大学安全研究人员的分享。</p>
+<p><strong>【内容简介】</strong></p>
+<p>这是一份安全调查报告，关于点击陌生链接的调查情况，作者通过邮件与Facebook两种途径进行调查分析，专门构造特定的消息内容，或者链接中包含对方id等各种方式来引起点击者的好奇，最后统计出点击占比，以及引导用户点击的各种主要影响因素。</p>
+<p><strong>【点评】</strong></p>
+<p>很多漏洞或者病毒都是通过链接、邮件等方式进行恶意传播，通过邮件利用漏洞进行攻击是当前APT攻击事件中最常用的手段，因此提高安全意识，不要随意打开陌生链接、邮件附件是相当有必要的。当然反之，这份报告对于黑产人士也是有一种借鉴作用，如何构造出能够引起目标用户的兴趣和好奇，增加点击成功率也是一个参考方向。</p>
+<p>从报告中可以看出，一些社交平台如Facebook，这种比邮件交互性更大的网络平台，更容易引起用户的点击，而且一些点名道性的链接内容，或者一些能引起用户兴趣的内容，也更容易诱使用户点击。</p>
+<h3 id="3、《DOES-DROPPING-USB-DRIVES-REALLY-WORK-》——U盘社工调查报告"><a href="#3、《DOES-DROPPING-USB-DRIVES-REALLY-WORK-》——U盘社工调查报告" class="headerlink" title="3、《DOES DROPPING USB DRIVES REALLY WORK?》——U盘社工调查报告"></a>3、《DOES DROPPING USB DRIVES REALLY WORK?》——U盘社工调查报告</h3><center><br><img src="http://riusksk.me/media/14710526596463/14711422054269.jpg" alt="">￼<br>图3：U盘社工调查的统计结论<br></center>
+
+<p>该议题来自Google的Elie Bursztein研究员，主要从事反欺诈工作。</p>
+<p><strong>【内容简介】</strong></p>
+<p>该议题主要是基于社工技术的一份安全调查，使用类似以前”BadUSB“技术，基于Teensy（俗称”橡皮鸭“）编写模拟输入功能的U盘，能够回连后门的恶意功能，支持Windows、Linux和OSX等多系统平台。</p>
+<p>每个U盘成本大约\$40美元，假装丢在各个不同的地方，共放了297个，成本\$11880美元（￥78792人民币），投入成本也是很大。</p>
+<p>最后的调查结果是：至少48%的人打开U盘执行了恶意程序。</p>
+<p><strong>【点评】</strong></p>
+<p>一份挺有趣的安全调查报告，安全技术要求不高，主要注重于动手实践能力，自己动手制作297个U盘也是需要一定耐心和时间的，同时花近8万块的成本，也是颇舍得投入的。</p>
+<h3 id="4、《Subverting-Apple-Graphics-Practical-Approaches-To-Remotely-Gaining-Root》——Pwn2Own-2016-OSX项目所用漏洞的利用分析"><a href="#4、《Subverting-Apple-Graphics-Practical-Approaches-To-Remotely-Gaining-Root》——Pwn2Own-2016-OSX项目所用漏洞的利用分析" class="headerlink" title="4、《Subverting Apple Graphics Practical Approaches To Remotely Gaining Root》——Pwn2Own 2016 OSX项目所用漏洞的利用分析"></a>4、《Subverting Apple Graphics Practical Approaches To Remotely Gaining Root》——Pwn2Own 2016 OSX项目所用漏洞的利用分析</h3><center><br><img src="http://riusksk.me/media/14710526596463/14711451665465.jpg" alt="">￼<br>图4：Apple Graphics 架构图<br></center>
+
+<p>来自腾讯科恩实验室的分享，之前通过挖掘到的OSX漏洞赢得Pwn2Own 2016的OSX项目，并在该议题里面作了详细的技术分享。</p>
+<p><strong>【内容简介】</strong></p>
+<p>从用户层和内核层的角度分析Apple Graphics图像处理系统的攻击面并结合漏洞实例进行分析。</p>
+<p>用户层攻击面分析中，以Windows Server为例介绍了一些漏洞实例，比如CVE-2014-1314的API _XCreateSession 涉及敏感动作setuid，而没有对用户传递的路径参数进行严格校验，导致setuid可以越权逃逸沙盒，最后苹果以拒绝所有沙盒进程调用_XCreateSession 来修复此漏洞。同时也列举了一些其它API接口存在漏洞，比如_XSetMessageFile、_XSetGlobalForceConfig等等，后面又详细介绍了CVE-2016-1804 UAF漏洞的利用。</p>
+<p>内核层攻击面分析中，主要介绍苹果图表驱动接口IOAccelSurface的漏洞，也就是此前他们在Pwn2Own上用于攻破OSX内核的漏洞，分享了漏洞利用技巧，包括ROP绕过SMEP/SMAP/SIP、利用信息泄露绕过kASLR等等。</p>
+<p><strong>【点评】</strong></p>
+<p>一份颇有干货的议题，此前他们在CanSecWest黑客大会上分享过关于Apple Graphics 内核驱动漏洞挖掘的议题《Don’t Trust Your Eye- Apple Graphics Is Compromised》，而此次的议题主要是分享Pwn2Own上的漏洞分析与利用，侧重点不同，推荐一阅。</p>
+<h3 id="5、《CANSPY：A-Platform-for-Auditing-CAN-Device》——汽车CAN设备安全审计工具"><a href="#5、《CANSPY：A-Platform-for-Auditing-CAN-Device》——汽车CAN设备安全审计工具" class="headerlink" title="5、《CANSPY：A Platform for Auditing CAN Device》——汽车CAN设备安全审计工具"></a>5、《CANSPY：A Platform for Auditing CAN Device》——汽车CAN设备安全审计工具</h3><center><br><img src="http://riusksk.me/media/14710526596463/14711499419536.jpg" alt="">￼<br>图5：CANSPY硬件<br></center>
+
+<p>来自Airbus空中客车公司（欧洲一家民航飞机制造公司）的安全研究员作的分享。</p>
+<p><strong>【内容简介】</strong></p>
+<p>关于汽车CAN（Controller Area Network,控制器局域网络）安全的议题，作者发布的CANSPY是一款硬件设备，支持CAN数据伪造攻击、中间人攻击等手段，固件相关代码已在github上开源。</p>
+<p><strong>【点评】</strong></p>
+<p>这几年的汽车安全议题开始逐渐火起来了，关注CAN/ODB安全的人越来越多，一些工具也逐渐有安全研究人员开源出来，这都是一些不错的学习资料。笔者在些推荐一本关于汽车安全的电子书《Car Hacker’s Manual》，有兴趣的读者可以阅读下。</p>
+<p>这个议题涉及的技术细节较少，这是不足的一点，但关于工具CANSPY可以关注下。</p>
+<h3 id="6、《Viral-Video-exploiting-SSRF-in-video-converters》——-视频转换工具的SSRF漏洞分析与利用"><a href="#6、《Viral-Video-exploiting-SSRF-in-video-converters》——-视频转换工具的SSRF漏洞分析与利用" class="headerlink" title="6、《Viral Video : exploiting SSRF in video converters》—— 视频转换工具的SSRF漏洞分析与利用"></a>6、《Viral Video : exploiting SSRF in video converters》—— 视频转换工具的SSRF漏洞分析与利用</h3><center><br><img src="http://riusksk.me/media/14710526596463/14711507668619.jpg" alt="">￼<br>图6：ffmpeg SSRF漏洞利用示例<br></center>
+
+<p>来自俄罗斯 Mail.RU 公司的两名安全研究员分享的议题</p>
+<p><strong>【内容简介】</strong></p>
+<p>总结了之前出现的FFmpeg视频转换时出现的SSRF漏洞，可读取服务器上的任意文件，比如<code>/etc/passwd</code>被用于攻破很多大公司的服务器，在很多漏洞平台上被刷爆了。</p>
+<p><strong>【点评】</strong></p>
+<p>只是对过去出现的历史漏洞的总结，但这个漏洞也是相当经典，影响甚广，所以这里列出来提下，并没有其它新内容。</p>
+<h3 id="7、《Advanced-Cross-Site-Search-Attacks》——跨站搜索攻击技术"><a href="#7、《Advanced-Cross-Site-Search-Attacks》——跨站搜索攻击技术" class="headerlink" title="7、《Advanced Cross-Site Search Attacks》——跨站搜索攻击技术"></a>7、《Advanced Cross-Site Search Attacks》——跨站搜索攻击技术</h3><center><br><img src="http://riusksk.me/media/14710526596463/14711525967284.jpg" alt="">￼<br>图7：XS-Search技术示例<br></center>
+
+<p>来自Cyberpion公司，以色列巴伊兰大学博士的安全研究员分享的议题。</p>
+<p><strong>【内容简介】</strong></p>
+<p>Cross-Site Search (XS-search) Attack，跨站搜索攻击，通过向目标站点发送搜索请求，从而探测到用户的敏感信息，因为受害者的浏览器通常包含一些涉及隐私信息的服务授权（比如Gmail）。</p>
+<p>虽然攻击者因为”同源策略“无法直接获取到响应数据，但可以测量响应时间，根据响应时间的差异来判断隐私信息的准确性。</p>
+<p><strong>【点评】</strong></p>
+<p>一种新型的Web攻击方式，基于时间差异和服务搜索功能来获取用户隐私信息，更像是一种边信道攻击。虽然思路很好，但在实战应用过程中，可能就比较受限，而且只有捕获或可搜索信息量够大时，才比较有实际价值的信息获取，同时也基于搜索关键词的健全性，有它的局限性所在。</p>
+<h3 id="8、《Web-Application-Firewalls-Attacking-detection-logic-mechanisms》——基于正则缺陷绕过WAF"><a href="#8、《Web-Application-Firewalls-Attacking-detection-logic-mechanisms》——基于正则缺陷绕过WAF" class="headerlink" title="8、《Web Application Firewalls: Attacking detection logic mechanisms》——基于正则缺陷绕过WAF"></a>8、《Web Application Firewalls: Attacking detection logic mechanisms》——基于正则缺陷绕过WAF</h3><center><br><img src="http://riusksk.me/media/14710526596463/14711547098778.jpg" alt="">￼<br>图8：绕过Edge浏览器的XSS过滤器<br></center>
+
+<p>来自Positive安全公司的技术分享。</p>
+<p><strong>【内容简介】</strong></p>
+<p>针对主流的开源WAF（比如OWASP CRS、ModSecurity、Comodo WAF、PHPIDS、QuickDefense、Libinjection)中的正则表达式进行逻辑测试，主要偏重于正则上的缺陷进行WAF绕过。</p>
+<p><strong>【点评】</strong></p>
+<p>WAF不是万能的，被绕过也是正常的，市面上的各处WAF也都基本被绕过，但通过它可以大大地提高攻击成本，还是可以阻断一部分黑客的。</p>
+<p>该议题偏重于WAF正则问题，更系统化的WAF绕过技术总结，推荐PHDays黑客大会上的《Web Application Firewall Bypassing》议题。</p>
+<h3 id="9、《Pwning-Your-Java-Messaging-With-Deserialization-Vulnerabilities》——JMS反序列化漏洞分析与利用"><a href="#9、《Pwning-Your-Java-Messaging-With-Deserialization-Vulnerabilities》——JMS反序列化漏洞分析与利用" class="headerlink" title="9、《Pwning Your Java Messaging With Deserialization Vulnerabilities》——JMS反序列化漏洞分析与利用"></a>9、《Pwning Your Java Messaging With Deserialization Vulnerabilities》——JMS反序列化漏洞分析与利用</h3><center><br><img src="http://riusksk.me/media/14710526596463/14711579996412.jpg" alt="">￼<br>图9：挖掘到的Java反序列化漏洞修复情况<br></center>
+
+<p>来自Code White安全公司的分享议题。</p>
+<p><strong>【内容简介】</strong></p>
+<p>关于Java反序列化漏洞的相关技术分享，介绍Java Message Service（JMS）存在的攻击面，利用ObjectMessage消息类型中包含的序列化对象，经getObject函数处理时，如不正当使用，可能会反序列化用户传递的任意对象，就可能造成反序列化漏洞。然后作者通过分析很多主流的Java应用服务发现了不少漏洞。最后，作者分享一款Java消息反序列化漏洞的利用工具JMET（Java Message Exploitation Tool），并且已在GitHub上开源。</p>
+<p><strong>【点评】</strong></p>
+<p>现在BlackHat上关于Web的议题已经越来越少，有干货的Web安全议题更是少之又少，该议题还是不错的Web议题，而且有实际的漏洞产出，思路值得借鉴和延伸。</p>
+<h3 id="10、《The-Art-of-Defense：How-vulnerabilities-help-shape-security-features-and-mitigations-in-Android》——Google通过Android漏洞制定的通用防御策略介绍"><a href="#10、《The-Art-of-Defense：How-vulnerabilities-help-shape-security-features-and-mitigations-in-Android》——Google通过Android漏洞制定的通用防御策略介绍" class="headerlink" title="10、《The Art of Defense：How vulnerabilities help shape security features and mitigations in Android》——Google通过Android漏洞制定的通用防御策略介绍"></a>10、《The Art of Defense：How vulnerabilities help shape security features and mitigations in Android》——Google通过Android漏洞制定的通用防御策略介绍</h3><center><br><img src="http://riusksk.me/media/14710526596463/14711593522037.jpg" alt="">￼<br>图10：Android主要的安全防御机制<br></center>
+
+<p>来自 Google Android 平台安全团队的负责人 Nick Kralevich 针对 Android 的防御机制所做的技术分享</p>
+<p><strong>【内容简介】</strong></p>
+<p>列举了当前Android平台主要的安全机制，并以多个经典的Android漏洞（PingPong、Stagefright等等）为例，分析其中的一些攻防思路，如何根据报告的漏洞举一反三，以解决同一类问题是防御的关键。</p>
+<p><strong>【点评】</strong></p>
+<p>企业内部在做业务安全时，单纯修复外部报告的漏洞本身，是远远不够的。Google做了很好的示范，应该举一反三，思考如何去解决各个业务中同类问题。这种思路无论在软件系统，还是Web上，都是通用的。外部报告一个漏洞，如何提高自身安全系统的检测能力去批量发现同类漏洞？如何提高自身系统的防御能力去增加攻击成本？</p>
+<h3 id="11、《-hell-on-Earth-From-Browser-to-System-Compromise》——Pwn2Own-2016-各项目漏洞原理与利用"><a href="#11、《-hell-on-Earth-From-Browser-to-System-Compromise》——Pwn2Own-2016-各项目漏洞原理与利用" class="headerlink" title="11、《$hell on Earth: From Browser to System Compromise》——Pwn2Own 2016 各项目漏洞原理与利用"></a>11、《$hell on Earth: From Browser to System Compromise》——Pwn2Own 2016 各项目漏洞原理与利用</h3><center><br><img src="http://riusksk.me/media/14710526596463/14711621506431.jpg" alt="">￼<br>图11：腾讯科恩实验室的OSX项目（从safari到内核提权）的演示demo<br></center>
+
+<p>来自趋势科技 Zero Day Initiative 的安全研究员针对Pwn2Own 2016 黑客大赛上各种被攻破的项目做的技术分享。</p>
+<p><strong>【内容简介】</strong></p>
+<p>对Pwn2Own 2016黑客大赛上的每个攻破项目所涉及的漏洞原理、利用技巧进行简要地分析，并提供demo演示。</p>
+<p>漏洞包括腾讯科恩发现的Safari漏洞到内核提权漏洞、Flash到系统提权漏洞、Edge到系统提权的漏洞，韩国神童Lokihardt发现的Safari漏洞到内核提权漏洞、Edge到系统提权漏洞，360发现的Chrome到内核提权的漏洞、Flash到系统提权漏洞。</p>
+<p><strong>【点评】</strong></p>
+<p>标题已经足够牛逼，但每个漏洞也就简短的几页精要地介绍下，其实涉及的内容还是蛮多的，要是扩展出来细说，可以说的技术内容就太多了。</p>
+<p>其实每个攻破的项目都可以作为一个BlackHat议题拿来讲的，现在被ZDI的人一次性讲完，各个团队可能也不太方便再拿出来讲了。</p>
+<h3 id="12、《The-Art-of-Reverse-Engineering-Flash-Exploits》——Flash-Exploit样本的逆向分析方法"><a href="#12、《The-Art-of-Reverse-Engineering-Flash-Exploits》——Flash-Exploit样本的逆向分析方法" class="headerlink" title="12、《The Art of Reverse Engineering Flash Exploits》——Flash Exploit样本的逆向分析方法"></a>12、《The Art of Reverse Engineering Flash Exploits》——Flash Exploit样本的逆向分析方法</h3><center><br><img src="http://riusksk.me/media/14710526596463/14711637873500.jpg" alt="">￼<br>图12：议题中分析的flash样本列表<br></center><br>来自微软安全研究人员Jeong Wook Oh的技术分享。<br><br><strong>【内容简介】</strong><br><br>介绍了多个不错的Flash分析工具，并挑选几个经典的Flash漏洞案例以及利用技术（比如Vector长度和ByteArray长度篡改、JIT攻击、绕过CFG的技术）进行分析。<br><br><strong>【点评】</strong><br><br>一个不错的议题，对过去近一年的经典Flash漏洞利用样本进行逆向分析，介绍了当前流行的主流Flash漏洞利用技术，上面的截图已经详细地列出各个漏洞所使用的利用技术，是对过去Flash漏洞利用技术很好的总结，推荐阅读。<br><br>### 13、《The Year In Flash》—— Google Project Zero对过去一年多的Flash漏洞成因和发展趋势的分析<br><center><br><img src="http://riusksk.me/media/14710526596463/14711649291416.jpg" alt="">￼<br>图13：近一年多的Flash漏洞时间轴<br></center>
+
+<p>来自 Google Project Zero 的一位女安全研究员Natalie Silvanovich所做的分享。</p>
+<p><strong>【内容简介】</strong></p>
+<p>主要也是对过去一年多的Flash漏洞以及Adobe针对Flash增加的内存安全保护机制进行分析，相对上一个Flash议题的不同，它更多地分析漏洞成因，以及一些安全事件，并对未来Flash漏洞的发展进行预测。</p>
+<p>每个阶段经常出现同一类型的Flash漏洞，比如Flash解析其它多媒体文件（比如MP4）、或者图片文件，也对每个Flash漏洞挖掘方式进行推测，绝大部分是Fuzzing出来的。</p>
+<p><strong>【点评】</strong></p>
+<p>对过去一年多Flash漏洞进行总结，其中可以看到一些Flash漏洞挖掘的趋势，单纯Fuzzing SWF文件基本已经很难发现漏洞，复合文件的Fuzzing是趋势，比如SWF+MP4、SWF+JPG等等，还有AS3漏洞等。</p>
+<p>上述趋势以及最后作者的总结，都可以作为漏洞挖掘者尝试的Fuzzing方向，不过现在各大浏览器已经开始禁用Flash，相信未来会逐步被Html5所代替，但饿死的骆驼比马大，其短期内还是会继续受漏洞影响的。</p>
+<h3 id="14、《Pangu-9-Internals》——盘古越狱团队针对iOS9越狱技术原理的剖析"><a href="#14、《Pangu-9-Internals》——盘古越狱团队针对iOS9越狱技术原理的剖析" class="headerlink" title="14、《Pangu 9 Internals》——盘古越狱团队针对iOS9越狱技术原理的剖析"></a>14、《Pangu 9 Internals》——盘古越狱团队针对iOS9越狱技术原理的剖析</h3><center><br><img src="http://riusksk.me/media/14710526596463/14711670070390.jpg" alt="">￼<br>图14：iOS内核攻击面<br></center>
+
+<p>来自盘古越狱团队针对iOS 9越狱技术的分享议题。</p>
+<p><strong>【内容简介】</strong></p>
+<p>讲解通过XPC调用服务com.apple.PersistentURLTranslator.Gatekeeper实现跨目录读写任意文件，最后再从任意文件读写转换成代码执行，然后再介绍在iOS9越狱中使用到的内核漏洞。</p>
+<p><strong>【点评】</strong></p>
+<p>笔者对iOS越狱技术研究相对较少，技术内容就不点评了，但只需要知道一点，会写iOS越狱程序的都很牛逼。</p>
+<h2 id="安全发展趋势"><a href="#安全发展趋势" class="headerlink" title="安全发展趋势"></a>安全发展趋势</h2><p>从所有BlackHat议题中可以发现当前业界的安全关注点，以及未来安全发展趋势的风向。笔者对所有议题内容过了一遍，对于安全发展趋势，总结出以下3点供大家参考：</p>
+<h3 id="1、机器学习在安全领域的运用会逐渐增加"><a href="#1、机器学习在安全领域的运用会逐渐增加" class="headerlink" title="1、机器学习在安全领域的运用会逐渐增加"></a>1、机器学习在安全领域的运用会逐渐增加</h3><p>目前在一些漏洞检测、入侵检测系统，恶意软件分类和僵尸网络流量识别领域已经使用到机器学习。Defcon CTF大赛现场也有一支机器人队伍，全自动化挖洞补洞，并战胜两个人类队伍（能进入Defcon决赛也不会太差），从这些都可以看到机器学习在未来运用到安全领域将来越来越多。</p>
+<h3 id="2、Flash漏洞的利用难度再不断上升，但仍可能被攻破，同时未来Flash可能退出历史舞台"><a href="#2、Flash漏洞的利用难度再不断上升，但仍可能被攻破，同时未来Flash可能退出历史舞台" class="headerlink" title="2、Flash漏洞的利用难度再不断上升，但仍可能被攻破，同时未来Flash可能退出历史舞台"></a>2、Flash漏洞的利用难度再不断上升，但仍可能被攻破，同时未来Flash可能退出历史舞台</h3><p>目前一些主流浏览器，比如Chrome、Firefox已经开始禁用Flash，开始用Html5代替。再加上Adobe针对Flash增加的一些安全防御机制，大大增加了漏洞攻击成本，提高了漏洞利用难度，但还是有可能被攻破的。</p>
+<h3 id="3、物联网安全与云安全依然倍受关注"><a href="#3、物联网安全与云安全依然倍受关注" class="headerlink" title="3、物联网安全与云安全依然倍受关注"></a>3、物联网安全与云安全依然倍受关注</h3><p>最近两年各大安全大会上，一般都会有关于物联网安全与云虚拟化安全的相关议题，本次BlackHat也不例外。各种智能设备目前仍处于起步阶段，很多还不够成熟，但随着未来发展，在普通民众普及开来后，安全的影响面就更大了。云安全更多是一些互联网厂商当前需要解决的，攻防之战已经展开了，在云上被经常使用的虚拟化软件VM、QEMU、XEN的漏洞也会被经常曝光，主要用于逃逸虚拟机。</p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2016/09/25/BlackHat-USA-2016-议题分析/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  <!-- 多说评论框 start -->
+  <div class="ds-thread" data-thread-key="post-BlackHat-USA-2016-议题分析" data-title="BlackHat USA 2016 议题分析" data-url="http://riusksk.github.io/2016/09/25/BlackHat-USA-2016-议题分析/"></div>
+  <!-- 多说评论框 end -->
+  <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+  <script type="text/javascript">
+  var duoshuoQuery = {short_name:'riusksk'};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+       || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+  <!-- 多说公共JS代码 end -->
+
+</section>
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:riusksk.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2016/09/25/BlackHat-USA-2016-议题分析/">BlackHat USA 2016 议题分析</a>
+      </li>
+    
+      <li>
+        <a href="/2016/09/16/fsmon-多平台文件监控工具/">fsmon:多平台文件监控工具</a>
+      </li>
+    
+      <li>
+        <a href="/2016/09/13/Vulnerability-War-The-Essence-of-Software-Vulnerabilities-Analysis/">Vulnerability War: The Essence of Software Vulnerabilities Analysis</a>
+      </li>
+    
+      <li>
+        <a href="/2016/09/09/Perl-Bug-一枚/">Perl Bug 一枚</a>
+      </li>
+    
+      <li>
+        <a href="/2016/07/23/China-Pub计算机类图书畅销榜第一/">China-Pub计算机类图书畅销榜第一</a>
+      </li>
+    
+      <li>
+        <a href="/2016/07/17/《漏洞战争：软件漏洞分析精要》勘误表/">《漏洞战争：软件漏洞分析精要》勘误表</a>
+      </li>
+    
+      <li>
+        <a href="/2016/07/12/《漏洞战争》配套资料下载/">《漏洞战争》配套资料下载</a>
+      </li>
+    
+      <li>
+        <a href="/2016/07/02/《漏洞战争：软件漏洞分析精要》已开售/">《漏洞战争：软件漏洞分析精要》已开售</a>
+      </li>
+    
+      <li>
+        <a href="/2016/06/23/ios-auditor/">浅谈iOS应用安全自动化审计</a>
+      </li>
+    
+      <li>
+        <a href="/2016/06/17/add-articles/">迁移技术文章</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/技术分享/">技术分享</a><small>29</small></li>
+  
+    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>4</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/CanSecWest/" style="font-size: 13.33px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 10px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 10px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 13.33px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 13.33px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/rootkit/" style="font-size: 10px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/安全审计/" style="font-size: 13.33px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 13.33px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+    <h3 class="title">最新评论</h3>
+    <ul class="entry">
+        <!-- 多说最新评论 start -->
+                <div class="ds-recent-comments" data-num-items="5" data-show-avatars="1" data-show-time="1" data-show-title="1" data-show-admin="1" data-excerpt-length="70"></div>
+        <!-- 多说最新评论 end -->
+        <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+        <script type="text/javascript">
+        var duoshuoQuery = {short_name:"riusksk"};
+                (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';ds.async = true;
+                        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] 
+                         || document.getElementsByTagName('body')[0]).appendChild(ds);
+                })();
+                </script>
+        <!-- 多说公共JS代码 end -->
+    </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  <p>
+  
+  &copy; 2016 riusksk
+  
+  All rights reserved.</p>
+  <p>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+  & Hosted by <a href="http://github.com" target="_blank">GitHub</a>
+  <!--<span id="busuanzi_container_site_pv" >
+    ，本站总访问量<span id="busuanzi_value_site_pv" ></span>次
+  </span>
+  -->
+  </p>
+</div>
+<div class="clearfix"></div>
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+</footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div id='bg'></div>
+</body>
+</html>
