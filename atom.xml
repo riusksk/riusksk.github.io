@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2016-09-25T06:48:35.000Z</updated>
+  <updated>2016-09-25T06:56:30.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -20,9 +20,10 @@
     <link href="http://riusksk.github.io/2016/09/25/BlackHat-USA-2016-%E8%AE%AE%E9%A2%98%E5%88%86%E6%9E%90/"/>
     <id>http://riusksk.github.io/2016/09/25/BlackHat-USA-2016-议题分析/</id>
     <published>2016-09-25T06:42:47.000Z</published>
-    <updated>2016-09-25T06:48:35.000Z</updated>
+    <updated>2016-09-25T06:56:30.000Z</updated>
     
-    <content type="html">&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://riusksk.me/media/14710526596463/14713134215430.jpg&quot; alt=&quot;&quot;&gt;￼&lt;br&gt;&lt;/center&gt;
+    <content type="html">&lt;p&gt;作者：riusksk（泉哥）&lt;br&gt;主页：![](&lt;a href=&quot;http://riusksk.me）&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://riusksk.me）&lt;/a&gt;&lt;br&gt;本文已发表于2016年9月CSDN的《程序员》杂志，转载请注明出处。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://riusksk.me/media/14710526596463/14713134215430.jpg&quot; alt=&quot;&quot;&gt;￼&lt;br&gt;&lt;/center&gt;
 
 &lt;h2 id=&quot;大会概述&quot;&gt;&lt;a href=&quot;#大会概述&quot; class=&quot;headerlink&quot; title=&quot;大会概述&quot;&gt;&lt;/a&gt;大会概述&lt;/h2&gt;&lt;p&gt;BlackHat USA 是世界上最著名的黑客大会BlackHat的主场，规模远超亚洲、欧洲等分会，今年大约有15000人参会，依然在美国拉斯维加斯举办。&lt;/p&gt;
 &lt;p&gt;大会全程共6天，包括 Training 培训、Keynote 议题分享、Arsenal 工具展示以及素有”黑客奥斯卡“之称的 Pwnie Awards 颁奖。&lt;/p&gt;
@@ -143,7 +144,8 @@
     
     <summary type="html">
     
-      &lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://riusksk.me/media/14710526596463/14713134215430.jpg&quot; alt=&quot;&quot;&gt;￼&lt;br&gt;&lt;/center&gt;
+      &lt;p&gt;作者：riusksk（泉哥）&lt;br&gt;主页：![](&lt;a href=&quot;http://riusksk.me）&quot;&gt;http://riusksk.me）&lt;/a&gt;&lt;br&gt;本文已发表于2016年9月CSDN的《程序员》杂志，转载请注明出处。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://riusksk.me/media/14710526596463/14713134215430.jpg&quot; alt=&quot;&quot;&gt;￼&lt;br&gt;&lt;/center&gt;
 
 &lt;h2 id=&quot;大会概述&quot;&gt;&lt;a href=&quot;#大会概述&quot; class=&quot;headerlink&quot; title=&quot;大会概述&quot;&gt;&lt;/a&gt;大会概述&lt;/h2&gt;&lt;p&gt;BlackHat USA 是世界上最著名的黑客大会BlackHat的主场，规模远超亚洲、欧洲等分会，今年大约有15000人参会，依然在美国拉斯维加斯举办。&lt;/p&gt;
 &lt;p&gt;大会全程共6天，包括 Training 培训、Keynote 议题分享、Arsenal 工具展示以及素有”黑客奥斯卡“之称的 Pwnie Awards 颁奖。&lt;/p&gt;
