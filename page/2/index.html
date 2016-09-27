@@ -250,6 +250,89 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2015-07-14T16:00:00.000Z"><a href="/2015/07/15/Hacking-Team-武器库研究（五）：Mac-OSX-64位-Shellcode-技术分析/">2015-07-15</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/07/15/Hacking-Team-武器库研究（五）：Mac-OSX-64位-Shellcode-技术分析/">Hacking Team 武器库研究（五）：Mac OSX 64位 Shellcode 技术分析</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>在此次泄露的Flash 0Day的利用代码都包含针对Mac OSX 64位系统的利用，以往在网上看到的大多是Windows平台32/64位的利用代码，很少有Mac版的flash利用代码曝光，刚好可以借机分析学习下军用级武器的写法。</p>
+<p>##【源码分析】</p>
+<p>下面以第1个Hacking Team泄露的CVE-2015-5119 Flash 0day 漏洞中的利用代码为例：</p>
+<p>1、内在中暴力搜索Mach-o文件头magic标记 0xfeedfacf（类似搜索windows平台下的PE头MZ标记），它代表64位程序的意思，也是Mac OS X上可执行文件的开头。</p>
+<p><img src="http://riusksk.me/media/hackteam05/1.png" alt=""></p>
+<p>可以用otool或者MachOView查看Mach-o可执行文件格式：</p>
+<p><img src="http://riusksk.me/media/hackteam05/2.png" alt=""></p>
+<p>2、在Mach-o文件头之后是加载命令（Load Command）区域，接下来程序搜索用于映射文件中的段到进程内存空间的LC_SEGMENT_64加载命令，遍历每个被加载的段，找到包含段标记为S_SYMBOL_STUBS（代表包含符号信息） 和 S_ATTR_PURE_INSTRUCTIONS （代表包含机器码）的段，然后获取段地址Address、偏移量Offset、Size、Stubs Size、Stubs数量以及Indirect Sym Index（间接符号表索引值）。</p>
+<p><img src="http://riusksk.me/media/hackteam05/3.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam05/4.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam05/5.png" alt=""></p>
+<p>3、找到 _LINKEDIT 段，从中获取相应的虚拟地址和文件偏移，然后互减得到两者之间的偏移量。</p>
+<p><img src="http://riusksk.me/media/hackteam05/6.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam05/7.png" alt=""></p>
+<p>4、获取LC_SYMTAB加载命令的相关信息，该命令用于指定文件所使用的符号表，找到后分别获取符号表偏移量、符号数、字符串表偏移量、字符串表大小</p>
+<p><img src="http://riusksk.me/media/hackteam05/8.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam05/9.png" alt=""></p>
+<p>5、获取LC_DYSYMTAB加载命令的相关信息，该命令用于指定动态链接库所使用的符号表，找到后获取间接符号表偏移量</p>
+<p><img src="http://riusksk.me/media/hackteam05/10.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam05/11.png" alt=""></p>
+<p>6、将前面获取的符号表地址、间接符号表地址和字符串表地址分别加上第3步获取的偏移量</p>
+<p><img src="http://riusksk.me/media/hackteam05/12.png" alt=""></p>
+<p>7、从前面获取的3个值，去字符串表中索引mprotect函数，找到其对应的内存地址，以利用它去真正的shellcode部分赋予可执行权限（这部分与Windows平台上的代码基本一致），以绕过DEP的保护。</p>
+<p><img src="http://riusksk.me/media/hackteam05/13.png" alt=""></p>
+<p>8、前面都是为执行接下来x64 shellcode代码而作的准备，由于vfork所创建的子进程与父进程共享数据，因此可用于检测是否位于沙盒中，若在沙盒中vfrok会执行失效，进而退出执行。</p>
+<p><img src="http://riusksk.me/media/hackteam05/14.png" alt=""></p>
+<p>9、通过为syscall指定调用号来调用execve函数，以执行”/Applications/Calulator.app/Contents/MacOS/Calculator”打开计算器，然后再调用exit退出子进程。</p>
+<p><img src="http://riusksk.me/media/hackteam05/15.png" alt=""></p>
+<p>10、设置返回值为int atom类型，左移3位是为了对最后3 bits 清零，因为它代表着atom类型，再加6是为了设置为int atom类型，因为shellcode相当于自定义函数，它是用于替换payload的JIT函数去执行的，最后弹出栈数据，以维持栈平衡。</p>
+<p><img src="http://riusksk.me/media/hackteam05/16.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam05/17.png" alt=""></p>
+<p>##【总结】</p>
+<p>此次的Mac OSX 64位平台的利用，主要还是先根据Maco-o文件头标记找到flash模块，然后去索引符号表、间接符号表和字符串表，进而找到mprotect函数的地址，将shellcode内存块设置为可执行权限。真正用于弹出计算器的shellcode代码相对比较简单，向syscall传递调用号来执行execve函数，进而打开指定的程序文件Calculator，实现最终的任意代码执行。</p>
+<p><img src="http://riusksk.me/media/hackteam05/18.png" alt=""></p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2015/07/15/Hacking-Team-武器库研究（五）：Mac-OSX-64位-Shellcode-技术分析/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Hacking-Team/">Hacking Team</a>, <a href="/tags/OSX/">OSX</a>, <a href="/tags/Shellcode/">Shellcode</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2015-07-10T16:00:00.000Z"><a href="/2015/07/11/Hacking-Team-武器库研究（四）：Flash-New-0Day-opaqueBackground-UAF/">2015-07-11</a></time>
       
       
@@ -288,65 +371,6 @@
         <div class="alignright">
           
           <a href="/2015/07/11/Hacking-Team-武器库研究（四）：Flash-New-0Day-opaqueBackground-UAF/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/Hacking-Team/">Hacking Team</a>, <a href="/tags/Flash/">Flash</a>, <a href="/tags/0day/">0day</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2015-07-09T16:00:00.000Z"><a href="/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/">2015-07-10</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/">Hacking Team 武器库研究（二）：CVE-2015-5119 Flash 0day</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>目前 Hacking Team 泄露的Flash 0Day已经修复，官方已提供补丁下载，与此同时Metasploit已经提供有漏洞利用代码。在HT泄露的源码目录里，已经包含有对漏洞的简要分析。</p>
-<h2 id="【源码分析】"><a href="#【源码分析】" class="headerlink" title="【源码分析】"></a><strong>【源码分析】</strong></h2><p>1、在MyClass.TryExp1函数中触发漏洞，先分配一组ByteArray，长度为0xfa0，相当于0x1000大小的内存。</p>
-<p><img src="http://riusksk.me/media/hackteam02/1.png" alt=""></p>
-<p>2、设置ByteArray值，在将MyClass类赋值给_ba[3]时，AVM会调用MyClass.valueOf函数试图将MyClass类型其转换成Byte类型。</p>
-<p><img src="http://riusksk.me/media/hackteam02/2.png" alt=""></p>
-<p>3、在valueOf 函数中会重新设置更大长度的ByteArray，导致释放原有的ByteArray内存，再重新分配，但是valueOf函数返回后，依然保持着对已释放内存的引用，从而导致UAF漏洞的发生。紧接着分配一堆0x3f0大小的vector.<uint>对象，以占用已释放的内存，然后返回0x40值给ba[3]，刚好覆盖vector对象头部的长度值，以实现读写任意内存地址。</uint></p>
-<p><img src="http://riusksk.me/media/hackteam02/3.png" alt=""></p>
-<p>4、后面的代码基本跟第一篇分析文章中介绍一样。再补充下上面调用valueOf转换类型的AVM伪代码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> ByteArray.setObjInternal(<span class="keyword">int</span> offset, obj)</span><br><span class="line">&#123;</span><br><span class="line">    byte* dest = <span class="keyword">this</span>.getStorage(offset);</span><br><span class="line">    dest* = toInteger(obj);     <span class="comment">// call MyClass.valueOf（）</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>将ba[3]的内存存储地址保存到本地定义的目标指针，然后对象类型转换成整数类型并赋值给目标指针，当ByteArray数组长度改变时，它会释放原有ba内存，目标指针就成为悬挂指针。</p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/#comment" class="comment-link">评论</a>
           
           <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
         </div>
@@ -424,6 +448,65 @@
   
   <div class="tags">
     <a href="/tags/Hacking-Team/">Hacking Team</a>, <a href="/tags/Flash/">Flash</a>, <a href="/tags/UAF/">UAF</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-07-09T16:00:00.000Z"><a href="/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/">2015-07-10</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/">Hacking Team 武器库研究（二）：CVE-2015-5119 Flash 0day</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>目前 Hacking Team 泄露的Flash 0Day已经修复，官方已提供补丁下载，与此同时Metasploit已经提供有漏洞利用代码。在HT泄露的源码目录里，已经包含有对漏洞的简要分析。</p>
+<h2 id="【源码分析】"><a href="#【源码分析】" class="headerlink" title="【源码分析】"></a><strong>【源码分析】</strong></h2><p>1、在MyClass.TryExp1函数中触发漏洞，先分配一组ByteArray，长度为0xfa0，相当于0x1000大小的内存。</p>
+<p><img src="http://riusksk.me/media/hackteam02/1.png" alt=""></p>
+<p>2、设置ByteArray值，在将MyClass类赋值给_ba[3]时，AVM会调用MyClass.valueOf函数试图将MyClass类型其转换成Byte类型。</p>
+<p><img src="http://riusksk.me/media/hackteam02/2.png" alt=""></p>
+<p>3、在valueOf 函数中会重新设置更大长度的ByteArray，导致释放原有的ByteArray内存，再重新分配，但是valueOf函数返回后，依然保持着对已释放内存的引用，从而导致UAF漏洞的发生。紧接着分配一堆0x3f0大小的vector.<uint>对象，以占用已释放的内存，然后返回0x40值给ba[3]，刚好覆盖vector对象头部的长度值，以实现读写任意内存地址。</uint></p>
+<p><img src="http://riusksk.me/media/hackteam02/3.png" alt=""></p>
+<p>4、后面的代码基本跟第一篇分析文章中介绍一样。再补充下上面调用valueOf转换类型的AVM伪代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> ByteArray.setObjInternal(<span class="keyword">int</span> offset, obj)</span><br><span class="line">&#123;</span><br><span class="line">    byte* dest = <span class="keyword">this</span>.getStorage(offset);</span><br><span class="line">    dest* = toInteger(obj);     <span class="comment">// call MyClass.valueOf（）</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将ba[3]的内存存储地址保存到本地定义的目标指针，然后对象类型转换成整数类型并赋值给目标指针，当ByteArray数组长度改变时，它会释放原有ba内存，目标指针就成为悬挂指针。</p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Hacking-Team/">Hacking Team</a>, <a href="/tags/Flash/">Flash</a>, <a href="/tags/0day/">0day</a>
   </div>
 
         <!-- partial('post/share') -->
@@ -642,68 +725,6 @@
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2014-05-07T16:00:00.000Z"><a href="/2014/05/08/动态调试-Android-so库函数的方法/">2014-05-08</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2014/05/08/动态调试-Android-so库函数的方法/">动态调试 Android so库函数的方法</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <ol>
-<li><p><code>am start -D -n 包名/类名</code>，以等待调试的模式启动APK应用；</p>
-</li>
-<li><p>以<code>su</code>权限开启<code>android_server</code>，然后<code>adb forward tcp:23946 tcp:23946</code> 转发端口，并用IDA附加相应进程；</p>
-</li>
-<li><p>通过DDMS获取相应进程的端口号，然后使用<code>jdb -connect com.sun.jdi.SocketAttach:hostname=127.0.0.1,port=8700</code>（DDMS查询到的端口号）；</p>
-</li>
-<li><p>连接成功后，按<code>F9</code>后手机上的“waiting for debugger”提示会自动消失；</p>
-</li>
-<li><p>此时在so库的<code>JNI_Onload</code>函数上下断点，可通过<code>Ctrl+S</code>找到对应so库的基址，然后加上<code>JNI_Onload</code>的文件偏移量，即可找到<code>JNI_Onload</code>函数的内存地址，然后按F9运行后即可断下。</p>
-</li>
-</ol>
-<p>下图是使用上述方法，断在某so库<code>JNI_Onload</code>函数的截图：<br><img src="http://riusksk.me/media/android_debug.png" alt=""></p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2014/05/08/动态调试-Android-so库函数的方法/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/Android/">Android</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -775,7 +796,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>33</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>34</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>4</small></li>
   
@@ -787,7 +808,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/0day/" style="font-size: 12px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 18px;">Android</a> <a href="/tags/BlackHat/" style="font-size: 14px;">BlackHat</a> <a href="/tags/CanSecWest/" style="font-size: 12px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 16px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 16px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 10px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 12px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 12px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/rootkit/" style="font-size: 10px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/安全审计/" style="font-size: 12px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 12px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 12px;">漏洞</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a>
+    <a href="/tags/0day/" style="font-size: 12px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 18px;">Android</a> <a href="/tags/BlackHat/" style="font-size: 14px;">BlackHat</a> <a href="/tags/CanSecWest/" style="font-size: 12px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 16px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 12px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 12px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 12px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/rootkit/" style="font-size: 10px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/安全审计/" style="font-size: 12px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 12px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 12px;">漏洞</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a>
   </div>
 </div>
 
