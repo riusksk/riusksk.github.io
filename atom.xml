@@ -736,6 +736,86 @@
   </entry>
   
   <entry>
+    <title>Hacking Team 武器库研究（六）：Mac OSX Rootkit 技术分析</title>
+    <link href="http://riusksk.github.io/2015/07/16/Hacking-Team-%E6%AD%A6%E5%99%A8%E5%BA%93%E7%A0%94%E7%A9%B6%EF%BC%88%E5%85%AD%EF%BC%89%EF%BC%9AMac-OSX-Rootkit-%E6%8A%80%E6%9C%AF%E5%88%86%E6%9E%90/"/>
+    <id>http://riusksk.github.io/2015/07/16/Hacking-Team-武器库研究（六）：Mac-OSX-Rootkit-技术分析/</id>
+    <published>2015-07-15T16:00:00.000Z</published>
+    <updated>2016-09-27T09:55:22.000Z</updated>
+    
+    <content type="html">&lt;p&gt;泄露的 driver-macos-master 项目是一个Mac OS X Rootkit 病毒，从源码看，它可能就是当年红极一时的病毒“OSX.Crisis”，因为两者之间连一些函数名都一模一样（比如关键函数hide_proc、hide_kext_osarray，甚至连废弃的hide_kext_leopard也有），逻辑也基本相同。更为牛逼之处的是，Crisis是在2012年爆发的，而该份代码在2009就已完工，想想之间的差距吧，这也再一次证明Hacking Team的技术实力有多强大。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/1.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;##【源码分析】&lt;/p&gt;
+&lt;p&gt;下面分析下该 OSX rootkit 技术内幕：&lt;/p&gt;
+&lt;p&gt;1、先从入口函数 mchook_start 开始分析，主要就是注册字符设备，然后在文件系统上创建设备节点，常规的驱动入口行为。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/2.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;对应的字符设备转换表如下：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/3.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;主IOCTL回调函数就下面3个，其中cdev_open和cdev_close为空，整个处理逻辑都包含在cdev_ioctl函数中：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/4.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;2、关键看下cdev_ioctl 回调函数，里面包括各种潜伏隐藏的行为。在mchook.h文件头中就定义了一些cdev_ioctl中调用到的函数，从函数名上基本可以推测出该rootkit包含文件隐藏、进程隐藏、内核模块隐藏等功能。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/5.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;3、进程隐藏：在mac osx上,每个进程的上下文都保存在proc结构中,而在allproc链表中就保存着所有进程proc结构的指针，通过allproc链表移除相应进程的proc结构可隐藏正在运行的进程，下面是关于隐藏进程的代码，位于hide_proc函数中（还有另一个未被调用到的函数hide_proc_l，也是用于实现相同功能）,它相应进程从进程链表和进程Hash表里都移除掉。之前笔者在分析 rubilyn osx rootkit 时，发现它就没有从Hash表里移除进程相关信息，导致可通过“ps -p pid ”命令查找到进程。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/6.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;4、内核模块隐藏：早期针对leopard系统的内核模块隐藏是调用 hide_kext_leopard 函数，现在已经不再使用，它只是简单地遍历kmod_info 内核模块链表结构，找到相匹配的模块名，然后将从它链表中踢除，这样当执行kextstat命令时就查看不到隐藏的内核模块，但这种方法现在无效。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/7.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;为了支持多个系统版本，后来重写了个 hide_kext_osarray 函数。在“雪豹”苹果系统之后，有个叫sLoadedKexts 的 IOKit OSArray类引用到内核模块列表，不过它并没有导出符号，只要能够找到它，那么就可以对sLoadedKexts 数组进行修改,以达到隐藏内核模块的目的。&lt;/p&gt;
+&lt;p&gt;庆幸的是，OSKext::lookupKextWithLoadTag 函数里面引用到sLoadKexts（源码参见：&lt;a href=&quot;http://www.opensource.apple.com/source/xnu/xnu-2782.1.97/libkern/c++/OSKext.cpp），通过它可以定位到sLoadKexts地址。&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://www.opensource.apple.com/source/xnu/xnu-2782.1.97/libkern/c++/OSKext.cpp），通过它可以定位到sLoadKexts地址。&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/8.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;它对应的内核模块位于/System/Library/Extensions/System.kext/PlugIns/LibKern.kext/LibKern，不过当用IDA加载分析时，发现它只有导入表的函数信息，并无实际函数，包括PlugIns目录下的其它驱动也是大多如此。进一步分析，发现这些驱动其实都链接到/System/Library/Kernels/kernel里面，可以发现OSKext::lookupKextWithLoadTag函数对应的符号名为__ZN6OSKext21lookupKextWithLoadTagEj。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/9.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;通过该符号即可找到OSKext::lookupKextWithLoadTag函数，然后开始搜索机器 E8，即CALL指令，从上面的源码看，调用的第一个函数是IORecursiveLockLock，然后跳过call指令（共5字节）进入下一条指令。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/10.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;再根据32位/64位系统进行区分，对于32位比较简单，call下一条指令就包含有sLoadedKexts地址，下图就是32位系统Snow Leopard 10.6.8的OSKext::lookupKextWithLoadTag函数，由于笔者缺乏该环境，因此图片是从网上扣来的：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/11.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;但对于64位系统会相对繁琐一些，它先找到机器码 48 8B，即mov指令，获取第2个操作数的实际内存地址，即为sLoadKexts，不过笔者在最新版10.10.4上发现必须是在第2个 48 8B才有效，因此该份rookit只适用于低版本的 64位Leopard系统&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/12.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/13.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;定位到sLoadedKext这个OSArray数组之后， sLoadedKext[OFFT_KEXT_COUNT] ＝  sLoadedKext[0x14] = 元素个数，即已加载的内核模块个数。接着找到最后一个kext模块的kmod_info结构信息，判断该内核模块是否为com.apple.mdworker，若是则将递减模块数量，进而隐藏kext模块，所以实际要隐藏哪个模块就得去更改com.apple.mdworker为相应的模块名。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/14.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;5、文件隐藏：为了对列出文件的相应系统函数进行挂钩，我们需要先对finder和ls所使用的函数进行进程跟踪，在mac上已经用Dtrace代替ktrace，在finder上主要是使用getdirentriesattr函数，而ls主要是使用getdirentries64，下面是用Dtrace分别对finder和ls的进程跟踪情况：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/15.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;下面是查看finder进程2841的调用函数，其中的getdirentriesattr在最新版10.10.4上未发现被调用，以下测试是之前在10.9系统上测试的，但是在10.10.4中getdirentriesattr函数依然在syscall.h中被定义着。&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;riusksk@macosx:/usr/include/sys$ sudo dtrace -s ~/Reverse\ engineering/Dtrace/calltrace.d -p 2841 | grep getdir&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;dtrace: script &amp;apos;/Users/riusksk/Reverse engineering/Dtrace/calltrace.d&amp;apos; matched 573227 probes&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  2 1078881          getdirentriesattr:entry&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  2 1363229         getdirentriesattr:return =1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;……&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;下面是ls命令(64位系统)调用的函数：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/16.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;因此，我们若想在finder和ls中隐藏文件，只要对这两个函数 getdirentriesattr 和 getdirentries64 （32位的为getdirentries）进行挂钩处理即可。在系统调用函数表中，主要是由sysent结构数组构成，每个sysent结构中都包括参数个数sy_narg，执行函数sy_call 这些重要数据。sysent结构如下：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/17.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;为了实现对上述系统函数的挂钩，通过修改相应函数sysent结构的sy_call来进行偷梁换柱，关于各系统函数的调用号和宏名均可在 /usr/include/sys/syscall.h中找到：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/18.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;回头看源码，发现该rootkit也是对上面这3个函数进行hook：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/19.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;看下其中的hook_getdirentiries64函数，其它类似，主要还是移除指定文件的dirent结构，其中dirent结构原型如下：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/20.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;先调用原始函数，获取真实的文件信息（源码中的direntry对应的其实是dirent结构，在新版版本中这两个结构是独立存在的了）：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/21.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;然后遍历文件链表，找到相匹配的文件名，然后用后一个dirent文件结构覆盖当前找到的dirent文件结构，这样就相当于指定的文件结构信息从链表中移除，从而实现文件隐藏的目的。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/22.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;10、官方另外在testuint目录下放有用于测试的rootkit的工具kextControl.c 和 solveKernel.c。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam06/23.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;【总结】&lt;/p&gt;
+&lt;p&gt;实际测试时，由于没有合法签名，导致驱动也无法被正常加载，因此未能作实际测试。&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;15/7/17 下午2:23:27.921 com.apple.kextd[44]: ERROR: invalid signature for com.revenge.kext.machooker, will not load&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;此次泄露的OSX rootkit 相对还是比较常规的技术，毕竟是2009的源码了，年代久远，但在最新OSX 10.10上稍作修改，应该还是可以用的。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;泄露的 driver-macos-master 项目是一个Mac OS X Rootkit 病毒，从源码看，它可能就是当年红极一时的病毒“OSX.Crisis”，因为两者之间连一些函数名都一模一样（比如关键函数hide_proc、hide_kext_osarray，甚至连废
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+      <category term="Hacking Team" scheme="http://riusksk.github.io/tags/Hacking-Team/"/>
+    
+      <category term="OSX" scheme="http://riusksk.github.io/tags/OSX/"/>
+    
+      <category term="rootkit" scheme="http://riusksk.github.io/tags/rootkit/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Hacking Team 武器库研究（五）：Mac OSX 64位 Shellcode 技术分析</title>
     <link href="http://riusksk.github.io/2015/07/15/Hacking-Team-%E6%AD%A6%E5%99%A8%E5%BA%93%E7%A0%94%E7%A9%B6%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9AMac-OSX-64%E4%BD%8D-Shellcode-%E6%8A%80%E6%9C%AF%E5%88%86%E6%9E%90/"/>
     <id>http://riusksk.github.io/2015/07/15/Hacking-Team-武器库研究（五）：Mac-OSX-64位-Shellcode-技术分析/</id>
@@ -844,47 +924,6 @@
   </entry>
   
   <entry>
-    <title>Hacking Team 武器库研究（一）：CVE-2015-0349 Flash ConvolutionFilter UAF</title>
-    <link href="http://riusksk.github.io/2015/07/10/Hacking-Team-%E6%AD%A6%E5%99%A8%E5%BA%93%E7%A0%94%E7%A9%B6%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9ACVE-2015-0349-Flash-ConvolutionFilter-UAF/"/>
-    <id>http://riusksk.github.io/2015/07/10/Hacking-Team-武器库研究（一）：CVE-2015-0349-Flash-ConvolutionFilter-UAF/</id>
-    <published>2015-07-09T16:00:00.000Z</published>
-    <updated>2016-09-27T09:04:09.000Z</updated>
-    
-    <content type="html">&lt;p&gt;CVE-2015-0349 Flash ConvolutionFilter UAF 是今年Pwn2Own大赛上被用于攻破64位Flash的漏洞，在泄露的Hacking Team武器库中就包括了该漏洞的利用代码，以及利用本地提权漏洞作为shellcode，以绕过沙盒的保护。泄露的利用代码包含完整的工程文件，用Flash Develop打开项目即可编译。&lt;/p&gt;
-&lt;h2 id=&quot;【源码分析】&quot;&gt;&lt;a href=&quot;#【源码分析】&quot; class=&quot;headerlink&quot; title=&quot;【源码分析】&quot;&gt;&lt;/a&gt;&lt;strong&gt;【源码分析】&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;1、MyClass.TryExp1是漏洞利用的入口函数，它先创建ConvolutionFilter类，它是一个矩阵环绕滤镜，比如用于实现模糊、斜边、锐化等效果。它的2个参数分别为matrixX矩阵列数和matrixY矩阵行数，这里分别是14和15。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/1.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;2、接下来程序将分配ConvolutionFilter的a（Array类型）赋值给_cf （ConvolutionFilter对象），并设置matrix值为m（Array类型），接着将matrix数组的第一个元素赋值给m0，当它不为0是则表示漏洞不存在，否则即存在UAF漏洞。为何如此？在第一点中，我们知道m[0]是MyClass类，该类里面定义有valueOf方法，在设置martix值时会调用到该方法，具体见第3点分析。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/2.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;3、在valueOf 函数中，matrixX会被重新设置为15（原始值为14），导致原先有matrix数组被释放，然后重新分配矩阵滤镜的matrixX内存，但此时_cf.matrix依然保持着对已释放的matrix数组的引用，所以在第2点会会去判断matrix数组首个元素值是否为0（原初始值也是0），也就是判断已释放的数组是否还可被引用。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/3.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;4、通过分配一堆Vector.&lt;uint&gt;对象去占用已释放的内存，长度刚好与matrix数组长度相同，也就是matrixX &lt;em&gt; matrixY = 14&lt;/em&gt;15，每个vector.&lt;uint&gt;对象的实际大小就是14&lt;em&gt;15&lt;/em&gt;4=0x348(840)，最后在从valueOf函数中返回2，2会被写入matrix数组首个元素中，但此时实际是向Vector对象写入数据，从而更改vector对象长度，实现任意内存读写。&lt;/uint&gt;&lt;/uint&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/4.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;5、再回头继续看MyClass.TryExp1函数，找到已经被篡改长度值的vector对象，再根据不同的系统平台执行不同的shellcode代码。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/5.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;6、看下32位windows平台的shellcode执行相关的ShellWin32类，先看初始化函数init，它只是做一些全局变量赋值。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/6.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;7、真正用于执行代码的是ShellWin32.Exec函数，先获取包含shellcode的_x32对象地址，然后在内存中搜索PE头，解析PE文件格式，从导入表中找到VirtualProtect函数地址，调用它对shellcode内存地址设置可执行权限，接着找到自定义的payload空函数对应的JIT函数指针，用shellcode地址去替换JIT指针，最后调用payload.call 以执行shellcode的。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/7.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;CVE-2015-0349 Flash ConvolutionFilter UAF 是今年Pwn2Own大赛上被用于攻破64位Flash的漏洞，在泄露的Hacking Team武器库中就包括了该漏洞的利用代码，以及利用本地提权漏洞作为shellcode，以绕过沙盒的保护。泄
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
-    
-      <category term="Hacking Team" scheme="http://riusksk.github.io/tags/Hacking-Team/"/>
-    
-      <category term="Flash" scheme="http://riusksk.github.io/tags/Flash/"/>
-    
-      <category term="UAF" scheme="http://riusksk.github.io/tags/UAF/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Hacking Team 武器库研究（二）：CVE-2015-5119 Flash 0day</title>
     <link href="http://riusksk.github.io/2015/07/10/Hacking-Team-%E6%AD%A6%E5%99%A8%E5%BA%93%E7%A0%94%E7%A9%B6%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9ACVE-2015-5119-Flash-0day/"/>
     <id>http://riusksk.github.io/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/</id>
@@ -964,11 +1003,52 @@
       <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
     
     
+      <category term="Hacking Team" scheme="http://riusksk.github.io/tags/Hacking-Team/"/>
+    
       <category term="Android" scheme="http://riusksk.github.io/tags/Android/"/>
+    
+      <category term="Hook" scheme="http://riusksk.github.io/tags/Hook/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hacking Team 武器库研究（一）：CVE-2015-0349 Flash ConvolutionFilter UAF</title>
+    <link href="http://riusksk.github.io/2015/07/10/Hacking-Team-%E6%AD%A6%E5%99%A8%E5%BA%93%E7%A0%94%E7%A9%B6%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9ACVE-2015-0349-Flash-ConvolutionFilter-UAF/"/>
+    <id>http://riusksk.github.io/2015/07/10/Hacking-Team-武器库研究（一）：CVE-2015-0349-Flash-ConvolutionFilter-UAF/</id>
+    <published>2015-07-09T16:00:00.000Z</published>
+    <updated>2016-09-27T09:04:09.000Z</updated>
+    
+    <content type="html">&lt;p&gt;CVE-2015-0349 Flash ConvolutionFilter UAF 是今年Pwn2Own大赛上被用于攻破64位Flash的漏洞，在泄露的Hacking Team武器库中就包括了该漏洞的利用代码，以及利用本地提权漏洞作为shellcode，以绕过沙盒的保护。泄露的利用代码包含完整的工程文件，用Flash Develop打开项目即可编译。&lt;/p&gt;
+&lt;h2 id=&quot;【源码分析】&quot;&gt;&lt;a href=&quot;#【源码分析】&quot; class=&quot;headerlink&quot; title=&quot;【源码分析】&quot;&gt;&lt;/a&gt;&lt;strong&gt;【源码分析】&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;1、MyClass.TryExp1是漏洞利用的入口函数，它先创建ConvolutionFilter类，它是一个矩阵环绕滤镜，比如用于实现模糊、斜边、锐化等效果。它的2个参数分别为matrixX矩阵列数和matrixY矩阵行数，这里分别是14和15。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/1.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;2、接下来程序将分配ConvolutionFilter的a（Array类型）赋值给_cf （ConvolutionFilter对象），并设置matrix值为m（Array类型），接着将matrix数组的第一个元素赋值给m0，当它不为0是则表示漏洞不存在，否则即存在UAF漏洞。为何如此？在第一点中，我们知道m[0]是MyClass类，该类里面定义有valueOf方法，在设置martix值时会调用到该方法，具体见第3点分析。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/2.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;3、在valueOf 函数中，matrixX会被重新设置为15（原始值为14），导致原先有matrix数组被释放，然后重新分配矩阵滤镜的matrixX内存，但此时_cf.matrix依然保持着对已释放的matrix数组的引用，所以在第2点会会去判断matrix数组首个元素值是否为0（原初始值也是0），也就是判断已释放的数组是否还可被引用。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/3.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;4、通过分配一堆Vector.&lt;uint&gt;对象去占用已释放的内存，长度刚好与matrix数组长度相同，也就是matrixX &lt;em&gt; matrixY = 14&lt;/em&gt;15，每个vector.&lt;uint&gt;对象的实际大小就是14&lt;em&gt;15&lt;/em&gt;4=0x348(840)，最后在从valueOf函数中返回2，2会被写入matrix数组首个元素中，但此时实际是向Vector对象写入数据，从而更改vector对象长度，实现任意内存读写。&lt;/uint&gt;&lt;/uint&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/4.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;5、再回头继续看MyClass.TryExp1函数，找到已经被篡改长度值的vector对象，再根据不同的系统平台执行不同的shellcode代码。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/5.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;6、看下32位windows平台的shellcode执行相关的ShellWin32类，先看初始化函数init，它只是做一些全局变量赋值。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/6.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;7、真正用于执行代码的是ShellWin32.Exec函数，先获取包含shellcode的_x32对象地址，然后在内存中搜索PE头，解析PE文件格式，从导入表中找到VirtualProtect函数地址，调用它对shellcode内存地址设置可执行权限，接着找到自定义的payload空函数对应的JIT函数指针，用shellcode地址去替换JIT指针，最后调用payload.call 以执行shellcode的。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/7.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;CVE-2015-0349 Flash ConvolutionFilter UAF 是今年Pwn2Own大赛上被用于攻破64位Flash的漏洞，在泄露的Hacking Team武器库中就包括了该漏洞的利用代码，以及利用本地提权漏洞作为shellcode，以绕过沙盒的保护。泄
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
     
       <category term="Hacking Team" scheme="http://riusksk.github.io/tags/Hacking-Team/"/>
     
-      <category term="Hook" scheme="http://riusksk.github.io/tags/Hook/"/>
+      <category term="Flash" scheme="http://riusksk.github.io/tags/Flash/"/>
+    
+      <category term="UAF" scheme="http://riusksk.github.io/tags/UAF/"/>
     
   </entry>
   
@@ -1006,57 +1086,6 @@
       <category term="EAT" scheme="http://riusksk.github.io/tags/EAT/"/>
     
       <category term="MemProt" scheme="http://riusksk.github.io/tags/MemProt/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Android Webview UXSS 漏洞攻防</title>
-    <link href="http://riusksk.github.io/2014/10/09/Android-Webview-UXSS-%E6%BC%8F%E6%B4%9E%E6%94%BB%E9%98%B2/"/>
-    <id>http://riusksk.github.io/2014/10/09/Android-Webview-UXSS-漏洞攻防/</id>
-    <published>2014-10-08T16:00:00.000Z</published>
-    <updated>2016-07-22T13:09:22.000Z</updated>
-    
-    <content type="html">&lt;center&gt;&lt;br&gt;“前事之不忘，后事之师”—— 《战国策·赵策》&lt;br&gt;&lt;/center&gt;
-
-&lt;h3 id=&quot;【开篇：前车之鉴】&quot;&gt;&lt;a href=&quot;#【开篇：前车之鉴】&quot; class=&quot;headerlink&quot; title=&quot;【开篇：前车之鉴】&quot;&gt;&lt;/a&gt;【开篇：前车之鉴】&lt;/h3&gt;&lt;p&gt;随着移动互联网的发展，很多PC端的安全问题也在移动端逐步出现。比如，使用WebKit内核的Chrome浏览器此前就出现过各种通用型的XSS（即UXSS，见文末附注）【如图1】，现在Android上也出现同类漏洞。Google把WebKit移植到了Android上，并将其作为WebView组件封装在SDK中，但官方忘记了“前车之鉴”，导致曾经在WebKit出现过的漏洞，在Android系统上再一次重现，即使该漏洞在PC版Chrome上已修复过。&lt;/p&gt;
-&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://security.tencent.com/uploadimg_dir/201410/acfe50e658aa8b811fb79f15698c4641.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图1 ：Chrome UXSS漏洞列表&lt;br&gt;&lt;/center&gt;
-
-&lt;p&gt;目前，许多Android应用是直接使用系统自带的WebView，进而导致系统上安装的各类应用可能受到WebView漏洞的影响，这就进一步将漏洞影响范围扩大化，使得各种主流应用都受其影响，一场未见销烟的血雨腥风就此展开。&lt;/p&gt;
-&lt;h3 id=&quot;【中篇：血雨腥风】&quot;&gt;&lt;a href=&quot;#【中篇：血雨腥风】&quot; class=&quot;headerlink&quot; title=&quot;【中篇：血雨腥风】&quot;&gt;&lt;/a&gt;【中篇：血雨腥风】&lt;/h3&gt;&lt;p&gt;从2011年开始，Google的chromium项目的Bug列表就陆续被报告webkit存在一些UXSS漏洞。比如CVE-2011-3881 WebKitHTMLObjectElement UXSS漏洞，其对应的PoC代码【如图2】：&lt;/p&gt;
-&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://security.tencent.com/uploadimg_dir/201410/b5d36aab10d190d2baae741828d25e17.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图2：CVE-2011-3881 PoC代码&lt;br&gt;&lt;/center&gt;
-
-&lt;p&gt;该漏洞主要由于HTMLPlugInImageElement::allowedToLoadFrameURL函数中对Javascript URL地址校验不足导致的跨域问题。查看下修复前后的代码对比【如图3】，可以发现修复代码对使用Javascript伪协议的URL增加了安全检测，只有当前域与内嵌ifame域的serucityOrigin安全信息（比如protocol、domain、host、port等等）在许可范围内才能互相访问，即浏览器的“同源策略“。&lt;/p&gt;
-&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://security.tencent.com/uploadimg_dir/201410/4e487d10cc5b5d8ec5cb4dac16c25ea6.jpg&quot; alt=&quot;&quot;&gt;&lt;br&gt;图3：补丁代码对比&lt;br&gt;&lt;/center&gt;&lt;br&gt;补丁代码是调用securityOrigin::canAccess来检测是否同源，对应代码【如图4】。该函数主要执行以下操作：&lt;br&gt;&lt;br&gt;1. 先判断两个securityOrigin信息是否相同，是否具备唯一性，相同时则返回真，不相同时又会根据是否设置document.domain进行不同的检测；&lt;br&gt;2. 当两者均未设置document.domain时，则检测URL中的scheme、host、port是否相同，相同则返回真；&lt;br&gt;3. 当均设置document.domain时，则检测URL的domain与scheme是否相同，相同则返回真；&lt;br&gt;4. 若是打开本地文件，则执行其它文件安全检查。&lt;br&gt;&lt;br&gt;&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://security.tencent.com/uploadimg_dir/201410/27696966075c0f85cffae8efff453948.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图4：SecurityOrigin::canAccess函数代码&lt;br&gt;&lt;/center&gt; 
-
-&lt;p&gt;其它很多UXSS漏洞也是对源检测不全导致的跨域问题，虽然在Chrome浏览器上修复了，但由于Android系统引用了同一套WebKit，导致曾被修复的漏洞再次重现。&lt;/p&gt;
-&lt;p&gt;2013年底，国内安全人员就开始陆续将这类Android UXSS爆光在网上，也有不少人到乌云平台上刷分。之后，各种主流IT资讯站点、漏洞平台、自媒体上纷纷可以见到Android上各种弹框框的场面，尤为火爆。&lt;/p&gt;
-&lt;p&gt;此前，腾讯安全中心终端安全团队也对Android UXSS漏洞进行过研究，发现此类UXSS漏洞危害还是比较大的，且影响到许多主流的Android应用，特别是涉及金融交易、个人通讯等敏感功能的应用，很容易导致资金被窃、帐号被盗或者隐私泄露。对此，TSRC的同学做了个演示demo，通过提供一个二维码或者url发送给他人，当使用聊天工具或者购物应用扫描二维码或者打开链接后，那么就可以窃取到他人的个人资料【如图5】。&lt;/p&gt;
-&lt;p&gt;&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://security.tencent.com/uploadimg_dir/201410/c183110d4136651e024dd047b334ff1a.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图5：利用UXSS漏洞窃取用户资料&lt;br&gt;&lt;/center&gt;&lt;br&gt;同时，TSRC的同学也开发出一款UXSS自动化检测工具【如图6】，既支持批量测试，也支持PC、Android浏览器的检测，也发现当前国内一些Android下的浏览器也受UXSS漏洞影响，个别PC端的浏览器也受到影响。&lt;/p&gt;
-&lt;p&gt;&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://security.tencent.com/uploadimg_dir/201410/de25ba2e9a6f51eabd2ec812c5af11f4.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图6：浏览器UXSS自动化检测工具&lt;br&gt;&lt;/center&gt;&lt;br&gt;Android UXSS主要是Android系统本身遗留的安全问题，但如果都各大应用厂商都依赖Google来修复的话，就显得过于被动了。而且即使Google修复了，多数用户也未必会及时升级。这样的话，许多用户依然可能会受到UXSS漏洞的影响。所以对于各应用厂商而言，动手去堆壁固垒筑造属于自己的城防是很有必要的。&lt;/p&gt;
-&lt;h3 id=&quot;【下篇：堆壁固垒】&quot;&gt;&lt;a href=&quot;#【下篇：堆壁固垒】&quot; class=&quot;headerlink&quot; title=&quot;【下篇：堆壁固垒】&quot;&gt;&lt;/a&gt;【下篇：堆壁固垒】&lt;/h3&gt;&lt;p&gt;在Android的WebViewClient对象中，提供有一个叫OnPageStarted的事件方法【如图7】，它是WebView注入代码最早的事件，因此我们可以在攻击者利用UXSS注入JS代码前执行我们自己的检测代码，判断是否存在跨域操作。&lt;/p&gt;
-&lt;p&gt;&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://security.tencent.com/uploadimg_dir/201410/7ef95f098c119e54f1aa72e22f7fcf7b.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图7：OnPageStared事件方法&lt;br&gt;&lt;/center&gt;&lt;br&gt;与此同时，还可通过对动态创建的危险元素进行 JS Hook，比如iframe、object等元素，然后再跟踪里面的的事件行为，看是否存在跨域，若存在就全部过滤掉，拒绝加载。&lt;/p&gt;
-&lt;p&gt;目前腾讯安全中心终端安全团队已经完成该防御方案的开发，其测试效果【如图8】，可在不破坏程序稳定性的情况下，防御Android上的UXSS漏洞。&lt;/p&gt;
-&lt;p&gt;&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://security.tencent.com/uploadimg_dir/201410/02ca43d6f6076216c57bb047e7842d91.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;图8：Android UXSS防御工具Demo&lt;br&gt;&lt;/center&gt;&lt;br&gt;前面提到的这些UXSS漏洞，目前已经在最新版Android 4.4中修复，同时它也提供了自动升级webkit的功能，以便及时修复漏洞，因此建议广大用户尽量采用最新版的Android系统。&lt;/p&gt;
-&lt;p&gt;对于厂商，除采用OnPageStarted + JS Hook的方法，还可以打包最新的Webkit内核供自家产品调用，但这会大大增加应用包的体积，而且需要跟随Google Webkit官方进行更新，相对麻烦一些，各厂商可根据自身情况选定。&lt;/p&gt;
-&lt;h3 id=&quot;【后记：路漫漫其修远】&quot;&gt;&lt;a href=&quot;#【后记：路漫漫其修远】&quot; class=&quot;headerlink&quot; title=&quot;【后记：路漫漫其修远】&quot;&gt;&lt;/a&gt;【后记：路漫漫其修远】&lt;/h3&gt;&lt;p&gt;Android UXSS只是Android漏洞上的冰山一角，除此之外，还有addJavascriptInterface执行漏洞、FakeID漏洞等等，未来可能还会有其它漏洞被爆光，在面对这类安全问题时，如何更好地防御它，我们还有很多路要走。&lt;br&gt;有攻，必有防，如何在攻与防的对立统一中寻求突破，是一个安全人员永恒的话题。&lt;/p&gt;
-&lt;h3 id=&quot;【附注：何为UXSS】&quot;&gt;&lt;a href=&quot;#【附注：何为UXSS】&quot; class=&quot;headerlink&quot; title=&quot;【附注：何为UXSS】&quot;&gt;&lt;/a&gt;【附注：何为UXSS】&lt;/h3&gt;&lt;p&gt;通用型跨站脚本（UXSS，Universal Cross-Site Scfipting），主要是利用浏览器及插件的漏洞（比如同源策略绕过，导致A站的脚本可以访问B站的各种私有属性，例如cookie等）来构造跨站条件，以执行恶意代码。它与普通的XSS的不同点就在于漏洞对象及受害范围的差异上，如表1所示。&lt;/p&gt;
-&lt;p&gt;&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://security.tencent.com/uploadimg_dir/201410/35d2a816694f79c147fb1c75d564c635.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;表1：UXSS与普通XSS的对比&lt;br&gt;&lt;/center&gt;&lt;br&gt;正是由于UXSS可影响在浏览器访问的所有站点，因此才将其称为通用型跨站。 &lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;center&gt;&lt;br&gt;“前事之不忘，后事之师”—— 《战国策·赵策》&lt;br&gt;&lt;/center&gt;
-
-&lt;h3 id=&quot;【开篇：前车之鉴】&quot;&gt;&lt;a href=&quot;#【开篇：前车之鉴】&quot; class=&quot;headerlink&quot; title=&quot;【开篇：前车之鉴】&quot;&gt;&lt;/a&gt;【开篇：前车之鉴】
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
-    
-      <category term="Android" scheme="http://riusksk.github.io/tags/Android/"/>
-    
-      <category term="UXSS" scheme="http://riusksk.github.io/tags/UXSS/"/>
     
   </entry>
   

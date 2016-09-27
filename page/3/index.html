@@ -77,6 +77,80 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2014-10-08T16:00:00.000Z"><a href="/2014/10/09/Android-Webview-UXSS-漏洞攻防/">2014-10-09</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/10/09/Android-Webview-UXSS-漏洞攻防/">Android Webview UXSS 漏洞攻防</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <center><br>“前事之不忘，后事之师”—— 《战国策·赵策》<br></center>
+
+<h3 id="【开篇：前车之鉴】"><a href="#【开篇：前车之鉴】" class="headerlink" title="【开篇：前车之鉴】"></a>【开篇：前车之鉴】</h3><p>随着移动互联网的发展，很多PC端的安全问题也在移动端逐步出现。比如，使用WebKit内核的Chrome浏览器此前就出现过各种通用型的XSS（即UXSS，见文末附注）【如图1】，现在Android上也出现同类漏洞。Google把WebKit移植到了Android上，并将其作为WebView组件封装在SDK中，但官方忘记了“前车之鉴”，导致曾经在WebKit出现过的漏洞，在Android系统上再一次重现，即使该漏洞在PC版Chrome上已修复过。</p>
+<center><br><img src="http://security.tencent.com/uploadimg_dir/201410/acfe50e658aa8b811fb79f15698c4641.png" alt=""><br>图1 ：Chrome UXSS漏洞列表<br></center>
+
+<p>目前，许多Android应用是直接使用系统自带的WebView，进而导致系统上安装的各类应用可能受到WebView漏洞的影响，这就进一步将漏洞影响范围扩大化，使得各种主流应用都受其影响，一场未见销烟的血雨腥风就此展开。</p>
+<h3 id="【中篇：血雨腥风】"><a href="#【中篇：血雨腥风】" class="headerlink" title="【中篇：血雨腥风】"></a>【中篇：血雨腥风】</h3><p>从2011年开始，Google的chromium项目的Bug列表就陆续被报告webkit存在一些UXSS漏洞。比如CVE-2011-3881 WebKitHTMLObjectElement UXSS漏洞，其对应的PoC代码【如图2】：</p>
+<center><br><img src="http://security.tencent.com/uploadimg_dir/201410/b5d36aab10d190d2baae741828d25e17.png" alt=""><br>图2：CVE-2011-3881 PoC代码<br></center>
+
+<p>该漏洞主要由于HTMLPlugInImageElement::allowedToLoadFrameURL函数中对Javascript URL地址校验不足导致的跨域问题。查看下修复前后的代码对比【如图3】，可以发现修复代码对使用Javascript伪协议的URL增加了安全检测，只有当前域与内嵌ifame域的serucityOrigin安全信息（比如protocol、domain、host、port等等）在许可范围内才能互相访问，即浏览器的“同源策略“。</p>
+<center><br><img src="http://security.tencent.com/uploadimg_dir/201410/4e487d10cc5b5d8ec5cb4dac16c25ea6.jpg" alt=""><br>图3：补丁代码对比<br></center><br>补丁代码是调用securityOrigin::canAccess来检测是否同源，对应代码【如图4】。该函数主要执行以下操作：<br><br>1. 先判断两个securityOrigin信息是否相同，是否具备唯一性，相同时则返回真，不相同时又会根据是否设置document.domain进行不同的检测；<br>2. 当两者均未设置document.domain时，则检测URL中的scheme、host、port是否相同，相同则返回真；<br>3. 当均设置document.domain时，则检测URL的domain与scheme是否相同，相同则返回真；<br>4. 若是打开本地文件，则执行其它文件安全检查。<br><br><center><br><img src="http://security.tencent.com/uploadimg_dir/201410/27696966075c0f85cffae8efff453948.png" alt=""><br>图4：SecurityOrigin::canAccess函数代码<br></center> 
+
+<p>其它很多UXSS漏洞也是对源检测不全导致的跨域问题，虽然在Chrome浏览器上修复了，但由于Android系统引用了同一套WebKit，导致曾被修复的漏洞再次重现。</p>
+<p>2013年底，国内安全人员就开始陆续将这类Android UXSS爆光在网上，也有不少人到乌云平台上刷分。之后，各种主流IT资讯站点、漏洞平台、自媒体上纷纷可以见到Android上各种弹框框的场面，尤为火爆。</p>
+<p>此前，腾讯安全中心终端安全团队也对Android UXSS漏洞进行过研究，发现此类UXSS漏洞危害还是比较大的，且影响到许多主流的Android应用，特别是涉及金融交易、个人通讯等敏感功能的应用，很容易导致资金被窃、帐号被盗或者隐私泄露。对此，TSRC的同学做了个演示demo，通过提供一个二维码或者url发送给他人，当使用聊天工具或者购物应用扫描二维码或者打开链接后，那么就可以窃取到他人的个人资料【如图5】。</p>
+<p><center><br><img src="http://security.tencent.com/uploadimg_dir/201410/c183110d4136651e024dd047b334ff1a.png" alt=""><br>图5：利用UXSS漏洞窃取用户资料<br></center><br>同时，TSRC的同学也开发出一款UXSS自动化检测工具【如图6】，既支持批量测试，也支持PC、Android浏览器的检测，也发现当前国内一些Android下的浏览器也受UXSS漏洞影响，个别PC端的浏览器也受到影响。</p>
+<p><center><br><img src="http://security.tencent.com/uploadimg_dir/201410/de25ba2e9a6f51eabd2ec812c5af11f4.png" alt=""><br>图6：浏览器UXSS自动化检测工具<br></center><br>Android UXSS主要是Android系统本身遗留的安全问题，但如果都各大应用厂商都依赖Google来修复的话，就显得过于被动了。而且即使Google修复了，多数用户也未必会及时升级。这样的话，许多用户依然可能会受到UXSS漏洞的影响。所以对于各应用厂商而言，动手去堆壁固垒筑造属于自己的城防是很有必要的。</p>
+<h3 id="【下篇：堆壁固垒】"><a href="#【下篇：堆壁固垒】" class="headerlink" title="【下篇：堆壁固垒】"></a>【下篇：堆壁固垒】</h3><p>在Android的WebViewClient对象中，提供有一个叫OnPageStarted的事件方法【如图7】，它是WebView注入代码最早的事件，因此我们可以在攻击者利用UXSS注入JS代码前执行我们自己的检测代码，判断是否存在跨域操作。</p>
+<p><center><br><img src="http://security.tencent.com/uploadimg_dir/201410/7ef95f098c119e54f1aa72e22f7fcf7b.png" alt=""><br>图7：OnPageStared事件方法<br></center><br>与此同时，还可通过对动态创建的危险元素进行 JS Hook，比如iframe、object等元素，然后再跟踪里面的的事件行为，看是否存在跨域，若存在就全部过滤掉，拒绝加载。</p>
+<p>目前腾讯安全中心终端安全团队已经完成该防御方案的开发，其测试效果【如图8】，可在不破坏程序稳定性的情况下，防御Android上的UXSS漏洞。</p>
+<p><center><br><img src="http://security.tencent.com/uploadimg_dir/201410/02ca43d6f6076216c57bb047e7842d91.png" alt=""><br>图8：Android UXSS防御工具Demo<br></center><br>前面提到的这些UXSS漏洞，目前已经在最新版Android 4.4中修复，同时它也提供了自动升级webkit的功能，以便及时修复漏洞，因此建议广大用户尽量采用最新版的Android系统。</p>
+<p>对于厂商，除采用OnPageStarted + JS Hook的方法，还可以打包最新的Webkit内核供自家产品调用，但这会大大增加应用包的体积，而且需要跟随Google Webkit官方进行更新，相对麻烦一些，各厂商可根据自身情况选定。</p>
+<h3 id="【后记：路漫漫其修远】"><a href="#【后记：路漫漫其修远】" class="headerlink" title="【后记：路漫漫其修远】"></a>【后记：路漫漫其修远】</h3><p>Android UXSS只是Android漏洞上的冰山一角，除此之外，还有addJavascriptInterface执行漏洞、FakeID漏洞等等，未来可能还会有其它漏洞被爆光，在面对这类安全问题时，如何更好地防御它，我们还有很多路要走。<br>有攻，必有防，如何在攻与防的对立统一中寻求突破，是一个安全人员永恒的话题。</p>
+<h3 id="【附注：何为UXSS】"><a href="#【附注：何为UXSS】" class="headerlink" title="【附注：何为UXSS】"></a>【附注：何为UXSS】</h3><p>通用型跨站脚本（UXSS，Universal Cross-Site Scfipting），主要是利用浏览器及插件的漏洞（比如同源策略绕过，导致A站的脚本可以访问B站的各种私有属性，例如cookie等）来构造跨站条件，以执行恶意代码。它与普通的XSS的不同点就在于漏洞对象及受害范围的差异上，如表1所示。</p>
+<p><center><br><img src="http://security.tencent.com/uploadimg_dir/201410/35d2a816694f79c147fb1c75d564c635.png" alt=""><br>表1：UXSS与普通XSS的对比<br></center><br>正是由于UXSS可影响在浏览器访问的所有站点，因此才将其称为通用型跨站。 </p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2014/10/09/Android-Webview-UXSS-漏洞攻防/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Android/">Android</a>, <a href="/tags/UXSS/">UXSS</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2014-05-07T16:00:00.000Z"><a href="/2014/05/08/动态调试-Android-so库函数的方法/">2014-05-08</a></time>
       
       
@@ -669,63 +743,6 @@
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2012-05-24T16:00:00.000Z"><a href="/2012/05/25/android-auto-auditor/">2012-05-25</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2012/05/25/android-auto-auditor/">浅谈Android软件安全自动化审计</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        
-
-	<div class="row">
-	  <iframe src="http://nagland.github.io/viewer/web/viewer.html?val=http://riusksk.me/media/android_auto_auditor.pdf" style="width:100%; height:550px"></iframe>
-	</div>
-
-
-
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2012/05/25/android-auto-auditor/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/Android/">Android</a>, <a href="/tags/安全审计/">安全审计</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -797,7 +814,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>34</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>35</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>4</small></li>
   
@@ -809,7 +826,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/0day/" style="font-size: 12px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 18px;">Android</a> <a href="/tags/BlackHat/" style="font-size: 14px;">BlackHat</a> <a href="/tags/CanSecWest/" style="font-size: 12px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 16px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 12px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 12px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 12px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/rootkit/" style="font-size: 10px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/安全审计/" style="font-size: 12px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 12px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 12px;">漏洞</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a>
+    <a href="/tags/0day/" style="font-size: 12px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 18px;">Android</a> <a href="/tags/BlackHat/" style="font-size: 14px;">BlackHat</a> <a href="/tags/CanSecWest/" style="font-size: 12px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 16px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 20px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 14px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 12px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 12px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/rootkit/" style="font-size: 12px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/安全审计/" style="font-size: 12px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 12px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 12px;">漏洞</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a>
   </div>
 </div>
 
