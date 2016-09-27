@@ -736,6 +736,57 @@
   </entry>
   
   <entry>
+    <title>Hacking Team 武器库研究（三）：core-android-audiocapture</title>
+    <link href="http://riusksk.github.io/2015/07/10/Hacking-Team-%E6%AD%A6%E5%99%A8%E5%BA%93%E7%A0%94%E7%A9%B6%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9Acore-android-audiocapture/"/>
+    <id>http://riusksk.github.io/2015/07/10/Hacking-Team-武器库研究（三）：core-android-audiocapture/</id>
+    <published>2015-07-09T16:00:00.000Z</published>
+    <updated>2016-09-27T09:22:44.000Z</updated>
+    
+    <content type="html">&lt;p&gt;泄露的core-android-audiocapture一款Android平台下基于DBI Hook框架的语音窃取工具，可窃取当前国内外流行的即时聊天工具，比如wechat、whatsapp、skype等等。&lt;/p&gt;
+&lt;p&gt;##【源码分析】&lt;/p&gt;
+&lt;p&gt;1、搜索 mediaserver 进程，然后注入libt.so，并将窃取的语音文件dump到指定目录。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/1.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;2、查看libt.c源码，其动态链接库的构造函数为my_init，这里参数和返回值都必须为空。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/2.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;3、检测当前的Android系统是否为4.x版本，然后分不同的子版本进行处理。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/3.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;4、比如对于Android 4.0版本，会指定mStramType和mname的偏移量，不同系统版本对应的偏移量不同，同时也定义一些将被hook的函数，这些Hook_coverage_x是定义在hijack_func/hooker.h中，对应的函数名在注释代码中已经写得很清楚，主要是Hook Android系统的audio接口提供库libaudiofinger.so里的函数，以用于实现录音（RecordThread）和放音（PlaybackThread）功能。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/4.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/5.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;5、以Hook回调函数recordTrack_getNextBuffer3_h为例分析下它的修改行为，该函数定义在hijack_func/hooker_thumb.c中，原getNextBuffer获取的缓冲区主要是用于存放录音数据，而录音的开始、停止动作的相关函数也是被hook掉。在recordTrack_getNextBuffer3_h函数中先调用原始函数，得到返回后的结果，然后获取帧大小、采样率、帧数以及原始的AudioBufferProvider::Buffer地址。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/6.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;6、创建指定格式的文件名，将语音数据dump出来写入到前面创建的文件：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/7.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/8.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;7、录音Hook的日志记录如下，其它hook动作类似，此处就不一一分析。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/9.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/10.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;8、生成的dump文件，会再调用decode.py去转换成wav语音文件&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/11.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/12.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;##【结语】&lt;/p&gt;
+&lt;p&gt;网上有人说这工具会去解密微信的语音格式，其实它根本没有做这方面的处理，也没必要，因为它Hook的Android系统的Audio库，当你使用一些即时聊天工具进行语音对话时，就会触发放音的函数，此时语音数据早就可以拿到，而decoder.py只是作一些wav的格式化处理，使得dump出来的文件能够转换成可播放的wav文件。在decoder目录下的一些聊天工具目录，只不过是Hacking Team成员在作一些测试而已。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;泄露的core-android-audiocapture一款Android平台下基于DBI Hook框架的语音窃取工具，可窃取当前国内外流行的即时聊天工具，比如wechat、whatsapp、skype等等。&lt;/p&gt;
+&lt;p&gt;##【源码分析】&lt;/p&gt;
+&lt;p&gt;1、搜索 medi
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+      <category term="Android" scheme="http://riusksk.github.io/tags/Android/"/>
+    
+      <category term="Hacking Team" scheme="http://riusksk.github.io/tags/Hacking-Team/"/>
+    
+      <category term="Hook" scheme="http://riusksk.github.io/tags/Hook/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Hacking Team 武器库研究（一）：CVE-2015-0349 Flash ConvolutionFilter UAF</title>
     <link href="http://riusksk.github.io/2015/07/10/Hacking-Team-%E6%AD%A6%E5%99%A8%E5%BA%93%E7%A0%94%E7%A9%B6%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9ACVE-2015-0349-Flash-ConvolutionFilter-UAF/"/>
     <id>http://riusksk.github.io/2015/07/10/Hacking-Team-武器库研究（一）：CVE-2015-0349-Flash-ConvolutionFilter-UAF/</id>
@@ -969,45 +1020,6 @@
     
     
       <category term="书籍" scheme="http://riusksk.github.io/tags/%E4%B9%A6%E7%B1%8D/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>关于CanSecWest 2013大会</title>
-    <link href="http://riusksk.github.io/2013/03/23/CanSecWest-2013/"/>
-    <id>http://riusksk.github.io/2013/03/23/CanSecWest-2013/</id>
-    <published>2013-03-22T16:00:00.000Z</published>
-    <updated>2016-06-24T14:18:08.000Z</updated>
-    
-    <content type="html">&lt;p&gt;文档下载：&lt;a href=&quot;http://cansecwest.com/csw13archive.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://cansecwest.com/csw13archive.html&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;此次CanSecWest 2013大会的质量明显要高出BlackHat EU 2013很多，主要还是软件/系统安全为主，涉及漏洞利用和挖掘等技术。&lt;/p&gt;
-&lt;h3 id=&quot;1、《Fuzzing-for-logic-and-state-issues》&quot;&gt;&lt;a href=&quot;#1、《Fuzzing-for-logic-and-state-issues》&quot; class=&quot;headerlink&quot; title=&quot;1、《Fuzzing for logic and state issues》&quot;&gt;&lt;/a&gt;1、《Fuzzing for logic and state issues》&lt;/h3&gt;&lt;p&gt;Peach Fuzzer框架的作者写的，主要是介绍peach3的新增特性，增加逻辑漏洞和无效的状态转换等问题，比如一些WEB认证的逻辑漏洞，PPT写得比较简洁，纯文字描述，不好完整理解，建议还是上官网看peach3的使用文档吧：&lt;a href=&quot;http://peachfuzzer.com/v3/PeachPit.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://peachfuzzer.com/v3/PeachPit.html&lt;/a&gt; ，上个月作者刚更新的，写得比较详细。&lt;/p&gt;
-&lt;h3 id=&quot;2、《DEP-ASLR-bypass-without-ROP-JIT》&quot;&gt;&lt;a href=&quot;#2、《DEP-ASLR-bypass-without-ROP-JIT》&quot; class=&quot;headerlink&quot; title=&quot;2、《DEP ASLR bypass without ROP JIT》&quot;&gt;&lt;/a&gt;2、《DEP ASLR bypass without ROP JIT》&lt;/h3&gt;&lt;p&gt;绿盟的TK讲的，里面的思路最早是在2009年的中国软件安全峰会《Vulnerability: The next 10 years》中提到的，主要是利用 SharedUserData 地址 0x7ffe0000 在win上是固定不变的，再通过它找到SystemCall，然后设置其参数，来调用指定的系统函数。在安全峰会上，作者是调用NtUserLockWorkStation这一函数来设置锁屏，而在此次CSW大会上，作者是通过LdrHotPatchRoutine索引到LdrLoadDll来加载外部的DLL，实现任意代码执行，这种方法只工作在winx64上的32位程序，且在win8上微软已经修复此问题。&lt;/p&gt;
-&lt;h3 id=&quot;3、《Adobe-Sandbox-WHEN-THE-BROKER-IS-BROKEN》&quot;&gt;&lt;a href=&quot;#3、《Adobe-Sandbox-WHEN-THE-BROKER-IS-BROKEN》&quot; class=&quot;headerlink&quot; title=&quot;3、《Adobe Sandbox WHEN THE BROKER IS BROKEN》&quot;&gt;&lt;/a&gt;3、《Adobe Sandbox WHEN THE BROKER IS BROKEN》&lt;/h3&gt;&lt;p&gt;exploit系列教程的作者peter写的议题，在以前的一些大会上，也有人做过关于adobe sandbox的分享，但总觉得PPT写得不过详细，这次peter的议题，我觉得写得挺详细的，由浅入深，从介绍沙盒的相关术语、client与broker之间的通讯原理开始讲起，并提起一些沙盒逃逸的攻击面，分析和提取cross call函数等信息，同时也提供一些demo，可惜只有ppt，要是能提供paper和code就更好了。&lt;/p&gt;
-&lt;h3 id=&quot;4、《An-Android-Hacker’s-Journey-Challenges-in-Android-Security-Research》&quot;&gt;&lt;a href=&quot;#4、《An-Android-Hacker’s-Journey-Challenges-in-Android-Security-Research》&quot; class=&quot;headerlink&quot; title=&quot;4、《An Android Hacker’s Journey- Challenges in Android Security Research》&quot;&gt;&lt;/a&gt;4、《An Android Hacker’s Journey- Challenges in Android Security Research》&lt;/h3&gt;&lt;p&gt;对我而言，里面让我最感兴趣的是作者即将出版的《Android Hacker’s Handbook》这个系列的书都很经典，包括shellcode、web、macosx以及ios等书，都是相当经典的，上面4本除了ios那书只看了一小部分之外，其它3本我都详细阅读过，值得推荐，前两本国内早有中译本了。&lt;br&gt;这个议题里面讲了一些android软件漏洞，包括一些组件权限设置问题导致的信息泄露，以及linux内核漏洞，其中还有一张赛门铁克提供的移动设备威胁图表，列出了移动设备可能面临的各种安全威胁，做得挺不错的。最后讲述了一些android平台的调试技巧，包括远程调试、源码调试等，有兴趣的朋友可以看下。&lt;/p&gt;
-&lt;h3 id=&quot;5、《Assessing-the-Linux-Desktop’s-Security》&quot;&gt;&lt;a href=&quot;#5、《Assessing-the-Linux-Desktop’s-Security》&quot; class=&quot;headerlink&quot; title=&quot;5、《Assessing the Linux Desktop’s Security》&quot;&gt;&lt;/a&gt;5、《Assessing the Linux Desktop’s Security》&lt;/h3&gt;&lt;p&gt;感觉一般，对这议题也不是很感兴趣。&lt;/p&gt;
-&lt;h3 id=&quot;6、《MS-SQL-Post-Exploitation-Shenanigans-You’re-In-Now-What-》&quot;&gt;&lt;a href=&quot;#6、《MS-SQL-Post-Exploitation-Shenanigans-You’re-In-Now-What-》&quot; class=&quot;headerlink&quot; title=&quot;6、《MS SQL Post Exploitation Shenanigans: You’re In, Now What?》&quot;&gt;&lt;/a&gt;6、《MS SQL Post Exploitation Shenanigans: You’re In, Now What?》&lt;/h3&gt;&lt;p&gt;讲述 MS SQL Server 利用技术，主要是利用扩展存储过程API来利用MSSQL，包括获取密码hash，内存搜索hash替换，编写poc创建后门，以及利用msf来控制shell等方式。在实际的渗透测试中，相信大多数的企业还是会选择使用php + mysql，特别是近些年来，这一组合的比例一直在扩大，所以估计对此文感兴趣的人不会太多。&lt;/p&gt;
-&lt;h3 id=&quot;7、《Cracking-and-Analyzing-Apple-iCloud-backups-Find-My-iPhone-Document-Storage》&quot;&gt;&lt;a href=&quot;#7、《Cracking-and-Analyzing-Apple-iCloud-backups-Find-My-iPhone-Document-Storage》&quot; class=&quot;headerlink&quot; title=&quot;7、《Cracking and Analyzing Apple iCloud backups, Find My iPhone, Document Storage》&quot;&gt;&lt;/a&gt;7、《Cracking and Analyzing Apple iCloud backups, Find My iPhone, Document Storage》&lt;/h3&gt;&lt;p&gt;基本就是在讲苹果的icloud服务及其原理，跟安全相关的内容不多，爱看不看。&lt;/p&gt;
-&lt;h3 id=&quot;8、《UPnP-Vulnerabilities》&quot;&gt;&lt;a href=&quot;#8、《UPnP-Vulnerabilities》&quot; class=&quot;headerlink&quot; title=&quot;8、《UPnP Vulnerabilities》&quot;&gt;&lt;/a&gt;8、《UPnP Vulnerabilities》&lt;/h3&gt;&lt;p&gt;PPT写得很是简单，内容也不是感兴趣，爱看不看。&lt;/p&gt;
-&lt;h3 id=&quot;9、《Analysis-of-a-Windows-Kernel-Vulnerability》&quot;&gt;&lt;a href=&quot;#9、《Analysis-of-a-Windows-Kernel-Vulnerability》&quot; class=&quot;headerlink&quot; title=&quot;9、《Analysis of a Windows Kernel Vulnerability》&quot;&gt;&lt;/a&gt;9、《Analysis of a Windows Kernel Vulnerability》&lt;/h3&gt;&lt;p&gt;共有273页，这是我见过最长的PPT文档。主要讲Duqu病毒所使用的 CVE-2011-3402：Windows win32k.sys TrueType 字体解析数组越界漏洞，从TTF字体格式开始分析，解释漏洞成因，以及漏洞的利用技术。在去年的syscan大会上，360的人也针对此漏洞分析过其原理及利用技术，可以交互参考阅读。国内最早分析并公开细节的应该是启明星辰，其在博客上也帖出了相应的分析文章，看雪和binvul论坛均有人发表相关的漏洞分析文章。&lt;/p&gt;
-&lt;h3 id=&quot;10、《iOS-6-Exploitation-280-Days-Later》&quot;&gt;&lt;a href=&quot;#10、《iOS-6-Exploitation-280-Days-Later》&quot; class=&quot;headerlink&quot; title=&quot;10、《iOS 6 Exploitation 280 Days Later》&quot;&gt;&lt;/a&gt;10、《iOS 6 Exploitation 280 Days Later》&lt;/h3&gt;&lt;p&gt;作者之前搞了近10年的WEB安全，2010年中才开始搞iphone安全，但他98年就开始接触安全，也算是安全界的老一辈革命家了。讲了2012年之后出现过的一些ios漏洞，以及关于ios安全相关的资料和书籍，同时介绍苹果对此采取的一些保护机制（cookie、ASLR、程序目录权限限制……），大部分篇幅还是在介绍ios的保护机制。&lt;/p&gt;
-&lt;h3 id=&quot;11、《Evil-Maid-Just-Got-Angrier：Why-Full-Disk-Encryption-With-TPM-is-Insecure-on-Many-Systems》&quot;&gt;&lt;a href=&quot;#11、《Evil-Maid-Just-Got-Angrier：Why-Full-Disk-Encryption-With-TPM-is-Insecure-on-Many-Systems》&quot; class=&quot;headerlink&quot; title=&quot;11、《Evil Maid Just Got Angrier：Why Full-Disk Encryption With TPM is Insecure on Many Systems》&quot;&gt;&lt;/a&gt;11、《Evil Maid Just Got Angrier：Why Full-Disk Encryption With TPM is Insecure on Many Systems》&lt;/h3&gt;&lt;p&gt;讲述关于bios那些底层的东东，看不懂，真心看不懂！&lt;/p&gt;
-&lt;h3 id=&quot;12、《Physical-Privilege-Escalation-and-Mitigation-in-the-x86-World》&quot;&gt;&lt;a href=&quot;#12、《Physical-Privilege-Escalation-and-Mitigation-in-the-x86-World》&quot; class=&quot;headerlink&quot; title=&quot;12、《Physical Privilege Escalation and Mitigation in the x86 World》&quot;&gt;&lt;/a&gt;12、《Physical Privilege Escalation and Mitigation in the x86 World》&lt;/h3&gt;&lt;p&gt;硬件hacking一类的议题，PPT也大多是贴图，不好理解，反正是没看懂这PPT&lt;/p&gt;
-&lt;h3 id=&quot;13、《Smart-TV-Security》&quot;&gt;&lt;a href=&quot;#13、《Smart-TV-Security》&quot; class=&quot;headerlink&quot; title=&quot;13、《Smart TV Security》&quot;&gt;&lt;/a&gt;13、《Smart TV Security》&lt;/h3&gt;&lt;p&gt;一个有趣的议题，主要讲关于智能电视安全，包括智能电视机上面的app漏洞，以及恶意app感染、网络通讯安全等问题，同时还介绍智能电视固件rootkit的开发，如何留取后门。控制智能电视后最大的风险就是用它来监控和窃听你的行为，因为智能电视都配有摄像头。最后，还介绍一些调试等逆向相关技术，以及操作电视的一些API函数。&lt;/p&gt;
-&lt;h3 id=&quot;14、《The-Evolution-of-BlackHole》&quot;&gt;&lt;a href=&quot;#14、《The-Evolution-of-BlackHole》&quot; class=&quot;headerlink&quot; title=&quot;14、《The Evolution of BlackHole》&quot;&gt;&lt;/a&gt;14、《The Evolution of BlackHole》&lt;/h3&gt;&lt;p&gt;总觉得这是BlackHol exploit kit的广告帖，介绍BlackHole这一漏洞利用工具包的一些功能，一套售价冒似是1500美元，不过里面的一些功能看起来还是不错的。 &lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;文档下载：&lt;a href=&quot;http://cansecwest.com/csw13archive.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://cansecwest.com/csw13archive.html&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
-    
-      <category term="CanSecWest" scheme="http://riusksk.github.io/tags/CanSecWest/"/>
     
   </entry>
   
