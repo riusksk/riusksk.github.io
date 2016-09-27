@@ -250,6 +250,70 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2015-07-09T16:00:00.000Z"><a href="/2015/07/10/Hacking-Team-武器库研究（一）：CVE-2015-0349-Flash-ConvolutionFilter-UAF/">2015-07-10</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/07/10/Hacking-Team-武器库研究（一）：CVE-2015-0349-Flash-ConvolutionFilter-UAF/">Hacking Team 武器库研究（一）：CVE-2015-0349 Flash ConvolutionFilter UAF</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>CVE-2015-0349 Flash ConvolutionFilter UAF 是今年Pwn2Own大赛上被用于攻破64位Flash的漏洞，在泄露的Hacking Team武器库中就包括了该漏洞的利用代码，以及利用本地提权漏洞作为shellcode，以绕过沙盒的保护。泄露的利用代码包含完整的工程文件，用Flash Develop打开项目即可编译。</p>
+<h2 id="【源码分析】"><a href="#【源码分析】" class="headerlink" title="【源码分析】"></a><strong>【源码分析】</strong></h2><p>1、MyClass.TryExp1是漏洞利用的入口函数，它先创建ConvolutionFilter类，它是一个矩阵环绕滤镜，比如用于实现模糊、斜边、锐化等效果。它的2个参数分别为matrixX矩阵列数和matrixY矩阵行数，这里分别是14和15。</p>
+<p><img src="http://riusksk.me/media/hackteam01/1.png" alt=""></p>
+<p>2、接下来程序将分配ConvolutionFilter的a（Array类型）赋值给_cf （ConvolutionFilter对象），并设置matrix值为m（Array类型），接着将matrix数组的第一个元素赋值给m0，当它不为0是则表示漏洞不存在，否则即存在UAF漏洞。为何如此？在第一点中，我们知道m[0]是MyClass类，该类里面定义有valueOf方法，在设置martix值时会调用到该方法，具体见第3点分析。</p>
+<p><img src="http://riusksk.me/media/hackteam01/2.png" alt=""></p>
+<p>3、在valueOf 函数中，matrixX会被重新设置为15（原始值为14），导致原先有matrix数组被释放，然后重新分配矩阵滤镜的matrixX内存，但此时_cf.matrix依然保持着对已释放的matrix数组的引用，所以在第2点会会去判断matrix数组首个元素值是否为0（原初始值也是0），也就是判断已释放的数组是否还可被引用。</p>
+<p><img src="http://riusksk.me/media/hackteam01/3.png" alt=""></p>
+<p>4、通过分配一堆Vector.<uint>对象去占用已释放的内存，长度刚好与matrix数组长度相同，也就是matrixX <em> matrixY = 14</em>15，每个vector.<uint>对象的实际大小就是14<em>15</em>4=0x348(840)，最后在从valueOf函数中返回2，2会被写入matrix数组首个元素中，但此时实际是向Vector对象写入数据，从而更改vector对象长度，实现任意内存读写。</uint></uint></p>
+<p><img src="http://riusksk.me/media/hackteam01/4.png" alt=""></p>
+<p>5、再回头继续看MyClass.TryExp1函数，找到已经被篡改长度值的vector对象，再根据不同的系统平台执行不同的shellcode代码。</p>
+<p><img src="http://riusksk.me/media/hackteam01/5.png" alt=""></p>
+<p>6、看下32位windows平台的shellcode执行相关的ShellWin32类，先看初始化函数init，它只是做一些全局变量赋值。</p>
+<p><img src="http://riusksk.me/media/hackteam01/6.png" alt=""></p>
+<p>7、真正用于执行代码的是ShellWin32.Exec函数，先获取包含shellcode的_x32对象地址，然后在内存中搜索PE头，解析PE文件格式，从导入表中找到VirtualProtect函数地址，调用它对shellcode内存地址设置可执行权限，接着找到自定义的payload空函数对应的JIT函数指针，用shellcode地址去替换JIT指针，最后调用payload.call 以执行shellcode的。</p>
+<p><img src="http://riusksk.me/media/hackteam01/7.png" alt=""></p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2015/07/10/Hacking-Team-武器库研究（一）：CVE-2015-0349-Flash-ConvolutionFilter-UAF/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Hacking-Team/">Hacking Team</a>, <a href="/tags/Flash/">Flash</a>, <a href="/tags/UAF/">UAF</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2015-06-03T16:00:00.000Z"><a href="/2015/06/04/绕过最新版-EMET-5-2-保护摘要/">2015-06-04</a></time>
       
       
@@ -632,66 +696,6 @@
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2013-03-06T16:00:00.000Z"><a href="/2013/03/07/若干flash-xss漏洞分析/">2013-03-07</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2013/03/07/若干flash-xss漏洞分析/">若干flash xss漏洞分析</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <h3 id="漏洞一"><a href="#漏洞一" class="headerlink" title="漏洞一"></a>漏洞一</h3><figure class="highlight as"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Parameters.getInstance().data = loaderInfo.parameters;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">get</span> <span class="title">onPlayStart</span><span class="params">()</span>:String</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> (_data[<span class="string">"onPlayStart"</span>]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ExternalInterface.call(Parameters.getInstance().onPlayStart, _arg1);</span><br><span class="line">ExternalInterface.call(Parameters.getInstance().onPlayStop);</span><br><span class="line">ExternalInterface.call(Parameters.getInstance().onFileLoadedError);</span><br></pre></td></tr></table></figure>
-<h3 id="漏洞二"><a href="#漏洞二" class="headerlink" title="漏洞二"></a>漏洞二</h3><figure class="highlight as"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">reload</span><span class="params">(u, show_loading)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (show_loading == <span class="literal">undefined</span>) &#123;</span><br><span class="line">        show_loading = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (show_loading) &#123;</span><br><span class="line">        _root.loading = <span class="keyword">new</span> Loading(<span class="string">"Loading data..."</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> _local2 = <span class="string">""</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (_root.data != <span class="literal">undefined</span>) &#123;</span><br><span class="line">        _local2 = _root.data;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (u != <span class="literal">undefined</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (u.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            _local2 = u;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _root.lv = <span class="literal">undefined</span>;</span><br><span class="line">    _root.lv = <span class="keyword">new</span> LoadVars();</span><br><span class="line">    _root.lv.onLoad = LoadVarsOnLoad;</span><br><span class="line">    _root.lv.make_chart = make_chart;</span><br><span class="line">    _root.lv.make_pie = make_pie;</span><br><span class="line">    _root.lv.load(_local2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="漏洞三"><a href="#漏洞三" class="headerlink" title="漏洞三"></a>漏洞三</h3><figure class="highlight as"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> csPreloader;</span><br><span class="line">loader.loadClip(csPreloader, preloader_mc.target);</span><br></pre></td></tr></table></figure>
-<h3 id="漏洞四"><a href="#漏洞四" class="headerlink" title="漏洞四"></a>漏洞四</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">this.loadXML(file);</span><br><span class="line">function init(file, ploader, bookmark, contentpath)</span><br><span class="line">container.init(csConfigFile, preloader_mc, csFilesetBookmark, contentpath);</span><br><span class="line">var csConfigFile;</span><br></pre></td></tr></table></figure>
-<h3 id="漏洞五"><a href="#漏洞五" class="headerlink" title="漏洞五"></a>漏洞五</h3><figure class="highlight as"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">    getURL(_loc2, <span class="keyword">this</span>.playList.currentClip().getLinkWindow());</span><br><span class="line">    <span class="keyword">var</span> _loc2 = <span class="keyword">this</span>.playList.currentClip().getLinkURL();</span><br><span class="line"></span><br><span class="line">    _loc1.getLinkURL = <span class="function"><span class="keyword">function</span> <span class="params">()</span></span><br><span class="line">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">this</span>.linkUrl);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _loc1 = (_global.org.flowplayer.playlist.Clip = <span class="function"><span class="keyword">function</span> <span class="params">(name, baseUrl, fileName, start, end, protected, enableControl, linkUrl, linkWindow, type, allowResize, overlayFileName, overlayId, live, showOnLoadBegin, maxPlayCount, info, thumbnailUrl, suggestedClipsInfoUrl, id, keywords)</span></span><br><span class="line"></span><br><span class="line">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.linkUrl = linkUrl;</span><br><span class="line">    ｝</span><br></pre></td></tr></table></figure>
-<h3 id="漏洞六"><a href="#漏洞六" class="headerlink" title="漏洞六"></a>漏洞六</h3><figure class="highlight as"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">     <span class="keyword">this</span>.textField.htmlText = [<span class="string">''</span>, content, <span class="string">''</span>].join(<span class="string">''</span>);</span><br><span class="line"></span><br><span class="line">_global.sIFR = <span class="function"><span class="keyword">function</span> <span class="params">(textField, content)</span></span><br><span class="line"></span>&#123;  ……</span><br><span class="line">   	   <span class="keyword">this</span>.write(content);</span><br><span class="line">  	   ……</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">     sIFR.instance = <span class="keyword">new</span> sIFR(_loc3.txtF, _loc4);</span><br><span class="line">     _loc4 = sIFR.VERSION_WARNING.split(<span class="string">"%s"</span>).join(_root.version);</span><br></pre></td></tr></table></figure>
-<h3 id="漏洞七"><a href="#漏洞七" class="headerlink" title="漏洞七"></a>漏洞七</h3><figure class="highlight as"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>._setVar(<span class="string">"_onClick"</span>, [_root.onclick, pConfig.onclick], <span class="string">"String"</span>);</span><br><span class="line">getURL(<span class="keyword">this</span>._onClick, <span class="keyword">this</span>._onClickTarget);</span><br></pre></td></tr></table></figure>
-<h3 id="自动化检测脚本"><a href="#自动化检测脚本" class="headerlink" title="自动化检测脚本"></a>自动化检测脚本</h3><p>顺手写了个简单的检测已知漏洞的flash xss检测脚本，下载地址见 <a href="https://github.com/riusksk/FlashScanner" target="_blank" rel="external">FlashScanner</a>：</p>
-<center><br><img src="/media/flash_xss/checker.png" alt=""><br></center>
-
-
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2013/03/07/若干flash-xss漏洞分析/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/Flash/">Flash</a>, <a href="/tags/XSS/">XSS</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -763,7 +767,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>29</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>30</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>4</small></li>
   
@@ -775,7 +779,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 17.5px;">Android</a> <a href="/tags/BlackHat/" style="font-size: 15px;">BlackHat</a> <a href="/tags/CanSecWest/" style="font-size: 12.5px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 10px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 10px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 12.5px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 12.5px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/rootkit/" style="font-size: 10px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/安全审计/" style="font-size: 12.5px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 12.5px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 12.5px;">漏洞</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a>
+    <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 17.5px;">Android</a> <a href="/tags/BlackHat/" style="font-size: 15px;">BlackHat</a> <a href="/tags/CanSecWest/" style="font-size: 12.5px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 12.5px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 10px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 10px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 12.5px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 12.5px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/rootkit/" style="font-size: 10px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/安全审计/" style="font-size: 12.5px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 12.5px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 12.5px;">漏洞</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a>
   </div>
 </div>
 
