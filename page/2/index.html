@@ -77,51 +77,6 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-06-17T08:11:06.000Z"><a href="/2016/06/17/add-articles/">2016-06-17</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2016/06/17/add-articles/">迁移技术文章</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>由于博客大巴体验太差，因此开始启用github去写博客，用markdown+hexo写静态博客的感觉也挺好的，而且更安全。<br>后面我会把以前写的技术文章迁移到本博客，顺便把买来很久一直未用的riusksk.me域名给派上用场了，之前是因为备案流程过于繁琐，才导致一直未使用，使用 <a href="http://riusksk.me" target="_blank" rel="external">http://riusksk.me</a> 解析到 <a href="http://riusksk.github.io">http://riusksk.github.io</a> ，似乎就不用备案了。<br>近日，我已在本博客上添加RSS订阅和评论功能，欢迎大家订阅和交流。</p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2016/06/17/add-articles/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/随笔杂谈/">随笔杂谈</a>
-  </div>
-
-        
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
         <time datetime="2016-05-25T02:09:17.000Z"><a href="/2016/05/25/PHDays-2016/">2016-05-25</a></time>
       
       
@@ -295,39 +250,36 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2015-07-09T16:00:00.000Z"><a href="/2015/07/10/Hacking-Team-武器库研究（三）：core-android-audiocapture/">2015-07-10</a></time>
+        <time datetime="2015-07-10T16:00:00.000Z"><a href="/2015/07/11/Hacking-Team-武器库研究（四）：Flash-New-0Day-opaqueBackground-UAF/">2015-07-11</a></time>
       
       
   
-    <h1 class="title"><a href="/2015/07/10/Hacking-Team-武器库研究（三）：core-android-audiocapture/">Hacking Team 武器库研究（三）：core-android-audiocapture</a></h1>
+    <h1 class="title"><a href="/2015/07/11/Hacking-Team-武器库研究（四）：Flash-New-0Day-opaqueBackground-UAF/">Hacking Team 武器库研究（四）：Flash New 0Day (opaqueBackground UAF)</a></h1>
   
 
     </header>
     <div class="entry">
       
-        <p>泄露的core-android-audiocapture一款Android平台下基于DBI Hook框架的语音窃取工具，可窃取当前国内外流行的即时聊天工具，比如wechat、whatsapp、skype等等。</p>
-<p>##【源码分析】</p>
-<p>1、搜索 mediaserver 进程，然后注入libt.so，并将窃取的语音文件dump到指定目录。</p>
-<p><img src="http://riusksk.me/media/hackteam03/1.png" alt=""></p>
-<p>2、查看libt.c源码，其动态链接库的构造函数为my_init，这里参数和返回值都必须为空。</p>
-<p><img src="http://riusksk.me/media/hackteam03/2.png" alt=""></p>
-<p>3、检测当前的Android系统是否为4.x版本，然后分不同的子版本进行处理。</p>
-<p><img src="http://riusksk.me/media/hackteam03/3.png" alt=""></p>
-<p>4、比如对于Android 4.0版本，会指定mStramType和mname的偏移量，不同系统版本对应的偏移量不同，同时也定义一些将被hook的函数，这些Hook_coverage_x是定义在hijack_func/hooker.h中，对应的函数名在注释代码中已经写得很清楚，主要是Hook Android系统的audio接口提供库libaudiofinger.so里的函数，以用于实现录音（RecordThread）和放音（PlaybackThread）功能。</p>
-<p><img src="http://riusksk.me/media/hackteam03/4.png" alt=""><br><img src="http://riusksk.me/media/hackteam03/5.png" alt=""></p>
-<p>5、以Hook回调函数recordTrack_getNextBuffer3_h为例分析下它的修改行为，该函数定义在hijack_func/hooker_thumb.c中，原getNextBuffer获取的缓冲区主要是用于存放录音数据，而录音的开始、停止动作的相关函数也是被hook掉。在recordTrack_getNextBuffer3_h函数中先调用原始函数，得到返回后的结果，然后获取帧大小、采样率、帧数以及原始的AudioBufferProvider::Buffer地址。</p>
-<p><img src="http://riusksk.me/media/hackteam03/6.png" alt=""></p>
-<p>6、创建指定格式的文件名，将语音数据dump出来写入到前面创建的文件：</p>
-<p><img src="http://riusksk.me/media/hackteam03/7.png" alt=""></p>
-<p><img src="http://riusksk.me/media/hackteam03/8.png" alt=""></p>
-<p>7、录音Hook的日志记录如下，其它hook动作类似，此处就不一一分析。</p>
-<p><img src="http://riusksk.me/media/hackteam03/9.png" alt=""></p>
-<p><img src="http://riusksk.me/media/hackteam03/10.png" alt=""></p>
-<p>8、生成的dump文件，会再调用decode.py去转换成wav语音文件</p>
-<p><img src="http://riusksk.me/media/hackteam03/11.png" alt=""></p>
-<p><img src="http://riusksk.me/media/hackteam03/12.png" alt=""></p>
-<p>##【结语】</p>
-<p>网上有人说这工具会去解密微信的语音格式，其实它根本没有做这方面的处理，也没必要，因为它Hook的Android系统的Audio库，当你使用一些即时聊天工具进行语音对话时，就会触发放音的函数，此时语音数据早就可以拿到，而decoder.py只是作一些wav的格式化处理，使得dump出来的文件能够转换成可播放的wav文件。在decoder目录下的一些聊天工具目录，只不过是Hacking Team成员在作一些测试而已。</p>
+        <p>周末大清早起来，就看到知道创宇在微博上说，Hacking Team又泄露新的Flash 0Day，在当前最新实测可用。于是笔者下载了一份利用代码，经测试确实在最新版上可利用，目前Adobe官方未发布补丁。此次泄露的0day并没有在泄露的工具库里面，而是在邮件附件中被发现的。</p>
+<p><img src="http://riusksk.me/media/hackteam04/1.png" alt=""></p>
+<p>##【利用代码分析】</p>
+<p>1、这次的漏洞主要出现在AS3 “opaqueBackground” 属性上，它主要用于设置背景颜色。首先创建_ar Array数组，然后用vector.<uint>对象填充。</uint></p>
+<p><img src="http://riusksk.me/media/hackteam04/2.png" alt=""></p>
+<p>2、接着创建TextLine对象，然后设置它的opaqueBackground属性，再自定义valueOf函数，这个函数是触发漏洞的关键，跟前几个flash漏洞类似。</p>
+<p><img src="http://riusksk.me/media/hackteam04/3.png" alt=""></p>
+<p>3、设置opaqueBackground属性，将_mc（MyClass类型）赋予opaqueBackground，由于数据类型不同，AVM会进行类型转换，此时自定义的valueOf2就会被调用。</p>
+<p><img src="http://riusksk.me/media/hackteam04/4.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam04/5.png" alt=""></p>
+<p>4、调用recreateTextLine函数重建TextLine，导致原分配的TextLine对象内存被释放，但程序依然保留着对它的引用，所以漏洞也是个UAF漏洞。接着重新设置_ar[i].length的长度值（_vLen 大于原始长度值 ），会导致重新分配内存，从而占用已释放的内存，此时里面都是vector.<uint>对象。最后返回_vLen+8的值给_ar[_cnt].opaqueBackground，如果利用成功，它刚好会去篡改某个vector.<uint>对象的长度值，这里是改为106大小。</uint></uint></p>
+<p><img src="http://riusksk.me/media/hackteam04/6.png" alt=""></p>
+<p>5、找到被篡改了长度的vector对象，由于其长度值被更改，允许读取到更大内存空间的数据，再用这个被改的vector去覆盖下一个vector长度为0x40000000，从而获取需要调用的函数地址，绕过ASLR保护。根据不同的系统平台，选择不同的shellcode代码执行，这些跟前2个flash 漏洞的利用模板基本一致。</p>
+<p><img src="http://riusksk.me/media/hackteam04/7.png" alt=""></p>
+<p>6、内存搜索的方式也是采用搜索“MZ”PE头这种暴力方式，再去解析PE文件格式，从导入表中的找到kernel32.dll库，再从其函数名列表里找到VirtualProtect函数，进而找到对应的函数地址进行调用。</p>
+<p><img src="http://riusksk.me/media/hackteam04/8.png" alt=""></p>
+<p>7、看下ShellWin32.Exec函数，通过内存搜索找到VirtualProtect函数地址，将包含执行calc的shellcode设置为可执行权限，以此绕过DEP保护，并用指向shellcode的指针替换payload对应的JIT函数指针，当调用Payload.call 时则执行的正是shellcode。</p>
+<p><img src="http://riusksk.me/media/hackteam04/9.png" alt=""></p>
+<p>##【总结】</p>
+<p>此次漏洞主要是AS3 opaqueBackground 属性导致的UAF漏洞，依然是valueOf导致的漏洞，此次Hacking Team 曝光的3个漏洞均是valueOf问题，用的基本是同一套利用模板，并且支持多个平台环境，都是采用vector exploit技术去实现信息泄露，从而绕过ASLR，再调用virtualProtect去赋予shellcode可执行权限，以此绕过DEP保护。可以预见未来将会有很多flash exploit 采用类似技术，甚至可能在一些恶意样本中找到Hacking Team的Flash利用模板，未来的利用代码将会更加工程化，通用化。</p>
 
       
     </div>
@@ -335,7 +287,7 @@
     <footer>
         <div class="alignright">
           
-          <a href="/2015/07/10/Hacking-Team-武器库研究（三）：core-android-audiocapture/#comment" class="comment-link">评论</a>
+          <a href="/2015/07/11/Hacking-Team-武器库研究（四）：Flash-New-0Day-opaqueBackground-UAF/#comment" class="comment-link">评论</a>
           
           <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
         </div>
@@ -348,7 +300,66 @@
         
   
   <div class="tags">
-    <a href="/tags/Android/">Android</a>, <a href="/tags/Hacking-Team/">Hacking Team</a>, <a href="/tags/Hook/">Hook</a>
+    <a href="/tags/Hacking-Team/">Hacking Team</a>, <a href="/tags/Flash/">Flash</a>, <a href="/tags/0day/">0day</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-07-09T16:00:00.000Z"><a href="/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/">2015-07-10</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/">Hacking Team 武器库研究（二）：CVE-2015-5119 Flash 0day</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>目前 Hacking Team 泄露的Flash 0Day已经修复，官方已提供补丁下载，与此同时Metasploit已经提供有漏洞利用代码。在HT泄露的源码目录里，已经包含有对漏洞的简要分析。</p>
+<h2 id="【源码分析】"><a href="#【源码分析】" class="headerlink" title="【源码分析】"></a><strong>【源码分析】</strong></h2><p>1、在MyClass.TryExp1函数中触发漏洞，先分配一组ByteArray，长度为0xfa0，相当于0x1000大小的内存。</p>
+<p><img src="http://riusksk.me/media/hackteam02/1.png" alt=""></p>
+<p>2、设置ByteArray值，在将MyClass类赋值给_ba[3]时，AVM会调用MyClass.valueOf函数试图将MyClass类型其转换成Byte类型。</p>
+<p><img src="http://riusksk.me/media/hackteam02/2.png" alt=""></p>
+<p>3、在valueOf 函数中会重新设置更大长度的ByteArray，导致释放原有的ByteArray内存，再重新分配，但是valueOf函数返回后，依然保持着对已释放内存的引用，从而导致UAF漏洞的发生。紧接着分配一堆0x3f0大小的vector.<uint>对象，以占用已释放的内存，然后返回0x40值给ba[3]，刚好覆盖vector对象头部的长度值，以实现读写任意内存地址。</uint></p>
+<p><img src="http://riusksk.me/media/hackteam02/3.png" alt=""></p>
+<p>4、后面的代码基本跟第一篇分析文章中介绍一样。再补充下上面调用valueOf转换类型的AVM伪代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> ByteArray.setObjInternal(<span class="keyword">int</span> offset, obj)</span><br><span class="line">&#123;</span><br><span class="line">    byte* dest = <span class="keyword">this</span>.getStorage(offset);</span><br><span class="line">    dest* = toInteger(obj);     <span class="comment">// call MyClass.valueOf（）</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将ba[3]的内存存储地址保存到本地定义的目标指针，然后对象类型转换成整数类型并赋值给目标指针，当ByteArray数组长度改变时，它会释放原有ba内存，目标指针就成为悬挂指针。</p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Hacking-Team/">Hacking Team</a>, <a href="/tags/Flash/">Flash</a>, <a href="/tags/0day/">0day</a>
   </div>
 
         <!-- partial('post/share') -->
@@ -431,26 +442,39 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2015-07-09T16:00:00.000Z"><a href="/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/">2015-07-10</a></time>
+        <time datetime="2015-07-09T16:00:00.000Z"><a href="/2015/07/10/Hacking-Team-武器库研究（三）：core-android-audiocapture/">2015-07-10</a></time>
       
       
   
-    <h1 class="title"><a href="/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/">Hacking Team 武器库研究（二）：CVE-2015-5119 Flash 0day</a></h1>
+    <h1 class="title"><a href="/2015/07/10/Hacking-Team-武器库研究（三）：core-android-audiocapture/">Hacking Team 武器库研究（三）：core-android-audiocapture</a></h1>
   
 
     </header>
     <div class="entry">
       
-        <p>目前 Hacking Team 泄露的Flash 0Day已经修复，官方已提供补丁下载，与此同时Metasploit已经提供有漏洞利用代码。在HT泄露的源码目录里，已经包含有对漏洞的简要分析。</p>
-<h2 id="【源码分析】"><a href="#【源码分析】" class="headerlink" title="【源码分析】"></a><strong>【源码分析】</strong></h2><p>1、在MyClass.TryExp1函数中触发漏洞，先分配一组ByteArray，长度为0xfa0，相当于0x1000大小的内存。</p>
-<p><img src="http://riusksk.me/media/hackteam02/1.png" alt=""></p>
-<p>2、设置ByteArray值，在将MyClass类赋值给_ba[3]时，AVM会调用MyClass.valueOf函数试图将MyClass类型其转换成Byte类型。</p>
-<p><img src="http://riusksk.me/media/hackteam02/2.png" alt=""></p>
-<p>3、在valueOf 函数中会重新设置更大长度的ByteArray，导致释放原有的ByteArray内存，再重新分配，但是valueOf函数返回后，依然保持着对已释放内存的引用，从而导致UAF漏洞的发生。紧接着分配一堆0x3f0大小的vector.<uint>对象，以占用已释放的内存，然后返回0x40值给ba[3]，刚好覆盖vector对象头部的长度值，以实现读写任意内存地址。</uint></p>
-<p><img src="http://riusksk.me/media/hackteam02/3.png" alt=""></p>
-<p>4、后面的代码基本跟第一篇分析文章中介绍一样。再补充下上面调用valueOf转换类型的AVM伪代码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> ByteArray.setObjInternal(<span class="keyword">int</span> offset, obj)</span><br><span class="line">&#123;</span><br><span class="line">    byte* dest = <span class="keyword">this</span>.getStorage(offset);</span><br><span class="line">    dest* = toInteger(obj);     <span class="comment">// call MyClass.valueOf（）</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>将ba[3]的内存存储地址保存到本地定义的目标指针，然后对象类型转换成整数类型并赋值给目标指针，当ByteArray数组长度改变时，它会释放原有ba内存，目标指针就成为悬挂指针。</p>
+        <p>泄露的core-android-audiocapture一款Android平台下基于DBI Hook框架的语音窃取工具，可窃取当前国内外流行的即时聊天工具，比如wechat、whatsapp、skype等等。</p>
+<p>##【源码分析】</p>
+<p>1、搜索 mediaserver 进程，然后注入libt.so，并将窃取的语音文件dump到指定目录。</p>
+<p><img src="http://riusksk.me/media/hackteam03/1.png" alt=""></p>
+<p>2、查看libt.c源码，其动态链接库的构造函数为my_init，这里参数和返回值都必须为空。</p>
+<p><img src="http://riusksk.me/media/hackteam03/2.png" alt=""></p>
+<p>3、检测当前的Android系统是否为4.x版本，然后分不同的子版本进行处理。</p>
+<p><img src="http://riusksk.me/media/hackteam03/3.png" alt=""></p>
+<p>4、比如对于Android 4.0版本，会指定mStramType和mname的偏移量，不同系统版本对应的偏移量不同，同时也定义一些将被hook的函数，这些Hook_coverage_x是定义在hijack_func/hooker.h中，对应的函数名在注释代码中已经写得很清楚，主要是Hook Android系统的audio接口提供库libaudiofinger.so里的函数，以用于实现录音（RecordThread）和放音（PlaybackThread）功能。</p>
+<p><img src="http://riusksk.me/media/hackteam03/4.png" alt=""><br><img src="http://riusksk.me/media/hackteam03/5.png" alt=""></p>
+<p>5、以Hook回调函数recordTrack_getNextBuffer3_h为例分析下它的修改行为，该函数定义在hijack_func/hooker_thumb.c中，原getNextBuffer获取的缓冲区主要是用于存放录音数据，而录音的开始、停止动作的相关函数也是被hook掉。在recordTrack_getNextBuffer3_h函数中先调用原始函数，得到返回后的结果，然后获取帧大小、采样率、帧数以及原始的AudioBufferProvider::Buffer地址。</p>
+<p><img src="http://riusksk.me/media/hackteam03/6.png" alt=""></p>
+<p>6、创建指定格式的文件名，将语音数据dump出来写入到前面创建的文件：</p>
+<p><img src="http://riusksk.me/media/hackteam03/7.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam03/8.png" alt=""></p>
+<p>7、录音Hook的日志记录如下，其它hook动作类似，此处就不一一分析。</p>
+<p><img src="http://riusksk.me/media/hackteam03/9.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam03/10.png" alt=""></p>
+<p>8、生成的dump文件，会再调用decode.py去转换成wav语音文件</p>
+<p><img src="http://riusksk.me/media/hackteam03/11.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam03/12.png" alt=""></p>
+<p>##【结语】</p>
+<p>网上有人说这工具会去解密微信的语音格式，其实它根本没有做这方面的处理，也没必要，因为它Hook的Android系统的Audio库，当你使用一些即时聊天工具进行语音对话时，就会触发放音的函数，此时语音数据早就可以拿到，而decoder.py只是作一些wav的格式化处理，使得dump出来的文件能够转换成可播放的wav文件。在decoder目录下的一些聊天工具目录，只不过是Hacking Team成员在作一些测试而已。</p>
 
       
     </div>
@@ -458,7 +482,7 @@
     <footer>
         <div class="alignright">
           
-          <a href="/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/#comment" class="comment-link">评论</a>
+          <a href="/2015/07/10/Hacking-Team-武器库研究（三）：core-android-audiocapture/#comment" class="comment-link">评论</a>
           
           <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
         </div>
@@ -471,7 +495,7 @@
         
   
   <div class="tags">
-    <a href="/tags/Hacking-Team/">Hacking Team</a>, <a href="/tags/Flash/">Flash</a>, <a href="/tags/0day/">0day</a>
+    <a href="/tags/Android/">Android</a>, <a href="/tags/Hacking-Team/">Hacking Team</a>, <a href="/tags/Hook/">Hook</a>
   </div>
 
         <!-- partial('post/share') -->
@@ -731,15 +755,15 @@
       </li>
     
       <li>
-        <a href="/2016/07/11/Hacking-Team-武器库研究（四）：Flash-New-0Day-opaqueBackground-UAF/">Hacking Team 武器库研究（四）：Flash New 0Day (opaqueBackground UAF)</a>
-      </li>
-    
-      <li>
         <a href="/2016/07/02/《漏洞战争：软件漏洞分析精要》已开售/">《漏洞战争：软件漏洞分析精要》已开售</a>
       </li>
     
       <li>
         <a href="/2016/06/23/ios-auditor/">浅谈iOS应用安全自动化审计</a>
+      </li>
+    
+      <li>
+        <a href="/2016/06/17/add-articles/">迁移技术文章</a>
       </li>
     
   </ul>

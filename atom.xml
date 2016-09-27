@@ -347,52 +347,6 @@
   </entry>
   
   <entry>
-    <title>Hacking Team 武器库研究（四）：Flash New 0Day (opaqueBackground UAF)</title>
-    <link href="http://riusksk.github.io/2016/07/11/Hacking-Team-%E6%AD%A6%E5%99%A8%E5%BA%93%E7%A0%94%E7%A9%B6%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9AFlash-New-0Day-opaqueBackground-UAF/"/>
-    <id>http://riusksk.github.io/2016/07/11/Hacking-Team-武器库研究（四）：Flash-New-0Day-opaqueBackground-UAF/</id>
-    <published>2016-07-10T16:00:00.000Z</published>
-    <updated>2016-09-27T09:33:51.000Z</updated>
-    
-    <content type="html">&lt;p&gt;周末大清早起来，就看到知道创宇在微博上说，Hacking Team又泄露新的Flash 0Day，在当前最新实测可用。于是笔者下载了一份利用代码，经测试确实在最新版上可利用，目前Adobe官方未发布补丁。此次泄露的0day并没有在泄露的工具库里面，而是在邮件附件中被发现的。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam04/1.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;##【利用代码分析】&lt;/p&gt;
-&lt;p&gt;1、这次的漏洞主要出现在AS3 “opaqueBackground” 属性上，它主要用于设置背景颜色。首先创建_ar Array数组，然后用vector.&lt;uint&gt;对象填充。&lt;/uint&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam04/2.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;2、接着创建TextLine对象，然后设置它的opaqueBackground属性，再自定义valueOf函数，这个函数是触发漏洞的关键，跟前几个flash漏洞类似。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam04/3.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;3、设置opaqueBackground属性，将_mc（MyClass类型）赋予opaqueBackground，由于数据类型不同，AVM会进行类型转换，此时自定义的valueOf2就会被调用。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam04/4.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam04/5.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;4、调用recreateTextLine函数重建TextLine，导致原分配的TextLine对象内存被释放，但程序依然保留着对它的引用，所以漏洞也是个UAF漏洞。接着重新设置_ar[i].length的长度值（_vLen 大于原始长度值 ），会导致重新分配内存，从而占用已释放的内存，此时里面都是vector.&lt;uint&gt;对象。最后返回_vLen+8的值给_ar[_cnt].opaqueBackground，如果利用成功，它刚好会去篡改某个vector.&lt;uint&gt;对象的长度值，这里是改为106大小。&lt;/uint&gt;&lt;/uint&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam04/6.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;5、找到被篡改了长度的vector对象，由于其长度值被更改，允许读取到更大内存空间的数据，再用这个被改的vector去覆盖下一个vector长度为0x40000000，从而获取需要调用的函数地址，绕过ASLR保护。根据不同的系统平台，选择不同的shellcode代码执行，这些跟前2个flash 漏洞的利用模板基本一致。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam04/7.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;6、内存搜索的方式也是采用搜索“MZ”PE头这种暴力方式，再去解析PE文件格式，从导入表中的找到kernel32.dll库，再从其函数名列表里找到VirtualProtect函数，进而找到对应的函数地址进行调用。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam04/8.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;7、看下ShellWin32.Exec函数，通过内存搜索找到VirtualProtect函数地址，将包含执行calc的shellcode设置为可执行权限，以此绕过DEP保护，并用指向shellcode的指针替换payload对应的JIT函数指针，当调用Payload.call 时则执行的正是shellcode。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam04/9.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;##【总结】&lt;/p&gt;
-&lt;p&gt;此次漏洞主要是AS3 opaqueBackground 属性导致的UAF漏洞，依然是valueOf导致的漏洞，此次Hacking Team 曝光的3个漏洞均是valueOf问题，用的基本是同一套利用模板，并且支持多个平台环境，都是采用vector exploit技术去实现信息泄露，从而绕过ASLR，再调用virtualProtect去赋予shellcode可执行权限，以此绕过DEP保护。可以预见未来将会有很多flash exploit 采用类似技术，甚至可能在一些恶意样本中找到Hacking Team的Flash利用模板，未来的利用代码将会更加工程化，通用化。&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;周末大清早起来，就看到知道创宇在微博上说，Hacking Team又泄露新的Flash 0Day，在当前最新实测可用。于是笔者下载了一份利用代码，经测试确实在最新版上可利用，目前Adobe官方未发布补丁。此次泄露的0day并没有在泄露的工具库里面，而是在邮件附件中被发现的。
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
-    
-      <category term="Hacking Team" scheme="http://riusksk.github.io/tags/Hacking-Team/"/>
-    
-      <category term="Flash" scheme="http://riusksk.github.io/tags/Flash/"/>
-    
-      <category term="0day" scheme="http://riusksk.github.io/tags/0day/"/>
-    
-  </entry>
-  
-  <entry>
     <title>《漏洞战争：软件漏洞分析精要》已开售</title>
     <link href="http://riusksk.github.io/2016/07/02/%E3%80%8A%E6%BC%8F%E6%B4%9E%E6%88%98%E4%BA%89%EF%BC%9A%E8%BD%AF%E4%BB%B6%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E7%B2%BE%E8%A6%81%E3%80%8B%E5%B7%B2%E5%BC%80%E5%94%AE/"/>
     <id>http://riusksk.github.io/2016/07/02/《漏洞战争：软件漏洞分析精要》已开售/</id>
@@ -782,6 +736,130 @@
   </entry>
   
   <entry>
+    <title>Hacking Team 武器库研究（四）：Flash New 0Day (opaqueBackground UAF)</title>
+    <link href="http://riusksk.github.io/2015/07/11/Hacking-Team-%E6%AD%A6%E5%99%A8%E5%BA%93%E7%A0%94%E7%A9%B6%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9AFlash-New-0Day-opaqueBackground-UAF/"/>
+    <id>http://riusksk.github.io/2015/07/11/Hacking-Team-武器库研究（四）：Flash-New-0Day-opaqueBackground-UAF/</id>
+    <published>2015-07-10T16:00:00.000Z</published>
+    <updated>2016-09-27T09:35:55.000Z</updated>
+    
+    <content type="html">&lt;p&gt;周末大清早起来，就看到知道创宇在微博上说，Hacking Team又泄露新的Flash 0Day，在当前最新实测可用。于是笔者下载了一份利用代码，经测试确实在最新版上可利用，目前Adobe官方未发布补丁。此次泄露的0day并没有在泄露的工具库里面，而是在邮件附件中被发现的。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam04/1.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;##【利用代码分析】&lt;/p&gt;
+&lt;p&gt;1、这次的漏洞主要出现在AS3 “opaqueBackground” 属性上，它主要用于设置背景颜色。首先创建_ar Array数组，然后用vector.&lt;uint&gt;对象填充。&lt;/uint&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam04/2.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;2、接着创建TextLine对象，然后设置它的opaqueBackground属性，再自定义valueOf函数，这个函数是触发漏洞的关键，跟前几个flash漏洞类似。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam04/3.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;3、设置opaqueBackground属性，将_mc（MyClass类型）赋予opaqueBackground，由于数据类型不同，AVM会进行类型转换，此时自定义的valueOf2就会被调用。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam04/4.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam04/5.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;4、调用recreateTextLine函数重建TextLine，导致原分配的TextLine对象内存被释放，但程序依然保留着对它的引用，所以漏洞也是个UAF漏洞。接着重新设置_ar[i].length的长度值（_vLen 大于原始长度值 ），会导致重新分配内存，从而占用已释放的内存，此时里面都是vector.&lt;uint&gt;对象。最后返回_vLen+8的值给_ar[_cnt].opaqueBackground，如果利用成功，它刚好会去篡改某个vector.&lt;uint&gt;对象的长度值，这里是改为106大小。&lt;/uint&gt;&lt;/uint&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam04/6.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;5、找到被篡改了长度的vector对象，由于其长度值被更改，允许读取到更大内存空间的数据，再用这个被改的vector去覆盖下一个vector长度为0x40000000，从而获取需要调用的函数地址，绕过ASLR保护。根据不同的系统平台，选择不同的shellcode代码执行，这些跟前2个flash 漏洞的利用模板基本一致。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam04/7.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;6、内存搜索的方式也是采用搜索“MZ”PE头这种暴力方式，再去解析PE文件格式，从导入表中的找到kernel32.dll库，再从其函数名列表里找到VirtualProtect函数，进而找到对应的函数地址进行调用。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam04/8.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;7、看下ShellWin32.Exec函数，通过内存搜索找到VirtualProtect函数地址，将包含执行calc的shellcode设置为可执行权限，以此绕过DEP保护，并用指向shellcode的指针替换payload对应的JIT函数指针，当调用Payload.call 时则执行的正是shellcode。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam04/9.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;##【总结】&lt;/p&gt;
+&lt;p&gt;此次漏洞主要是AS3 opaqueBackground 属性导致的UAF漏洞，依然是valueOf导致的漏洞，此次Hacking Team 曝光的3个漏洞均是valueOf问题，用的基本是同一套利用模板，并且支持多个平台环境，都是采用vector exploit技术去实现信息泄露，从而绕过ASLR，再调用virtualProtect去赋予shellcode可执行权限，以此绕过DEP保护。可以预见未来将会有很多flash exploit 采用类似技术，甚至可能在一些恶意样本中找到Hacking Team的Flash利用模板，未来的利用代码将会更加工程化，通用化。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;周末大清早起来，就看到知道创宇在微博上说，Hacking Team又泄露新的Flash 0Day，在当前最新实测可用。于是笔者下载了一份利用代码，经测试确实在最新版上可利用，目前Adobe官方未发布补丁。此次泄露的0day并没有在泄露的工具库里面，而是在邮件附件中被发现的。
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+      <category term="Hacking Team" scheme="http://riusksk.github.io/tags/Hacking-Team/"/>
+    
+      <category term="Flash" scheme="http://riusksk.github.io/tags/Flash/"/>
+    
+      <category term="0day" scheme="http://riusksk.github.io/tags/0day/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hacking Team 武器库研究（二）：CVE-2015-5119 Flash 0day</title>
+    <link href="http://riusksk.github.io/2015/07/10/Hacking-Team-%E6%AD%A6%E5%99%A8%E5%BA%93%E7%A0%94%E7%A9%B6%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9ACVE-2015-5119-Flash-0day/"/>
+    <id>http://riusksk.github.io/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/</id>
+    <published>2015-07-09T16:00:00.000Z</published>
+    <updated>2016-09-27T09:14:16.000Z</updated>
+    
+    <content type="html">&lt;p&gt;目前 Hacking Team 泄露的Flash 0Day已经修复，官方已提供补丁下载，与此同时Metasploit已经提供有漏洞利用代码。在HT泄露的源码目录里，已经包含有对漏洞的简要分析。&lt;/p&gt;
+&lt;h2 id=&quot;【源码分析】&quot;&gt;&lt;a href=&quot;#【源码分析】&quot; class=&quot;headerlink&quot; title=&quot;【源码分析】&quot;&gt;&lt;/a&gt;&lt;strong&gt;【源码分析】&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;1、在MyClass.TryExp1函数中触发漏洞，先分配一组ByteArray，长度为0xfa0，相当于0x1000大小的内存。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam02/1.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;2、设置ByteArray值，在将MyClass类赋值给_ba[3]时，AVM会调用MyClass.valueOf函数试图将MyClass类型其转换成Byte类型。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam02/2.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;3、在valueOf 函数中会重新设置更大长度的ByteArray，导致释放原有的ByteArray内存，再重新分配，但是valueOf函数返回后，依然保持着对已释放内存的引用，从而导致UAF漏洞的发生。紧接着分配一堆0x3f0大小的vector.&lt;uint&gt;对象，以占用已释放的内存，然后返回0x40值给ba[3]，刚好覆盖vector对象头部的长度值，以实现读写任意内存地址。&lt;/uint&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam02/3.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;4、后面的代码基本跟第一篇分析文章中介绍一样。再补充下上面调用valueOf转换类型的AVM伪代码：&lt;/p&gt;
+&lt;figure class=&quot;highlight c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; ByteArray.setObjInternal(&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; offset, obj)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    byte* dest = &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.getStorage(offset);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    dest* = toInteger(obj);     &lt;span class=&quot;comment&quot;&gt;// call MyClass.valueOf（）&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;将ba[3]的内存存储地址保存到本地定义的目标指针，然后对象类型转换成整数类型并赋值给目标指针，当ByteArray数组长度改变时，它会释放原有ba内存，目标指针就成为悬挂指针。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;目前 Hacking Team 泄露的Flash 0Day已经修复，官方已提供补丁下载，与此同时Metasploit已经提供有漏洞利用代码。在HT泄露的源码目录里，已经包含有对漏洞的简要分析。&lt;/p&gt;
+&lt;h2 id=&quot;【源码分析】&quot;&gt;&lt;a href=&quot;#【源码分析】&quot; cl
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+      <category term="Hacking Team" scheme="http://riusksk.github.io/tags/Hacking-Team/"/>
+    
+      <category term="Flash" scheme="http://riusksk.github.io/tags/Flash/"/>
+    
+      <category term="0day" scheme="http://riusksk.github.io/tags/0day/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hacking Team 武器库研究（一）：CVE-2015-0349 Flash ConvolutionFilter UAF</title>
+    <link href="http://riusksk.github.io/2015/07/10/Hacking-Team-%E6%AD%A6%E5%99%A8%E5%BA%93%E7%A0%94%E7%A9%B6%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9ACVE-2015-0349-Flash-ConvolutionFilter-UAF/"/>
+    <id>http://riusksk.github.io/2015/07/10/Hacking-Team-武器库研究（一）：CVE-2015-0349-Flash-ConvolutionFilter-UAF/</id>
+    <published>2015-07-09T16:00:00.000Z</published>
+    <updated>2016-09-27T09:04:09.000Z</updated>
+    
+    <content type="html">&lt;p&gt;CVE-2015-0349 Flash ConvolutionFilter UAF 是今年Pwn2Own大赛上被用于攻破64位Flash的漏洞，在泄露的Hacking Team武器库中就包括了该漏洞的利用代码，以及利用本地提权漏洞作为shellcode，以绕过沙盒的保护。泄露的利用代码包含完整的工程文件，用Flash Develop打开项目即可编译。&lt;/p&gt;
+&lt;h2 id=&quot;【源码分析】&quot;&gt;&lt;a href=&quot;#【源码分析】&quot; class=&quot;headerlink&quot; title=&quot;【源码分析】&quot;&gt;&lt;/a&gt;&lt;strong&gt;【源码分析】&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;1、MyClass.TryExp1是漏洞利用的入口函数，它先创建ConvolutionFilter类，它是一个矩阵环绕滤镜，比如用于实现模糊、斜边、锐化等效果。它的2个参数分别为matrixX矩阵列数和matrixY矩阵行数，这里分别是14和15。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/1.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;2、接下来程序将分配ConvolutionFilter的a（Array类型）赋值给_cf （ConvolutionFilter对象），并设置matrix值为m（Array类型），接着将matrix数组的第一个元素赋值给m0，当它不为0是则表示漏洞不存在，否则即存在UAF漏洞。为何如此？在第一点中，我们知道m[0]是MyClass类，该类里面定义有valueOf方法，在设置martix值时会调用到该方法，具体见第3点分析。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/2.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;3、在valueOf 函数中，matrixX会被重新设置为15（原始值为14），导致原先有matrix数组被释放，然后重新分配矩阵滤镜的matrixX内存，但此时_cf.matrix依然保持着对已释放的matrix数组的引用，所以在第2点会会去判断matrix数组首个元素值是否为0（原初始值也是0），也就是判断已释放的数组是否还可被引用。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/3.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;4、通过分配一堆Vector.&lt;uint&gt;对象去占用已释放的内存，长度刚好与matrix数组长度相同，也就是matrixX &lt;em&gt; matrixY = 14&lt;/em&gt;15，每个vector.&lt;uint&gt;对象的实际大小就是14&lt;em&gt;15&lt;/em&gt;4=0x348(840)，最后在从valueOf函数中返回2，2会被写入matrix数组首个元素中，但此时实际是向Vector对象写入数据，从而更改vector对象长度，实现任意内存读写。&lt;/uint&gt;&lt;/uint&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/4.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;5、再回头继续看MyClass.TryExp1函数，找到已经被篡改长度值的vector对象，再根据不同的系统平台执行不同的shellcode代码。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/5.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;6、看下32位windows平台的shellcode执行相关的ShellWin32类，先看初始化函数init，它只是做一些全局变量赋值。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/6.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;7、真正用于执行代码的是ShellWin32.Exec函数，先获取包含shellcode的_x32对象地址，然后在内存中搜索PE头，解析PE文件格式，从导入表中找到VirtualProtect函数地址，调用它对shellcode内存地址设置可执行权限，接着找到自定义的payload空函数对应的JIT函数指针，用shellcode地址去替换JIT指针，最后调用payload.call 以执行shellcode的。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/7.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;CVE-2015-0349 Flash ConvolutionFilter UAF 是今年Pwn2Own大赛上被用于攻破64位Flash的漏洞，在泄露的Hacking Team武器库中就包括了该漏洞的利用代码，以及利用本地提权漏洞作为shellcode，以绕过沙盒的保护。泄
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+      <category term="Hacking Team" scheme="http://riusksk.github.io/tags/Hacking-Team/"/>
+    
+      <category term="Flash" scheme="http://riusksk.github.io/tags/Flash/"/>
+    
+      <category term="UAF" scheme="http://riusksk.github.io/tags/UAF/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Hacking Team 武器库研究（三）：core-android-audiocapture</title>
     <link href="http://riusksk.github.io/2015/07/10/Hacking-Team-%E6%AD%A6%E5%99%A8%E5%BA%93%E7%A0%94%E7%A9%B6%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9Acore-android-audiocapture/"/>
     <id>http://riusksk.github.io/2015/07/10/Hacking-Team-武器库研究（三）：core-android-audiocapture/</id>
@@ -829,84 +907,6 @@
       <category term="Hacking Team" scheme="http://riusksk.github.io/tags/Hacking-Team/"/>
     
       <category term="Hook" scheme="http://riusksk.github.io/tags/Hook/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hacking Team 武器库研究（一）：CVE-2015-0349 Flash ConvolutionFilter UAF</title>
-    <link href="http://riusksk.github.io/2015/07/10/Hacking-Team-%E6%AD%A6%E5%99%A8%E5%BA%93%E7%A0%94%E7%A9%B6%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9ACVE-2015-0349-Flash-ConvolutionFilter-UAF/"/>
-    <id>http://riusksk.github.io/2015/07/10/Hacking-Team-武器库研究（一）：CVE-2015-0349-Flash-ConvolutionFilter-UAF/</id>
-    <published>2015-07-09T16:00:00.000Z</published>
-    <updated>2016-09-27T09:04:09.000Z</updated>
-    
-    <content type="html">&lt;p&gt;CVE-2015-0349 Flash ConvolutionFilter UAF 是今年Pwn2Own大赛上被用于攻破64位Flash的漏洞，在泄露的Hacking Team武器库中就包括了该漏洞的利用代码，以及利用本地提权漏洞作为shellcode，以绕过沙盒的保护。泄露的利用代码包含完整的工程文件，用Flash Develop打开项目即可编译。&lt;/p&gt;
-&lt;h2 id=&quot;【源码分析】&quot;&gt;&lt;a href=&quot;#【源码分析】&quot; class=&quot;headerlink&quot; title=&quot;【源码分析】&quot;&gt;&lt;/a&gt;&lt;strong&gt;【源码分析】&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;1、MyClass.TryExp1是漏洞利用的入口函数，它先创建ConvolutionFilter类，它是一个矩阵环绕滤镜，比如用于实现模糊、斜边、锐化等效果。它的2个参数分别为matrixX矩阵列数和matrixY矩阵行数，这里分别是14和15。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/1.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;2、接下来程序将分配ConvolutionFilter的a（Array类型）赋值给_cf （ConvolutionFilter对象），并设置matrix值为m（Array类型），接着将matrix数组的第一个元素赋值给m0，当它不为0是则表示漏洞不存在，否则即存在UAF漏洞。为何如此？在第一点中，我们知道m[0]是MyClass类，该类里面定义有valueOf方法，在设置martix值时会调用到该方法，具体见第3点分析。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/2.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;3、在valueOf 函数中，matrixX会被重新设置为15（原始值为14），导致原先有matrix数组被释放，然后重新分配矩阵滤镜的matrixX内存，但此时_cf.matrix依然保持着对已释放的matrix数组的引用，所以在第2点会会去判断matrix数组首个元素值是否为0（原初始值也是0），也就是判断已释放的数组是否还可被引用。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/3.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;4、通过分配一堆Vector.&lt;uint&gt;对象去占用已释放的内存，长度刚好与matrix数组长度相同，也就是matrixX &lt;em&gt; matrixY = 14&lt;/em&gt;15，每个vector.&lt;uint&gt;对象的实际大小就是14&lt;em&gt;15&lt;/em&gt;4=0x348(840)，最后在从valueOf函数中返回2，2会被写入matrix数组首个元素中，但此时实际是向Vector对象写入数据，从而更改vector对象长度，实现任意内存读写。&lt;/uint&gt;&lt;/uint&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/4.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;5、再回头继续看MyClass.TryExp1函数，找到已经被篡改长度值的vector对象，再根据不同的系统平台执行不同的shellcode代码。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/5.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;6、看下32位windows平台的shellcode执行相关的ShellWin32类，先看初始化函数init，它只是做一些全局变量赋值。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/6.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;7、真正用于执行代码的是ShellWin32.Exec函数，先获取包含shellcode的_x32对象地址，然后在内存中搜索PE头，解析PE文件格式，从导入表中找到VirtualProtect函数地址，调用它对shellcode内存地址设置可执行权限，接着找到自定义的payload空函数对应的JIT函数指针，用shellcode地址去替换JIT指针，最后调用payload.call 以执行shellcode的。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/7.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;CVE-2015-0349 Flash ConvolutionFilter UAF 是今年Pwn2Own大赛上被用于攻破64位Flash的漏洞，在泄露的Hacking Team武器库中就包括了该漏洞的利用代码，以及利用本地提权漏洞作为shellcode，以绕过沙盒的保护。泄
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
-    
-      <category term="Hacking Team" scheme="http://riusksk.github.io/tags/Hacking-Team/"/>
-    
-      <category term="Flash" scheme="http://riusksk.github.io/tags/Flash/"/>
-    
-      <category term="UAF" scheme="http://riusksk.github.io/tags/UAF/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hacking Team 武器库研究（二）：CVE-2015-5119 Flash 0day</title>
-    <link href="http://riusksk.github.io/2015/07/10/Hacking-Team-%E6%AD%A6%E5%99%A8%E5%BA%93%E7%A0%94%E7%A9%B6%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9ACVE-2015-5119-Flash-0day/"/>
-    <id>http://riusksk.github.io/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/</id>
-    <published>2015-07-09T16:00:00.000Z</published>
-    <updated>2016-09-27T09:14:16.000Z</updated>
-    
-    <content type="html">&lt;p&gt;目前 Hacking Team 泄露的Flash 0Day已经修复，官方已提供补丁下载，与此同时Metasploit已经提供有漏洞利用代码。在HT泄露的源码目录里，已经包含有对漏洞的简要分析。&lt;/p&gt;
-&lt;h2 id=&quot;【源码分析】&quot;&gt;&lt;a href=&quot;#【源码分析】&quot; class=&quot;headerlink&quot; title=&quot;【源码分析】&quot;&gt;&lt;/a&gt;&lt;strong&gt;【源码分析】&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;1、在MyClass.TryExp1函数中触发漏洞，先分配一组ByteArray，长度为0xfa0，相当于0x1000大小的内存。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam02/1.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;2、设置ByteArray值，在将MyClass类赋值给_ba[3]时，AVM会调用MyClass.valueOf函数试图将MyClass类型其转换成Byte类型。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam02/2.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;3、在valueOf 函数中会重新设置更大长度的ByteArray，导致释放原有的ByteArray内存，再重新分配，但是valueOf函数返回后，依然保持着对已释放内存的引用，从而导致UAF漏洞的发生。紧接着分配一堆0x3f0大小的vector.&lt;uint&gt;对象，以占用已释放的内存，然后返回0x40值给ba[3]，刚好覆盖vector对象头部的长度值，以实现读写任意内存地址。&lt;/uint&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam02/3.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;4、后面的代码基本跟第一篇分析文章中介绍一样。再补充下上面调用valueOf转换类型的AVM伪代码：&lt;/p&gt;
-&lt;figure class=&quot;highlight c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; ByteArray.setObjInternal(&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; offset, obj)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    byte* dest = &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.getStorage(offset);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    dest* = toInteger(obj);     &lt;span class=&quot;comment&quot;&gt;// call MyClass.valueOf（）&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;将ba[3]的内存存储地址保存到本地定义的目标指针，然后对象类型转换成整数类型并赋值给目标指针，当ByteArray数组长度改变时，它会释放原有ba内存，目标指针就成为悬挂指针。&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;目前 Hacking Team 泄露的Flash 0Day已经修复，官方已提供补丁下载，与此同时Metasploit已经提供有漏洞利用代码。在HT泄露的源码目录里，已经包含有对漏洞的简要分析。&lt;/p&gt;
-&lt;h2 id=&quot;【源码分析】&quot;&gt;&lt;a href=&quot;#【源码分析】&quot; cl
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
-    
-      <category term="Hacking Team" scheme="http://riusksk.github.io/tags/Hacking-Team/"/>
-    
-      <category term="Flash" scheme="http://riusksk.github.io/tags/Flash/"/>
-    
-      <category term="0day" scheme="http://riusksk.github.io/tags/0day/"/>
     
   </entry>
   
