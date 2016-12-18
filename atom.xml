@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2016-12-17T09:09:59.000Z</updated>
+  <updated>2016-12-18T09:50:50.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://riusksk.github.io/2016/12/17/2016%E5%B9%B4%E5%88%B7%E8%BF%87%E7%9A%84CVE/"/>
     <id>http://riusksk.github.io/2016/12/17/2016年刷过的CVE/</id>
     <published>2016-12-17T08:32:03.000Z</published>
-    <updated>2016-12-17T09:09:59.000Z</updated>
+    <updated>2016-12-18T09:50:50.000Z</updated>
     
     <content type="html">&lt;p&gt;今年也开始尝试跟风刷CVE，主要是下半年才开始搞，开始聚集Google和Apple，Google Android 因为撞洞，最终连个CVE也没有，也是惨，只能寄希望于2017年了。革命尚未成功，同志仍需努力！&lt;/p&gt;
 &lt;table&gt;
@@ -134,14 +134,6 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;其实这些都不重要，重要的是今年用一枚Flash漏洞抵了一枚钻戒：&lt;/p&gt;
-&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://riusksk.me/media/ring.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;&lt;/center&gt;
-
-
-
-
-
-
 </content>
     
     <summary type="html">
