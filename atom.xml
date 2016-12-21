@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2016-12-18T09:50:50.000Z</updated>
+  <updated>2016-12-21T04:44:13.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,70 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>CVE-2016-7595 Apple macOS/iOS CoreText OTL::GPOS::ApplyPairPos 越界访问漏洞分析</title>
+    <link href="http://riusksk.github.io/2016/12/21/CVE-2016-7595/"/>
+    <id>http://riusksk.github.io/2016/12/21/CVE-2016-7595/</id>
+    <published>2016-12-21T04:35:49.000Z</published>
+    <updated>2016-12-21T04:44:13.000Z</updated>
+    
+    <content type="html">&lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;2016年12月的Apple安全公告中（&lt;a href=&quot;https://support.apple.com/zh-cn/HT207423&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;macOS公告&lt;/a&gt;与&lt;a href=&quot;https://support.apple.com/zh-cn/HT207422&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;iOS公告&lt;/a&gt;），修复4个由腾讯安全平台部终端安全团队报告的漏洞，其中有2个是字体解析造成的越界访问漏洞，影响 macOS/iOS/watchOS/tvOS等多个平台系统，本文主要分析其中的 CVE-2016-7595 字体漏洞【图1】。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://riusksk.me/media/14819500329936/14819504640098.jpg&quot; alt=&quot;&quot;&gt;&lt;br&gt;图1&lt;/center&gt;
+
+&lt;p&gt;这个漏洞在报给Apple 17天后发布 macOS 10.2.2 测试版补丁，一个半月后发布安全公告和补丁（包括iOS、watchOS和tvOS），难得看见苹果这么积极一次。&lt;/p&gt;
+&lt;p&gt;###漏洞分析&lt;br&gt;此次漏洞是通过Fuzzing发现的，直接对比poc与原始文件的数据，可以发现其实就1个字节的差异（0x00 =&amp;gt; 0x6C）【图2】：&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://riusksk.me/media/14819500329936/14819521265634.jpg&quot; alt=&quot;&quot;&gt;&lt;br&gt;图2&lt;/center&gt;
+
+&lt;p&gt;用ttx命令分析字体格式：&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;╭─riusksk@MacBook  ~/Downloads ‹›&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;╰─➤$ ttx poc.ttf&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dumping &quot;poc.ttf&quot; to &quot;poc#1.ttx&quot;...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dumping &#39;GlyphOrder&#39; table...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dumping &#39;head&#39; table...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dumping &#39;hhea&#39; table...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dumping &#39;maxp&#39; table...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dumping &#39;OS/2&#39; table...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dumping &#39;hmtx&#39; table...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dumping &#39;cmap&#39; table...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dumping &#39;fpgm&#39; table...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dumping &#39;prep&#39; table...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dumping &#39;cvt &#39; table...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dumping &#39;loca&#39; table...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dumping &#39;glyf&#39; table...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dumping &#39;name&#39; table...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dumping &#39;post&#39; table...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dumping &#39;gasp&#39; table...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;/usr/local/lib/python2.7/site-packages/FontTools/fontTools/ttLib/tables/otTables.py:60: UserWarning: Coverage table has start glyph ID out of range: glyph27713.&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  warnings.warn(&quot;Coverage table has start glyph ID out of range: %s.&quot; % start)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;An exception occurred during the decompilation of the &#39;GPOS&#39; table&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dumping &#39;GPOS&#39; table...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dumping &#39;GSUB&#39; table...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dumping &#39;DSIG&#39; table...&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;从上面的提示可以看出，是在解析&lt;code&gt;GPOS&lt;/code&gt;表时，通过&lt;code&gt;glyphID&lt;/code&gt;去&lt;code&gt;Coverage&lt;/code&gt;表索引时导致越界了，其中&lt;code&gt;glyph27713&lt;/code&gt;的数值正是&lt;code&gt;0x6C41（27713）&lt;/code&gt;,也就是上面图1中文件对比的差异值。虽然这是FontTools工具的错误，不代表Apple系统本身，但它跟Apple系统导致崩溃的是同一字节，从这可以直接得到导致崩溃的关键字节是glyphID值。&lt;/p&gt;
+&lt;h4 id=&quot;GPOS表&quot;&gt;&lt;a href=&quot;#GPOS表&quot; class=&quot;headerlink&quot; title=&quot;GPOS表&quot;&gt;&lt;/a&gt;GPOS表&lt;/h4&gt;&lt;p&gt;TrueType/OpenType字体格式中的GPOS表是用于为字体中文本布局及渲染提供glyph位置信息的表，表中各个字体结构如图3所示：&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://riusksk.me/media/14819500329936/14819570625241.jpg&quot; alt=&quot;&quot;&gt;&lt;br&gt;图3&lt;/center&gt;
+
+&lt;p&gt;GPOS表主要包含3个子表：ScriptList、FeatureList和LookupList，本次漏洞主要问题在LookupList子表中的PairAdjustmentPositioning中，PairAdjustmentPositioning子表(PairPos)被用于调整两个glyphs彼此之间的位置。&lt;/p&gt;
+&lt;p&gt;PairPos表下又包含多个PairSet数组，PairSet数组包含Coverage表中每个glyph对应的偏移量，并按Coverage Index来排序。&lt;/p&gt;
+&lt;p&gt;PairSet下包含PairValueRecord指定每一glyph配对(pair)中的第二个glyph（SecondGlyph）的glyph名和索引值GlyphID（对应【图3】中glyphRefID），同时包含两个ValueRecord值去指定第一个glyph和第二个glyph的位置信息。&lt;/p&gt;
+&lt;p&gt;导致越界的漏洞正是用于索引的GlyphID（glyphRefID），用ttx解析原有正常字体文件生成的xml文件，如图4所示，index=”65”就是正常GlyphID值 00 41，如果随便给第1字节设置个值都会导致崩溃。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://riusksk.me/media/14819500329936/14819586010961.jpg&quot; alt=&quot;&quot;&gt;&lt;br&gt;图4&lt;/center&gt;
+
+&lt;h4 id=&quot;调试&quot;&gt;&lt;a href=&quot;#调试&quot; class=&quot;headerlink&quot; title=&quot;调试&quot;&gt;&lt;/a&gt;调试&lt;/h4&gt;&lt;p&gt;用lldb调试下，崩溃后的地址及栈回溯如下：&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;29&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;30&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;31&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;32&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;33&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;34&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;35&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;36&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;37&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;38&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;39&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;40&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;41&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;(lisa)run poc.ttf &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Process 96714 launched&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Process 96714 stopped&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* thread #1: tid = 0x3f119d, 0x00007fffa7c01491 CoreText`OTL::GPOS::ApplyPairPos(OTL::LookupSubtable const*, TGlyphIterator&amp;amp;, OTL::Coverage const&amp;amp;) const + 411, queue = &amp;apos;com.apple.main-thread&amp;apos;, stop reason = EXC_BAD_ACCESS (code=1, address=0x3007ddfae)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #0: 0x00007fffa7c01491 CoreText`OTL::GPOS::ApplyPairPos(OTL::LookupSubtable const*, TGlyphIterator&amp;amp;, OTL::Coverage const&amp;amp;) const + 411&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;CoreText`OTL::GPOS::ApplyPairPos:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-&amp;gt;  0x7fffa7c01491 &amp;lt;+411&amp;gt;: mov    ax, word ptr [r14 + 2*rax + 0xa]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  0x7fffa7c01497 &amp;lt;+417&amp;gt;: rol    ax, 0x8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  0x7fffa7c0149b &amp;lt;+421&amp;gt;: movzx  eax, ax&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  0x7fffa7c0149e &amp;lt;+424&amp;gt;: lea    rsi, [r14 + rax]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(lisa)register read rax&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   rax = 0x00000000ffffffff&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(lisa)x $r14+2*$rax+0xa&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;error: memory read failed for 0x3007c5600&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(lisa)bt&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* thread #1: tid = 0x3f119d, 0x00007fffa7c01491 CoreText`OTL::GPOS::ApplyPairPos(OTL::LookupSubtable const*, TGlyphIterator&amp;amp;, OTL::Coverage const&amp;amp;) const + 411, queue = &amp;apos;com.apple.main-thread&amp;apos;, stop reason = EXC_BAD_ACCESS (code=1, address=0x3007ddfae)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* frame #0: 0x00007fffa7c01491 CoreText`OTL::GPOS::ApplyPairPos(OTL::LookupSubtable const*, TGlyphIterator&amp;amp;, OTL::Coverage const&amp;amp;) const + 411&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #1: 0x00007fffa7c05907 CoreText`OTL::GPOS::ApplyLookupSubtable(OTL::Lookup const&amp;amp;, unsigned int, OTL::LookupSubtable const*, TGlyphIterator&amp;amp;, OTL::Coverage const&amp;amp;) const + 85&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #2: 0x00007fffa7c02c7b CoreText`OTL::GPOS::ApplyLookupAt(OTL::Lookup const&amp;amp;, TGlyphIterator&amp;amp;) const + 339&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #3: 0x00007fffa7b68ff4 CoreText`OTL::GPOS::ApplyLookups(TRunGlue&amp;amp;, int, OTL::GlyphLookups&amp;amp;) const + 448&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #4: 0x00007fffa7b68897 CoreText`TOpenTypePositioningEngine::PositionRuns(SyncState&amp;amp;, KerningStatus&amp;amp;) + 839&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #5: 0x00007fffa7b66d05 CoreText`TKerningEngine::PositionGlyphs(TLine&amp;amp;, TCharStream const*) + 347&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #6: 0x00007fffa7bbe59d CoreText`TTypesetter::FinishLayout(std::__1::tuple&amp;lt;TLine const*, TCharStream const*, void const* (*)(__CTRun const*, __CFString const*, void*), void*, std::__1::shared_ptr&amp;lt;TBidiLevelsProvider&amp;gt;*, unsigned int, unsigned char&amp;gt; const&amp;amp;, TLine&amp;amp;, SyncState) + 35&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #7: 0x00007fffa7b5586d CoreText`TTypesetterAttrString::Initialize(__CFAttributedString const*) + 865&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #8: 0x00007fffa7b552ea CoreText`CTLineCreateWithAttributedString + 59&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #9: 0x00007fffb8be086e UIFoundation`__NSStringDrawingEngine + 10669&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #10: 0x00007fffb8be69ca UIFoundation`-[NSAttributedString(NSExtendedStringDrawing) boundingRectWithSize:options:context:] + 605&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #11: 0x00007fffb8bdcc43 UIFoundation`-[NSAttributedString(NSStringDrawing) size] + 59&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #12: 0x0000000100047d70 Font Book`___lldb_unnamed_symbol1053$$Font Book + 368&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #13: 0x00000001000476e9 Font Book`___lldb_unnamed_symbol1052$$Font Book + 89&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #14: 0x00000001000475b0 Font Book`___lldb_unnamed_symbol1049$$Font Book + 774&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #15: 0x000000010006a2d2 Font Book`___lldb_unnamed_symbol1860$$Font Book + 110&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #16: 0x000000010005d4ee Font Book`___lldb_unnamed_symbol1545$$Font Book + 2651&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #17: 0x00007fffa46b2451 AppKit`-[NSApplication _doOpenFile:ok:tryTemp:] + 253&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #18: 0x00007fffa427f789 AppKit`-[NSApplication finishLaunching] + 1624&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #19: 0x00007fffa427ed2a AppKit`-[NSApplication run] + 267&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #20: 0x00007fffa4249a8a AppKit`NSApplicationMain + 1237&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #21: 0x0000000100001527 Font Book`___lldb_unnamed_symbol1$$Font Book + 11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #22: 0x00007fffbb632255 libdyld.dylib`start + 1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  frame #23: 0x00007fffbb632255 libdyld.dylib`start + 1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;code&gt;[r14 + 2*rax + 0xa]&lt;/code&gt;索引错误，很典型的数组越界指令。&lt;/p&gt;
+&lt;p&gt;通过设置条件断点去记录获取的GlyphID以及后面的将其传参给OTL::Coverage::SearchFmt2Binary函数后返回值，可以发现最后当GlyphID=0x55(85)时返回值0，最后触发崩溃，所以样本中的GlyphID只要&amp;gt;=0x55都会导致崩溃。&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;(lisa) p &quot;GlyphID&quot; $eax&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(unsigned int) $95 = 85&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(lisa) c&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Process 25648 resuming&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Command #2 &#39;c&#39; continued the target.&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(lisa) p &quot;SearchFmt2Binary参数2&quot; $esi&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(unsigned int) $96 = 85&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(lisa) c&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Process 25648 resuming&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Command #2 &#39;c&#39; continued the target.&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(lisa) p &quot;返回值&quot; $eax&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(unsigned int) $97 = 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(lisa) c&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Process 25648 resuming&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Command #2 &#39;c&#39; continued the target.&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Process 25648 stopped&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* thread #1: tid = 0x43fc6, 0x00007fffcb443491 CoreText`OTL::GPOS::ApplyPairPos(OTL::LookupSubtable const*, TGlyphIterator&amp;amp;, OTL::Coverage const&amp;amp;) const + 411, queue = &#39;com.apple.main-thread&#39;, stop reason = EXC_BAD_ACCESS (code=1, address=0x3007bc6fe)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    frame #0: 0x00007fffcb443491 CoreText`OTL::GPOS::ApplyPairPos(OTL::LookupSubtable const*, TGlyphIterator&amp;amp;, OTL::Coverage const&amp;amp;) const + 411&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;CoreText`OTL::GPOS::ApplyPairPos:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-&amp;gt;  0x7fffcb443491 &amp;lt;+411&amp;gt;: mov    ax, word ptr [r14 + 2*rax + 0xa]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    0x7fffcb443497 &amp;lt;+417&amp;gt;: rol    ax, 0x8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    0x7fffcb44349b &amp;lt;+421&amp;gt;: movzx  eax, ax&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    0x7fffcb44349e &amp;lt;+424&amp;gt;: lea    rsi, [r14 + rax]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;返回值为0时，经dec减1后为0xFFFFFFFF，以此为索引值，最后导致越界访问。&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;dec     eax     ; eax=0xFFFFFFFF&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;mov     ax, [r14+rax*2+0Ah] ; 越界访问，导致崩溃&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h3 id=&quot;漏洞修复&quot;&gt;&lt;a href=&quot;#漏洞修复&quot; class=&quot;headerlink&quot; title=&quot;漏洞修复&quot;&gt;&lt;/a&gt;漏洞修复&lt;/h3&gt;&lt;p&gt;苹果已经发布安全补丁，macOS用户可升级到10.12.2，iOS用户可升级到10.2。&lt;/p&gt;
+&lt;p&gt;对补丁进行比对，可以发现在漏洞函数OTL::GPOS::ApplyPairPos 中添加了判断【图5】，获取到的GlyphID值传递给OTL::Coverage::SearchFmt2Binary函数，当查找失败时会返回0，因此只要添加判断返回值是否为0，为0则直接跳走返回。&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://riusksk.me/media/14819500329936/14820615589596.jpg&quot; alt=&quot;&quot;&gt;&lt;br&gt;图5&lt;/center&gt;
+
+&lt;h3 id=&quot;处理流程&quot;&gt;&lt;a href=&quot;#处理流程&quot; class=&quot;headerlink&quot; title=&quot;处理流程&quot;&gt;&lt;/a&gt;处理流程&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;2016-10-23 通过邮件提交给Apple&lt;/li&gt;
+&lt;li&gt;2016-11-09 Apple确认漏洞，并在 macOS Sierra 10.12.2 beta 测试版中修复&lt;/li&gt;
+&lt;li&gt;2016-12-09 分配CVE号：CVE-2016-7595&lt;/li&gt;
+&lt;li&gt;2016-12-14 Apple发布安全公告，并推送补丁&lt;/li&gt;
+&lt;/ol&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;2016年12月的Apple安全公告中（&lt;a href=&quot;https://support.apple.com/zh-cn/HT207423&quot;
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+      <category term="macOS" scheme="http://riusksk.github.io/tags/macOS/"/>
+    
+      <category term="iOS" scheme="http://riusksk.github.io/tags/iOS/"/>
+    
+      <category term="Apple" scheme="http://riusksk.github.io/tags/Apple/"/>
+    
+      <category term="漏洞" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E/"/>
+    
+  </entry>
   
   <entry>
     <title>2016年刷过的CVE</title>
@@ -655,9 +719,9 @@
       <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
     
     
-      <category term="安全审计" scheme="http://riusksk.github.io/tags/%E5%AE%89%E5%85%A8%E5%AE%A1%E8%AE%A1/"/>
-    
       <category term="iOS" scheme="http://riusksk.github.io/tags/iOS/"/>
+    
+      <category term="安全审计" scheme="http://riusksk.github.io/tags/%E5%AE%89%E5%85%A8%E5%AE%A1%E8%AE%A1/"/>
     
   </entry>
   
@@ -1144,47 +1208,6 @@
       <category term="Flash" scheme="http://riusksk.github.io/tags/Flash/"/>
     
       <category term="0day" scheme="http://riusksk.github.io/tags/0day/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hacking Team 武器库研究（一）：CVE-2015-0349 Flash ConvolutionFilter UAF</title>
-    <link href="http://riusksk.github.io/2015/07/10/Hacking-Team-%E6%AD%A6%E5%99%A8%E5%BA%93%E7%A0%94%E7%A9%B6%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9ACVE-2015-0349-Flash-ConvolutionFilter-UAF/"/>
-    <id>http://riusksk.github.io/2015/07/10/Hacking-Team-武器库研究（一）：CVE-2015-0349-Flash-ConvolutionFilter-UAF/</id>
-    <published>2015-07-10T02:00:33.000Z</published>
-    <updated>2016-09-27T09:59:57.000Z</updated>
-    
-    <content type="html">&lt;p&gt;CVE-2015-0349 Flash ConvolutionFilter UAF 是今年Pwn2Own大赛上被用于攻破64位Flash的漏洞，在泄露的Hacking Team武器库中就包括了该漏洞的利用代码，以及利用本地提权漏洞作为shellcode，以绕过沙盒的保护。泄露的利用代码包含完整的工程文件，用Flash Develop打开项目即可编译。&lt;/p&gt;
-&lt;h2 id=&quot;【源码分析】&quot;&gt;&lt;a href=&quot;#【源码分析】&quot; class=&quot;headerlink&quot; title=&quot;【源码分析】&quot;&gt;&lt;/a&gt;&lt;strong&gt;【源码分析】&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;1、MyClass.TryExp1是漏洞利用的入口函数，它先创建ConvolutionFilter类，它是一个矩阵环绕滤镜，比如用于实现模糊、斜边、锐化等效果。它的2个参数分别为matrixX矩阵列数和matrixY矩阵行数，这里分别是14和15。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/1.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;2、接下来程序将分配ConvolutionFilter的a（Array类型）赋值给_cf （ConvolutionFilter对象），并设置matrix值为m（Array类型），接着将matrix数组的第一个元素赋值给m0，当它不为0是则表示漏洞不存在，否则即存在UAF漏洞。为何如此？在第一点中，我们知道m[0]是MyClass类，该类里面定义有valueOf方法，在设置martix值时会调用到该方法，具体见第3点分析。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/2.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;3、在valueOf 函数中，matrixX会被重新设置为15（原始值为14），导致原先有matrix数组被释放，然后重新分配矩阵滤镜的matrixX内存，但此时_cf.matrix依然保持着对已释放的matrix数组的引用，所以在第2点会会去判断matrix数组首个元素值是否为0（原初始值也是0），也就是判断已释放的数组是否还可被引用。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/3.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;4、通过分配一堆Vector.&lt;uint&gt;对象去占用已释放的内存，长度刚好与matrix数组长度相同，也就是matrixX &lt;em&gt; matrixY = 14&lt;/em&gt;15，每个vector.&lt;uint&gt;对象的实际大小就是14&lt;em&gt;15&lt;/em&gt;4=0x348(840)，最后在从valueOf函数中返回2，2会被写入matrix数组首个元素中，但此时实际是向Vector对象写入数据，从而更改vector对象长度，实现任意内存读写。&lt;/uint&gt;&lt;/uint&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/4.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;5、再回头继续看MyClass.TryExp1函数，找到已经被篡改长度值的vector对象，再根据不同的系统平台执行不同的shellcode代码。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/5.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;6、看下32位windows平台的shellcode执行相关的ShellWin32类，先看初始化函数init，它只是做一些全局变量赋值。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/6.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;7、真正用于执行代码的是ShellWin32.Exec函数，先获取包含shellcode的_x32对象地址，然后在内存中搜索PE头，解析PE文件格式，从导入表中找到VirtualProtect函数地址，调用它对shellcode内存地址设置可执行权限，接着找到自定义的payload空函数对应的JIT函数指针，用shellcode地址去替换JIT指针，最后调用payload.call 以执行shellcode的。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam01/7.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;CVE-2015-0349 Flash ConvolutionFilter UAF 是今年Pwn2Own大赛上被用于攻破64位Flash的漏洞，在泄露的Hacking Team武器库中就包括了该漏洞的利用代码，以及利用本地提权漏洞作为shellcode，以绕过沙盒的保护。泄
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
-    
-      <category term="Hacking Team" scheme="http://riusksk.github.io/tags/Hacking-Team/"/>
-    
-      <category term="Flash" scheme="http://riusksk.github.io/tags/Flash/"/>
-    
-      <category term="UAF" scheme="http://riusksk.github.io/tags/UAF/"/>
     
   </entry>
   
