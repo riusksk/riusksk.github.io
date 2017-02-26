@@ -77,6 +77,65 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2015-07-10T03:00:33.000Z"><a href="/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/">2015-07-10</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/">Hacking Team 武器库研究（二）：CVE-2015-5119 Flash 0day</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>目前 Hacking Team 泄露的Flash 0Day已经修复，官方已提供补丁下载，与此同时Metasploit已经提供有漏洞利用代码。在HT泄露的源码目录里，已经包含有对漏洞的简要分析。</p>
+<h2 id="【源码分析】"><a href="#【源码分析】" class="headerlink" title="【源码分析】"></a><strong>【源码分析】</strong></h2><p>1、在MyClass.TryExp1函数中触发漏洞，先分配一组ByteArray，长度为0xfa0，相当于0x1000大小的内存。</p>
+<p><img src="http://riusksk.me/media/hackteam02/1.png" alt=""></p>
+<p>2、设置ByteArray值，在将MyClass类赋值给_ba[3]时，AVM会调用MyClass.valueOf函数试图将MyClass类型其转换成Byte类型。</p>
+<p><img src="http://riusksk.me/media/hackteam02/2.png" alt=""></p>
+<p>3、在valueOf 函数中会重新设置更大长度的ByteArray，导致释放原有的ByteArray内存，再重新分配，但是valueOf函数返回后，依然保持着对已释放内存的引用，从而导致UAF漏洞的发生。紧接着分配一堆0x3f0大小的vector.<uint>对象，以占用已释放的内存，然后返回0x40值给ba[3]，刚好覆盖vector对象头部的长度值，以实现读写任意内存地址。</uint></p>
+<p><img src="http://riusksk.me/media/hackteam02/3.png" alt=""></p>
+<p>4、后面的代码基本跟第一篇分析文章中介绍一样。再补充下上面调用valueOf转换类型的AVM伪代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> ByteArray.setObjInternal(<span class="keyword">int</span> offset, obj)</span><br><span class="line">&#123;</span><br><span class="line">    byte* dest = <span class="keyword">this</span>.getStorage(offset);</span><br><span class="line">    dest* = toInteger(obj);     <span class="comment">// call MyClass.valueOf（）</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将ba[3]的内存存储地址保存到本地定义的目标指针，然后对象类型转换成整数类型并赋值给目标指针，当ByteArray数组长度改变时，它会释放原有ba内存，目标指针就成为悬挂指针。</p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Hacking-Team/">Hacking Team</a>, <a href="/tags/Flash/">Flash</a>, <a href="/tags/0day/">0day</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2015-07-10T02:00:33.000Z"><a href="/2015/07/10/Hacking-Team-武器库研究（一）：CVE-2015-0349-Flash-ConvolutionFilter-UAF/">2015-07-10</a></time>
       
       
@@ -662,65 +721,6 @@
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2012-10-08T16:00:00.000Z"><a href="/2012/10/09/Heap-Spray-技术要点/">2012-10-09</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2012/10/09/Heap-Spray-技术要点/">Heap Spray 技术要点</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>1、堆喷射堆块大小 ≈ 程序堆块分配大小，以减小堆空隙大小。</p>
-<p>2、不能使用堆缓存块，否则可能破坏地址的可预测性，可通过申请6块相应大小的堆块来清空缓存。</p>
-<p>3、精确定位ROP地址，目标地址如<code>0x0c0c0c0c</code>至堆块数据起始地址的<code>offset = ( 0x0c0c0c0c - UserPtr（堆数据起始地址）)/2，IE7：0x5FA，IE8：0x5F4/0x5F6，IE9：0x5FC/0x5FE，Firefox9：0x606</code>，可能不同语言版本会存在偏差。</p>
-<p>4、不同系统、不同浏览器版本喷射块大小：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">XP SP3 – IE7    block = shellcode.substring(2,0x10000-0×21);</span><br><span class="line">XP SP3 – IE8    block = shellcode.substring(2, 0x40000-0×21);</span><br><span class="line">Vista SP2 – IE7  block = shellcode.substring(0, (0x40000-6)/2);</span><br><span class="line">Vista SP2 – IE8  block = shellcode.substring(0, (0x40000-6)/2);</span><br><span class="line">Win7 – IE8    block = shellcode.substring(0, (0x80000-6)/2);</span><br><span class="line">Vista/Win7 – IE9  block = shellcode.substring(0, (0x40000-6)/2);</span><br><span class="line">XP SP3/VISTA SP2/WIN7 - Firefox9  block = shellcode.substring(0, (0x40000-6)/2);</span><br></pre></td></tr></table></figure>
-<p>5、<code>Nozzle</code>保护机制（IE）：检测是否存在重复可转换成汇编代码的字段，若存在则阻止其内存申请。</p>
-<p>6、<code>BuBBle</code>保护机制（Firefox）：检测JavaScript是否尝试重复申请 <code>NOPs + shellcode (padding + rop chain + shellcode + padding)</code>的内存块，若发现包含这些字段则阻止其内存申请。</p>
-<p>7、分配 <code>随机数 + rop + shellcode + 随机数</code> 的堆块，以保证各分配块都是不同的，以此绕过上述保护机制，主要针对IE9。</p>
-<p>8、利用<code>随机变量名 + 随机块</code>绕过 Firefox9 的保护。</p>
-<p>9、<code>HTML5 Heap Spray</code>：EUSecWest2012上的演讲主题，通杀Chrome、Firefox、IE9和Safari<br>a、利用<code>canvas</code>标签定义图形，通过脚本控制每个像素的数据再进行喷射；<br>b、利用<code>Web Worker</code>的多线程功能，加速堆喷射过程，但IE不支持Worker.</p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2012/10/09/Heap-Spray-技术要点/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/Heap-Spray/">Heap Spray</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -742,6 +742,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2017/02/26/0/">0</a>
+      </li>
     
       <li>
         <a href="/2016/12/21/CVE-2016-7595/">CVE-2016-7595 Apple macOS/iOS CoreText OTL::GPOS::ApplyPairPos 越界访问漏洞分析</a>
@@ -779,10 +783,6 @@
         <a href="/2016/07/12/《漏洞战争》配套资料下载/">《漏洞战争》配套资料下载</a>
       </li>
     
-      <li>
-        <a href="/2016/07/02/《漏洞战争：软件漏洞分析精要》已开售/">《漏洞战争：软件漏洞分析精要》已开售</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -794,7 +794,7 @@
   
     <li><a href="/categories/技术分享/">技术分享</a><small>37</small></li>
   
-    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>4</small></li>
+    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>5</small></li>
   
   </ul>
 </div>
