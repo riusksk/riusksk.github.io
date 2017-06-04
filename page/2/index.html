@@ -77,6 +77,57 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2016-07-12T09:20:48.000Z"><a href="/2016/07/12/《漏洞战争》配套资料下载/">2016-07-12</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2016/07/12/《漏洞战争》配套资料下载/">《漏洞战争》配套资料下载</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>《漏洞战争》一书的配套资料，包括漏洞软件、样本、补丁对比的相关文件、学习资料等等。<br>由于多次上传目录失败，因此只好上传压缩包。</p>
+<h3 id="下载地址："><a href="#下载地址：" class="headerlink" title="下载地址："></a>下载地址：</h3><h4 id="1、GitHub下载"><a href="#1、GitHub下载" class="headerlink" title="1、GitHub下载"></a>1、<a href="https://github.com/riusksk/vul_wars/raw/master/%E4%B9%A6%E7%B1%8D%E9%85%8D%E5%A5%97%E8%B5%84%E6%96%99.zip" target="_blank" rel="external">GitHub下载</a></h4><h4 id="2、百度云下载"><a href="#2、百度云下载" class="headerlink" title="2、百度云下载"></a>2、<a href="http://pan.baidu.com/s/1pKBjEiB" target="_blank" rel="external">百度云下载</a></h4><p><img src="/media/vul_wars.png" alt=""></p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2016/07/12/《漏洞战争》配套资料下载/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/书籍/">书籍</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2016-07-02T03:08:34.000Z"><a href="/2016/07/02/《漏洞战争：软件漏洞分析精要》已开售/">2016-07-02</a></time>
       
       
@@ -662,78 +713,6 @@
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2015-07-10T04:00:33.000Z"><a href="/2015/07/10/Hacking-Team-武器库研究（三）：core-android-audiocapture/">2015-07-10</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/07/10/Hacking-Team-武器库研究（三）：core-android-audiocapture/">Hacking Team 武器库研究（三）：core-android-audiocapture</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>泄露的core-android-audiocapture一款Android平台下基于DBI Hook框架的语音窃取工具，可窃取当前国内外流行的即时聊天工具，比如wechat、whatsapp、skype等等。</p>
-<p>##【源码分析】</p>
-<p>1、搜索 mediaserver 进程，然后注入libt.so，并将窃取的语音文件dump到指定目录。</p>
-<p><img src="http://riusksk.me/media/hackteam03/1.png" alt=""></p>
-<p>2、查看libt.c源码，其动态链接库的构造函数为my_init，这里参数和返回值都必须为空。</p>
-<p><img src="http://riusksk.me/media/hackteam03/2.png" alt=""></p>
-<p>3、检测当前的Android系统是否为4.x版本，然后分不同的子版本进行处理。</p>
-<p><img src="http://riusksk.me/media/hackteam03/3.png" alt=""></p>
-<p>4、比如对于Android 4.0版本，会指定mStramType和mname的偏移量，不同系统版本对应的偏移量不同，同时也定义一些将被hook的函数，这些Hook_coverage_x是定义在hijack_func/hooker.h中，对应的函数名在注释代码中已经写得很清楚，主要是Hook Android系统的audio接口提供库libaudiofinger.so里的函数，以用于实现录音（RecordThread）和放音（PlaybackThread）功能。</p>
-<p><img src="http://riusksk.me/media/hackteam03/4.png" alt=""><br><img src="http://riusksk.me/media/hackteam03/5.png" alt=""></p>
-<p>5、以Hook回调函数recordTrack_getNextBuffer3_h为例分析下它的修改行为，该函数定义在hijack_func/hooker_thumb.c中，原getNextBuffer获取的缓冲区主要是用于存放录音数据，而录音的开始、停止动作的相关函数也是被hook掉。在recordTrack_getNextBuffer3_h函数中先调用原始函数，得到返回后的结果，然后获取帧大小、采样率、帧数以及原始的AudioBufferProvider::Buffer地址。</p>
-<p><img src="http://riusksk.me/media/hackteam03/6.png" alt=""></p>
-<p>6、创建指定格式的文件名，将语音数据dump出来写入到前面创建的文件：</p>
-<p><img src="http://riusksk.me/media/hackteam03/7.png" alt=""></p>
-<p><img src="http://riusksk.me/media/hackteam03/8.png" alt=""></p>
-<p>7、录音Hook的日志记录如下，其它hook动作类似，此处就不一一分析。</p>
-<p><img src="http://riusksk.me/media/hackteam03/9.png" alt=""></p>
-<p><img src="http://riusksk.me/media/hackteam03/10.png" alt=""></p>
-<p>8、生成的dump文件，会再调用decode.py去转换成wav语音文件</p>
-<p><img src="http://riusksk.me/media/hackteam03/11.png" alt=""></p>
-<p><img src="http://riusksk.me/media/hackteam03/12.png" alt=""></p>
-<p>##【结语】</p>
-<p>网上有人说这工具会去解密微信的语音格式，其实它根本没有做这方面的处理，也没必要，因为它Hook的Android系统的Audio库，当你使用一些即时聊天工具进行语音对话时，就会触发放音的函数，此时语音数据早就可以拿到，而decoder.py只是作一些wav的格式化处理，使得dump出来的文件能够转换成可播放的wav文件。在decoder目录下的一些聊天工具目录，只不过是Hacking Team成员在作一些测试而已。</p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2015/07/10/Hacking-Team-武器库研究（三）：core-android-audiocapture/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/Android/">Android</a>, <a href="/tags/Hacking-Team/">Hacking Team</a>, <a href="/tags/Hook/">Hook</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -755,6 +734,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2017/06/04/调试V8中JS对应的汇编代码/">调试V8中JS对应的汇编代码</a>
+      </li>
     
       <li>
         <a href="/2017/02/26/0/">优秀作者</a>
@@ -792,10 +775,6 @@
         <a href="/2016/07/17/《漏洞战争：软件漏洞分析精要》勘误表/">《漏洞战争：软件漏洞分析精要》勘误表</a>
       </li>
     
-      <li>
-        <a href="/2016/07/12/《漏洞战争》配套资料下载/">《漏洞战争》配套资料下载</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -805,7 +784,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>37</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>38</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>5</small></li>
   
@@ -817,7 +796,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/0day/" style="font-size: 12px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 18px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 14px;">BlackHat</a> <a href="/tags/CanSecWest/" style="font-size: 12px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 16px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 20px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 14px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 12px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 12px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/iOS/" style="font-size: 12px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 12px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/安全审计/" style="font-size: 12px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 12px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 14px;">漏洞</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a>
+    <a href="/tags/0day/" style="font-size: 12px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 18px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 14px;">BlackHat</a> <a href="/tags/CanSecWest/" style="font-size: 12px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 16px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 20px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 14px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 12px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 12px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/iOS/" style="font-size: 12px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 12px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/安全审计/" style="font-size: 12px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 12px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 14px;">漏洞</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a>
   </div>
 </div>
 

@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2017-02-26T06:35:14.000Z</updated>
+  <updated>2017-06-04T08:39:04.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>调试V8中JS对应的汇编代码</title>
+    <link href="http://riusksk.github.io/2017/06/04/%E8%B0%83%E8%AF%95V8%E4%B8%ADJS%E5%AF%B9%E5%BA%94%E7%9A%84%E6%B1%87%E7%BC%96%E4%BB%A3%E7%A0%81/"/>
+    <id>http://riusksk.github.io/2017/06/04/调试V8中JS对应的汇编代码/</id>
+    <published>2017-06-04T08:37:20.000Z</published>
+    <updated>2017-06-04T08:39:04.000Z</updated>
+    
+    <content type="html">&lt;h3 id=&quot;1、调试未优化代码&quot;&gt;&lt;a href=&quot;#1、调试未优化代码&quot; class=&quot;headerlink&quot; title=&quot;1、调试未优化代码&quot;&gt;&lt;/a&gt;1、调试未优化代码&lt;/h3&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;gdb --args ~/v8/out/ia32.debug/d8 --print-code poc.js&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;bp v8::internal::FullCodeGenerator::MakeCode&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;run&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;c&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;finish   &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;//跟c命令配对执行多次，直至打印出需要的汇编指令&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Run till exit from #0  v8::internal::FullCodeGenerator::MakeCode (info=0xff873eb8) at ../src/full-codegen.cc:283&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;--- Raw source ---&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;……&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;--- Code ---&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;source_position = 197&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;kind = FUNCTION&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;name = evil_object.toJSON&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Instructions (size = 128)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x2b3301a0     0  55             push ebp&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x2b3301a1     1  89e5           mov ebp,esp&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;……&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;bp * 0x2b3301a0&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h3 id=&quot;2、调试优化代码&quot;&gt;&lt;a href=&quot;#2、调试优化代码&quot; class=&quot;headerlink&quot; title=&quot;2、调试优化代码&quot;&gt;&lt;/a&gt;2、调试优化代码&lt;/h3&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;29&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;30&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;31&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;32&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;33&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;34&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;35&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;36&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;37&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;38&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;39&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;40&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;41&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;42&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;43&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;44&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;45&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;46&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;47&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;gef&amp;gt;  bp v8::internal::Context::AddOptimizedFunctiongef&amp;gt;  run Thread 1 &amp;quot;d8&amp;quot; hit Breakpoint 1, v8::internal::Context::AddOptimizedFunction (this=0x1fe2a1083a79, function=0x1fe2a10ac281) at ../src/contexts.cc:413gef&amp;gt;  job function&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x1fe2a10ac281: [Function]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - map = 0xe7a59804099 [FastProperties]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - prototype = 0x1fe2a1084069&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - elements = 0x367f8ed82241 &amp;lt;FixedArray[0]&amp;gt; [FAST_HOLEY_ELEMENTS]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - initial_map = &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - shared_info = 0x1fe2a10abdd9 &amp;lt;SharedFunctionInfo Ctor&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - name = 0x1fe2a10abae9 &amp;lt;String[4]: Ctor&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - formal_parameter_count = 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - context = 0x1fe2a1083a79 &amp;lt;FixedArray[188]&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - literals = 0x1fe2a10ac551 &amp;lt;FixedArray[1]&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;code = 0x3e4da55066a1 &amp;lt;Code: OPTIMIZED_FUNCTION&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - properties = &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   #length: 0x367f8edd2709 &amp;lt;AccessorInfo&amp;gt; (accessor constant)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   #name: 0x367f8edd2779 &amp;lt;AccessorInfo&amp;gt; (accessor constant)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   #arguments: 0x367f8edd27e9 &amp;lt;AccessorInfo&amp;gt; (accessor constant)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   #caller: 0x367f8edd2859 &amp;lt;AccessorInfo&amp;gt; (accessor constant)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   #prototype: 0x367f8edd28c9 &amp;lt;AccessorInfo&amp;gt; (accessor constant)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;gef&amp;gt; job 0x3e4da55066a1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da55066a1: [Code]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;kind = OPTIMIZED_FUNCTION&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;stack_slots = 5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;compiler = crankshaft&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Instructions (size = 218)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da5506700     0  55             push rbp&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da5506701     1  4889e5         REX.W movq rbp,rsp&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da5506704     4  56             push rsi&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da5506705     5  57             push rdi&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;……&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;gef&amp;gt; bp *0x3e4da5506700&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;gef&amp;gt; c&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Continuing.&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Thread 1 &amp;quot;d8&amp;quot; hit Breakpoint 2, 0x00003e4da5506700 in ?? ()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;……&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; code:i386:x86-64&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da5506700    push rbp   $pc&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da5506701    mov rbp, rsp&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da5506704    push rsi&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da5506705    push rdi&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da5506706    sub rsp, 0x8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da550670a    mov rax, QWORD PTR [rbp-0x8]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;1、调试未优化代码&quot;&gt;&lt;a href=&quot;#1、调试未优化代码&quot; class=&quot;headerlink&quot; title=&quot;1、调试未优化代码&quot;&gt;&lt;/a&gt;1、调试未优化代码&lt;/h3&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;t
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+      <category term="v8" scheme="http://riusksk.github.io/tags/v8/"/>
+    
+  </entry>
   
   <entry>
     <title>优秀作者</title>
@@ -1151,57 +1175,6 @@
       <category term="Flash" scheme="http://riusksk.github.io/tags/Flash/"/>
     
       <category term="0day" scheme="http://riusksk.github.io/tags/0day/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hacking Team 武器库研究（三）：core-android-audiocapture</title>
-    <link href="http://riusksk.github.io/2015/07/10/Hacking-Team-%E6%AD%A6%E5%99%A8%E5%BA%93%E7%A0%94%E7%A9%B6%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9Acore-android-audiocapture/"/>
-    <id>http://riusksk.github.io/2015/07/10/Hacking-Team-武器库研究（三）：core-android-audiocapture/</id>
-    <published>2015-07-10T04:00:33.000Z</published>
-    <updated>2016-09-27T10:00:16.000Z</updated>
-    
-    <content type="html">&lt;p&gt;泄露的core-android-audiocapture一款Android平台下基于DBI Hook框架的语音窃取工具，可窃取当前国内外流行的即时聊天工具，比如wechat、whatsapp、skype等等。&lt;/p&gt;
-&lt;p&gt;##【源码分析】&lt;/p&gt;
-&lt;p&gt;1、搜索 mediaserver 进程，然后注入libt.so，并将窃取的语音文件dump到指定目录。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/1.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;2、查看libt.c源码，其动态链接库的构造函数为my_init，这里参数和返回值都必须为空。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/2.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;3、检测当前的Android系统是否为4.x版本，然后分不同的子版本进行处理。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/3.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;4、比如对于Android 4.0版本，会指定mStramType和mname的偏移量，不同系统版本对应的偏移量不同，同时也定义一些将被hook的函数，这些Hook_coverage_x是定义在hijack_func/hooker.h中，对应的函数名在注释代码中已经写得很清楚，主要是Hook Android系统的audio接口提供库libaudiofinger.so里的函数，以用于实现录音（RecordThread）和放音（PlaybackThread）功能。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/4.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/5.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;5、以Hook回调函数recordTrack_getNextBuffer3_h为例分析下它的修改行为，该函数定义在hijack_func/hooker_thumb.c中，原getNextBuffer获取的缓冲区主要是用于存放录音数据，而录音的开始、停止动作的相关函数也是被hook掉。在recordTrack_getNextBuffer3_h函数中先调用原始函数，得到返回后的结果，然后获取帧大小、采样率、帧数以及原始的AudioBufferProvider::Buffer地址。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/6.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;6、创建指定格式的文件名，将语音数据dump出来写入到前面创建的文件：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/7.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/8.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;7、录音Hook的日志记录如下，其它hook动作类似，此处就不一一分析。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/9.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/10.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;8、生成的dump文件，会再调用decode.py去转换成wav语音文件&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/11.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/hackteam03/12.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;##【结语】&lt;/p&gt;
-&lt;p&gt;网上有人说这工具会去解密微信的语音格式，其实它根本没有做这方面的处理，也没必要，因为它Hook的Android系统的Audio库，当你使用一些即时聊天工具进行语音对话时，就会触发放音的函数，此时语音数据早就可以拿到，而decoder.py只是作一些wav的格式化处理，使得dump出来的文件能够转换成可播放的wav文件。在decoder目录下的一些聊天工具目录，只不过是Hacking Team成员在作一些测试而已。&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;泄露的core-android-audiocapture一款Android平台下基于DBI Hook框架的语音窃取工具，可窃取当前国内外流行的即时聊天工具，比如wechat、whatsapp、skype等等。&lt;/p&gt;
-&lt;p&gt;##【源码分析】&lt;/p&gt;
-&lt;p&gt;1、搜索 medi
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
-    
-      <category term="Android" scheme="http://riusksk.github.io/tags/Android/"/>
-    
-      <category term="Hacking Team" scheme="http://riusksk.github.io/tags/Hacking-Team/"/>
-    
-      <category term="Hook" scheme="http://riusksk.github.io/tags/Hook/"/>
     
   </entry>
   
