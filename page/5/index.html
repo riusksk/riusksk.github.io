@@ -1,0 +1,557 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8" />
+  
+  <title>第 5 页 | riusksk&#39;s blog</title>
+  <meta name="author" content="riusksk" />
+
+  
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  
+  <meta property="og:site_name" content="riusksk&#39;s blog" />
+
+  
+  
+
+  
+    <meta property="og:image" content="undefined" />
+  
+
+  
+  <link href="/css/images/favicon.ico" rel="icon" />
+  
+
+  <link rel="alternate" href="/atom.xml" title="riusksk&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78773323-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+
+  <!-- baidu webmaster push -->
+  <script src='//push.zhanzhang.baidu.com/push.js'></script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">riusksk&#39;s blog</a></h1>
+  <h2><a href="/">攀蟾折桂摄寰宇，摘星揽月御乾坤。踏云踩雾骋宵壤，驱风逐日闯天地。 ------泉哥</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/atom.xml">RSS订阅</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2010-08-26T16:00:00.000Z"><a href="/2010/08/27/vmcheck/">2010-08-27</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2010/08/27/vmcheck/">虚拟机检测技术剖析</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>在当今信息安全领域，特别是恶意软件分析中，经常需要利用到虚拟机技术，以提高病毒分析过程的安全性以及硬件资源的节约性，因此它在恶意软件领域中是应用越来越来广泛。这里我们所谓的虚拟机（Virtual Machine）是指通过软件模拟的具有完整硬件系统功能的、运行在一个完全隔离环境中的完整计算机系统。通过虚拟机软件（比如VMware，Virtual PC ,VirtualBox），你可以在一台物理计算机上模拟出一台或多台虚拟的计算机，这些虚拟机完全就像真正的计算机那样进行工作，例如你可以安装操作系统、安装应用程序、访问网络资源等等。攻击者为了提高恶意程序的隐蔽性以及破坏真实主机的成功率，他们都在恶意程序中加入检测虚拟机的代码，以判断程序所处的运行环境。当发现程序处于虚拟机（特别是蜜罐系统）中时，它就会改变操作行为或者中断执行，以此提高反病毒人员分析恶意软件行为的难度。本文主要针对基于Intel CPU的虚拟环境VMware中的Windows XP SP3系统进行检测分析，并列举出当前常见的几种虚拟机检测方法。</p>
+<h3 id="方法一：通过执行特权指令来检测虚拟机"><a href="#方法一：通过执行特权指令来检测虚拟机" class="headerlink" title="方法一：通过执行特权指令来检测虚拟机"></a>方法一：通过执行特权指令来检测虚拟机</h3><p>Vmware为真主机与虚拟机之间提供了相互沟通的通讯机制，它使用“IN”指令来读取特定端口的数据以进行两机通讯，但由于IN指令属于特权指令，在处于保护模式下的真机上执行此指令时，除非权限允许，否则将会触发类型为“EXCEPTION_PRIV_INSTRUCTION”的异常，而在虚拟机中并不会发生异常，在指定功能号0A（获取VMware版本）的情况下，它会在EBX中返回其版本号“VMXH”；而当功能号为0x14时，可用于获取VMware内存大小，当大于0时则说明处于虚拟机中。VMDetect正是利用前一种方法来检测VMware的存在，其检测代码分析如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">bool IsInsideVMWare()</span><br><span class="line">&#123;</span><br><span class="line">  bool rc = true;</span><br><span class="line"></span><br><span class="line">  __try</span><br><span class="line">  &#123;</span><br><span class="line">    __asm</span><br><span class="line">    &#123;</span><br><span class="line">      push   edx</span><br><span class="line">      push   ecx</span><br><span class="line">      push   ebx</span><br><span class="line"></span><br><span class="line">      mov    eax, 'VMXh'</span><br><span class="line">      mov    ebx, 0  // 将ebx设置为非幻数’VMXH’的其它值</span><br><span class="line">      mov    ecx, 10 // 指定功能号，用于获取VMWare版本，当它为0x14时用于获取VMware内存大小</span><br><span class="line">      mov    edx, 'VX' // 端口号</span><br><span class="line">      in     eax, dx // 从端口dx读取VMware版本到eax</span><br><span class="line">      		     //若上面指定功能号为0x14时，可通过判断eax中的值是否大于0，若是则说明处于虚拟机中</span><br><span class="line">      cmp    ebx, 'VMXh' // 判断ebx中是否包含VMware版本’VMXh’，若是则在虚拟机中</span><br><span class="line">      setz   [rc] // 设置返回值</span><br><span class="line"></span><br><span class="line">      pop    ebx</span><br><span class="line">      pop    ecx</span><br><span class="line">      pop    edx</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  __except(EXCEPTION_EXECUTE_HANDLER)  //如果未处于VMware中，则触发此异常</span><br><span class="line">  &#123;</span><br><span class="line">    rc = false;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  return rc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试结果：</p>
+<center><br><img src="/media/vmcheck/1.png" alt=""><br>                 图1<br></center>
+
+<p>如图1所示，VMDetect成功检测出VMWare的存在。</p>
+<h3 id="方法二：利用IDT基址检测虚拟机"><a href="#方法二：利用IDT基址检测虚拟机" class="headerlink" title="方法二：利用IDT基址检测虚拟机"></a>方法二：利用IDT基址检测虚拟机</h3><p>利用IDT基址检测虚拟机的方法是一种通用方式，对VMware和Virtual PC均适用。中断描述符表IDT（Interrupt Descriptor Table）用于查找处理中断时所用的软件函数，它是一个由256项组成的数据，其中每一中断对应一项函数。为了读取IDT基址，我们需要通过SIDT指令来读取IDTR（中断描述符表寄存器，用于IDT在内存中的基址），SIDT指令是以如下格式来存储IDTR的内容：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span></span><br><span class="line">&#123;</span><br><span class="line">    WORD IDTLimit;    <span class="comment">// IDT的大小</span></span><br><span class="line">    WORD LowIDTbase;  <span class="comment">// IDT的低位地址</span></span><br><span class="line">    WORD HiIDTbase; <span class="comment">// IDT的高位地址</span></span><br><span class="line">&#125; IDTINFO;</span><br></pre></td></tr></table></figure>
+<p>由于只存在一个IDTR，但又存在两个操作系统，即虚拟机系统和真主机系统。为了防止发生冲突，VMM（虚拟机监控器）必须更改虚拟机中的IDT地址，利用真主机与虚拟机环境中执行sidt指令的差异即可用于检测虚拟机是否存在。著名的“红丸”（redpill）正是利用此原理来检测VMware的。Redpill作者在VMware上发现虚拟机系统上的IDT地址通常位于0xFFXXXXXX，而Virtual PC通常位于0xE8XXXXXX，而在真实主机上正如图2所示都位于0x80xxxxxx。Redpill仅仅是通过判断执行SIDT指令后返回的第一字节是否大于0xD0，若是则说明它处于虚拟机，否则处于真实主机中。Redpill的源码甚是精简，源码分析如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">char</span> m[<span class="number">2</span>+<span class="number">4</span>], rpill[] = <span class="string">"\x0f\x01\x0d\x00\x00\x00\x00\xc3"</span>; <span class="comment">//相当于SIDT[adrr],其中addr用于保存IDT地址</span></span><br><span class="line">  *((unsigned*)&amp;rpill[<span class="number">3</span>]) = (unsigned)m;  <span class="comment">//将sidt[addr]中的addr设为m的地址</span></span><br><span class="line">  ((void(*)())&amp;rpill)();  <span class="comment">//执行SIDT指令，并将读取后IDT地址保存在数组m中</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span> (<span class="string">"idt base: %#x\n"</span>, *((unsigned*)&amp;m[<span class="number">2</span>]));  <span class="comment">//由于前2字节为IDT大小，因此从m[2]开始即为IDT地址</span></span><br><span class="line">  <span class="keyword">if</span> (m[<span class="number">5</span>]&gt;<span class="number">0xd0</span>) <span class="built_in">printf</span> (<span class="string">"Inside Matrix!\n"</span>, m[<span class="number">5</span>]); <span class="comment">//当IDT基址大于0xd0xxxxxx时则说明程序处于VMware中</span></span><br><span class="line">  <span class="keyword">else</span> <span class="built_in">printf</span> (<span class="string">"Not in Matrix.\n"</span>);</span><br><span class="line">  return <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试结果如图2所示：</p>
+<center><br><img src="/media/vmcheck/2.png" alt=""><br>                                     图2<br></center>                                     
+
+<p>利用此IDT检测的方法存在一个缺陷，由于IDT的值只针对处于正在运行的处理器而言，在单CPU中它是个常量，但当它处于多CPU时就可能会受到影响了，因为每个CPU都有其自己的IDT，这样问题就自然而然的产生了。针对此问题，Offensive Computing组织成员提出了两种应对方法，其中一种方法就是利用Redpill反复地在系统上循环执行任务，以此构造出一张当前系统的IDT值变化统计图，但这会增加CPU负担；另一种方法就是windows API函数SetThreadAffinityMask()将线程限制在单处理器上执行，当执行此测试时只能准确地将线程执行环境限制在本地处理器，而对于将线程限制在VM处理器上就可能行不通了，因为VM是计划在各处理器上运行的，VM线程在不同的处理器上执行时，IDT值将会发生变化，因此此方法也是很少被使用的。为此，有人提出了使用LDT的检测方法，它在具有多个CPU的环境下检测虚拟机明显优于IDT检测方法，该方法具体内容参见下节内容。</p>
+<h3 id="方法三：利用LDT和GDT的检测方法"><a href="#方法三：利用LDT和GDT的检测方法" class="headerlink" title="方法三：利用LDT和GDT的检测方法"></a>方法三：利用LDT和GDT的检测方法</h3><p>在 《Intel® 64 and IA-32  Architecture Software Developer’s Manual Volume 3A: System Programming Guide》第二章的Vol.3 2-5 一页（我的Intel开发手册是2008版的）中对于LDT和GDT的描述如下（以下内容为个人翻译）：</p>
+<blockquote>
+<p>在保护模式下，所有的内存访问都要通过全局描述符表（GDT）或者本地描述符表（LDT）才能进行。这些表包含有段描述符的调用入口。各个段描述符都包含有各段的基址，访问权限，类型和使用信息，而且每个段描述符都拥有一个与之相匹配的段选择子，各个段选择子都为软件程序提供一个GDT或LDT索引（与之相关联的段描述符偏移量），一个全局/本地标志（决定段选择子是指向GDT还是LDT），以及访问权限信息。<br>若想访问段中的某一字节，必须同时提供一个段选择子和一个偏移量。段选择子为段提供可访问的段描述符地址（在GDT 或者LDT 中）。通过段描述符，处理器从中获取段在线性地址空间里的基址，而偏移量用于确定字节地址相对基址的位置。假定处理器在当前权限级别（CPL）可访问这个段，那么通过这种机制就可以访问在GDT 或LDT 中的各种有效代码、数据或者堆栈段，这里的CPL是指当前可执行代码段的保护级别。<br>……<br>GDT的线性基址被保存在GDT寄存器（GDTR）中，而LDT的线性基址被保存在LDT寄存器（LDTR）中。 </p>
+</blockquote>
+<p>由于虚拟机与真实主机中的GDT和LDT并不能相同，这与使用IDT的检测方法一样，因此虚拟机必须为它们提供一个“复制体”。关于GDT和LDT的基址可通过SGDT和SLDT指令获取。虚拟机检测工具Scoopy suite的作者Tobias Klein经测试发现，当LDT基址位于0x0000（只有两字节）时为真实主机，否则为虚拟机，而当GDT基址位于0xFFXXXXXX时说明处于虚拟机中，否则为真实主机。具体实现代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">LDTDetect</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">short</span> ldt_addr = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> ldtr[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">    _asm sldt ldtr</span><br><span class="line">    ldt_addr = *((unsigned short *)&amp;ldtr);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"LDT BaseAddr: 0x%x\n"</span>, ldt_addr);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(ldt_addr == <span class="number">0x0000</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Native OS\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Inside VMware\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">GDTDetect</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> gdt_addr = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> gdtr[<span class="number">4</span>];</span><br><span class="line"></span><br><span class="line">    _asm sgdt gdtr</span><br><span class="line">    gdt_addr = *((unsigned int *)&amp;gdtr[<span class="number">2</span>]);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"GDT BaseAddr:0x%x\n"</span>, gdt_addr);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>((gdt_addr &gt;&gt; <span class="number">24</span>) == <span class="number">0xff</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Inside VMware\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Native OS\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    LDTDetect();</span><br><span class="line">    GDTDetect();</span><br><span class="line">    return <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试结果如图3所示：</p>
+<center><br><img src="/media/vmcheck/3.png" alt=""><br>                   图3<br><br></center>
+
+<h3 id="方法四：基于STR的检测方法"><a href="#方法四：基于STR的检测方法" class="headerlink" title="方法四：基于STR的检测方法"></a>方法四：基于STR的检测方法</h3><p>在保护模式下运行的所有程序在切换任务时，对于当前任务中指向TSS的段选择器将会被存储在任务寄存器中，TSS中包含有当前任务的可执行环境状态，包括通用寄存器状态，段寄存器状态，标志寄存器状态，EIP寄存器状态等等，当此项任务再次被执行时，处理器就会其原先保存的任务状态。每项任务均有其自己的TSS，而我们可以通过STR指令来获取指向当前任务中TSS的段选择器。这里STR（Store task register）指令是用于将任务寄存器 (TR) 中的段选择器存储到目标操作数，目标操作数可以是通用寄存器或内存位置，使用此指令存储的段选择器指向当前正在运行的任务的任务状态段 (TSS)。在虚拟机和真实主机之中，通过STR读取的地址是不同的，当地址等于0x0040xxxx时，说明处于虚拟机中，否则为真实主机。实现代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> mem[<span class="number">4</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">    __asm str mem;</span><br><span class="line">    <span class="built_in">printf</span> (<span class="string">" STR base: 0x"</span>);</span><br><span class="line">    <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">4</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%02x"</span>,mem[i]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ( (mem[<span class="number">0</span>]==<span class="number">0x00</span>) &amp;&amp; (mem[<span class="number">1</span>]==<span class="number">0x40</span>))</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"\n INSIDE MATRIX!!\n"</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"\n Native OS!!\n"</span>);</span><br><span class="line">    return <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试结果如图4所示：</p>
+<center><br><img src="/media/vmcheck/4.png" alt=""><br>                          图4<br></center>
+
+<h3 id="方法五：基于注册表检测虚拟机"><a href="#方法五：基于注册表检测虚拟机" class="headerlink" title="方法五：基于注册表检测虚拟机"></a>方法五：基于注册表检测虚拟机</h3><p>在windows虚拟机中常常安装有VMware Tools以及其它的虚拟硬件（如网络适配器、虚拟打印机，USB集线器……），它们都会创建任何程序都可以读取的windows注册表项，因此我们可以通过检测注册表中的一些关键字符来判断程序是否处于虚拟机之中。关于这些注册表的位置我们可以通过在注册表中搜索关键词“vmware”来获取，下面是我在VMware下的WinXP中找到的一些注册表项：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">项名：HKEY_CLASSES_ROOT\Applications\VMwareHostOpen.exe</span><br><span class="line">项名：HKEY_CLASSES_ROOT\Installer\Products\C2A6F2EFE6910124C940B2B12CF170FE\ProductName</span><br><span class="line">键值“VMware Tools”</span><br><span class="line">项名：HKEY_CLASSES_ROOT\Installer\Products\C2A6F2EFE6910124C940B2B12CF170FE\SourceList\PackageName</span><br><span class="line">键值：VMware Tools.msi</span><br><span class="line">项名：HKEY_CURRENT_USER\Printers\DeviceOld</span><br><span class="line">键值：_#VMwareVirtualPrinter,winspool,TPVM:</span><br><span class="line">项名：HKEY_LOCAL_MACHINE\HARDWARE\DEVICEMAP\Scsi\Scsi Port 0\Scsi Bus 0\Target Id 0\Logical Unit Id 0\Identifier</span><br><span class="line">键值：VMware Virtual IDE Hard Drive</span><br><span class="line">项名：HKEY_LOCAL_MACHINE\HARDWARE\DEVICEMAP\Scsi\Scsi Port 1\Scsi Bus 0\Target Id 0\Logical Unit Id 0\Identifier</span><br><span class="line">键值：NECVMWar VMware IDE CDR10</span><br><span class="line">项名：HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Installer\Products\C2A6F2EFE6910124C940B2B12CF170FE\ProductName</span><br><span class="line">键值：VMware Tools</span><br><span class="line">项名：HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Installer\UserData\S-1-5-18\Products\C2A6F2EFE6910124C940B2B12CF170FE\InstallProperties\DisplayName</span><br><span class="line">键值：VMware Tools</span><br><span class="line">项名：HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Reinstall\0002\DeviceDesc</span><br><span class="line">键值：VMware SVGA II</span><br><span class="line">项名：HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkCards\2\Description</span><br><span class="line">键值：VMware Accelerated AMD PCNet Adapter</span><br><span class="line">项名：HKEY_LOCAL_MACHINE\SOFTWARE\VMware, Inc.\VMware Tools</span><br><span class="line">项名：HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\Class\&#123;4D36E968-E325-11CE-BFC1-08002BE10318&#125;\0000\DriverDesc</span><br><span class="line">键值：VMware SVGA II</span><br><span class="line">项名：HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\Class\&#123;4D36E968-E325-11CE-BFC1-</span><br><span class="line">08002BE10318&#125;\0000\ProviderName</span><br><span class="line">键值：VMware, Inc.</span><br><span class="line">项名：HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\Class\&#123;4D36E972-E325-11CE-BFC1-08002bE10318&#125;\0001\DriverDesc</span><br><span class="line">键值：VMware Accelerated AMD PCNet Adapter</span><br><span class="line">项名：HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\Class\&#123;4D36E97B-E325-11CE-BFC1-08002BE10318&#125;\0000\DriverDesc</span><br><span class="line">键值：VMware SCSI Controller</span><br><span class="line">项名：HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\Print\Monitors\ThinPrint Print Port Monitor for VMWare</span><br></pre></td></tr></table></figure>
+<p>除以上这些表项之外，还有很多地方可以检测，特别是虚拟机提供的虚拟化软硬件、服务之类，比如文件共享服务，VMware 物理磁盘助手服务，VMware Ethernet Adapter Driver，VMware SCSI Controller等等的这些信息都可作为检测虚拟机的手段。这里我们就以其中某表项为例编程举例一下，其它表项检测方法同理，具体代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">.386</span><br><span class="line">.model flat, stdcall</span><br><span class="line">option casemap:none</span><br><span class="line"></span><br><span class="line">   include  windows.inc</span><br><span class="line">   include  user32.inc</span><br><span class="line">   include  kernel32.inc</span><br><span class="line">   include  advapi32.inc</span><br><span class="line"></span><br><span class="line">   includelib  user32.lib</span><br><span class="line">   includelib  kernel32.lib</span><br><span class="line">   includelib  advapi32.lib</span><br><span class="line"></span><br><span class="line">.data</span><br><span class="line">szCaption     db &quot;VMware Detector &quot;,0</span><br><span class="line">szInside         db &quot;Inside VMware!&quot;,0</span><br><span class="line">szOutside              db &quot;Native OS!&quot;,0</span><br><span class="line">szSubKey      db &quot;software\VMWare, Inc.\VMware tools&quot;,0</span><br><span class="line">hKey              dd    ?</span><br><span class="line"></span><br><span class="line">.code</span><br><span class="line">start:</span><br><span class="line">  invoke RegOpenKeyEx, HKEY_LOCAL_MACHINE, addr szSubKey, 0,\</span><br><span class="line">                 KEY_WRITE or KEY_READ, addr hKey</span><br><span class="line">  .if eax == ERROR_SUCCESS</span><br><span class="line">  invoke MessageBox, NULL,addr szInside, addr szCaption, MB_OK</span><br><span class="line">  .else</span><br><span class="line">  invoke MessageBox, NULL,addr szOutside, addr szCaption, MB_OK</span><br><span class="line">  .endif</span><br><span class="line">  invoke RegCloseKey,hKey</span><br><span class="line">  invoke ExitProcess,NULL</span><br><span class="line">end start</span><br></pre></td></tr></table></figure>
+<p>测试结果如图5所示：</p>
+<center><br><img src="/media/vmcheck/5.png" alt=""><br>            图5<br></center>
+
+<h3 id="方法六：基于时间差的检测方式"><a href="#方法六：基于时间差的检测方式" class="headerlink" title="方法六：基于时间差的检测方式"></a>方法六：基于时间差的检测方式</h3><p>本方法通过运行一段特定代码，然后比较这段代码在虚拟机和真实主机之中的相对运行时间，以此来判断是否处于虚拟机之中。这段代码我们可以通过RDTSC指令来实现，RDTSC指令是用于将计算机启动以来的CPU运行周期数存放到EDX：EAX里面，其中EDX是高位，而EAX是低位。下面我们以xchg    ecx,  eax 一句指令的运行时间为例，这段指令在我的真实主机windows 7系统上的运行时间为0000001E，如图6所示：</p>
+<center><br><img src="/media/vmcheck/6.png" alt=""><br>              图6<br><br></center>
+
+<p>而该指令在虚拟机WinXP下的运行时间为00000442，如图7所示：</p>
+<center><br><img src="/media/vmcheck/7.png" alt=""><br>               图7<br></center>
+
+<p>两者之间的运行时间明显差别很多，在虚拟机中的运行速度远不如真实主机的，一般情况下，当它的运行时间大于0xFF时，就可以确定它处于虚拟机之中了，因此不难写出检测程序，具体实现代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">.586p</span><br><span class="line">.model flat, stdcall</span><br><span class="line">option casemap:none</span><br><span class="line"></span><br><span class="line">include     windows.inc</span><br><span class="line">include       kernel32.inc</span><br><span class="line">include     user32.inc</span><br><span class="line"></span><br><span class="line">includelib    kernel32.lib</span><br><span class="line">includelib    user32.lib</span><br><span class="line"></span><br><span class="line">                        </span><br><span class="line">.data</span><br><span class="line">szTitle     db  &quot;VMDetect With RDTSC&quot;, 0h</span><br><span class="line">szInsideVM    db  &quot;Inside VMware!&quot;, 0h</span><br><span class="line">szOutsideVM   db  &quot;Native OS!&quot;, 0h</span><br><span class="line"></span><br><span class="line">.code</span><br><span class="line"></span><br><span class="line">start:</span><br><span class="line">        RDTSC</span><br><span class="line">        xchg    ecx, eax</span><br><span class="line">        RDTSC </span><br><span class="line">        sub   eax, ecx</span><br><span class="line">        cmp   eax, 0FFh</span><br><span class="line">        jg    Detected</span><br><span class="line">        </span><br><span class="line">        invoke  MessageBox, 0, offset szOutsideVM, offset szTitle, 0</span><br><span class="line">        ret</span><br><span class="line">        </span><br><span class="line">Detected:</span><br><span class="line">        invoke  MessageBox, 0, offset szInsideVM, offset szTitle, 0</span><br><span class="line">        ret</span><br><span class="line">end start</span><br></pre></td></tr></table></figure>
+<p>测试结果如图8所示：</p>
+<center><br><img src="/media/vmcheck/8.png" alt=""><br>              图8<br></center>
+
+<h3 id="方法七：利用虚拟硬件指纹检测虚拟机"><a href="#方法七：利用虚拟硬件指纹检测虚拟机" class="headerlink" title="方法七：利用虚拟硬件指纹检测虚拟机"></a>方法七：利用虚拟硬件指纹检测虚拟机</h3><p>利用虚拟硬件指纹也可用于检测虚拟机的存在，比如VMware默认的网卡MAC地址前缀为“00-05-69，00-0C-29或者00-50-56”，这前3节是由VMware分配的唯一标识符OUI，以供它的虚拟化适配器使用。在我的VMWare WinXP下的MAC地址为00-0C-29-5B-D7-67，如图9所示：</p>
+<center><br><img src="/media/vmcheck/9.png" alt=""><br>                                 图9<br></center>
+
+<p>但由于这些可经过修改配置文件来绕过检测。另外，还可通过检测特定的硬件控制器，BIOS，USB控制器，显卡，网卡等特征字符串进行检测，这些在前面使用注册表检测方法中已有所涉及。另外之前在看雪论坛上也有朋友提到通过检测硬盘Model Number是否含有“vmware”或“virtual”等字样来实现检测虚拟机的功能，网址见这（附源码）：<a href="http://bbs.pediy.com/showthread.php?t=110046。" target="_blank" rel="external">http://bbs.pediy.com/showthread.php?t=110046。</a></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>国外SANS安全组织的研究人员总结出当前各种虚拟机检测手段不外乎以下四类：</p>
+<p>● 搜索虚拟环境中的进程，文件系统，注册表；<br>● 搜索虚拟环境中的内存<br>● 搜索虚拟环境中的特定虚拟硬件<br>● 搜索虚拟环境中的特定处理器指令和功能</p>
+<p>因为现代计算系统大多是由文件系统，内存，处理器及各种硬件组件构成的，上面提到的四种检测手段均包含了这些因素。纵观前面各种检测方法，也均在此四类当中。除此之外，也有人提出通过网络来检测虚拟机，比如搜索ICMP和TCP数据通讯的时间差异，IP ID数据包差异以及数据包中的异常头信息等等。随着技术研究的深入，相信会有更多的检测手段出现，与此同时，虚拟机厂商也会不断进化它们的产品，以增加anti-vmware的难度，这不也正是一场永无休止的无烟战争！</p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2010/08/27/vmcheck/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/虚拟机/">虚拟机</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+    <div id="container"></div>
+    <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+    <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+      id: 'location.href', // 可选。默认为 location.href
+      owner: 'riusksk',
+      repo: 'riusksk.github.io',
+      oauth: {
+        client_id: '41b05e6c6c24ccaaeb50',
+        client_secret: 'd76a5ed1e60a8b98b82254178f1927222ee2a8ce',
+      },
+    })
+    gitment.render('container')
+    </script>
+
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2010-04-18T16:00:00.000Z"><a href="/2010/04/19/攻击网络打印机/">2010-04-19</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2010/04/19/攻击网络打印机/">攻击网络打印机</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        
+
+	<div class="row">
+	  <iframe src="http://nagland.github.io/viewer/web/viewer.html?val=http://riusksk.me/media/attack_printer.pdf" style="width:100%; height:550px"></iframe>
+	</div>
+
+
+
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2010/04/19/攻击网络打印机/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/打印机/">打印机</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+    <div id="container"></div>
+    <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+    <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+      id: 'location.href', // 可选。默认为 location.href
+      owner: 'riusksk',
+      repo: 'riusksk.github.io',
+      oauth: {
+        client_id: '41b05e6c6c24ccaaeb50',
+        client_secret: 'd76a5ed1e60a8b98b82254178f1927222ee2a8ce',
+      },
+    })
+    gitment.render('container')
+    </script>
+
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2009-12-21T16:00:00.000Z"><a href="/2009/12/22/Perl黑客编程/">2009-12-22</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2009/12/22/Perl黑客编程/">Perl黑客编程</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        
+
+	<div class="row">
+	  <iframe src="http://nagland.github.io/viewer/web/viewer.html?val=http://riusksk.me/media/perl_hack_program.pdf" style="width:100%; height:550px"></iframe>
+	</div>
+
+
+
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2009/12/22/Perl黑客编程/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Perl/">Perl</a>, <a href="/tags/编程/">编程</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+    <div id="container"></div>
+    <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+    <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+      id: 'location.href', // 可选。默认为 location.href
+      owner: 'riusksk',
+      repo: 'riusksk.github.io',
+      oauth: {
+        client_id: '41b05e6c6c24ccaaeb50',
+        client_secret: 'd76a5ed1e60a8b98b82254178f1927222ee2a8ce',
+      },
+    })
+    gitment.render('container')
+    </script>
+
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2009-07-06T16:00:00.000Z"><a href="/2009/07/07/Windows平台下的监控取证技术/">2009-07-07</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2009/07/07/Windows平台下的监控取证技术/">Windows平台下的监控取证技术</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        
+
+	<div class="row">
+	  <iframe src="http://nagland.github.io/viewer/web/viewer.html?val=http://riusksk.me/media/win_forensics.pdf" style="width:100%; height:550px"></iframe>
+	</div>
+
+
+
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2009/07/07/Windows平台下的监控取证技术/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Windows/">Windows</a>, <a href="/tags/监控取证/">监控取证</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+    <div id="container"></div>
+    <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+    <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+      id: 'location.href', // 可选。默认为 location.href
+      owner: 'riusksk',
+      repo: 'riusksk.github.io',
+      oauth: {
+        client_id: '41b05e6c6c24ccaaeb50',
+        client_secret: 'd76a5ed1e60a8b98b82254178f1927222ee2a8ce',
+      },
+    })
+    gitment.render('container')
+    </script>
+
+  </div>
+</article>
+
+
+
+
+
+<nav id="pagination">
+  
+  <nav id="page-nav">
+    <a class="extend prev" rel="prev" href="/page/4/">&laquo; 上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span>
+  </nav>
+
+</nav>
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:riusksk.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2017/06/04/调试V8中JS对应的汇编代码/">调试V8中JS对应的汇编代码</a>
+      </li>
+    
+      <li>
+        <a href="/2017/02/26/0/">优秀作者</a>
+      </li>
+    
+      <li>
+        <a href="/2016/12/21/CVE-2016-7595/">CVE-2016-7595 Apple macOS/iOS CoreText OTL::GPOS::ApplyPairPos 越界访问漏洞分析</a>
+      </li>
+    
+      <li>
+        <a href="/2016/12/17/2016年刷过的CVE/">2016年刷过的CVE</a>
+      </li>
+    
+      <li>
+        <a href="/2016/09/25/BlackHat-USA-2016-议题分析/">BlackHat USA 2016 议题分析</a>
+      </li>
+    
+      <li>
+        <a href="/2016/09/16/fsmon-多平台文件监控工具/">fsmon:多平台文件监控工具</a>
+      </li>
+    
+      <li>
+        <a href="/2016/09/13/Vulnerability-War-The-Essence-of-Software-Vulnerabilities-Analysis/">Vulnerability War: The Essence of Software Vulnerabilities Analysis</a>
+      </li>
+    
+      <li>
+        <a href="/2016/09/09/Perl-Bug-一枚/">Perl Bug 一枚</a>
+      </li>
+    
+      <li>
+        <a href="/2016/07/23/China-Pub计算机类图书畅销榜第一/">China-Pub计算机类图书畅销榜第一</a>
+      </li>
+    
+      <li>
+        <a href="/2016/07/17/《漏洞战争：软件漏洞分析精要》勘误表/">《漏洞战争：软件漏洞分析精要》勘误表</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/技术分享/">技术分享</a><small>38</small></li>
+  
+    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/0day/" style="font-size: 12px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 18px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 14px;">BlackHat</a> <a href="/tags/CanSecWest/" style="font-size: 12px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 16px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 20px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 14px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 12px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 12px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/iOS/" style="font-size: 12px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 12px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/安全审计/" style="font-size: 12px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 12px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 14px;">漏洞</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+    <h3 class="title">最新评论</h3>
+    <ul class="entry">
+        <!-- 多说最新评论 start -->
+                <div class="ds-recent-comments" data-num-items="5" data-show-avatars="1" data-show-time="1" data-show-title="1" data-show-admin="1" data-excerpt-length="70"></div>
+        <!-- 多说最新评论 end -->
+        <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+        <script type="text/javascript">
+        var duoshuoQuery = {short_name:"riusksk"};
+                (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';ds.async = true;
+                        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] 
+                         || document.getElementsByTagName('body')[0]).appendChild(ds);
+                })();
+                </script>
+        <!-- 多说公共JS代码 end -->
+    </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  <p>
+  
+  &copy; 2017 riusksk
+  
+  All rights reserved.</p>
+  <p>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+  & Hosted by <a href="http://github.com" target="_blank">GitHub</a>
+  <!--<span id="busuanzi_container_site_pv" >
+    ，本站总访问量<span id="busuanzi_value_site_pv" ></span>次
+  </span>
+  -->
+  </p>
+</div>
+<div class="clearfix"></div>
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+</footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+<div id='bg'></div>
+</body>
+</html>
