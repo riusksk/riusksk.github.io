@@ -111,6 +111,8 @@ riusksk，又名泉哥、林大夫，《漏洞战争：软件漏洞分析精要�
         <!-- partial('post/share') -->
       <div class="clearfix"></div>
     </footer>
+    
+<!--
     <div id="container"></div>
     <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
     <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
@@ -126,6 +128,8 @@ riusksk，又名泉哥、林大夫，《漏洞战争：软件漏洞分析精要�
     })
     gitment.render('container')
     </script>
+-->
+
   </div>
 </article>
 
@@ -133,25 +137,8 @@ riusksk，又名泉哥、林大夫，《漏洞战争：软件漏洞分析精要�
 <section id="comment">
   <h1 class="title">留言</h1>
 
-  <!-- 多说评论框 start -->
-  <div class="ds-thread" data-thread-key="page-undefined" data-title="" data-url="http://riusksk.github.io/about/index.html"></div>
-  <!-- 多说评论框 end -->
-  <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-  <script type="text/javascript">
-  var duoshuoQuery = {short_name:'riusksk'};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-       || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
-  <!-- 多说公共JS代码 end -->
-
+  
 </section>
-
 
 </div></div>
     <aside id="sidebar" class="alignright">
@@ -236,23 +223,39 @@ riusksk，又名泉哥、林大夫，《漏洞战争：软件漏洞分析精要�
   <div class="widget tag">
     <h3 class="title">最新评论</h3>
     <ul class="entry">
-        <!-- 多说最新评论 start -->
-                <div class="ds-recent-comments" data-num-items="5" data-show-avatars="1" data-show-time="1" data-show-title="1" data-show-admin="1" data-excerpt-length="70"></div>
-        <!-- 多说最新评论 end -->
-        <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-        <script type="text/javascript">
-        var duoshuoQuery = {short_name:"riusksk"};
-                (function() {
-                        var ds = document.createElement('script');
-                        ds.type = 'text/javascript';ds.async = true;
-                        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-                        ds.charset = 'UTF-8';
-                        (document.getElementsByTagName('head')[0] 
-                         || document.getElementsByTagName('body')[0]).appendChild(ds);
-                })();
-                </script>
-        <!-- 多说公共JS代码 end -->
+        <div id="recentcomments" class="dsq-widget">
+        <h2 class="dsq-widget-title">Recent Comments</h2>
+        <script type="text/javascript" src="http://riusksk-me.disqus.com/recent_comments_widget.js?num_items=5&hide_avatars=0&avatar_size=32&excerpt_length=200&hide_mods=0"></script>
+        </div>
     </ul>
+</div>
+
+
+<div class="categorieslist">
+    <p class="asidetitle">Recents</p>
+        <ul>
+          
+            <li>
+              <a href="/2017/06/04/调试V8中JS对应的汇编代码/">调试V8中JS对应的汇编代码</a>
+            </li>
+          
+            <li>
+              <a href="/2017/02/26/0/">优秀作者</a>
+            </li>
+          
+            <li>
+              <a href="/2016/12/21/CVE-2016-7595/">CVE-2016-7595 Apple macOS/iOS CoreText OTL::GPOS::ApplyPairPos 越界访问漏洞分析</a>
+            </li>
+          
+            <li>
+              <a href="/2016/12/17/2016年刷过的CVE/">2016年刷过的CVE</a>
+            </li>
+          
+            <li>
+              <a href="/2016/09/25/BlackHat-USA-2016-议题分析/">BlackHat USA 2016 议题分析</a>
+            </li>
+          
+        </ul>
 </div>
 
 </aside>
@@ -289,6 +292,8 @@ riusksk，又名泉哥、林大夫，《漏洞战争：软件漏洞分析精要�
   $('.fancybox').fancybox();
 })(jQuery);
 </script>
+
+
 
 
 <div id='bg'></div>
