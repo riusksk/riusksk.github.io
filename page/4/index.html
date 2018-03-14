@@ -77,6 +77,73 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2013-03-22T16:00:00.000Z"><a href="/2013/03/23/CanSecWest-2013/">2013-03-23</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2013/03/23/CanSecWest-2013/">关于CanSecWest 2013大会</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>文档下载：<a href="http://cansecwest.com/csw13archive.html" target="_blank" rel="external">http://cansecwest.com/csw13archive.html</a></p>
+<p>此次CanSecWest 2013大会的质量明显要高出BlackHat EU 2013很多，主要还是软件/系统安全为主，涉及漏洞利用和挖掘等技术。</p>
+<h3 id="1、《Fuzzing-for-logic-and-state-issues》"><a href="#1、《Fuzzing-for-logic-and-state-issues》" class="headerlink" title="1、《Fuzzing for logic and state issues》"></a>1、《Fuzzing for logic and state issues》</h3><p>Peach Fuzzer框架的作者写的，主要是介绍peach3的新增特性，增加逻辑漏洞和无效的状态转换等问题，比如一些WEB认证的逻辑漏洞，PPT写得比较简洁，纯文字描述，不好完整理解，建议还是上官网看peach3的使用文档吧：<a href="http://peachfuzzer.com/v3/PeachPit.html" target="_blank" rel="external">http://peachfuzzer.com/v3/PeachPit.html</a> ，上个月作者刚更新的，写得比较详细。</p>
+<h3 id="2、《DEP-ASLR-bypass-without-ROP-JIT》"><a href="#2、《DEP-ASLR-bypass-without-ROP-JIT》" class="headerlink" title="2、《DEP ASLR bypass without ROP JIT》"></a>2、《DEP ASLR bypass without ROP JIT》</h3><p>绿盟的TK讲的，里面的思路最早是在2009年的中国软件安全峰会《Vulnerability: The next 10 years》中提到的，主要是利用 SharedUserData 地址 0x7ffe0000 在win上是固定不变的，再通过它找到SystemCall，然后设置其参数，来调用指定的系统函数。在安全峰会上，作者是调用NtUserLockWorkStation这一函数来设置锁屏，而在此次CSW大会上，作者是通过LdrHotPatchRoutine索引到LdrLoadDll来加载外部的DLL，实现任意代码执行，这种方法只工作在winx64上的32位程序，且在win8上微软已经修复此问题。</p>
+<h3 id="3、《Adobe-Sandbox-WHEN-THE-BROKER-IS-BROKEN》"><a href="#3、《Adobe-Sandbox-WHEN-THE-BROKER-IS-BROKEN》" class="headerlink" title="3、《Adobe Sandbox WHEN THE BROKER IS BROKEN》"></a>3、《Adobe Sandbox WHEN THE BROKER IS BROKEN》</h3><p>exploit系列教程的作者peter写的议题，在以前的一些大会上，也有人做过关于adobe sandbox的分享，但总觉得PPT写得不过详细，这次peter的议题，我觉得写得挺详细的，由浅入深，从介绍沙盒的相关术语、client与broker之间的通讯原理开始讲起，并提起一些沙盒逃逸的攻击面，分析和提取cross call函数等信息，同时也提供一些demo，可惜只有ppt，要是能提供paper和code就更好了。</p>
+<h3 id="4、《An-Android-Hacker’s-Journey-Challenges-in-Android-Security-Research》"><a href="#4、《An-Android-Hacker’s-Journey-Challenges-in-Android-Security-Research》" class="headerlink" title="4、《An Android Hacker’s Journey- Challenges in Android Security Research》"></a>4、《An Android Hacker’s Journey- Challenges in Android Security Research》</h3><p>对我而言，里面让我最感兴趣的是作者即将出版的《Android Hacker’s Handbook》这个系列的书都很经典，包括shellcode、web、macosx以及ios等书，都是相当经典的，上面4本除了ios那书只看了一小部分之外，其它3本我都详细阅读过，值得推荐，前两本国内早有中译本了。<br>这个议题里面讲了一些android软件漏洞，包括一些组件权限设置问题导致的信息泄露，以及linux内核漏洞，其中还有一张赛门铁克提供的移动设备威胁图表，列出了移动设备可能面临的各种安全威胁，做得挺不错的。最后讲述了一些android平台的调试技巧，包括远程调试、源码调试等，有兴趣的朋友可以看下。</p>
+<h3 id="5、《Assessing-the-Linux-Desktop’s-Security》"><a href="#5、《Assessing-the-Linux-Desktop’s-Security》" class="headerlink" title="5、《Assessing the Linux Desktop’s Security》"></a>5、《Assessing the Linux Desktop’s Security》</h3><p>感觉一般，对这议题也不是很感兴趣。</p>
+<h3 id="6、《MS-SQL-Post-Exploitation-Shenanigans-You’re-In-Now-What-》"><a href="#6、《MS-SQL-Post-Exploitation-Shenanigans-You’re-In-Now-What-》" class="headerlink" title="6、《MS SQL Post Exploitation Shenanigans: You’re In, Now What?》"></a>6、《MS SQL Post Exploitation Shenanigans: You’re In, Now What?》</h3><p>讲述 MS SQL Server 利用技术，主要是利用扩展存储过程API来利用MSSQL，包括获取密码hash，内存搜索hash替换，编写poc创建后门，以及利用msf来控制shell等方式。在实际的渗透测试中，相信大多数的企业还是会选择使用php + mysql，特别是近些年来，这一组合的比例一直在扩大，所以估计对此文感兴趣的人不会太多。</p>
+<h3 id="7、《Cracking-and-Analyzing-Apple-iCloud-backups-Find-My-iPhone-Document-Storage》"><a href="#7、《Cracking-and-Analyzing-Apple-iCloud-backups-Find-My-iPhone-Document-Storage》" class="headerlink" title="7、《Cracking and Analyzing Apple iCloud backups, Find My iPhone, Document Storage》"></a>7、《Cracking and Analyzing Apple iCloud backups, Find My iPhone, Document Storage》</h3><p>基本就是在讲苹果的icloud服务及其原理，跟安全相关的内容不多，爱看不看。</p>
+<h3 id="8、《UPnP-Vulnerabilities》"><a href="#8、《UPnP-Vulnerabilities》" class="headerlink" title="8、《UPnP Vulnerabilities》"></a>8、《UPnP Vulnerabilities》</h3><p>PPT写得很是简单，内容也不是感兴趣，爱看不看。</p>
+<h3 id="9、《Analysis-of-a-Windows-Kernel-Vulnerability》"><a href="#9、《Analysis-of-a-Windows-Kernel-Vulnerability》" class="headerlink" title="9、《Analysis of a Windows Kernel Vulnerability》"></a>9、《Analysis of a Windows Kernel Vulnerability》</h3><p>共有273页，这是我见过最长的PPT文档。主要讲Duqu病毒所使用的 CVE-2011-3402：Windows win32k.sys TrueType 字体解析数组越界漏洞，从TTF字体格式开始分析，解释漏洞成因，以及漏洞的利用技术。在去年的syscan大会上，360的人也针对此漏洞分析过其原理及利用技术，可以交互参考阅读。国内最早分析并公开细节的应该是启明星辰，其在博客上也帖出了相应的分析文章，看雪和binvul论坛均有人发表相关的漏洞分析文章。</p>
+<h3 id="10、《iOS-6-Exploitation-280-Days-Later》"><a href="#10、《iOS-6-Exploitation-280-Days-Later》" class="headerlink" title="10、《iOS 6 Exploitation 280 Days Later》"></a>10、《iOS 6 Exploitation 280 Days Later》</h3><p>作者之前搞了近10年的WEB安全，2010年中才开始搞iphone安全，但他98年就开始接触安全，也算是安全界的老一辈革命家了。讲了2012年之后出现过的一些ios漏洞，以及关于ios安全相关的资料和书籍，同时介绍苹果对此采取的一些保护机制（cookie、ASLR、程序目录权限限制……），大部分篇幅还是在介绍ios的保护机制。</p>
+<h3 id="11、《Evil-Maid-Just-Got-Angrier：Why-Full-Disk-Encryption-With-TPM-is-Insecure-on-Many-Systems》"><a href="#11、《Evil-Maid-Just-Got-Angrier：Why-Full-Disk-Encryption-With-TPM-is-Insecure-on-Many-Systems》" class="headerlink" title="11、《Evil Maid Just Got Angrier：Why Full-Disk Encryption With TPM is Insecure on Many Systems》"></a>11、《Evil Maid Just Got Angrier：Why Full-Disk Encryption With TPM is Insecure on Many Systems》</h3><p>讲述关于bios那些底层的东东，看不懂，真心看不懂！</p>
+<h3 id="12、《Physical-Privilege-Escalation-and-Mitigation-in-the-x86-World》"><a href="#12、《Physical-Privilege-Escalation-and-Mitigation-in-the-x86-World》" class="headerlink" title="12、《Physical Privilege Escalation and Mitigation in the x86 World》"></a>12、《Physical Privilege Escalation and Mitigation in the x86 World》</h3><p>硬件hacking一类的议题，PPT也大多是贴图，不好理解，反正是没看懂这PPT</p>
+<h3 id="13、《Smart-TV-Security》"><a href="#13、《Smart-TV-Security》" class="headerlink" title="13、《Smart TV Security》"></a>13、《Smart TV Security》</h3><p>一个有趣的议题，主要讲关于智能电视安全，包括智能电视机上面的app漏洞，以及恶意app感染、网络通讯安全等问题，同时还介绍智能电视固件rootkit的开发，如何留取后门。控制智能电视后最大的风险就是用它来监控和窃听你的行为，因为智能电视都配有摄像头。最后，还介绍一些调试等逆向相关技术，以及操作电视的一些API函数。</p>
+<h3 id="14、《The-Evolution-of-BlackHole》"><a href="#14、《The-Evolution-of-BlackHole》" class="headerlink" title="14、《The Evolution of BlackHole》"></a>14、《The Evolution of BlackHole》</h3><p>总觉得这是BlackHol exploit kit的广告帖，介绍BlackHole这一漏洞利用工具包的一些功能，一套售价冒似是1500美元，不过里面的一些功能看起来还是不错的。 </p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2013/03/23/CanSecWest-2013/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/CanSecWest/">CanSecWest</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2013-03-19T16:00:00.000Z"><a href="/2013/03/20/BlackHat-EU-2013/">2013-03-20</a></time>
       
       
@@ -675,65 +742,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2011-08-19T16:00:00.000Z"><a href="/2011/08/20/malware-analyze/">2011-08-20</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2011/08/20/malware-analyze/">多平台恶意软件行为分析技巧</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        
-
-	<div class="row">
-	  <iframe src="http://nagland.github.io/viewer/web/viewer.html?val=http://riusksk.me/media/malware_analyze.pdf" style="width:100%; height:550px"></iframe>
-	</div>
-
-
-
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2011/08/20/malware-analyze/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/恶意软件/">恶意软件</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -755,6 +763,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2018/03/14/计算机行业是否需要学历/">计算机行业是否需要学历</a>
+      </li>
     
       <li>
         <a href="/2018/02/22/读书心悟/">读书心悟</a>
@@ -792,10 +804,6 @@
         <a href="/2016/09/13/Vulnerability-War-The-Essence-of-Software-Vulnerabilities-Analysis/">Vulnerability War: The Essence of Software Vulnerabilities Analysis</a>
       </li>
     
-      <li>
-        <a href="/2016/09/09/Perl-Bug-一枚/">Perl Bug 一枚</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -807,6 +815,8 @@
   
     <li><a href="/categories/技术分享/">技术分享</a><small>39</small></li>
   
+    <li><a href="/categories/随机杂谈/">随机杂谈</a><small>1</small></li>
+  
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>6</small></li>
   
   </ul>
@@ -817,7 +827,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/0day/" style="font-size: 12px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 18px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 14px;">BlackHat</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 12px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 16px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 20px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 14px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 12px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 12px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/iOS/" style="font-size: 12px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 12px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/安全审计/" style="font-size: 12px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 12px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 14px;">漏洞</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a>
+    <a href="/tags/0day/" style="font-size: 12px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 18px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 14px;">BlackHat</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 12px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 16px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 20px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 14px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 12px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 12px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/iOS/" style="font-size: 12px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 12px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全审计/" style="font-size: 12px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 12px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 14px;">漏洞</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a>
   </div>
 </div>
 

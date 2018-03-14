@@ -77,6 +77,111 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2015-07-15T16:00:00.000Z"><a href="/2015/07/16/Hacking-Team-武器库研究（六）：Mac-OSX-Rootkit-技术分析/">2015-07-16</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/07/16/Hacking-Team-武器库研究（六）：Mac-OSX-Rootkit-技术分析/">Hacking Team 武器库研究（六）：Mac OSX Rootkit 技术分析</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>泄露的 driver-macos-master 项目是一个Mac OS X Rootkit 病毒，从源码看，它可能就是当年红极一时的病毒“OSX.Crisis”，因为两者之间连一些函数名都一模一样（比如关键函数hide_proc、hide_kext_osarray，甚至连废弃的hide_kext_leopard也有），逻辑也基本相同。更为牛逼之处的是，Crisis是在2012年爆发的，而该份代码在2009就已完工，想想之间的差距吧，这也再一次证明Hacking Team的技术实力有多强大。</p>
+<p><img src="http://riusksk.me/media/hackteam06/1.png" alt=""></p>
+<p>##【源码分析】</p>
+<p>下面分析下该 OSX rootkit 技术内幕：</p>
+<p>1、先从入口函数 mchook_start 开始分析，主要就是注册字符设备，然后在文件系统上创建设备节点，常规的驱动入口行为。</p>
+<p><img src="http://riusksk.me/media/hackteam06/2.png" alt=""></p>
+<p>对应的字符设备转换表如下：</p>
+<p><img src="http://riusksk.me/media/hackteam06/3.png" alt=""></p>
+<p>主IOCTL回调函数就下面3个，其中cdev_open和cdev_close为空，整个处理逻辑都包含在cdev_ioctl函数中：</p>
+<p><img src="http://riusksk.me/media/hackteam06/4.png" alt=""></p>
+<p>2、关键看下cdev_ioctl 回调函数，里面包括各种潜伏隐藏的行为。在mchook.h文件头中就定义了一些cdev_ioctl中调用到的函数，从函数名上基本可以推测出该rootkit包含文件隐藏、进程隐藏、内核模块隐藏等功能。</p>
+<p><img src="http://riusksk.me/media/hackteam06/5.png" alt=""></p>
+<p>3、进程隐藏：在mac osx上,每个进程的上下文都保存在proc结构中,而在allproc链表中就保存着所有进程proc结构的指针，通过allproc链表移除相应进程的proc结构可隐藏正在运行的进程，下面是关于隐藏进程的代码，位于hide_proc函数中（还有另一个未被调用到的函数hide_proc_l，也是用于实现相同功能）,它相应进程从进程链表和进程Hash表里都移除掉。之前笔者在分析 rubilyn osx rootkit 时，发现它就没有从Hash表里移除进程相关信息，导致可通过“ps -p pid ”命令查找到进程。</p>
+<p><img src="http://riusksk.me/media/hackteam06/6.png" alt=""></p>
+<p>4、内核模块隐藏：早期针对leopard系统的内核模块隐藏是调用 hide_kext_leopard 函数，现在已经不再使用，它只是简单地遍历kmod_info 内核模块链表结构，找到相匹配的模块名，然后将从它链表中踢除，这样当执行kextstat命令时就查看不到隐藏的内核模块，但这种方法现在无效。</p>
+<p><img src="http://riusksk.me/media/hackteam06/7.png" alt=""></p>
+<p>为了支持多个系统版本，后来重写了个 hide_kext_osarray 函数。在“雪豹”苹果系统之后，有个叫sLoadedKexts 的 IOKit OSArray类引用到内核模块列表，不过它并没有导出符号，只要能够找到它，那么就可以对sLoadedKexts 数组进行修改,以达到隐藏内核模块的目的。</p>
+<p>庆幸的是，OSKext::lookupKextWithLoadTag 函数里面引用到sLoadKexts（源码参见：<a href="http://www.opensource.apple.com/source/xnu/xnu-2782.1.97/libkern/c++/OSKext.cpp），通过它可以定位到sLoadKexts地址。" target="_blank" rel="external">http://www.opensource.apple.com/source/xnu/xnu-2782.1.97/libkern/c++/OSKext.cpp），通过它可以定位到sLoadKexts地址。</a></p>
+<p><img src="http://riusksk.me/media/hackteam06/8.png" alt=""></p>
+<p>它对应的内核模块位于/System/Library/Extensions/System.kext/PlugIns/LibKern.kext/LibKern，不过当用IDA加载分析时，发现它只有导入表的函数信息，并无实际函数，包括PlugIns目录下的其它驱动也是大多如此。进一步分析，发现这些驱动其实都链接到/System/Library/Kernels/kernel里面，可以发现OSKext::lookupKextWithLoadTag函数对应的符号名为__ZN6OSKext21lookupKextWithLoadTagEj。</p>
+<p><img src="http://riusksk.me/media/hackteam06/9.png" alt=""></p>
+<p>通过该符号即可找到OSKext::lookupKextWithLoadTag函数，然后开始搜索机器 E8，即CALL指令，从上面的源码看，调用的第一个函数是IORecursiveLockLock，然后跳过call指令（共5字节）进入下一条指令。</p>
+<p><img src="http://riusksk.me/media/hackteam06/10.png" alt=""></p>
+<p>再根据32位/64位系统进行区分，对于32位比较简单，call下一条指令就包含有sLoadedKexts地址，下图就是32位系统Snow Leopard 10.6.8的OSKext::lookupKextWithLoadTag函数，由于笔者缺乏该环境，因此图片是从网上扣来的：</p>
+<p><img src="http://riusksk.me/media/hackteam06/11.png" alt=""></p>
+<p>但对于64位系统会相对繁琐一些，它先找到机器码 48 8B，即mov指令，获取第2个操作数的实际内存地址，即为sLoadKexts，不过笔者在最新版10.10.4上发现必须是在第2个 48 8B才有效，因此该份rookit只适用于低版本的 64位Leopard系统</p>
+<p><img src="http://riusksk.me/media/hackteam06/12.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam06/13.png" alt=""></p>
+<p>定位到sLoadedKext这个OSArray数组之后， sLoadedKext[OFFT_KEXT_COUNT] ＝  sLoadedKext[0x14] = 元素个数，即已加载的内核模块个数。接着找到最后一个kext模块的kmod_info结构信息，判断该内核模块是否为com.apple.mdworker，若是则将递减模块数量，进而隐藏kext模块，所以实际要隐藏哪个模块就得去更改com.apple.mdworker为相应的模块名。</p>
+<p><img src="http://riusksk.me/media/hackteam06/14.png" alt=""></p>
+<p>5、文件隐藏：为了对列出文件的相应系统函数进行挂钩，我们需要先对finder和ls所使用的函数进行进程跟踪，在mac上已经用Dtrace代替ktrace，在finder上主要是使用getdirentriesattr函数，而ls主要是使用getdirentries64，下面是用Dtrace分别对finder和ls的进程跟踪情况：</p>
+<p><img src="http://riusksk.me/media/hackteam06/15.png" alt=""></p>
+<p>下面是查看finder进程2841的调用函数，其中的getdirentriesattr在最新版10.10.4上未发现被调用，以下测试是之前在10.9系统上测试的，但是在10.10.4中getdirentriesattr函数依然在syscall.h中被定义着。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">riusksk@macosx:/usr/include/sys$ sudo dtrace -s ~/Reverse\ engineering/Dtrace/calltrace.d -p 2841 | grep getdir</span><br><span class="line"></span><br><span class="line">dtrace: script &apos;/Users/riusksk/Reverse engineering/Dtrace/calltrace.d&apos; matched 573227 probes</span><br><span class="line"></span><br><span class="line">  2 1078881          getdirentriesattr:entry</span><br><span class="line">  2 1363229         getdirentriesattr:return =1</span><br><span class="line">……</span><br></pre></td></tr></table></figure>
+<p>下面是ls命令(64位系统)调用的函数：</p>
+<p><img src="http://riusksk.me/media/hackteam06/16.png" alt=""></p>
+<p>因此，我们若想在finder和ls中隐藏文件，只要对这两个函数 getdirentriesattr 和 getdirentries64 （32位的为getdirentries）进行挂钩处理即可。在系统调用函数表中，主要是由sysent结构数组构成，每个sysent结构中都包括参数个数sy_narg，执行函数sy_call 这些重要数据。sysent结构如下：</p>
+<p><img src="http://riusksk.me/media/hackteam06/17.png" alt=""></p>
+<p>为了实现对上述系统函数的挂钩，通过修改相应函数sysent结构的sy_call来进行偷梁换柱，关于各系统函数的调用号和宏名均可在 /usr/include/sys/syscall.h中找到：</p>
+<p><img src="http://riusksk.me/media/hackteam06/18.png" alt=""></p>
+<p>回头看源码，发现该rootkit也是对上面这3个函数进行hook：</p>
+<p><img src="http://riusksk.me/media/hackteam06/19.png" alt=""></p>
+<p>看下其中的hook_getdirentiries64函数，其它类似，主要还是移除指定文件的dirent结构，其中dirent结构原型如下：</p>
+<p><img src="http://riusksk.me/media/hackteam06/20.png" alt=""></p>
+<p>先调用原始函数，获取真实的文件信息（源码中的direntry对应的其实是dirent结构，在新版版本中这两个结构是独立存在的了）：</p>
+<p><img src="http://riusksk.me/media/hackteam06/21.png" alt=""></p>
+<p>然后遍历文件链表，找到相匹配的文件名，然后用后一个dirent文件结构覆盖当前找到的dirent文件结构，这样就相当于指定的文件结构信息从链表中移除，从而实现文件隐藏的目的。</p>
+<p><img src="http://riusksk.me/media/hackteam06/22.png" alt=""></p>
+<p>10、官方另外在testuint目录下放有用于测试的rootkit的工具kextControl.c 和 solveKernel.c。</p>
+<p><img src="http://riusksk.me/media/hackteam06/23.png" alt=""></p>
+<p>【总结】</p>
+<p>实际测试时，由于没有合法签名，导致驱动也无法被正常加载，因此未能作实际测试。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">15/7/17 下午2:23:27.921 com.apple.kextd[44]: ERROR: invalid signature for com.revenge.kext.machooker, will not load</span><br></pre></td></tr></table></figure>
+<p>此次泄露的OSX rootkit 相对还是比较常规的技术，毕竟是2009的源码了，年代久远，但在最新OSX 10.10上稍作修改，应该还是可以用的。</p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2015/07/16/Hacking-Team-武器库研究（六）：Mac-OSX-Rootkit-技术分析/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Hacking-Team/">Hacking Team</a>, <a href="/tags/OSX/">OSX</a>, <a href="/tags/rootkit/">rootkit</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2015-07-14T16:00:00.000Z"><a href="/2015/07/15/Hacking-Team-武器库研究（五）：Mac-OSX-64位-Shellcode-技术分析/">2015-07-15</a></time>
       
       
@@ -691,73 +796,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2013-03-22T16:00:00.000Z"><a href="/2013/03/23/CanSecWest-2013/">2013-03-23</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2013/03/23/CanSecWest-2013/">关于CanSecWest 2013大会</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>文档下载：<a href="http://cansecwest.com/csw13archive.html" target="_blank" rel="external">http://cansecwest.com/csw13archive.html</a></p>
-<p>此次CanSecWest 2013大会的质量明显要高出BlackHat EU 2013很多，主要还是软件/系统安全为主，涉及漏洞利用和挖掘等技术。</p>
-<h3 id="1、《Fuzzing-for-logic-and-state-issues》"><a href="#1、《Fuzzing-for-logic-and-state-issues》" class="headerlink" title="1、《Fuzzing for logic and state issues》"></a>1、《Fuzzing for logic and state issues》</h3><p>Peach Fuzzer框架的作者写的，主要是介绍peach3的新增特性，增加逻辑漏洞和无效的状态转换等问题，比如一些WEB认证的逻辑漏洞，PPT写得比较简洁，纯文字描述，不好完整理解，建议还是上官网看peach3的使用文档吧：<a href="http://peachfuzzer.com/v3/PeachPit.html" target="_blank" rel="external">http://peachfuzzer.com/v3/PeachPit.html</a> ，上个月作者刚更新的，写得比较详细。</p>
-<h3 id="2、《DEP-ASLR-bypass-without-ROP-JIT》"><a href="#2、《DEP-ASLR-bypass-without-ROP-JIT》" class="headerlink" title="2、《DEP ASLR bypass without ROP JIT》"></a>2、《DEP ASLR bypass without ROP JIT》</h3><p>绿盟的TK讲的，里面的思路最早是在2009年的中国软件安全峰会《Vulnerability: The next 10 years》中提到的，主要是利用 SharedUserData 地址 0x7ffe0000 在win上是固定不变的，再通过它找到SystemCall，然后设置其参数，来调用指定的系统函数。在安全峰会上，作者是调用NtUserLockWorkStation这一函数来设置锁屏，而在此次CSW大会上，作者是通过LdrHotPatchRoutine索引到LdrLoadDll来加载外部的DLL，实现任意代码执行，这种方法只工作在winx64上的32位程序，且在win8上微软已经修复此问题。</p>
-<h3 id="3、《Adobe-Sandbox-WHEN-THE-BROKER-IS-BROKEN》"><a href="#3、《Adobe-Sandbox-WHEN-THE-BROKER-IS-BROKEN》" class="headerlink" title="3、《Adobe Sandbox WHEN THE BROKER IS BROKEN》"></a>3、《Adobe Sandbox WHEN THE BROKER IS BROKEN》</h3><p>exploit系列教程的作者peter写的议题，在以前的一些大会上，也有人做过关于adobe sandbox的分享，但总觉得PPT写得不过详细，这次peter的议题，我觉得写得挺详细的，由浅入深，从介绍沙盒的相关术语、client与broker之间的通讯原理开始讲起，并提起一些沙盒逃逸的攻击面，分析和提取cross call函数等信息，同时也提供一些demo，可惜只有ppt，要是能提供paper和code就更好了。</p>
-<h3 id="4、《An-Android-Hacker’s-Journey-Challenges-in-Android-Security-Research》"><a href="#4、《An-Android-Hacker’s-Journey-Challenges-in-Android-Security-Research》" class="headerlink" title="4、《An Android Hacker’s Journey- Challenges in Android Security Research》"></a>4、《An Android Hacker’s Journey- Challenges in Android Security Research》</h3><p>对我而言，里面让我最感兴趣的是作者即将出版的《Android Hacker’s Handbook》这个系列的书都很经典，包括shellcode、web、macosx以及ios等书，都是相当经典的，上面4本除了ios那书只看了一小部分之外，其它3本我都详细阅读过，值得推荐，前两本国内早有中译本了。<br>这个议题里面讲了一些android软件漏洞，包括一些组件权限设置问题导致的信息泄露，以及linux内核漏洞，其中还有一张赛门铁克提供的移动设备威胁图表，列出了移动设备可能面临的各种安全威胁，做得挺不错的。最后讲述了一些android平台的调试技巧，包括远程调试、源码调试等，有兴趣的朋友可以看下。</p>
-<h3 id="5、《Assessing-the-Linux-Desktop’s-Security》"><a href="#5、《Assessing-the-Linux-Desktop’s-Security》" class="headerlink" title="5、《Assessing the Linux Desktop’s Security》"></a>5、《Assessing the Linux Desktop’s Security》</h3><p>感觉一般，对这议题也不是很感兴趣。</p>
-<h3 id="6、《MS-SQL-Post-Exploitation-Shenanigans-You’re-In-Now-What-》"><a href="#6、《MS-SQL-Post-Exploitation-Shenanigans-You’re-In-Now-What-》" class="headerlink" title="6、《MS SQL Post Exploitation Shenanigans: You’re In, Now What?》"></a>6、《MS SQL Post Exploitation Shenanigans: You’re In, Now What?》</h3><p>讲述 MS SQL Server 利用技术，主要是利用扩展存储过程API来利用MSSQL，包括获取密码hash，内存搜索hash替换，编写poc创建后门，以及利用msf来控制shell等方式。在实际的渗透测试中，相信大多数的企业还是会选择使用php + mysql，特别是近些年来，这一组合的比例一直在扩大，所以估计对此文感兴趣的人不会太多。</p>
-<h3 id="7、《Cracking-and-Analyzing-Apple-iCloud-backups-Find-My-iPhone-Document-Storage》"><a href="#7、《Cracking-and-Analyzing-Apple-iCloud-backups-Find-My-iPhone-Document-Storage》" class="headerlink" title="7、《Cracking and Analyzing Apple iCloud backups, Find My iPhone, Document Storage》"></a>7、《Cracking and Analyzing Apple iCloud backups, Find My iPhone, Document Storage》</h3><p>基本就是在讲苹果的icloud服务及其原理，跟安全相关的内容不多，爱看不看。</p>
-<h3 id="8、《UPnP-Vulnerabilities》"><a href="#8、《UPnP-Vulnerabilities》" class="headerlink" title="8、《UPnP Vulnerabilities》"></a>8、《UPnP Vulnerabilities》</h3><p>PPT写得很是简单，内容也不是感兴趣，爱看不看。</p>
-<h3 id="9、《Analysis-of-a-Windows-Kernel-Vulnerability》"><a href="#9、《Analysis-of-a-Windows-Kernel-Vulnerability》" class="headerlink" title="9、《Analysis of a Windows Kernel Vulnerability》"></a>9、《Analysis of a Windows Kernel Vulnerability》</h3><p>共有273页，这是我见过最长的PPT文档。主要讲Duqu病毒所使用的 CVE-2011-3402：Windows win32k.sys TrueType 字体解析数组越界漏洞，从TTF字体格式开始分析，解释漏洞成因，以及漏洞的利用技术。在去年的syscan大会上，360的人也针对此漏洞分析过其原理及利用技术，可以交互参考阅读。国内最早分析并公开细节的应该是启明星辰，其在博客上也帖出了相应的分析文章，看雪和binvul论坛均有人发表相关的漏洞分析文章。</p>
-<h3 id="10、《iOS-6-Exploitation-280-Days-Later》"><a href="#10、《iOS-6-Exploitation-280-Days-Later》" class="headerlink" title="10、《iOS 6 Exploitation 280 Days Later》"></a>10、《iOS 6 Exploitation 280 Days Later》</h3><p>作者之前搞了近10年的WEB安全，2010年中才开始搞iphone安全，但他98年就开始接触安全，也算是安全界的老一辈革命家了。讲了2012年之后出现过的一些ios漏洞，以及关于ios安全相关的资料和书籍，同时介绍苹果对此采取的一些保护机制（cookie、ASLR、程序目录权限限制……），大部分篇幅还是在介绍ios的保护机制。</p>
-<h3 id="11、《Evil-Maid-Just-Got-Angrier：Why-Full-Disk-Encryption-With-TPM-is-Insecure-on-Many-Systems》"><a href="#11、《Evil-Maid-Just-Got-Angrier：Why-Full-Disk-Encryption-With-TPM-is-Insecure-on-Many-Systems》" class="headerlink" title="11、《Evil Maid Just Got Angrier：Why Full-Disk Encryption With TPM is Insecure on Many Systems》"></a>11、《Evil Maid Just Got Angrier：Why Full-Disk Encryption With TPM is Insecure on Many Systems》</h3><p>讲述关于bios那些底层的东东，看不懂，真心看不懂！</p>
-<h3 id="12、《Physical-Privilege-Escalation-and-Mitigation-in-the-x86-World》"><a href="#12、《Physical-Privilege-Escalation-and-Mitigation-in-the-x86-World》" class="headerlink" title="12、《Physical Privilege Escalation and Mitigation in the x86 World》"></a>12、《Physical Privilege Escalation and Mitigation in the x86 World》</h3><p>硬件hacking一类的议题，PPT也大多是贴图，不好理解，反正是没看懂这PPT</p>
-<h3 id="13、《Smart-TV-Security》"><a href="#13、《Smart-TV-Security》" class="headerlink" title="13、《Smart TV Security》"></a>13、《Smart TV Security》</h3><p>一个有趣的议题，主要讲关于智能电视安全，包括智能电视机上面的app漏洞，以及恶意app感染、网络通讯安全等问题，同时还介绍智能电视固件rootkit的开发，如何留取后门。控制智能电视后最大的风险就是用它来监控和窃听你的行为，因为智能电视都配有摄像头。最后，还介绍一些调试等逆向相关技术，以及操作电视的一些API函数。</p>
-<h3 id="14、《The-Evolution-of-BlackHole》"><a href="#14、《The-Evolution-of-BlackHole》" class="headerlink" title="14、《The Evolution of BlackHole》"></a>14、《The Evolution of BlackHole》</h3><p>总觉得这是BlackHol exploit kit的广告帖，介绍BlackHole这一漏洞利用工具包的一些功能，一套售价冒似是1500美元，不过里面的一些功能看起来还是不错的。 </p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2013/03/23/CanSecWest-2013/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/CanSecWest/">CanSecWest</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -779,6 +817,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2018/03/14/计算机行业是否需要学历/">计算机行业是否需要学历</a>
+      </li>
     
       <li>
         <a href="/2018/02/22/读书心悟/">读书心悟</a>
@@ -816,10 +858,6 @@
         <a href="/2016/09/13/Vulnerability-War-The-Essence-of-Software-Vulnerabilities-Analysis/">Vulnerability War: The Essence of Software Vulnerabilities Analysis</a>
       </li>
     
-      <li>
-        <a href="/2016/09/09/Perl-Bug-一枚/">Perl Bug 一枚</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -831,6 +869,8 @@
   
     <li><a href="/categories/技术分享/">技术分享</a><small>39</small></li>
   
+    <li><a href="/categories/随机杂谈/">随机杂谈</a><small>1</small></li>
+  
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>6</small></li>
   
   </ul>
@@ -841,7 +881,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/0day/" style="font-size: 12px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 18px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 14px;">BlackHat</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 12px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 16px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 20px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 14px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 12px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 12px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/iOS/" style="font-size: 12px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 12px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/安全审计/" style="font-size: 12px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 12px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 14px;">漏洞</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a>
+    <a href="/tags/0day/" style="font-size: 12px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 18px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 14px;">BlackHat</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 12px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 16px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 20px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 14px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 12px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 12px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/iOS/" style="font-size: 12px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 12px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全审计/" style="font-size: 12px;">安全审计</a> <a href="/tags/恶意软件/" style="font-size: 12px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 14px;">漏洞</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a>
   </div>
 </div>
 
