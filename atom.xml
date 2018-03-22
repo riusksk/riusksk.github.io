@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2018-03-14T11:54:10.000Z</updated>
+  <updated>2018-03-22T10:32:06.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>2018年信息安全从业者书单推荐</title>
+    <link href="http://riusksk.github.io/2018/03/22/2018%E5%B9%B4%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E4%BB%8E%E4%B8%9A%E8%80%85%E4%B9%A6%E5%8D%95%E6%8E%A8%E8%8D%90/"/>
+    <id>http://riusksk.github.io/2018/03/22/2018年信息安全从业者书单推荐/</id>
+    <published>2018-03-22T10:27:15.000Z</published>
+    <updated>2018-03-22T10:32:06.000Z</updated>
+    
+    <content type="html">&lt;p&gt;知乎上经常有人推荐一些程序员书单，也比较全面，但系统化的安全书单很少，虽然在一些安全新媒体上也有人推荐过一些，但上面不是广告就是有啥新书就推荐啥，甚至让人怀疑作者是不是搞技术的，可能大多没看过自己推荐的书。因此自己结合自己10多年来读过一些觉得比较好的书或业界公认的名著，整理出此份信息安全书单，仅供参考。&lt;br&gt;后续更新可关注GitHub：&lt;a href=&quot;https://github.com/riusksk/secbook&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/riusksk/secbook&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/secbook.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;知乎上经常有人推荐一些程序员书单，也比较全面，但系统化的安全书单很少，虽然在一些安全新媒体上也有人推荐过一些，但上面不是广告就是有啥新书就推荐啥，甚至让人怀疑作者是不是搞技术的，可能大多没看过自己推荐的书。因此自己结合自己10多年来读过一些觉得比较好的书或业界公认的名著，整
+    
+    </summary>
+    
+      <category term="随笔杂谈" scheme="http://riusksk.github.io/categories/%E9%9A%8F%E7%AC%94%E6%9D%82%E8%B0%88/"/>
+    
+    
+      <category term="信息安全" scheme="http://riusksk.github.io/tags/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8/"/>
+    
+      <category term="书籍" scheme="http://riusksk.github.io/tags/%E4%B9%A6%E7%B1%8D/"/>
+    
+  </entry>
   
   <entry>
     <title>计算机行业是否需要学历？</title>
@@ -1322,86 +1348,6 @@
     
     
       <category term="CanSecWest" scheme="http://riusksk.github.io/tags/CanSecWest/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>BlackHat Asia 2016 大会议题分析报告</title>
-    <link href="http://riusksk.github.io/2016/04/05/bh-asia-2016/"/>
-    <id>http://riusksk.github.io/2016/04/05/bh-asia-2016/</id>
-    <published>2016-04-05T02:27:11.000Z</published>
-    <updated>2016-06-24T14:48:46.000Z</updated>
-    
-    <content type="html">&lt;h2 id=&quot;1、《A-New-CVE-2015-0057-Exploit-Technology》&quot;&gt;&lt;a href=&quot;#1、《A-New-CVE-2015-0057-Exploit-Technology》&quot; class=&quot;headerlink&quot; title=&quot;1、《A New CVE-2015-0057 Exploit Technology》&quot;&gt;&lt;/a&gt;1、《A New CVE-2015-0057 Exploit Technology》&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14598336783953.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;来自FireEye公司分享的一种针对微软内核 win32k!xxxEnableWndSBArrows tagSBINFO/tagPROPLIST UAF漏洞CVE-2015-0057/MS15-010的利用方法，是被FireEye捕获到的一款Dyre银行木马变种所采用的利用技术,分为32位和64位不同平台下的方法。&lt;br&gt;&lt;strong&gt;【传统攻击方法】&lt;/strong&gt;：原有的攻击方法是由NCC Group安全组织公布的，采用”占坑“的攻击方式，用可控数据去填充已释放的tagPROPLIST，然后在32位下用SetScrollInfo去操作指向tagWND.strName.Buffer的tagWND.pSBInfo，而在64位下伪造的堆头结构_HEAP_ENTRY去指向tagWND.strName.Buffer，完成数据的覆盖，从而转化为任意地址读写。&lt;br&gt;&lt;strong&gt;【新型攻击方法】&lt;/strong&gt;：在32位系统下，== 采用tagMENU对象去填充已tagPROPLIST，然后借助tagMENU.cItems和tagMENU.rgItems来完成控制 ==;而在64位系统下，既借鉴了NCC使用tagWND去操作tagPROPLIST，又使用tagMENU去覆盖tagMENU.rgItems，因为rgItems数组指针指向的第一个元素是wID，通过SetMenuItemInfo()可实现完全控制,最终实现任意地址读写。&lt;br&gt;&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id=&quot;2、《Automated-Detection-Of-Firefox-Extension-reuse-Vulnerabilities》&quot;&gt;&lt;a href=&quot;#2、《Automated-Detection-Of-Firefox-Extension-reuse-Vulnerabilities》&quot; class=&quot;headerlink&quot; title=&quot;2、《Automated Detection Of Firefox Extension-reuse Vulnerabilities》&quot;&gt;&lt;/a&gt;2、《Automated Detection Of Firefox Extension-reuse Vulnerabilities》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14598369926110.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;东北大学（美国）的4位安全研究员开发出一款叫CrossFire的轻量级静态分析工具，用于自动化挖掘Firefox插件漏洞（对方称为”Externsion-reuse“漏洞），其实就是利用插件原有的敏感功能去执行恶意行为，比如窃取cookie、历史记录等敏感信息。Firefox插件是通过Javascript调用Friefox提供的API实现的附加功能，因此CrossFire是通过静态分析插件的JS代码，构建出抽象语法树，然后跟收集的敏感API数据库做综合分析，API数据库就是定义输入源（source）和输出目标（sink）的内容，然后基于污点传播的思路去做判断，如果检测到漏洞还可以根据原定规则生成exploit。&lt;br&gt;&lt;strong&gt;【PS】&lt;/strong&gt;:==基于污点传播的静态分析思路，偏学术研究，估计误报会比较多，往往还需要人工介入排查，效果不见得会很好。==&lt;/p&gt;
-&lt;h3 id=&quot;3、《Break-Out-Of-The-Truman-Show：Active-Detection-And-Escape-Of-Dynamic-Binary-Instrumentation》&quot;&gt;&lt;a href=&quot;#3、《Break-Out-Of-The-Truman-Show：Active-Detection-And-Escape-Of-Dynamic-Binary-Instrumentation》&quot; class=&quot;headerlink&quot; title=&quot;3、《Break Out Of The Truman Show：Active Detection And Escape Of Dynamic Binary Instrumentation》&quot;&gt;&lt;/a&gt;3、《Break Out Of The Truman Show：Active Detection And Escape Of Dynamic Binary Instrumentation》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14598401954245.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;关于动态二进制插桩的检测与逃逸方法，用来对抗程序被动态分析,主要针对PIN与DynamoRIO两款插桩工具的特点进行分析。&lt;br&gt;&lt;strong&gt;【检测方法】&lt;/strong&gt;：分主动与被动检测方案，主动检测包括扩展的指令代码（Xmode Code，会导致栈桢大小不同）、代码缓存、TLS和异常上下文，而被动检测包括未支持的指令和行为功能。&lt;br&gt;&lt;strong&gt;【逃逸方法】&lt;/strong&gt;：通过代码缓存进行自修改，以及一些栈、TLS和其它DBI框架特有的数据结构，比如.charmve段、BrokerClient回调函数等等方法入手。&lt;/p&gt;
-&lt;h3 id=&quot;4、《Bypassing-Browser-Security-Policies-For-Fun-And-Profit》&quot;&gt;&lt;a href=&quot;#4、《Bypassing-Browser-Security-Policies-For-Fun-And-Profit》&quot; class=&quot;headerlink&quot; title=&quot;4、《Bypassing Browser Security Policies For Fun And Profit》&quot;&gt;&lt;/a&gt;4、《Bypassing Browser Security Policies For Fun And Profit》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14598412838122.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;讲述Android浏览器绕过同源策略的UXSS漏洞，都是以一些历史漏洞为例讲解漏洞的利用方式（含PoC）,包括窃取cookie、读取本地文件，以及绕过Google Play的限制实现任意app的安装。==议题主要是对过去漏洞的总结，并没有太多新颖的思路。==&lt;/p&gt;
-&lt;h3 id=&quot;5、《DSCompromised-A-Windows-DSC-Attack-Framework》&quot;&gt;&lt;a href=&quot;#5、《DSCompromised-A-Windows-DSC-Attack-Framework》&quot; class=&quot;headerlink&quot; title=&quot;5、《DSCompromised: A Windows DSC Attack Framework》&quot;&gt;&lt;/a&gt;5、《DSCompromised: A Windows DSC Attack Framework》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14598431026382.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;DSC（Desired State Configuration，期望状态配置）是Windows上的配置管理平台，它通过向PowerShell语言中引进一个非常简单的语法声明，和一个用来接收和应用这些配置的内置引擎来实现的。DSCompromised即是一款基于PowerShell的工具，用于借助DSC来实现命令控制、恶意软件驻留、回连后门等等功能。该工具已在github上开源：&lt;a href=&quot;https://github.com/matthastings/DSCompromised。&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/matthastings/DSCompromised。&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id=&quot;6、《Enterprise-Apps-Bypassing-The-iOS-Gatekeeper》&quot;&gt;&lt;a href=&quot;#6、《Enterprise-Apps-Bypassing-The-iOS-Gatekeeper》&quot; class=&quot;headerlink&quot; title=&quot;6、《Enterprise Apps: Bypassing The iOS Gatekeeper》&quot;&gt;&lt;/a&gt;6、《Enterprise Apps: Bypassing The iOS Gatekeeper》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14598447131786.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;介绍iOS企业证书滥用的问题，并列举近年来出现过一些大的iOS安全事件，比如”假面攻击“、WireLurker病毒等等案例，同时讲述其它存在的风险，==比如通过中间人方式去劫持企业的移动设备管理服务器，然后替换请求安装的app，从而使得用户安装被企业证书签名过的恶意软件==。&lt;/p&gt;
-&lt;h3 id=&quot;7、《Exploiting-Linux-and-PaX-ASLR’s-weaknesses-on-32-bit-and-64-bit-systems》&quot;&gt;&lt;a href=&quot;#7、《Exploiting-Linux-and-PaX-ASLR’s-weaknesses-on-32-bit-and-64-bit-systems》&quot; class=&quot;headerlink&quot; title=&quot;7、《Exploiting Linux and PaX ASLR’s weaknesses on 32-bit and 64-bit systems》&quot;&gt;&lt;/a&gt;7、《Exploiting Linux and PaX ASLR’s weaknesses on 32-bit and 64-bit systems》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14598465162889.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;列举出当前Linux和PaX(用于安全加固的Linux内核补丁)平台上的ASLR绕过漏洞，共有4个问题：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;==低熵==，即地址随机度不够，可被暴力破解，尤其是32位系统&lt;/li&gt;
-&lt;li&gt;==非均匀分布随机地址==，呈驼峰型分布，因此有部分地址存在高命中率&lt;/li&gt;
-&lt;li&gt;==利用对象间的相对地址偏移实现绕过==，即Offset2Lib攻击方法&lt;/li&gt;
-&lt;li&gt;==进程继承缺陷==，所有子进程共享相同的内存&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;最后提出下一代ASLR防护机制：ASLR-NG，以解决上述问题。&lt;/p&gt;
-&lt;h3 id=&quot;8、《Hacking-a-Professional-Drone》&quot;&gt;&lt;a href=&quot;#8、《Hacking-a-Professional-Drone》&quot; class=&quot;headerlink&quot; title=&quot;8、《Hacking a Professional Drone》&quot;&gt;&lt;/a&gt;8、《Hacking a Professional Drone》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14598494382580.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;议题中提出两种攻击无人机的方法：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;==破解WEP加密的WiFi密码==，直接接入与遥控器通讯；&lt;/li&gt;
-&lt;li&gt;==伪造XBee 868LP通讯设备作为中间人==，发送控制指令（逆向Android客户端获得指令序列），从而实现无人机的劫持&lt;br&gt;&lt;strong&gt;【PS】&lt;/strong&gt;：==从攻击难度看，此款无人机的安全性比较低，跟大疆无人机存在较大差距==。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id=&quot;9、《Hey-your-parcel-looks-bad-fuzzing-and-exploiting-parcel-ization-vulnerabilities-in-Android》&quot;&gt;&lt;a href=&quot;#9、《Hey-your-parcel-looks-bad-fuzzing-and-exploiting-parcel-ization-vulnerabilities-in-Android》&quot; class=&quot;headerlink&quot; title=&quot;9、《Hey your parcel looks bad - fuzzing and exploiting parcel-ization vulnerabilities in Android》&quot;&gt;&lt;/a&gt;9、《Hey your parcel looks bad - fuzzing and exploiting parcel-ization vulnerabilities in Android》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14599077404076.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;由于KeenLab分享的Android Binder Fuzzing相关的议题，分析出Binder存在的攻击面，然后制定相应的Fuzzing策略。&lt;br&gt;&lt;strong&gt;【亮点一】&lt;/strong&gt;：==从Android C++源码中自动化提取各Binder服务通讯中的 Transaction Code、参数类型及序号、远程服务的调用方式，然后生成json文件，依据它来作参数变异==。如果是闭源的Binder服务，比如华为手机，则通过IDAPython从程序中提取上述信息。&lt;br&gt;&lt;strong&gt;【亮点二】&lt;/strong&gt;：==开启ASAN（AddressSanitize）去编译源码==，加强程序自主的错误检测能力，同时==结合AFL==（Google开发的一款基于源码插桩的Fuzzer工具，曾被用于刷过N多CVE漏洞）去做Fuzzing，==但AFL是基于文件输入的，而Binder未提供此功能，因此KeenLab也未完全实现，这是他们一直在尝试做的工作==。&lt;br&gt;&lt;strong&gt;【亮点三】&lt;/strong&gt;：最后以几个Binder服务漏洞作为实例分析漏洞成因，并分享了CVE-2015-6620 MediaCodecInfo 越界访问漏洞的利用技巧，采用ROP与Heap Spray去绕过NX与ASLR。&lt;/p&gt;
-&lt;h3 id=&quot;10、《I’m-Not-a-Human-Breaking-the-Google-reCAPTCHA》&quot;&gt;&lt;a href=&quot;#10、《I’m-Not-a-Human-Breaking-the-Google-reCAPTCHA》&quot; class=&quot;headerlink&quot; title=&quot;10、《I’m Not a Human: Breaking the Google reCAPTCHA》&quot;&gt;&lt;/a&gt;10、《I’m Not a Human: Breaking the Google reCAPTCHA》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14599122751659.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;Google的reCAPTCHA是一款验证码生成系统，作者分享了一些绕过该验证码系统的方法。比如：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;通过深度学习为图片注释，使用基于Word2Vec神经网络进行深度学习去为图片标记归类&lt;/li&gt;
-&lt;li&gt;收集样本图片、提示信息、注释标签等信息&lt;/li&gt;
-&lt;li&gt;通过Google服务（图片搜索、翻译等）获取关键词&lt;/li&gt;
-&lt;li&gt;……&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id=&quot;11、《Let’s-See-What’s-Out-There-Mapping-The-Wireless-IOT》&quot;&gt;&lt;a href=&quot;#11、《Let’s-See-What’s-Out-There-Mapping-The-Wireless-IOT》&quot; class=&quot;headerlink&quot; title=&quot;11、《Let’s See What’s Out There - Mapping The Wireless IOT》&quot;&gt;&lt;/a&gt;11、《Let’s See What’s Out There - Mapping The Wireless IOT》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14599134045481.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;分享物联网产品中常用的无线电安全问题，比如ZigBee、WiFi、GSM、NFC、车钥匙信号等等。介绍分析无线电的硬件、软件工具，以及常见的TOP 10无线安全问题，前3名分别是：未加密通讯、信息重放攻击、密钥交换漏洞。&lt;br&gt;==【PS】:主要是无线电安全的基础知识的概述，工具和常见漏洞类型等等，无实例漏洞分析，里面涉及的内容，预研侧此前大多有分析过。==&lt;/p&gt;
-&lt;h3 id=&quot;12、《PLC-Blaster：A-Worm-Living-Solely-in-the-PLC》&quot;&gt;&lt;a href=&quot;#12、《PLC-Blaster：A-Worm-Living-Solely-in-the-PLC》&quot; class=&quot;headerlink&quot; title=&quot;12、《PLC-Blaster：A Worm Living Solely in the PLC》&quot;&gt;&lt;/a&gt;12、《PLC-Blaster：A Worm Living Solely in the PLC》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14599217768327.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;作者开发出一款叫PLC-Blaster的PLC（可编程控制器）蠕虫病毒，以西门子S7-1200版本1到3的PLC为例。西门子PLC使用自定义协议去上传和下载用户程序到PLC，也可以读取PLC相关诊断信息，因此常被用作攻击PLC的手段之一。此款PLC病毒使用SCL编程语言实现的，它会去扫描本地网络，若发现其它PLC则会上传病毒进行感染，实现自我传播的功能。同时它还会主动连接C&amp;amp;C服务器，以实现远程控制功能。&lt;br&gt;==【PS】：难点就在于对S7-1200 PLC的协议分析，只有分析清楚之后，才能使用SCL去实现自我传播的功能。==&lt;/p&gt;
-&lt;h3 id=&quot;13、《Practical-New-Developments-In-The-BREACH-Attack》&quot;&gt;&lt;a href=&quot;#13、《Practical-New-Developments-In-The-BREACH-Attack》&quot; class=&quot;headerlink&quot; title=&quot;13、《Practical New Developments In The BREACH Attack》&quot;&gt;&lt;/a&gt;13、《Practical New Developments In The BREACH Attack》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14599232870147.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;分享关于SSL BREACH（超文本自适应压缩浏览器勘测与渗透）攻击方法的新进展，BREACH攻击方法最初是在&lt;a href=&quot;http://breachattack.com/resources/BREACH%20-%20SSL,%20gone%20in%2030%20seconds.pdf&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;BlackHat USA 2013大会&lt;/a&gt;被公布的。作者开发出一款叫”rupture“的攻击框架，并在&lt;a href=&quot;https://github.com/dionyziz/rupture&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;github&lt;/a&gt;上开源，用于实现改进后的BREACH攻击，以及针对其它压缩加密算法的攻击。&lt;/p&gt;
-&lt;h3 id=&quot;14、《The-Perl-Jam-2-The-Camel-Strikes-Back》&quot;&gt;&lt;a href=&quot;#14、《The-Perl-Jam-2-The-Camel-Strikes-Back》&quot; class=&quot;headerlink&quot; title=&quot;14、《The Perl Jam 2: The Camel Strikes Back》&quot;&gt;&lt;/a&gt;14、《The Perl Jam 2: The Camel Strikes Back》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14599279606791.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;Perl在之前被发现存在多个高危漏洞，而官方一直将问题归结于开发者，作者表示很气愤，认为这个锅不应该由开发者来背。于是，作者分享了他发现的存在于perl核心模块0day漏洞，此漏洞影响所有使用perl开发CGI的程序，可造成远程代码执行。&lt;/p&gt;
-&lt;h3 id=&quot;15、《Su-A-Cyder：Homebrewing-Malware-For-iOS-Like-A-B0SS》&quot;&gt;&lt;a href=&quot;#15、《Su-A-Cyder：Homebrewing-Malware-For-iOS-Like-A-B0SS》&quot; class=&quot;headerlink&quot; title=&quot;15、《Su-A-Cyder：Homebrewing Malware For iOS Like A B0SS》&quot;&gt;&lt;/a&gt;15、《Su-A-Cyder：Homebrewing Malware For iOS Like A B0SS》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14599250665173.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;分享==非越狱iOS平台==上的恶意软件相关的议题，列举过去的发生的一些案例，然后总结出一些恶意软件的常用工具和方法：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;==重打包==：在正常应用中加入恶意代码，然后重新签名打包&lt;/li&gt;
-&lt;li&gt;==Dylib注入==&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://github.com/BishopFox/theos-jailed&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Cycript&lt;/a&gt;：支持javascript和OC语法的解析工具，可用于调试运行时程序，支持越狱与非越狱平台&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://github.com/BishopFox/theos-jailed&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Theos&lt;/a&gt;：iOS平台上的Hook框架，支持越狱与非越狱平台，但仍需要开发者帐号用于签名，详见：====&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://github.com/fastlane/fastlane&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Fastlane tools&lt;/a&gt;：iOS开发的持续集成框架，用于实现实现应用发布流程的自动化。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;最后作者开源出一款叫”==&lt;a href=&quot;https://github.com/fastlane/fastlane&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Su-A-Cyder&lt;/a&gt;==“的iOS恶意软件生成工具，后面作者还打算尝试将Metasploit移植到未越狱的iOS平台上。&lt;/p&gt;
-&lt;h3 id=&quot;16、《The-Security-Wolf-Of-Wall-Street-Fighting-Crime-With-High-Frequency-Classfication-And-Natural-Language-Processing》&quot;&gt;&lt;a href=&quot;#16、《The-Security-Wolf-Of-Wall-Street-Fighting-Crime-With-High-Frequency-Classfication-And-Natural-Language-Processing》&quot; class=&quot;headerlink&quot; title=&quot;16、《The Security Wolf Of Wall Street: Fighting Crime With High-Frequency Classfication And Natural Language Processing》&quot;&gt;&lt;/a&gt;16、《The Security Wolf Of Wall Street: Fighting Crime With High-Frequency Classfication And Natural Language Processing》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14599283806453.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;作者分享了如何利用深度学习与自然语言处理去建立一个基于实时分析海量DNS数据的威胁监控框架，主要用于检测恶意钓鱼的域名站点，并发现了不少伪造Google、Apple、Paypal等知名站点的钓鱼网站。&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;1、《A-New-CVE-2015-0057-Exploit-Technology》&quot;&gt;&lt;a href=&quot;#1、《A-New-CVE-2015-0057-Exploit-Technology》&quot; class=&quot;headerlink&quot; title=&quot;1、《A New CVE-2015-0057 Exploit Technology》&quot;&gt;&lt;/a&gt;1、《A New CVE-2015-0057 Exploit Technology》&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;/media/bh-asia-2016/14598336783953.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;来自FireEye公司分享的一种针对微软内核 win32k!xxxEnableWndSBArrows tagSBINFO/tagPROPLIST UAF漏洞CVE-2015-0057/MS15-010的利用方法，是被FireEye捕获到的一款Dyre银行木马变种所采用的利用技术,分为32位和64位不同平台下的方法。&lt;br&gt;&lt;strong&gt;【传统攻击方法】&lt;/strong&gt;：原有的攻击方法是由NCC Group安全组织公布的，采用”占坑“的攻击方式，用可控数据去填充已释放的tagPROPLIST，然后在32位下用SetScrollInfo去操作指向tagWND.strName.Buffer的tagWND.pSBInfo，而在64位下伪造的堆头结构_HEAP_ENTRY去指向tagWND.strName.Buffer，完成数据的覆盖，从而转化为任意地址读写。&lt;br&gt;&lt;strong&gt;【新型攻击方法】&lt;/strong&gt;：在32位系统下，== 采用tagMENU对象去填充已tagPROPLIST，然后借助tagMENU.cItems和tagMENU.rgItems来完成控制 ==;而在64位系统下，既借鉴了NCC使用tagWND去操作tagPROPLIST，又使用tagMENU去覆盖tagMENU.rgItems，因为rgItems数组指针指向的第一个元素是wID，通过SetMenuItemInfo()可实现完全控制,最终实现任意地址读写。&lt;br&gt;
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
-    
-      <category term="BlackHat" scheme="http://riusksk.github.io/tags/BlackHat/"/>
     
   </entry>
   
