@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2018-03-22T10:32:06.000Z</updated>
+  <updated>2018-03-25T09:03:46.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>《横向领导力》思维导图</title>
+    <link href="http://riusksk.github.io/2018/03/25/%E3%80%8A%E6%A8%AA%E5%90%91%E9%A2%86%E5%AF%BC%E5%8A%9B%E3%80%8B%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/"/>
+    <id>http://riusksk.github.io/2018/03/25/《横向领导力》思维导图/</id>
+    <published>2018-03-25T09:01:53.000Z</published>
+    <updated>2018-03-25T09:03:46.000Z</updated>
+    
+    <content type="html">&lt;p&gt;&lt;img src=&quot;/media/横向领导力.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;img src=&quot;/media/横向领导力.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+
+    
+    </summary>
+    
+      <category term="随机杂谈" scheme="http://riusksk.github.io/categories/%E9%9A%8F%E6%9C%BA%E6%9D%82%E8%B0%88/"/>
+    
+    
+      <category term="书籍" scheme="http://riusksk.github.io/tags/%E4%B9%A6%E7%B1%8D/"/>
+    
+      <category term="思维导图" scheme="http://riusksk.github.io/tags/%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/"/>
+    
+  </entry>
   
   <entry>
     <title>2018年信息安全从业者书单推荐</title>
@@ -93,12 +119,12 @@
     <link href="http://riusksk.github.io/2018/02/22/%E8%AF%BB%E4%B9%A6%E5%BF%83%E6%82%9F/"/>
     <id>http://riusksk.github.io/2018/02/22/读书心悟/</id>
     <published>2018-02-22T10:19:36.000Z</published>
-    <updated>2018-02-22T23:53:59.000Z</updated>
+    <updated>2018-03-25T02:34:39.000Z</updated>
     
     <content type="html">&lt;p&gt;”读史使人明智，读诗使人聪慧，演算使人精密，哲理使人深刻，道德使人高尚，逻辑修辞使人善辩。 “&lt;/p&gt;
 &lt;p align=&quot;right&quot;&gt;———— 培根《论读书》&lt;/p&gt;
 
-&lt;h2 id=&quot;为什么读书？&quot;&gt;&lt;a href=&quot;#为什么读书？&quot; class=&quot;headerlink&quot; title=&quot;为什么读书？&quot;&gt;&lt;/a&gt;为什么读书？&lt;/h2&gt;&lt;center&gt;&lt;img src=&quot;http://s8.sinaimg.cn/large/4be77edaxcca846a99847&amp;amp;690&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
+&lt;h2 id=&quot;为什么读书？&quot;&gt;&lt;a href=&quot;#为什么读书？&quot; class=&quot;headerlink&quot; title=&quot;为什么读书？&quot;&gt;&lt;/a&gt;为什么读书？&lt;/h2&gt;&lt;center&gt;&lt;img src=&quot;https://pic1.zhimg.com/80/v2-fd11166b3dd34ab5914aa66b832dfa76_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
 
 &lt;p&gt;&lt;em&gt;”你的梦想是什么？“&lt;br&gt;”长大以后我要当一名科学家。”&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;相信很多人小时候都有过类似经历，我也如此，而它在当初我幼小的心灵中种下这样一颗种子：&lt;strong&gt;读书是为了当一名科学家&lt;/strong&gt;。&lt;/p&gt;
@@ -1283,71 +1309,6 @@
     
     
       <category term="PHDays" scheme="http://riusksk.github.io/tags/PHDays/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CanSecWest 2016 大会议题分析</title>
-    <link href="http://riusksk.github.io/2016/04/13/CanSecWest_2016/"/>
-    <id>http://riusksk.github.io/2016/04/13/CanSecWest_2016/</id>
-    <published>2016-04-13T03:47:32.000Z</published>
-    <updated>2016-06-24T14:48:30.000Z</updated>
-    
-    <content type="html">&lt;p&gt;本周分析的安全大会主要以2016年CanSecWest黑客大会上的精彩议题为主，整体上，议题主要偏向于&lt;strong&gt;系统/软件漏洞挖掘与利用技术&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;各议题下载链接参见：&lt;a href=&quot;http://www.slideshare.net/CanSecWest/presentations&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://www.slideshare.net/CanSecWest/presentations&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id=&quot;1、《Sandbox-Escape-with-Generous-Help-from-Security-Software》&quot;&gt;&lt;a href=&quot;#1、《Sandbox-Escape-with-Generous-Help-from-Security-Software》&quot; class=&quot;headerlink&quot; title=&quot;1、《Sandbox Escape with Generous Help from Security Software》&quot;&gt;&lt;/a&gt;1、《Sandbox Escape with Generous Help from Security Software》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/14605192523708/14605295530449.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;腾讯玄武实验室分享的杀毒软件漏洞挖掘技巧，比如BitDefender、Comodo、Avast、Kaspersky等等国外知名杀软厂商，大多是一些敏感功能未鉴权导致的代码执行或者信息泄露的问题，比如攻击者伪造IO请求去读写、执行本地文件。这里比较好的一点是在漏洞利用场景上，他们将杀软漏洞用来绕过沙盒保护，因为杀软漏洞可以直接以System最高权限执行，允许直接关闭一些软件的沙盒防护。&lt;/p&gt;
-&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
-&lt;h3 id=&quot;2、《Don’t-Trust-Your-Eye-Apple-Graphics-Is-Compromised》&quot;&gt;&lt;a href=&quot;#2、《Don’t-Trust-Your-Eye-Apple-Graphics-Is-Compromised》&quot; class=&quot;headerlink&quot; title=&quot;2、《Don’t Trust Your Eye-  Apple Graphics Is Compromised》&quot;&gt;&lt;/a&gt;2、《Don’t Trust Your Eye-  Apple Graphics Is Compromised》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/14605192523708/14605302948646.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;腾讯科恩实验室分享的关于OSX/iOS内核驱动漏洞挖掘的方法，主要介绍了两种Fuzzing策略：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;被动Fuzzing&lt;/strong&gt;：&lt;strong&gt;通过Hook IOKit API（IOConnectMapMemory/IOConnectUnmapMemory/IOConnectCallMethod/IOConnectCallScalarMethod），随机变异参数值&lt;/strong&gt;；&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;主动Fuzzing&lt;/strong&gt;：&lt;strong&gt;通过脚本自动提取驱动的接口函数与参数信息，然后发送畸形数据去调用&lt;/strong&gt;。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;最后列举一个竞争条件漏洞实例，介绍漏洞成因与利用方法。&lt;/p&gt;
-&lt;h3 id=&quot;3、《Automatic-Binary-Constraint-Solving-Automatic-Exploit-Generation》&quot;&gt;&lt;a href=&quot;#3、《Automatic-Binary-Constraint-Solving-Automatic-Exploit-Generation》&quot; class=&quot;headerlink&quot; title=&quot;3、《Automatic Binary Constraint Solving: Automatic Exploit Generation》&quot;&gt;&lt;/a&gt;3、《Automatic Binary Constraint Solving: Automatic Exploit Generation》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/14605192523708/14605312840771.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;分享自动生成利用代码的工具AEG，主要针对混合读写操作导致的漏洞，通过PIN进行指令插桩，利用符号执行（Symbolic Execution）和混合执行（Concolic Execution）一块去实现程序的动态分析与利用代码生成。&lt;br&gt;&lt;strong&gt;PS：整体思路跟以往挖掘漏洞中用于分析代码执行路径，增加代码覆盖率的思路一致，用在漏洞挖掘与分析上比较可行，但自动生成利用代码估计效果不好。&lt;/strong&gt;&lt;/p&gt;
-&lt;h3 id=&quot;4、《Pwn-a-Nexus-device-with-a-single-vulnerability》&quot;&gt;&lt;a href=&quot;#4、《Pwn-a-Nexus-device-with-a-single-vulnerability》&quot; class=&quot;headerlink&quot; title=&quot;4、《Pwn a Nexus device with a single vulnerability》&quot;&gt;&lt;/a&gt;4、《Pwn a Nexus device with a single vulnerability》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/14605192523708/14605317938560.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;来自360的分享，是其在Pwn2Own Mobile 2015上用于攻破Nexus手机的chrome浏览器漏洞CVE-2015-6764。议题对该漏洞的成因、利用和补丁代码都进行了分析，是一个越界访问漏洞，通过越界读写内存造成地址泄露，从而再绕过ASLR。该议题提到的利用方式（&lt;strong&gt;RCE2UXSS、UXSS2RCE&lt;/strong&gt;）比较奇妙,在利用漏洞获取执行代码的权限后，&lt;strong&gt;通过hook ScriptLoader::executeScript去注入Javascript代码，然后在 &lt;a href=&quot;https://play.goolge.com&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://play.goolge.com&lt;/a&gt; 域下通过JS去安装任意APP&lt;/strong&gt;。&lt;/p&gt;
-&lt;h3 id=&quot;5、《BadWinmail-and-Email-Security-on-Outlook》&quot;&gt;&lt;a href=&quot;#5、《BadWinmail-and-Email-Security-on-Outlook》&quot; class=&quot;headerlink&quot; title=&quot;5、《BadWinmail and Email Security on Outlook》&quot;&gt;&lt;/a&gt;5、《BadWinmail and Email Security on Outlook》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/14605192523708/14605992256618.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;在msg文件格式中嵌入OLE对象，然后更改CLSID为Flash控件或者PDF控件，利用这些控件的漏洞直接实现利用。另外还可传输不确定封装格式 (TNEF，附件名为winmail.dat) ，它也支持OLE，然后采用上述相同攻击方法实现利用。用户在使用Outlook打开上述邮件时即可直接执行任意代码。&lt;/p&gt;
-&lt;h3 id=&quot;6、《Getting-Physical-Extreme-abuse-of-Intel-based-Paging-Systems》&quot;&gt;&lt;a href=&quot;#6、《Getting-Physical-Extreme-abuse-of-Intel-based-Paging-Systems》&quot; class=&quot;headerlink&quot; title=&quot;6、《Getting Physical Extreme abuse of Intel based Paging Systems》&quot;&gt;&lt;/a&gt;6、《Getting Physical Extreme abuse of Intel based Paging Systems》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/14605192523708/14606052304309.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;讲述利用操作系统的分页机制去绕过各种内核安全机制，比如DEP、KASLR、NULL解引用保护、SMEP等等，主要针对Linux与Windows，并提供有demo代码。传统方法可能更多的是借助信息泄露漏洞，利用泄露地址去绕过上述保护，利用他们提供的方法甚至可允许非特权用户dump到内核访问的物理内存。主要利用以下缺陷：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;分页表位于固定虚拟地址（Windows）；&lt;/li&gt;
-&lt;li&gt;分页表可写(Windows);&lt;/li&gt;
-&lt;li&gt;PDPTs、PDs与PTs位于固定虚拟地址（Linux）;&lt;/li&gt;
-&lt;li&gt;分页结构可写（Linux)。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;比如Windows上，可以利用任意写地址漏洞去将PTE分页表（固定地址）中的指针修改为HAL堆上的物理内存地址,HAL堆上包含有一堆函数指针，包括hal!HalpApicRequestInterrupt函数，最后结合ROP就可以禁用SMEP保护，最终获得系统权限。还有其它页目录堆喷的利用方式，Linux上稍有不同，但攻击思路类似。&lt;/p&gt;
-&lt;h3 id=&quot;7、《Execute-My-Packet-Exodus-of-Shells-from-a-Firewall-》&quot;&gt;&lt;a href=&quot;#7、《Execute-My-Packet-Exodus-of-Shells-from-a-Firewall-》&quot; class=&quot;headerlink&quot; title=&quot;7、《Execute My Packet (Exodus of Shells from a Firewall)》&quot;&gt;&lt;/a&gt;7、《Execute My Packet (Exodus of Shells from a Firewall)》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/14605192523708/14606157550780.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;Cisco ASA Adaptive Security Appliance是个IP路由器，具备防火墙、反病毒、入侵检测和VPN服务器的功能，它的IKE(网络密钥交换)版本v1和v2存在堆溢出漏洞（CVE-2016-1287），利用漏洞允许未授权的用户实现远程代码执行。该议题分析了导致漏洞的成因以及利用方法，目前官方已修复此漏洞。&lt;/p&gt;
-&lt;h3 id=&quot;8、《Bypassing-Different-Defense-Schemes-via-Crash-Resistant-Probing-of-Address-Space》&quot;&gt;&lt;a href=&quot;#8、《Bypassing-Different-Defense-Schemes-via-Crash-Resistant-Probing-of-Address-Space》&quot; class=&quot;headerlink&quot; title=&quot;8、《Bypassing Different Defense Schemes via Crash-Resistant Probing of Address Space》&quot;&gt;&lt;/a&gt;8、《Bypassing Different Defense Schemes via Crash-Resistant Probing of Address Space》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/14605192523708/14606192691752.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;作者在不借助地址泄露的情况下，使用“崩溃恢复”（Crash-Resistant）功能去绕过DEP、ASLR、CFG等多个安全机制。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;通过内存扫描获取地址&lt;/strong&gt;：结合堆喷射，利用漏洞篡改数据类型相关（比如整数）的1个字节，从而伪造出JS对象，接着在web worker中使用setInerval函数去使用伪造的JS对象，这里使用setInerval是为了使用Crash-Resistant功能，有了JS对象就有了可控的虚表指针，再通过扫描内存获取TEB（线程环境块）基址、DLL基址等信息。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;创建Blob对象来绕过EAF+&lt;/strong&gt;：另外还演示了如何绕过EMEt 5.5 的EAF和EAF+保护，作者通过创建Blob对象来解决，因为它会调用到未在EAF+黑名单里面的ntdll模块，进而解决导出表的安全限制问题。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;利用函数链（Function Chaining）绕过CFG&lt;/strong&gt;：在控制虚表函数指针后，利用5个未被EMET禁用的导出函数（利用networkx 和miasm2工具去搜索的），依次调用组成一个函数调用链，最终调用LdrInitShimEngineDynamic([fakeStr + 0x8] + 0x20, [fakeStr] + 0x18)，这里的两个参数都是可控的，从而实现任意DLL的加载。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id=&quot;9、《Virtualization-Device-Emulator-Testing-Technology》&quot;&gt;&lt;a href=&quot;#9、《Virtualization-Device-Emulator-Testing-Technology》&quot; class=&quot;headerlink&quot; title=&quot;9、《Virtualization Device Emulator Testing Technology》&quot;&gt;&lt;/a&gt;9、《Virtualization Device Emulator Testing Technology》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/14605192523708/14606253312145.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;通过分析虚拟设备模拟器的攻击面，主要针对各个硬件虚拟组件进行Fuzzing，通过系统hook模块去获取各个设备模拟器，然后从服务端向各个模拟器客户端发送畸形数据，再根据客户端返回的日志进行分析。&lt;/p&gt;
-&lt;h3 id=&quot;10、《Hardsploit-project-All-In-One-Tool-for-Hardware-Security-Audit》&quot;&gt;&lt;a href=&quot;#10、《Hardsploit-project-All-In-One-Tool-for-Hardware-Security-Audit》&quot; class=&quot;headerlink&quot; title=&quot;10、《Hardsploit project : All-In-One Tool for Hardware Security Audit》&quot;&gt;&lt;/a&gt;10、《Hardsploit project : All-In-One Tool for Hardware Security Audit》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/14605192523708/14606908008051.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;Hardsploit项目是一个硬件安全审计框架，支持多种硬件接口，比如I2C, JTAG, SPI, PARALLEL, UART，主要应用在物联网产品的安全审计上。通过工具可以提取存储在芯片上各种数据，读写以及嗅探传输数据，便于后续作分析，而且还提供有界面、API接口等等功能。&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;本周分析的安全大会主要以2016年CanSecWest黑客大会上的精彩议题为主，整体上，议题主要偏向于&lt;strong&gt;系统/软件漏洞挖掘与利用技术&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;各议题下载链接参见：&lt;a href=&quot;http://www.slideshare.net/CanSecWest/presentations&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://www.slideshare.net/CanSecWest/presentations&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id=&quot;1、《Sandbox-Escape-with-Generous-Help-from-Security-Software》&quot;&gt;&lt;a href=&quot;#1、《Sandbox-Escape-with-Generous-Help-from-Security-Software》&quot; class=&quot;headerlink&quot; title=&quot;1、《Sandbox Escape with Generous Help from Security Software》&quot;&gt;&lt;/a&gt;1、《Sandbox Escape with Generous Help from Security Software》&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/media/14605192523708/14605295530449.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;腾讯玄武实验室分享的杀毒软件漏洞挖掘技巧，比如BitDefender、Comodo、Avast、Kaspersky等等国外知名杀软厂商，大多是一些敏感功能未鉴权导致的代码执行或者信息泄露的问题，比如攻击者伪造IO请求去读写、执行本地文件。这里比较好的一点是在漏洞利用场景上，他们将杀软漏洞用来绕过沙盒保护，因为杀软漏洞可以直接以System最高权限执行，允许直接关闭一些软件的沙盒防护。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
-    
-      <category term="CanSecWest" scheme="http://riusksk.github.io/tags/CanSecWest/"/>
     
   </entry>
   
