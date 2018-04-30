@@ -1,0 +1,276 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8" />
+  
+  <title>安全圈乱象杂谈 | riusksk&#39;s blog</title>
+  <meta name="author" content="riusksk" />
+
+  
+  <meta name="description" content="【声明】：本文纯属个人言论，与公司立场无关。
+玩名词概念技术命名，将一些旧知识赋予个新名词进行炒作，比如APT，还有可视化概念，一串串攻击流飞来飞去。
+漏洞命名，似乎已成为圈内常态，不管漏洞危害如何，先取个名字，再以名字单独地注册个域名。
+BlackHat Pwnine上专门设置有一个“最名不副实漏" />
+  
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <meta property="og:title" content="安全圈乱象杂谈" />
+  <meta property="og:site_name" content="riusksk&#39;s blog" />
+
+  
+  
+
+  
+    <meta property="og:image" content="undefined" />
+  
+
+  
+  <link href="/css/images/favicon.ico" rel="icon" />
+  
+
+  <link rel="alternate" href="/atom.xml" title="riusksk&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78773323-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+
+  <!-- baidu webmaster push -->
+  <script src='//push.zhanzhang.baidu.com/push.js'></script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">riusksk&#39;s blog</a></h1>
+  <h2><a href="/">攀蟾折桂摄寰宇，摘星揽月御乾坤。踏云踩雾骋宵壤，驱风逐日闯天地。 ------泉哥</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/atom.xml">RSS订阅</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2018-04-30T09:34:21.000Z"><a href="/2018/04/30/安全圈乱象杂谈/">2018-04-30</a></time>
+      
+      
+  
+    <h1 class="title">安全圈乱象杂谈</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>【声明】：本文纯属个人言论，与公司立场无关。</p>
+<h3 id="玩名词概念"><a href="#玩名词概念" class="headerlink" title="玩名词概念"></a>玩名词概念</h3><p>技术命名，将一些旧知识赋予个新名词进行炒作，比如APT，还有可视化概念，一串串攻击流飞来飞去。</p>
+<p>漏洞命名，似乎已成为圈内常态，不管漏洞危害如何，先取个名字，再以名字单独地注册个域名。</p>
+<p>BlackHat Pwnine上专门设置有一个“最名不副实漏洞奖”，就是用来批评这类恶意炒作的漏洞。</p>
+<center><img src="/media/pwnine.png" alt=""></center>
+
+<h3 id="会议式社交"><a href="#会议式社交" class="headerlink" title="会议式社交"></a>会议式社交</h3><p>国内与国外的安全会议的最大区别就是，国内以吃喝聊天、拉关系为主要目的，国外以技术交流为主；</p>
+<p>这几年，国内已经有越来越多的安全会议、安全沙龙，每次会前，朋友圈的邀请函就会被刷爆，那些常年占据朋友圈的会棍，我一般都是拉黑再说……</p>
+<p>不单是会议，特殊节日，你也会发现朋友圈清一色的各公司的礼品晒照！！！</p>
+<center><img src="/media/116417766.jpg" alt=""></center>
+
+<h3 id="炒作营销"><a href="#炒作营销" class="headerlink" title="炒作营销"></a>炒作营销</h3><p>“世界第一”、“中国第一”、“全球最强”等各种违反广告法的公关稿随处可见，尤以某数字公司最为推崇。</p>
+<center><img src="/media/62728.png" alt=""></center>
+
+<p>安全圈的营销类标题大体可以分为两种，”碰瓷”(蹭热点、名人，比如Hashcat破解密码之强，连FBI都惊呆了)和”意外”(这文章的标题就是这套路，破解256个字符，意不意外，惊不惊喜)，满满是《爆款文案》中的套路:</p>
+<p>普通标题：《火辣健身 App 深度产品分析报告》<br>碰瓷式标题：《同样是健身 App，它比 Keep 到底 NB 在哪儿》<br>意外式标题：《改了两个版本就融资 1500 万，这款产品如何做到的》</p>
+<p>我并不完全反对PR，但我反对那些夸张不符事实的PR，以及惋惜那些以PR带动技术发展的不幸！</p>
+<h3 id="快餐式的付费知识"><a href="#快餐式的付费知识" class="headerlink" title="快餐式的付费知识"></a>快餐式的付费知识</h3><center><img src="/media/know.jpg" alt=""></center>
+
+<p>最近好多个平台提供付费知识的功能，算是一项靠名气快速套现的捷径，随便开个课或拉个群收费，几天就可能几十万收入，令人羡慕！</p>
+<p>但反观付费的用户，你以为真的付费就一定可以获得知识吗？</p>
+<p>对于技术而言，那都是常年积累的过程，非一两小时言语所有传授；<br>对于知识而言，个人思考所得的才叫知识，而非单纯地从别人口中得到；<br>对于学习而言，学以致用才是目的，而非纯理论学习。</p>
+<p>所以，我不相信靠知识付费，就能够让你的认识、思维、技术有本质提高！</p>
+<p>况且，有那么多比付费知识更廉价的书籍（可参考<a href="https://github.com/riusksk/secbook" target="_blank" rel="external">2018年安全从业人员书单推荐</a>），完全可以更系统化地学习。</p>
+<p>我不反对知识付费，但是系统性学习比碎片化学习更重要！<br>我不反对碎片化学习，但别妄想能靠它实现知识速成！</p>
+<p>最近在网上看到一个故事，与各位分享下：</p>
+<p><em>爱因斯坦提出相对论后，震惊世界，<br>于是被很多大学邀请去做报告，<br>爱因斯坦因此而被弄得疲惫不堪。<br>有一天，司机对他说：“你太累了，今天我帮你作报告吧？”<br>爱因斯坦问：“你能行吗？”<br>司机说：“我闭着眼睛都能背出来。”<br>那天司机上台，果然讲得滴水不漏。<br>但刚想下台时，一位博士站了起来，<br>然后提了一个非常深奥刁钻的问题。<br>司机不知怎么作答，幸好脑瓜转得快：<br>“你这问题太简单了，我司机都能回答。”<br>爱因斯坦站起来，几句话就解决了问题。<br>博士惊呆了：“没想到他的司机也远胜于我。”<br>但在回去的路上，司机对爱因斯坦说：<br>“我知道的只是概念，你懂得的才是知识。”</em></p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2018/04/30/安全圈乱象杂谈/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/随笔杂谈/">随笔杂谈</a>
+  </div>
+
+        
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+</section>
+
+
+ -->
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:riusksk.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2018/04/30/安全圈乱象杂谈/">安全圈乱象杂谈</a>
+      </li>
+    
+      <li>
+        <a href="/2018/03/25/《横向领导力》思维导图/">《横向领导力》思维导图</a>
+      </li>
+    
+      <li>
+        <a href="/2018/03/22/2018年信息安全从业者书单推荐/">2018年信息安全从业者书单推荐</a>
+      </li>
+    
+      <li>
+        <a href="/2018/03/14/计算机行业是否需要学历/">计算机行业是否需要学历？</a>
+      </li>
+    
+      <li>
+        <a href="/2018/02/22/读书心悟/">读书心悟</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/21/2017年刷过的CVE/">2017年刷过的CVE</a>
+      </li>
+    
+      <li>
+        <a href="/2017/06/04/调试V8中JS对应的汇编代码/">调试V8中JS对应的汇编代码</a>
+      </li>
+    
+      <li>
+        <a href="/2017/02/26/0/">优秀作者</a>
+      </li>
+    
+      <li>
+        <a href="/2016/12/21/CVE-2016-7595/">CVE-2016-7595 Apple macOS/iOS CoreText OTL::GPOS::ApplyPairPos 越界访问漏洞分析</a>
+      </li>
+    
+      <li>
+        <a href="/2016/12/17/2016年刷过的CVE/">2016年刷过的CVE</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/技术分享/">技术分享</a><small>39</small></li>
+  
+    <li><a href="/categories/随机杂谈/">随机杂谈</a><small>2</small></li>
+  
+    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>8</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/编程/" style="font-size: 10px;">编程</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  <p>
+  
+  &copy; 2018 riusksk
+  
+  All rights reserved.</p>
+  <p>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+  & Hosted by <a href="http://github.com" target="_blank">GitHub</a>
+  <!--<span id="busuanzi_container_site_pv" >
+    ，本站总访问量<span id="busuanzi_value_site_pv" ></span>次
+  </span>
+  -->
+  </p>
+</div>
+<div class="clearfix"></div>
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+</footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+<div id='bg'></div>
+</body>
+</html>
