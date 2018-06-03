@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2018-06-03T14:48:05.000Z</updated>
+  <updated>2018-06-03T14:50:49.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -20,9 +20,10 @@
     <link href="http://riusksk.github.io/2018/06/03/%E5%A8%81%E8%83%81%E5%BB%BA%E6%A8%A1%EF%BC%9A%E6%91%86%E8%84%B1%E9%9A%8F%E6%9C%BA%E6%8C%96%E6%B4%9E%E7%9A%84%E5%91%BD%E8%BF%90/"/>
     <id>http://riusksk.github.io/2018/06/03/威胁建模：摆脱随机挖洞的命运/</id>
     <published>2018-06-03T13:15:55.000Z</published>
-    <updated>2018-06-03T14:48:05.000Z</updated>
+    <updated>2018-06-03T14:50:49.000Z</updated>
     
-    <content type="html">&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/threat.png&quot; alt=&quot;威胁&quot;&gt;&lt;/p&gt;
+    <content type="html">&lt;center&gt;&lt;img src=&quot;http://riusksk.me/media/threat.png&quot; alt=&quot;威胁&quot;&gt;&lt;/center&gt;
+
 &lt;h3 id=&quot;楔子：聊聊Web与二进制安全&quot;&gt;&lt;a href=&quot;#楔子：聊聊Web与二进制安全&quot; class=&quot;headerlink&quot; title=&quot;楔子：聊聊Web与二进制安全&quot;&gt;&lt;/a&gt;楔子：聊聊Web与二进制安全&lt;/h3&gt;&lt;p&gt;经常有人会说&lt;code&gt;“Web安全门槛低，二进制安全门槛高”&lt;/code&gt;，先不讨论它是对是错，但至少这让多数人意识到：开始搞Web安全时，&lt;code&gt;xss&lt;/code&gt;弹个框，sql注入写个单引号，&lt;code&gt;sqlmap&lt;/code&gt;跑一下就拖库了，这种总是令人感觉那么容易（懂这些就敢对外自称“高级渗透测试工程师”的大有人在）；搞二进制的就没那么容易出效果了，因为得先学C、汇编，而且一些自动化工具也没web多，就算费九牛二虎之力搞出来，也没黑个站酷炫。&lt;/p&gt;
 &lt;p&gt;所以，搞Web的人总是比搞二进制的人要多得多。&lt;/p&gt;
 &lt;p&gt;个人觉得，Web是个前期容易出效果，中后期容易遇瓶颈的安全分支，因为不知道该往哪使力，相当于&lt;code&gt;“前期英雄”&lt;/code&gt;；二进制是个前期不容易出效果，且水很深，难达瓶颈的安全分支，因为你很容易知道高山在哪里，即使很多时间只能仰望，相当于&lt;code&gt;“后期英雄”&lt;/code&gt;。&lt;/p&gt;
@@ -33,18 +34,22 @@
 &lt;/ol&gt;
 &lt;p&gt;其实这都是一些技术或方法论上的瓶颈，二进制上也会有“随机挖洞”的感觉的，只是没Web上那么容易碰到，所以拿web举例。&lt;/p&gt;
 &lt;h3 id=&quot;STRIDE：突破瓶颈的方法论&quot;&gt;&lt;a href=&quot;#STRIDE：突破瓶颈的方法论&quot; class=&quot;headerlink&quot; title=&quot;STRIDE：突破瓶颈的方法论&quot;&gt;&lt;/a&gt;STRIDE：突破瓶颈的方法论&lt;/h3&gt;&lt;p&gt;某天在网上看到一篇关于&lt;code&gt;STRIDE&lt;/code&gt;威胁建模的文章，这是微软总结出来的一套方法论，其实就是一些威胁的助记符，帮助大家在做安全测试时能够更加全面系统。虽然它也不能100%覆盖所有系统/软件面临的安全威胁，但至少能覆盖个90%。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/stride.png&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+&lt;center&gt;&lt;img src=&quot;http://riusksk.me/media/stride.png&quot; alt=&quot;img&quot;&gt;&lt;/center&gt;
+
 &lt;p&gt;上图是STRIDE所代表的6种威胁，无论在做Web渗透测试，还是软件安全测试，先通过对测试目标做功能上的分析，再按STRIDE模型对其进行全面的分析，最后就是实际测试验证。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/image-20180603223947071.png&quot; alt=&quot;image-20180603223947071&quot;&gt;&lt;/p&gt;
+&lt;center&gt;&lt;img src=&quot;http://riusksk.me/media/image-20180603223947071.png&quot; alt=&quot;image-20180603223947071&quot;&gt;&lt;/center&gt;
+
 &lt;p&gt;&lt;strong&gt;STRIDE本质上并不会提高你的技术能力，但可以改变你挖洞的思维方法，更加系统全面，摆脱随机挖洞的命运。&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;关于STRIDE更详细地信息，可以参考以下这本书&lt;a href=&quot;http://product.china-pub.com/4694314&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;《威胁建模：设置和交付更安全的软件》&lt;/a&gt;，看前半本就可以了，后半本有点啰嗦，且可操作性不强。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://images.china-pub.com/ebook4690001-4695000/4694314/zcover.jpg&quot; alt=&quot;威胁建模&quot;&gt;&lt;/p&gt;
+&lt;center&gt;&lt;img src=&quot;http://images.china-pub.com/ebook4690001-4695000/4694314/zcover.jpg&quot; alt=&quot;威胁建模&quot;&gt;&lt;/center&gt;
+
 </content>
     
     <summary type="html">
     
-      &lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/threat.png&quot; alt=&quot;威胁&quot;&gt;&lt;/p&gt;
-&lt;h3 id=&quot;楔子：聊聊Web与二进制安全&quot;&gt;&lt;a href=&quot;#楔子：聊聊Web与二进制安全&quot; class=&quot;headerlink&quot; title=&quot;楔
+      &lt;center&gt;&lt;img src=&quot;http://riusksk.me/media/threat.png&quot; alt=&quot;威胁&quot;&gt;&lt;/center&gt;
+
+&lt;h3 id=&quot;楔子：聊聊Web与二进制安全&quot;&gt;&lt;a href=&quot;#楔子：聊聊Web与二进制安全&quot; class=&quot;headerlin
     
     </summary>
     
