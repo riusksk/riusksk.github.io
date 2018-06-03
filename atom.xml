@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2018-04-30T11:28:45.000Z</updated>
+  <updated>2018-06-03T14:16:01.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,48 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>威胁建模：摆脱随机挖洞的命运</title>
+    <link href="http://riusksk.github.io/2018/06/03/%E5%A8%81%E8%83%81%E5%BB%BA%E6%A8%A1%EF%BC%9A%E6%91%86%E8%84%B1%E9%9A%8F%E6%9C%BA%E6%8C%96%E6%B4%9E%E7%9A%84%E5%91%BD%E8%BF%90/"/>
+    <id>http://riusksk.github.io/2018/06/03/威胁建模：摆脱随机挖洞的命运/</id>
+    <published>2018-06-03T13:15:55.000Z</published>
+    <updated>2018-06-03T14:16:01.000Z</updated>
+    
+    <content type="html">&lt;p&gt;&lt;img src=&quot;/Volumes/Macintosh/Users/riusksk/riusksk.github.io/public/media/threat.png&quot; alt=&quot;威胁&quot;&gt;&lt;/p&gt;
+&lt;p&gt;###楔子：聊聊Web与二进制安全&lt;/p&gt;
+&lt;p&gt;经常有人会说&lt;code&gt;“Web安全门槛低，二进制安全门槛高”&lt;/code&gt;，先不讨论它是对是错，但至少这让多数人意识到：开始搞Web安全时，&lt;code&gt;xss&lt;/code&gt;弹个框，sql注入写个单引号，&lt;code&gt;sqlmap&lt;/code&gt;跑一下就拖库了，这种总是令人感觉那么容易（懂这些就敢对外自称“高级渗透测试工程师”的大有人在）；搞二进制的就没那么容易出效果了，因为得先学C、汇编，而且一些自动化工具也没web多，就算费九牛二虎之力搞出来，也没黑个站酷炫。&lt;/p&gt;
+&lt;p&gt;所以，搞Web的人总是比搞二进制的人要多得多。&lt;/p&gt;
+&lt;p&gt;个人觉得，Web是个前期容易出效果，中后期容易遇瓶颈的安全分支，因为不知道该往哪使力，相当于&lt;code&gt;“前期英雄”&lt;/code&gt;；二进制是个前期不容易出效果，且水很深，难达瓶颈的安全分支，因为你很容易知道高山在哪里，即使很多时间只能仰望，相当于&lt;code&gt;“后期英雄”&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;在搞Web渗透测试时，不知道大家是否有过这种感觉：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;看到别人发的漏洞文章，发现原来这么简单，自己明明有能力发现，之前怎么没挖到呢？&lt;/li&gt;
+&lt;li&gt;感觉力不从心，有点“&lt;strong&gt;随机挖洞&lt;/strong&gt;”的感觉。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;其实这都是一些技术或方法论上的瓶颈，二进制上也会有“随机挖洞”的感觉的，只是没Web上那么容易碰到，所以拿web举例。&lt;/p&gt;
+&lt;h3 id=&quot;STRIDE：突破瓶颈的方法论&quot;&gt;&lt;a href=&quot;#STRIDE：突破瓶颈的方法论&quot; class=&quot;headerlink&quot; title=&quot;STRIDE：突破瓶颈的方法论&quot;&gt;&lt;/a&gt;STRIDE：突破瓶颈的方法论&lt;/h3&gt;&lt;p&gt;某天在网上看到一篇关于&lt;code&gt;STRIDE&lt;/code&gt;威胁建模的文章，这是微软总结出来的一套方法论，其实就是一些威胁的助记符，帮助大家在做安全测试时能够更加全面系统。虽然它也不能100%覆盖所有系统/软件面临的安全威胁，但至少能覆盖个90%。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/Volumes/Macintosh/Users/riusksk/riusksk.github.io/public/media/stride.png&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+&lt;p&gt;上图是STRIDE所代表的6种威胁，无论在做Web渗透测试，还是软件安全测试，先通过对测试目标做功能上的分析，再按STRIDE模型对其进行全面的分析，最后就是实际测试验证。整个过程如下：&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;graph LR&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;A(目标功能分析) --&amp;gt;B(威胁建模)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;B --&amp;gt; C(实测验证)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;C --&amp;gt; D(输出报告)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;strong&gt;STRIDE本质上并不会提高你的技术能力，但可以改变你挖洞的思维方法，更加系统全面，摆脱随机挖洞的命运。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;关于STRIDE更详细地信息，可以参考以下这本书&lt;a href=&quot;http://product.china-pub.com/4694314&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;《威胁建模：设置和交付更安全的软件》&lt;/a&gt;，看前半本就可以了，后半本有点啰嗦，且可操作性不强。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/Volumes/Macintosh/Users/riusksk/riusksk.github.io/public/media/zcover.jpg&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;img src=&quot;/Volumes/Macintosh/Users/riusksk/riusksk.github.io/public/media/threat.png&quot; alt=&quot;威胁&quot;&gt;&lt;/p&gt;
+&lt;p&gt;###楔子：聊聊Web与二进制安全&lt;/p&gt;
+&lt;p&gt;经常有人会说&lt;co
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+      <category term="威胁建模" scheme="http://riusksk.github.io/tags/%E5%A8%81%E8%83%81%E5%BB%BA%E6%A8%A1/"/>
+    
+  </entry>
   
   <entry>
     <title>安全圈乱象杂谈</title>
@@ -1292,27 +1334,6 @@
       <category term="iOS" scheme="http://riusksk.github.io/tags/iOS/"/>
     
       <category term="安全审计" scheme="http://riusksk.github.io/tags/%E5%AE%89%E5%85%A8%E5%AE%A1%E8%AE%A1/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>迁移技术文章</title>
-    <link href="http://riusksk.github.io/2016/06/17/add-articles/"/>
-    <id>http://riusksk.github.io/2016/06/17/add-articles/</id>
-    <published>2016-06-17T08:11:06.000Z</published>
-    <updated>2016-06-17T08:24:10.000Z</updated>
-    
-    <content type="html">&lt;p&gt;由于博客大巴体验太差，因此开始启用github去写博客，用markdown+hexo写静态博客的感觉也挺好的，而且更安全。&lt;br&gt;后面我会把以前写的技术文章迁移到本博客，顺便把买来很久一直未用的riusksk.me域名给派上用场了，之前是因为备案流程过于繁琐，才导致一直未使用，使用 &lt;a href=&quot;http://riusksk.me&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://riusksk.me&lt;/a&gt; 解析到 &lt;a href=&quot;http://riusksk.github.io&quot;&gt;http://riusksk.github.io&lt;/a&gt; ，似乎就不用备案了。&lt;br&gt;近日，我已在本博客上添加RSS订阅和评论功能，欢迎大家订阅和交流。&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;由于博客大巴体验太差，因此开始启用github去写博客，用markdown+hexo写静态博客的感觉也挺好的，而且更安全。&lt;br&gt;后面我会把以前写的技术文章迁移到本博客，顺便把买来很久一直未用的riusksk.me域名给派上用场了，之前是因为备案流程过于繁琐，才导致一直未使
-    
-    </summary>
-    
-      <category term="随笔杂谈" scheme="http://riusksk.github.io/categories/%E9%9A%8F%E7%AC%94%E6%9D%82%E8%B0%88/"/>
-    
     
   </entry>
   
