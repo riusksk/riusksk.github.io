@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2018-06-03T14:45:04.000Z</updated>
+  <updated>2018-06-03T14:48:05.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -20,11 +20,10 @@
     <link href="http://riusksk.github.io/2018/06/03/%E5%A8%81%E8%83%81%E5%BB%BA%E6%A8%A1%EF%BC%9A%E6%91%86%E8%84%B1%E9%9A%8F%E6%9C%BA%E6%8C%96%E6%B4%9E%E7%9A%84%E5%91%BD%E8%BF%90/"/>
     <id>http://riusksk.github.io/2018/06/03/威胁建模：摆脱随机挖洞的命运/</id>
     <published>2018-06-03T13:15:55.000Z</published>
-    <updated>2018-06-03T14:45:04.000Z</updated>
+    <updated>2018-06-03T14:48:05.000Z</updated>
     
     <content type="html">&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/threat.png&quot; alt=&quot;威胁&quot;&gt;&lt;/p&gt;
-&lt;p&gt;###楔子：聊聊Web与二进制安全&lt;/p&gt;
-&lt;p&gt;经常有人会说&lt;code&gt;“Web安全门槛低，二进制安全门槛高”&lt;/code&gt;，先不讨论它是对是错，但至少这让多数人意识到：开始搞Web安全时，&lt;code&gt;xss&lt;/code&gt;弹个框，sql注入写个单引号，&lt;code&gt;sqlmap&lt;/code&gt;跑一下就拖库了，这种总是令人感觉那么容易（懂这些就敢对外自称“高级渗透测试工程师”的大有人在）；搞二进制的就没那么容易出效果了，因为得先学C、汇编，而且一些自动化工具也没web多，就算费九牛二虎之力搞出来，也没黑个站酷炫。&lt;/p&gt;
+&lt;h3 id=&quot;楔子：聊聊Web与二进制安全&quot;&gt;&lt;a href=&quot;#楔子：聊聊Web与二进制安全&quot; class=&quot;headerlink&quot; title=&quot;楔子：聊聊Web与二进制安全&quot;&gt;&lt;/a&gt;楔子：聊聊Web与二进制安全&lt;/h3&gt;&lt;p&gt;经常有人会说&lt;code&gt;“Web安全门槛低，二进制安全门槛高”&lt;/code&gt;，先不讨论它是对是错，但至少这让多数人意识到：开始搞Web安全时，&lt;code&gt;xss&lt;/code&gt;弹个框，sql注入写个单引号，&lt;code&gt;sqlmap&lt;/code&gt;跑一下就拖库了，这种总是令人感觉那么容易（懂这些就敢对外自称“高级渗透测试工程师”的大有人在）；搞二进制的就没那么容易出效果了，因为得先学C、汇编，而且一些自动化工具也没web多，就算费九牛二虎之力搞出来，也没黑个站酷炫。&lt;/p&gt;
 &lt;p&gt;所以，搞Web的人总是比搞二进制的人要多得多。&lt;/p&gt;
 &lt;p&gt;个人觉得，Web是个前期容易出效果，中后期容易遇瓶颈的安全分支，因为不知道该往哪使力，相当于&lt;code&gt;“前期英雄”&lt;/code&gt;；二进制是个前期不容易出效果，且水很深，难达瓶颈的安全分支，因为你很容易知道高山在哪里，即使很多时间只能仰望，相当于&lt;code&gt;“后期英雄”&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;在搞Web渗透测试时，不知道大家是否有过这种感觉：&lt;/p&gt;
@@ -45,8 +44,7 @@
     <summary type="html">
     
       &lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/threat.png&quot; alt=&quot;威胁&quot;&gt;&lt;/p&gt;
-&lt;p&gt;###楔子：聊聊Web与二进制安全&lt;/p&gt;
-&lt;p&gt;经常有人会说&lt;code&gt;“Web安全门槛低，二进制安全门槛高”&lt;/code&gt;，先不讨论它是对是错，
+&lt;h3 id=&quot;楔子：聊聊Web与二进制安全&quot;&gt;&lt;a href=&quot;#楔子：聊聊Web与二进制安全&quot; class=&quot;headerlink&quot; title=&quot;楔
     
     </summary>
     
