@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2018-06-03T14:18:47.000Z</updated>
+  <updated>2018-06-03T14:21:57.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://riusksk.github.io/2018/06/03/%E5%A8%81%E8%83%81%E5%BB%BA%E6%A8%A1%EF%BC%9A%E6%91%86%E8%84%B1%E9%9A%8F%E6%9C%BA%E6%8C%96%E6%B4%9E%E7%9A%84%E5%91%BD%E8%BF%90/"/>
     <id>http://riusksk.github.io/2018/06/03/威胁建模：摆脱随机挖洞的命运/</id>
     <published>2018-06-03T13:15:55.000Z</published>
-    <updated>2018-06-03T14:18:47.000Z</updated>
+    <updated>2018-06-03T14:21:57.000Z</updated>
     
     <content type="html">&lt;p&gt;&lt;img src=&quot;media/threat.png&quot; alt=&quot;威胁&quot;&gt;&lt;/p&gt;
 &lt;p&gt;###楔子：聊聊Web与二进制安全&lt;/p&gt;
@@ -36,7 +36,7 @@
 &lt;h3 id=&quot;STRIDE：突破瓶颈的方法论&quot;&gt;&lt;a href=&quot;#STRIDE：突破瓶颈的方法论&quot; class=&quot;headerlink&quot; title=&quot;STRIDE：突破瓶颈的方法论&quot;&gt;&lt;/a&gt;STRIDE：突破瓶颈的方法论&lt;/h3&gt;&lt;p&gt;某天在网上看到一篇关于&lt;code&gt;STRIDE&lt;/code&gt;威胁建模的文章，这是微软总结出来的一套方法论，其实就是一些威胁的助记符，帮助大家在做安全测试时能够更加全面系统。虽然它也不能100%覆盖所有系统/软件面临的安全威胁，但至少能覆盖个90%。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;media/stride.png&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
 &lt;p&gt;上图是STRIDE所代表的6种威胁，无论在做Web渗透测试，还是软件安全测试，先通过对测试目标做功能上的分析，再按STRIDE模型对其进行全面的分析，最后就是实际测试验证。整个过程如下：&lt;/p&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;graph LR&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;A(目标功能分析) --&amp;gt;B(威胁建模)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;B --&amp;gt; C(实测验证)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;C --&amp;gt; D(输出报告)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;img src=&quot;/media/image-20180603222128190.png&quot; alt=&quot;image-20180603222128190&quot;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;STRIDE本质上并不会提高你的技术能力，但可以改变你挖洞的思维方法，更加系统全面，摆脱随机挖洞的命运。&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;关于STRIDE更详细地信息，可以参考以下这本书&lt;a href=&quot;http://product.china-pub.com/4694314&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;《威胁建模：设置和交付更安全的软件》&lt;/a&gt;，看前半本就可以了，后半本有点啰嗦，且可操作性不强。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;media/zcover.jpg&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
