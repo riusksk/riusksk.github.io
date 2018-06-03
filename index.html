@@ -87,7 +87,7 @@
     </header>
     <div class="entry">
       
-        <p><img src="/Volumes/Macintosh/Users/riusksk/riusksk.github.io/public/media/threat.png" alt="威胁"></p>
+        <p><img src="media/threat.png" alt="威胁"></p>
 <p>###楔子：聊聊Web与二进制安全</p>
 <p>经常有人会说<code>“Web安全门槛低，二进制安全门槛高”</code>，先不讨论它是对是错，但至少这让多数人意识到：开始搞Web安全时，<code>xss</code>弹个框，sql注入写个单引号，<code>sqlmap</code>跑一下就拖库了，这种总是令人感觉那么容易（懂这些就敢对外自称“高级渗透测试工程师”的大有人在）；搞二进制的就没那么容易出效果了，因为得先学C、汇编，而且一些自动化工具也没web多，就算费九牛二虎之力搞出来，也没黑个站酷炫。</p>
 <p>所以，搞Web的人总是比搞二进制的人要多得多。</p>
@@ -99,12 +99,12 @@
 </ol>
 <p>其实这都是一些技术或方法论上的瓶颈，二进制上也会有“随机挖洞”的感觉的，只是没Web上那么容易碰到，所以拿web举例。</p>
 <h3 id="STRIDE：突破瓶颈的方法论"><a href="#STRIDE：突破瓶颈的方法论" class="headerlink" title="STRIDE：突破瓶颈的方法论"></a>STRIDE：突破瓶颈的方法论</h3><p>某天在网上看到一篇关于<code>STRIDE</code>威胁建模的文章，这是微软总结出来的一套方法论，其实就是一些威胁的助记符，帮助大家在做安全测试时能够更加全面系统。虽然它也不能100%覆盖所有系统/软件面临的安全威胁，但至少能覆盖个90%。</p>
-<p><img src="/Volumes/Macintosh/Users/riusksk/riusksk.github.io/public/media/stride.png" alt="img"></p>
+<p><img src="media/stride.png" alt="img"></p>
 <p>上图是STRIDE所代表的6种威胁，无论在做Web渗透测试，还是软件安全测试，先通过对测试目标做功能上的分析，再按STRIDE模型对其进行全面的分析，最后就是实际测试验证。整个过程如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">A(目标功能分析) --&gt;B(威胁建模)</span><br><span class="line">B --&gt; C(实测验证)</span><br><span class="line">C --&gt; D(输出报告)</span><br></pre></td></tr></table></figure>
 <p><strong>STRIDE本质上并不会提高你的技术能力，但可以改变你挖洞的思维方法，更加系统全面，摆脱随机挖洞的命运。</strong></p>
 <p>关于STRIDE更详细地信息，可以参考以下这本书<a href="http://product.china-pub.com/4694314" target="_blank" rel="external">《威胁建模：设置和交付更安全的软件》</a>，看前半本就可以了，后半本有点啰嗦，且可操作性不强。</p>
-<p><img src="/Volumes/Macintosh/Users/riusksk/riusksk.github.io/public/media/zcover.jpg" alt="img"></p>
+<p><img src="media/zcover.jpg" alt="img"></p>
 
       
     </div>
