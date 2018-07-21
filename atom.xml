@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2018-07-21T06:53:46.000Z</updated>
+  <updated>2018-07-21T07:05:12.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>编译原理与安全</title>
+    <title>编译原理在安全领域的应用</title>
     <link href="http://riusksk.github.io/2018/07/21/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%89%E5%85%A8/"/>
     <id>http://riusksk.github.io/2018/07/21/编译原理与安全/</id>
     <published>2018-07-21T00:19:43.000Z</published>
-    <updated>2018-07-21T06:53:46.000Z</updated>
+    <updated>2018-07-21T07:05:12.000Z</updated>
     
     <content type="html">&lt;h3 id=&quot;什么是编译原理&quot;&gt;&lt;a href=&quot;#什么是编译原理&quot; class=&quot;headerlink&quot; title=&quot;什么是编译原理&quot;&gt;&lt;/a&gt;什么是编译原理&lt;/h3&gt;&lt;center&gt;&lt;img src=&quot;https://mmbiz.qpic.cn/mmbiz_jpg/icNlicgdbzSdX4ED84YIA6VjY6CJzHnia6Hk6tliaH8W3WJyblhLn4xiaqcxqQ0RaLcKicib52wLWNuMibvDicr9WzuGTrA/640?wx_fmt=jpeg&amp;amp;tp=webp&amp;amp;wxfrom=5&amp;amp;wx_lazy=1&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
 
@@ -71,6 +71,8 @@
 &lt;p&gt;还有通过编译器增加防漏洞利用的机制，比如GS、CFG等安全机制，在对抗漏洞攻击上也起到了不小的作用。&lt;/p&gt;
 &lt;p&gt;所以通过研究llvm、gcc等编译项目，对漏洞攻防领域也是有一些可作为的地方。&lt;/p&gt;
 &lt;h3 id=&quot;总结&quot;&gt;&lt;a href=&quot;#总结&quot; class=&quot;headerlink&quot; title=&quot;总结&quot;&gt;&lt;/a&gt;总结&lt;/h3&gt;&lt;p&gt;编译原理在逆向工程、漏洞攻防、软件开发等诸多领域有所应用，有时就看你怎么使用，也并不是每个人在安全工作领域中有机会运用到，但技多不压身，不妨多储备点知识，以免到了“书到用时方恨少”的地步。&lt;/p&gt;
+&lt;center&gt;&lt;img src=&quot;http://riusksk.me/media/gzh.png&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
+
 </content>
     
     <summary type="html">
