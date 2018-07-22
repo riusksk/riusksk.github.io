@@ -91,14 +91,14 @@
     </header>
     <div class="entry">
       
-        <h3 id="什么是编译原理"><a href="#什么是编译原理" class="headerlink" title="什么是编译原理"></a>什么是编译原理</h3><center><img src="https://mmbiz.qpic.cn/mmbiz_jpg/icNlicgdbzSdX4ED84YIA6VjY6CJzHnia6Hk6tliaH8W3WJyblhLn4xiaqcxqQ0RaLcKicib52wLWNuMibvDicr9WzuGTrA/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt=""></center>
+        <h3 id="什么是编译原理"><a href="#什么是编译原理" class="headerlink" title="什么是编译原理"></a>什么是编译原理</h3><center><img src="http://riusksk.me/media/640.webp" alt=""></center>
 
 <p>上图是我从《编译系统透视：图解编译原理》里面扣出来的，基本包括编译原理的各个主要方面，从中可以对编译原理有个大体认识。</p>
 <p>专业点来讲，编译原理就是介绍编译程序构造的一般原理和基本方法，内容包括语言和文法、词法分析、语法分析、语法制导翻译、中间代码生成、存储管理、代码优化和目标代码生成。</p>
 <p>之前在知乎上看到过一份视频，讲的是程序员编写的代码如何被计算机识别，并在CPU上运行，如果你未曾学习编译原理，推荐观看一下（视频时长11:34）。</p>
 <iframe frameborder="0" width="640" height="498" src="https://v.qq.com/iframe/player.html?vid=b0694sp0u3a&tiny=0&auto=0" allowfullscreen></iframe>    
 
-<h3 id="每个信安学生总有一份叫“污点分析”的毕业设计"><a href="#每个信安学生总有一份叫“污点分析”的毕业设计" class="headerlink" title="每个信安学生总有一份叫“污点分析”的毕业设计"></a>每个信安学生总有一份叫“污点分析”的毕业设计</h3><center><img src="https://mmbiz.qpic.cn/mmbiz_png/icNlicgdbzSdX4ED84YIA6VjY6CJzHnia6HxnpxKBhYa6WiaQ0N35BJ65cCalOQPys1NBq8mIFprXTUegGNia7m7H0A/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt=""></center>
+<h3 id="每个信安学生总有一份叫“污点分析”的毕业设计"><a href="#每个信安学生总有一份叫“污点分析”的毕业设计" class="headerlink" title="每个信安学生总有一份叫“污点分析”的毕业设计"></a>每个信安学生总有一份叫“污点分析”的毕业设计</h3><center><img src="http://riusksk.me/media/641.webp" alt=""></center>
 
 <p>污点分析是指将程序从外部获取的数据标记为污点，然后观察污点在程序执行过程中的传播，从而得到程序中的信息流等信息，里面涉及编译原理中的词法语法分析会多一些，主要被应用于恶意软件分析、攻击代码检测等软件安全性分析研究中。</p>
 <p>记得刚参加工作那会，经常到网上搜索安全论文，发现很多信息安全专业的学生大多有做过一份关于“污点分析”的毕业设计，你现在上CNKI就可以搜索到很多，尤以硕士毕业论文居多。</p>
@@ -112,7 +112,7 @@
 </li>
 </ol>
 <p>有过此般经历后，我已很少再去翻国内的安全论文了，学术论文可能还是以翻阅国外的为主。</p>
-<h3 id="成熟的技术-≠-成熟的产品"><a href="#成熟的技术-≠-成熟的产品" class="headerlink" title="成熟的技术 ≠ 成熟的产品"></a>成熟的技术 ≠ 成熟的产品</h3><center><img src="https://mmbiz.qpic.cn/mmbiz_png/icNlicgdbzSdX4ED84YIA6VjY6CJzHnia6HshK94TjZic0QBkLWbopGJCjhXpR7EGthT5p2GaBs1jMtXGoEBW43n1A/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt=""></center>
+<h3 id="成熟的技术-≠-成熟的产品"><a href="#成熟的技术-≠-成熟的产品" class="headerlink" title="成熟的技术 ≠ 成熟的产品"></a>成熟的技术 ≠ 成熟的产品</h3><center><img src="http://riusksk.me/media/642.webp" alt=""></center>
 
 <p>污点分析技术最早是在1976被提出的，2005年左右开始，污点分析应用于二进制漏洞挖掘的研究火了好多年，其实技术已经相对成熟。</p>
 <p>确实有一些人通过污点分析挖掘到不少有价值的主流软件漏洞，但这项技术要落地为一款安全产品还是有很多问题的。</p>
@@ -120,7 +120,7 @@
 <p>这也算是安全运营的问题，深以为，凡是能检测到，但无法人工或自动跟进推动问题解决的，都是徒劳的。</p>
 <p>相信有很多公司都有出过污点分析的安全审计工具，收费的或者开源的，国内的此类安全产品很多最后都不了了之，所以说成熟的技术不等于成熟的产品。</p>
 <p>国外比较著名的商业源码审计工具就是Coverity和Fortify SCA，算做得最好的业界同款产品，但用过的人都知道，检测出来的问题，还是需要投入很多人工成本的。</p>
-<h3 id="反编译与加固"><a href="#反编译与加固" class="headerlink" title="反编译与加固"></a>反编译与加固</h3><center><img src="https://mmbiz.qpic.cn/mmbiz_jpg/icNlicgdbzSdX4ED84YIA6VjY6CJzHnia6HboTec8v5ToKXV0xgSWMtw3w2RUSNfrxaX8I2lC8gEMYrBP8MsJDUFw/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt=""></center>
+<h3 id="反编译与加固"><a href="#反编译与加固" class="headerlink" title="反编译与加固"></a>反编译与加固</h3><center><img src="http://riusksk.me/media/643.webp" alt=""></center>
 
 <p>搞逆向的同学都知道IDA、JEB这些著名的逆向工具，平时在无源码的情况下，我们直接通过它们来分析程序逻辑，无需知晓其中涉及各类反编译技术。</p>
 <p>反编译算是编译的逆过程，即将可执行程序转换成程序源码的过程，如果是转换成汇编语言，我们通常称为反汇编；如果是其它语言的（比如C、Java、C#等等），我们统称为反编译。</p>
@@ -129,12 +129,12 @@
 <p>有了反编译，自然就有了防反编译的工具，因此造就了各种加壳工具的出现。</p>
 <p>未知攻，焉知防。要开发加固工具，就需要知道反编译原理，要知道反编译原理，又需要知道编译原理。</p>
 <p><code>编译原理 &lt;---&gt; 反编译原理 &lt;---&gt; 加固原理</code></p>
-<h3 id="编译原理在漏洞攻防中的应用"><a href="#编译原理在漏洞攻防中的应用" class="headerlink" title="编译原理在漏洞攻防中的应用"></a>编译原理在漏洞攻防中的应用</h3><center><img src="https://mmbiz.qpic.cn/mmbiz_png/icNlicgdbzSdX4ED84YIA6VjY6CJzHnia6H5X9ZRBRVyZlJPPibVicARibhoGuiazKACWp5RKZzR5Rf94riadN47LU15RA/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt=""></center>
+<h3 id="编译原理在漏洞攻防中的应用"><a href="#编译原理在漏洞攻防中的应用" class="headerlink" title="编译原理在漏洞攻防中的应用"></a>编译原理在漏洞攻防中的应用</h3><center><img src="http://riusksk.me/media/644.webp" alt=""></center>
 
 <p>搞文件Fuzzing，我们可以在样本（收集、筛选、精简）和Fuzzer（策略、方向等）上面下功夫，甚至简单地暴力fuzzing文件都可以挖到漏洞。</p>
 <p>但对于JavaScript、CSS、Flash ActionScript这些脚本呢，直接简单地暴力变异文件根本无法进入正常的解析，做的大多是无用功。</p>
 <p>因此我们需要一个能够准确生成代码的语法生成器，再用它生成fuzzing样本，这里主要涉及编译原理中的语法分析。这方面有著名的开源工具funfuzz（<a href="https://github.com/MozillaSecurity/funfuzz）、domato（https://github.com/google/domato），下图就domato生成js代码的语法模板片段：" target="_blank" rel="external">https://github.com/MozillaSecurity/funfuzz）、domato（https://github.com/google/domato），下图就domato生成js代码的语法模板片段：</a></p>
-<center><img src="https://mmbiz.qpic.cn/mmbiz_png/icNlicgdbzSdX4ED84YIA6VjY6CJzHnia6Hw3QcWkWQ7xPZ3V7HqOZraE7HqsfVUIIeztuvO6ARSn12ibLbBKI4XWA/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt=""></center>
+<center><img src="http://riusksk.me/media/645.webp" alt=""></center>
 
 <p>除此之外，通过对clang/gcc等开源的编译工具对目标源码进行插桩，以帮助监控fuzz样本的代码覆盖率，反馈给fuzzer作改进，以进一步提高代码覆盖率，这块叫“驱动反馈（feedback-driven），比如著名工具就是afl、libfuzzer、honggfuzz，以后有机会可以专篇讲解此技术。</p>
 <p>还有通过编译器增加防漏洞利用的机制，比如GS、CFG等安全机制，在对抗漏洞攻击上也起到了不小的作用。</p>
