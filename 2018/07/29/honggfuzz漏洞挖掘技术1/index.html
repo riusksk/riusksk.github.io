@@ -1,0 +1,305 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8" />
+  
+  <title>honggfuzz漏洞挖掘技术1 | riusksk&#39;s blog</title>
+  <meta name="author" content="riusksk" />
+
+  
+  <meta name="description" content="“ 反馈驱动：通过监控样本触发的代码覆盖率，进而改进输入样本以提高代码覆盖率，增加发现漏洞的概率。”
+
+目前业界中基于代码覆盖率的最著名的三大Fuzzer，当属Google开发的AFL、libfuzzer和honggfuzz，且他们都是开源的，在github上都可以搜索到。
+相信很多搞fuzzing" />
+  
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <meta property="og:title" content="honggfuzz漏洞挖掘技术1" />
+  <meta property="og:site_name" content="riusksk&#39;s blog" />
+
+  
+  
+
+  
+    <meta property="og:image" content="undefined" />
+  
+
+  
+  <link href="/css/images/favicon.ico" rel="icon" />
+  
+
+  <link rel="alternate" href="/atom.xml" title="riusksk&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78773323-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+
+  <!-- baidu webmaster push -->
+  <script src='//push.zhanzhang.baidu.com/push.js'></script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">riusksk&#39;s blog</a></h1>
+  <h2><a href="/">攀蟾折桂摄寰宇，摘星揽月御乾坤。踏云踩雾骋宵壤，驱风逐日闯天地。 ------泉哥</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/atom.xml">RSS订阅</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2018-07-29T01:54:40.000Z"><a href="/2018/07/29/honggfuzz漏洞挖掘技术1/">2018-07-29</a></time>
+      
+      
+  
+    <h1 class="title">honggfuzz漏洞挖掘技术1</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p><strong>“</strong> 反馈驱动：通过监控样本触发的代码覆盖率，进而改进输入样本以提高代码覆盖率，增加发现漏洞的概率。<strong>”</strong></p>
+<p><img src="https://pic3.zhimg.com/80/v2-9f0fe133af6f259bcc310cb7f1f14083_hd.jpg" alt=""></p>
+<p>目前业界中基于代码覆盖率的最著名的三大Fuzzer，当属Google开发的AFL、libfuzzer和honggfuzz，且他们都是开源的，在github上都可以搜索到。</p>
+<p>相信很多搞fuzzing的同学都听过或用过这三款工具，本系列主要讲honggfuzz的原理与应用，之前把honggfuzz源码都阅读过一遍，并且二次开发过，该工具的挖洞效果还是不错的。</p>
+<h2 id="01-—-关于代码覆盖率的那些事"><a href="#01-—-关于代码覆盖率的那些事" class="headerlink" title="01 — 关于代码覆盖率的那些事"></a><strong>01 — 关于代码覆盖率的那些事</strong></h2><p>计算代码覆盖率情况就需要有个计量单位，通常有3种：</p>
+<ul>
+<li>函数（Fuction-Level）</li>
+<li>基本块（BasicBlock-Level）</li>
+<li>边界（Edge-Level）</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-e59bc6bc894b1d9aa84b69292ba8f3f8_hd.jpg" alt=""></p>
+<p><strong>1. 函数（Fuction-Level）</strong></p>
+<p>先说下函数，这个很容易理解，就是代码执行时调用到哪些函数，但是函数里面的具体代码行却不作统计，相对比较粗糙但高效的统计方式。</p>
+<p>所以，通常的统计方式是用基本块，简称BB。</p>
+<p><strong>2.基本块（BasicBlock-Level）</strong></p>
+<p>什么是基本块，直接看下图就很容易理解了。</p>
+<p><img src="https://pic3.zhimg.com/80/v2-19797c5c8d99a42c36318718f29265d5_hd.jpg" alt=""></p>
+<p>IDA中每一块代码就代表着一个基本块，就是以指令跳转为作划分界限的。</p>
+<p><strong>3.边界（Edge-Level）</strong></p>
+<p>edge本身就涵盖了基本块部分，唯一的差别是edge多记录了一些执行边界的信息。比如示例代码：</p>
+<p><img src="https://pic4.zhimg.com/80/v2-22c28c570cf9739b790c4c2969b5b5f2_hd.jpg" alt=""></p>
+<p>在IDA中可以看到A、B、C这3个基本块，但当a为假时，程序就会从A执行到C。</p>
+<p><img src="https://pic4.zhimg.com/80/v2-9544f8e035e1874da0a0368ad39aa926_hd.jpg" alt=""></p>
+<p>前面基本块的方式就无法确切地知道是否曾从A执行到C，尤其是该段代码被多次执行的情况，就更无法知道，这时edge覆盖方式就出现了。</p>
+<p>edge会在A跟C之间建立虚拟块D，通过判断D是否执行过，来确认是否曾从A执行到C，这种方式也会比较消耗性能就是：</p>
+<p><img src="https://pic2.zhimg.com/80/v2-6a1b97ef1552f83c2e77b5ef2c927093_hd.jpg" alt=""></p>
+<p>统计代码覆盖率又分两种情况：</p>
+<p>1.【有源码】：直接使用SanitizerCoverage即可，在编译选项中添加相应的覆盖率统计方式，比如基本块统计方式可以添加：</p>
+<p> <code class="language-text">CFLAG=“-fsanitize=address -fsanitize-coverage=bb”</code> </p>
+<p><img src="https://pic1.zhimg.com/80/v2-0b937d36b150db10b68416ecee96a18f_hd.jpg" alt=""></p>
+<p>2.【无源码】：使用Pin、DynamoRIO等二进制插桩工具去hook统计，或者pediy改指令的方式去监控也是可以的，本系列的后续文章可能会细说。</p>
+<h2 id="02-—-Honggfuzz反馈驱动原理"><a href="#02-—-Honggfuzz反馈驱动原理" class="headerlink" title="02 — Honggfuzz反馈驱动原理"></a><strong>02 — Honggfuzz反馈驱动原理</strong></h2><p>本文我们默认以基本块作为代码覆盖率的统计方式，比如采用如下编译选项：</p>
+<p> <code class="language-text">ASAN_OPTIONS=coverage=1:coverage_direct=1 -fsanitize=address -fsanitize-coverage=bb</code> </p>
+<p>执行后它会生成两个文件：<em>.sancov.map和</em>.sancov.raw，这是honggfuzz处理过的scancov文件。</p>
+<p>其中<em>.sancov.map文件记录是模块信息，</em>.sancov.raw文件则记录着执行过的基本块地址信息：</p>
+<p><img src="https://pic4.zhimg.com/80/v2-fcc18ec6efcedcd5b19e4428b6844294_hd.jpg" alt=""></p>
+<p>1、首先，honggfuzz会先去分析.sancov.raw文件，保存命中的基本块地址，记录BB数，以及总共的BB数：</p>
+<p><img src="https://pic4.zhimg.com/80/v2-be7bc26166e0f1d376ba1c712cf61b59_hd.jpg" alt=""></p>
+<p>2、计算代码覆盖率 = 命中BB数 / (命中BB数 + 未命中的BB数)</p>
+<p><img src="https://pic4.zhimg.com/80/v2-e9348eaa3c3712994d135045c8530231_hd.jpg" alt=""></p>
+<p>以下是旧版honggfuzz关于coverage的显示内容格式：</p>
+<p><img src="https://pic1.zhimg.com/80/v2-67391dd336b6e4e343244f994c6aa52f_hd.jpg" alt=""></p>
+<p>新版的变成只记录BB/edge数：</p>
+<p><img src="https://pic3.zhimg.com/80/v2-033f35d3e5e67fdd9661ca42c7b06cf9_hd.jpg" alt=""></p>
+<p>3、发现新路径或者新插桩链接库加载，则添加此变异样本为新的输入样本，供后面作进一步变异，以触发更多新路径</p>
+<p><img src="https://pic3.zhimg.com/80/v2-a2fec1e1ca91bbcefabe770da1b6d6b2_hd.jpg" alt=""></p>
+<h2 id="03-—-总结"><a href="#03-—-总结" class="headerlink" title="03 — 总结"></a><strong>03 — 总结</strong></h2><p>honggfuzz最早创建于2015年，跟AFL的发布时间差不多，AFL的出现可以说在安全界是项里程碑标志，给漏洞挖掘技术带来新的技术革命，网上对其源码分析的文章也到处可见，但对honggfuzz的详细分析还没有，因此才作此系列记录下。</p>
+<p>个人也曾给honggfuzz贡献过代码，但由于某次pull request未被采用，于是就自己二次开发不再提交合并。因为我是在macOS下开发，而原作者主要是用Linux，那次提交的功能对我很有用，所以只好自己维护一份二次开发版本。</p>
+<p>后来自己也在Windows和macOS平台上扩展了许多新功能，在本系列文章中，后面可能会单篇聊一聊，也感谢作者robertswiecki开发出这么好用的fuzzer，让我借此刷了不少CVE。</p>
+<center><img src="http://riusksk.me/media/gzh.png" alt=""></center>
+
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2018/07/29/honggfuzz漏洞挖掘技术1/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/honggfuzz/">honggfuzz</a>, <a href="/tags/fuzzing/">fuzzing</a>, <a href="/tags/漏洞挖掘/">漏洞挖掘</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+</section>
+
+
+ -->
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:riusksk.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2018/07/29/honggfuzz漏洞挖掘技术1/">honggfuzz漏洞挖掘技术1</a>
+      </li>
+    
+      <li>
+        <a href="/2018/07/21/编译原理与安全/">编译原理在安全领域的应用</a>
+      </li>
+    
+      <li>
+        <a href="/2018/07/15/谈谈写作/">谈谈写作</a>
+      </li>
+    
+      <li>
+        <a href="/2018/07/09/历史的错觉与误解——读《秦崩》/">历史的错觉与误解——读《秦崩》</a>
+      </li>
+    
+      <li>
+        <a href="/2018/07/07/《漏洞战争》出版2周年纪念文/">《漏洞战争》出版2周年纪念文</a>
+      </li>
+    
+      <li>
+        <a href="/2018/06/03/威胁建模：摆脱随机挖洞的命运/">威胁建模：摆脱随机挖洞的命运</a>
+      </li>
+    
+      <li>
+        <a href="/2018/04/30/安全圈乱象杂谈/">安全圈乱象杂谈</a>
+      </li>
+    
+      <li>
+        <a href="/2018/03/25/《横向领导力》思维导图/">《横向领导力》思维导图</a>
+      </li>
+    
+      <li>
+        <a href="/2018/03/22/2018年信息安全从业者书单推荐/">2018年信息安全从业者书单推荐</a>
+      </li>
+    
+      <li>
+        <a href="/2018/03/14/计算机行业是否需要学历/">计算机行业是否需要学历？</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/技术分享/">技术分享</a><small>43</small></li>
+  
+    <li><a href="/categories/随机杂谈/">随机杂谈</a><small>2</small></li>
+  
+    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>11</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/fuzzing/" style="font-size: 10px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 10px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 10px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  <p>
+  
+  &copy; 2018 riusksk
+  
+  All rights reserved.</p>
+  <p>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+  & Hosted by <a href="http://github.com" target="_blank">GitHub</a>
+  <!--<span id="busuanzi_container_site_pv" >
+    ，本站总访问量<span id="busuanzi_value_site_pv" ></span>次
+  </span>
+  -->
+  </p>
+</div>
+<div class="clearfix"></div>
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+</footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+<div id='bg'></div>
+</body>
+</html>
