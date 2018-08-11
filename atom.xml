@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2018-08-11T03:14:41.000Z</updated>
+  <updated>2018-08-11T03:27:03.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -20,12 +20,12 @@
     <link href="http://riusksk.github.io/2018/08/11/%E4%BB%8E%E6%94%BB%E9%98%B2%E8%A7%92%E5%BA%A6%E8%B0%88%E9%BB%91%E5%AE%A2%E4%B8%8E%E7%A8%8B%E5%BA%8F%E5%91%98/"/>
     <id>http://riusksk.github.io/2018/08/11/从攻防角度谈黑客与程序员/</id>
     <published>2018-08-11T03:12:45.000Z</published>
-    <updated>2018-08-11T03:14:41.000Z</updated>
+    <updated>2018-08-11T03:27:03.000Z</updated>
     
     <content type="html">&lt;blockquote&gt;
 &lt;p&gt;常言道：“未知攻，焉知防”，然，“知攻未必知防”！&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;https://pic3.zhimg.com/v2-69e64b4bb0a42ed7208f9d57b8734f81_1200x500.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://riusksk.me/media/hacker.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;01 — 黑客的敌人是程序员&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;黑客所要攻破的任何一款产品，无论是网站、软件还是IoT硬件产品，这些都是由程序员开发的，所以他们要攻破的其实是程序员的安全思维缺陷。&lt;/p&gt;
 &lt;p&gt;所以说，黑客的敌人是程序员。但如果黑客本身就是程序员呢？&lt;/p&gt;
@@ -38,7 +38,7 @@
 &lt;p&gt;但也不是说搞安全就不需要学编程开发了，而是必学课程。只是，很多情况下，黑客具备的是基础开发能力，而非开发产品的能力，两者还是有区别的。但其实也不是绝对，我说的只是一种普遍情况。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;对于安全从业人员，掌握基础开发能力是必备的，而是否具备产品开发能力成了一道分水岭。即，产品开发能力是加分项，而非必备项。&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;03 — 懂安全的程序员：无存在感&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://pic3.zhimg.com/80/v2-774cfdd94143e92e8dd1fb0fd40191a5_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://riusksk.me/media/god.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;先来看一幅漫画，估计这是许多安全开发同学的心声：防御住了，用户无感知；未防御住，用户就开始骂娘了，或者受公司处罚。&lt;/p&gt;
 &lt;p&gt;程序员开发的产品出安全事故，肯定会受到处罚。大家常调侃道：CSO就是用来背锅的，多少有些道理。&lt;/p&gt;
 &lt;p&gt;但如果懂安全的程序员开发出具有高安全性的产品，对用户，甚至对领导而言，都可能是无感知，跟不存在一般。&lt;/p&gt;
@@ -50,7 +50,7 @@
 &lt;p&gt;有些大厂，比如微软就设有“纵深防御”奖励机制。纵深防御，通俗地讲，就是层层防御，一层防御失效后，仍有备用的其它防御策略生效。&lt;/p&gt;
 &lt;p&gt;比如电影《侠盗联盟》中，去城堡偷项链的场景：&lt;/p&gt;
 &lt;p&gt;翻过城墙后 =》还有保安 =》绕过保安后还有监控 =》绕过监控后还有防盗门 =》 进门后还有看门狗 =》最后还有指纹验证&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://pic2.zhimg.com/80/v2-838f8dccd10d662cbdd11f0972181b8f_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://riusksk.me/media/v2-838f8dccd10d662cbdd11f0972181b8f_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;05 — 知攻未必知防&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;常言道：“未知攻，焉知防”，对此我一直深信不疑。&lt;/p&gt;
 &lt;p&gt;但这是必要不充分条件，因为现在互联网越来越方便，工具化、教程化的资源网上遍地都是，很多脚本小子随手就可以拿来入侵网站，但让他们提供防御方案，基本都要歇菜。&lt;/p&gt;
@@ -66,7 +66,8 @@
       &lt;blockquote&gt;
 &lt;p&gt;常言道：“未知攻，焉知防”，然，“知攻未必知防”！&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;https://pic3.zhimg.com/v2-69e64b4bb0a42ed7208f9d57b8734f81_1200x500
+&lt;p&gt;&lt;img src=&quot;https://riusksk.me/media/hacker.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;01 — 黑客
     
     </summary>
     
