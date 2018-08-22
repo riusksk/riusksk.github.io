@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2018-08-22T13:07:53.000Z</updated>
+  <updated>2018-08-22T13:12:36.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -20,12 +20,12 @@
     <link href="http://riusksk.github.io/2018/08/22/honggfuzz%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E6%8A%80%E6%9C%AF2/"/>
     <id>http://riusksk.github.io/2018/08/22/honggfuzz漏洞挖掘技术2/</id>
     <published>2018-08-22T12:21:28.000Z</published>
-    <updated>2018-08-22T13:07:53.000Z</updated>
+    <updated>2018-08-22T13:12:36.000Z</updated>
     
     <content type="html">&lt;p&gt;上篇&lt;a href=&quot;https://mp.weixin.qq.com/s?__biz=MzU0MzgzNTU0Mw==&amp;amp;mid=2247483746&amp;amp;idx=1&amp;amp;sn=9d0ff5e0bae65f9ca9dbea4cf74449c6&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;《honggfuzz漏洞挖掘技术深究系列（1）——反馈驱动（Feedback-Driven）》&lt;/a&gt;讲到基于软件的代码覆盖率驱动fuzzing的方式，除了软件还有硬件方式，即基于Intel BTS (Branch Trace Store) 或Intel PT (Processor Tracing) 去计算代码覆盖率，同时要求Linux内核&amp;gt;=4.2，这种方式的最大好处是完全由硬件支配，无所谓软件是闭源还是开源。由于硬件环境受限，我也一直未使用过，有此条件的同学可以试下。&lt;/p&gt;
 &lt;p&gt;本篇主要讲下持久型fuzzing（Persistent Fuzzing），即fuzzing API，这种方式会更精准和高效的。&lt;/p&gt;
 &lt;p&gt;先看使用方法：&lt;/p&gt;
-&lt;figure class=&quot;highlight c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;$ cat test.c&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;\&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;meta-keyword&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;meta-string&quot;&gt;&amp;lt;inttypes.h&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;\&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;meta-keyword&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;meta-string&quot;&gt;&amp;lt;testlib.h&amp;gt;   &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;extern&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;LLVMFuzzerTestOneInput&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;uint8_t&lt;/span&gt; **buf, &lt;span class=&quot;keyword&quot;&gt;size_t&lt;/span&gt; *len)&lt;/span&gt;&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;LLVMFuzzerTestOneInput&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;uint8_t&lt;/span&gt; *buf, &lt;span class=&quot;keyword&quot;&gt;size_t&lt;/span&gt; len)&lt;/span&gt; &lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  _FuncFromFuzzedLib_(buf, len);  &lt;span class=&quot;comment&quot;&gt;// 目标函数&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;$ clang&lt;span class=&quot;number&quot;&gt;-4.0&lt;/span&gt; -fsanitize-coverage=trace-pc,indirect-calls,trace-cmp fuzzedlib.c -o fuzzedlib.o&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;$ clang&lt;span class=&quot;number&quot;&gt;-4.0&lt;/span&gt; test.c fuzzedlib.o honggfuzz/libhfuzz/libhfuzz.a -o test&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;$ honggfuzz -z -P -f INPUT.corpus -- ./test&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;$ cat test.c&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;meta-keyword&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;meta-string&quot;&gt;&amp;lt;inttypes.h&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;meta-keyword&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;meta-string&quot;&gt;&amp;lt;testlib.h&amp;gt;   &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;extern&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;LLVMFuzzerTestOneInput&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;uint8_t&lt;/span&gt; **buf, &lt;span class=&quot;keyword&quot;&gt;size_t&lt;/span&gt; *len)&lt;/span&gt;&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;LLVMFuzzerTestOneInput&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;uint8_t&lt;/span&gt; *buf, &lt;span class=&quot;keyword&quot;&gt;size_t&lt;/span&gt; len)&lt;/span&gt; &lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  _FuncFromFuzzedLib_(buf, len);  &lt;span class=&quot;comment&quot;&gt;// 目标函数&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;$ clang&lt;span class=&quot;number&quot;&gt;-4.0&lt;/span&gt; -fsanitize-coverage=trace-pc,indirect-calls,trace-cmp fuzzedlib.c -o fuzzedlib.o&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;$ clang&lt;span class=&quot;number&quot;&gt;-4.0&lt;/span&gt; test.c fuzzedlib.o honggfuzz/libhfuzz/libhfuzz.a -o test&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;$ honggfuzz -z -P -f INPUT.corpus -- ./test&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
 &lt;p&gt;这里用到几个编译选项：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;trace-pc&lt;/strong&gt;：追踪执行过的基本块BB，在每个edge中插入__saitizer_cov_trace_pc()函数，可定义该函数作为相应的回调处理&lt;/li&gt;
@@ -73,9 +73,9 @@
       <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
     
     
-      <category term="fuzzing" scheme="http://riusksk.github.io/tags/fuzzing/"/>
-    
       <category term="honggfuzz" scheme="http://riusksk.github.io/tags/honggfuzz/"/>
+    
+      <category term="fuzzing" scheme="http://riusksk.github.io/tags/fuzzing/"/>
     
       <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
     
@@ -221,9 +221,9 @@
       <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
     
     
-      <category term="fuzzing" scheme="http://riusksk.github.io/tags/fuzzing/"/>
-    
       <category term="honggfuzz" scheme="http://riusksk.github.io/tags/honggfuzz/"/>
+    
+      <category term="fuzzing" scheme="http://riusksk.github.io/tags/fuzzing/"/>
     
       <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
     
@@ -612,9 +612,9 @@
       <category term="随笔杂谈" scheme="http://riusksk.github.io/categories/%E9%9A%8F%E7%AC%94%E6%9D%82%E8%B0%88/"/>
     
     
-      <category term="信息安全" scheme="http://riusksk.github.io/tags/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8/"/>
-    
       <category term="书籍" scheme="http://riusksk.github.io/tags/%E4%B9%A6%E7%B1%8D/"/>
+    
+      <category term="信息安全" scheme="http://riusksk.github.io/tags/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8/"/>
     
   </entry>
   
