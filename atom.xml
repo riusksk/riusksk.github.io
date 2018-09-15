@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2018-08-22T13:12:36.000Z</updated>
+  <updated>2018-09-15T05:47:57.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,47 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>知识的诅咒</title>
+    <link href="http://riusksk.github.io/2018/09/15/%E7%9F%A5%E8%AF%86%E7%9A%84%E8%AF%85%E5%92%92/"/>
+    <id>http://riusksk.github.io/2018/09/15/知识的诅咒/</id>
+    <published>2018-09-15T05:45:05.000Z</published>
+    <updated>2018-09-15T05:47:57.000Z</updated>
+    
+    <content type="html">&lt;h3 id=&quot;一、过于装逼的演讲-废话&quot;&gt;&lt;a href=&quot;#一、过于装逼的演讲-废话&quot; class=&quot;headerlink&quot; title=&quot;一、过于装逼的演讲 = 废话&quot;&gt;&lt;/a&gt;一、过于装逼的演讲 = 废话&lt;/h3&gt;&lt;p&gt;无论是演讲还是写文章，你对一帮不懂安全技术的人讲溢出，讲UAF漏洞利用，那纯粹是浪费时间。&lt;/p&gt;
+&lt;p&gt;早年觉得分享就该讲一些多数人不懂的东西，尤其是那些自认为高深的技术，让大家听得云里雾里的，这样才显得自己技术牛逼。&lt;/p&gt;
+&lt;p&gt;但实际上，别人听不懂的东西，对其而言，均是废话。&lt;/p&gt;
+&lt;p&gt;当我们对一件事物过于了解之后，往往意识不到自己对它的思考有多么的抽象。&lt;/p&gt;
+&lt;p&gt;比如“辐射”一词，大家常常说手机有辐射，X线有辐射，但又有几人能解释清楚什么叫“辐射”呢？&lt;/p&gt;
+&lt;p&gt;正是我们高估了一般读者/听众对我们所处知识世界的熟悉程度，才造就了“知识的诅咒”。&lt;/p&gt;
+&lt;h3 id=&quot;二、高学历造就知识面的狭窄&quot;&gt;&lt;a href=&quot;#二、高学历造就知识面的狭窄&quot; class=&quot;headerlink&quot; title=&quot;二、高学历造就知识面的狭窄&quot;&gt;&lt;/a&gt;二、高学历造就知识面的狭窄&lt;/h3&gt;&lt;p&gt;鄙人深深地觉得，高中时代就是我们知识面最丰富的时代，那时候真的是上知天文，下知地理，中知英汉语，左手历史，右手政治，无所不会，无所不能，虽然也常常只是勉强及格，但回首这二三十年，知识面依然还是没广过高中啊！&lt;/p&gt;
+&lt;p&gt;之前也面试过一些博士生，有些博士几年只搞个TLS，或者只搞个android app的数据流找隐私泄露之类，这种搞学术研究并无问题，但一旦想进入企业就很难。&lt;/p&gt;
+&lt;p&gt;这里也不是鄙视博士生，只是知识的深度和广度的选择而已，但这得看你未来选择的方向而定了。&lt;/p&gt;
+&lt;h3 id=&quot;三、学医历程：从“一身病”到“百病不侵”&quot;&gt;&lt;a href=&quot;#三、学医历程：从“一身病”到“百病不侵”&quot; class=&quot;headerlink&quot; title=&quot;三、学医历程：从“一身病”到“百病不侵”&quot;&gt;&lt;/a&gt;三、学医历程：从“一身病”到“百病不侵”&lt;/h3&gt;&lt;p&gt;学医的前一两年，学到啥病就觉得自己可能就有这病，最后就是感觉自己一身病，我们一般叫这为：“学医综合征”。&lt;/p&gt;
+&lt;p&gt;到后来下临床了，见过的病多了，更多恶心的、血腥的、神经的病症都见了个遍，自己抗恶心能力提高的不是一两万点啊，而且慢慢地认识到，其实世上很多疾病都是没法治的，如果你们有认识肾内科的医生朋友，问问他们就知道啥叫“挫败感”！&lt;/p&gt;
+&lt;p&gt;慢慢地，就觉得只要不死不残的病，都不算事。&lt;/p&gt;
+&lt;h3 id=&quot;四、贩卖知识焦虑&quot;&gt;&lt;a href=&quot;#四、贩卖知识焦虑&quot; class=&quot;headerlink&quot; title=&quot;四、贩卖知识焦虑&quot;&gt;&lt;/a&gt;四、贩卖知识焦虑&lt;/h3&gt;&lt;p&gt;最近关注的一批公众号，开始文末各种课程广告，学英语、学写作、学开发各类广告满天飞，利用的正是人们对知识的焦虑。&lt;/p&gt;
+&lt;p&gt;之前的文章也提到过，多数的付费知识很多系统化的学习到知识，之前也买过一些讲书的、或者一些通用技能课程，一开始觉得挺有道理的，最后细想下，其实几乎都没有任何可实践性的方法，很多讲的最后还是废话。当然，有些个别付费知识还是不错，不过我所依赖的付费知识只有书本。&lt;/p&gt;
+&lt;h3 id=&quot;五、知识学习中的套路与陷阱&quot;&gt;&lt;a href=&quot;#五、知识学习中的套路与陷阱&quot; class=&quot;headerlink&quot; title=&quot;五、知识学习中的套路与陷阱&quot;&gt;&lt;/a&gt;五、知识学习中的套路与陷阱&lt;/h3&gt;&lt;p&gt;以前还没接触过电脑的时候，就听说要先练五笔打字，要练五笔就得先背字根口诀：&lt;br&gt;“王旁青头戋（兼）五一， 土士二干十寸雨……”&lt;/p&gt;
+&lt;p&gt;不过最后我没背也练成了五笔，全靠实际打字练习练出来的。&lt;/p&gt;
+&lt;p&gt;熟练之后，所有文字均会变成脑海中的一个手指的动作，所有关于五笔的知识全变成一种抽象化动作，无什么字根，无什么键盘位……&lt;br&gt;所以，很多时候网上说：学习A就得先学习B不一定靠谱，只有实践出真知。&lt;/p&gt;
+&lt;p&gt;记得以前大学时打算学习数据结构与算法，网上查了下，说需要先学习离散数学，然后我就得真去图书馆翻离散数学，最后没看几页就放弃了。&lt;/p&gt;
+&lt;p&gt;这事跟别人说“学Java要先看《Java编程思想》”一样，谁会在无基础的情况下硬看得下去啊！&lt;/p&gt;
+&lt;p&gt;可见找到一种适合自己的学习途径才是最好的方法。自己学得哪本书好，就学哪本书，哪来那么多规矩。&lt;/p&gt;
+&lt;p&gt;能够为己所用，则为知识；但倘若被知识所用、所卖、所困，则为诅咒。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;一、过于装逼的演讲-废话&quot;&gt;&lt;a href=&quot;#一、过于装逼的演讲-废话&quot; class=&quot;headerlink&quot; title=&quot;一、过于装逼的演讲 = 废话&quot;&gt;&lt;/a&gt;一、过于装逼的演讲 = 废话&lt;/h3&gt;&lt;p&gt;无论是演讲还是写文章，你对一帮不懂安全技术的人讲溢出
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>honggfuzz漏洞挖掘技术深究系列（2）—— Persistent Fuzzing</title>
@@ -612,9 +653,9 @@
       <category term="随笔杂谈" scheme="http://riusksk.github.io/categories/%E9%9A%8F%E7%AC%94%E6%9D%82%E8%B0%88/"/>
     
     
-      <category term="书籍" scheme="http://riusksk.github.io/tags/%E4%B9%A6%E7%B1%8D/"/>
-    
       <category term="信息安全" scheme="http://riusksk.github.io/tags/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8/"/>
+    
+      <category term="书籍" scheme="http://riusksk.github.io/tags/%E4%B9%A6%E7%B1%8D/"/>
     
   </entry>
   
@@ -1442,28 +1483,6 @@
     
     
       <category term="BlackHat" scheme="http://riusksk.github.io/tags/BlackHat/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>fsmon:多平台文件监控工具</title>
-    <link href="http://riusksk.github.io/2016/09/16/fsmon-%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%96%87%E4%BB%B6%E7%9B%91%E6%8E%A7%E5%B7%A5%E5%85%B7/"/>
-    <id>http://riusksk.github.io/2016/09/16/fsmon-多平台文件监控工具/</id>
-    <published>2016-09-16T05:54:53.000Z</published>
-    <updated>2016-09-16T06:03:40.000Z</updated>
-    
-    <content type="html">&lt;p&gt;近日在Mac上跑测试，时间一长就硬盘空间就被占用完了，几小时就生成10多G文件，导致系统卡死，程序也没法继续运行，但一直没找到生成的文件路径。&lt;br&gt;于是在Github上找到fsmon (&lt;a href=&quot;https://github.com/nowsecure/fsmon&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/nowsecure/fsmon&lt;/a&gt; )这个工具，一款多平台下文件监控工具，最后终于找到生成垃圾文件的路径：&lt;code&gt;/private/var/folders/&lt;/code&gt;，原来是&lt;code&gt;QuickLook&lt;/code&gt;缓存文件，后面写个定时脚本清除即可。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/fsmon.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;近日在Mac上跑测试，时间一长就硬盘空间就被占用完了，几小时就生成10多G文件，导致系统卡死，程序也没法继续运行，但一直没找到生成的文件路径。&lt;br&gt;于是在Github上找到fsmon (&lt;a href=&quot;https://github.com/nowsecure/fsmon
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
     
   </entry>
   
