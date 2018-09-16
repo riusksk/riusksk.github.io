@@ -1,0 +1,335 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8" />
+  
+  <title>honggfuzz漏洞挖掘技术深究系列（3）——Fuzz策略 | riusksk&#39;s blog</title>
+  <meta name="author" content="riusksk" />
+
+  
+  <meta name="description" content="honggfuzz在对输入文件进行变异前，会先创建个临时文件名（honggfuzz+pid+time），然后将输入数据变异后写入临时文件。
+ fuzz策略的实现主要集中在mangle.c中，在循环的fuzzloop函数中，会根据用户的选择的fuzz方式来调用动态fuzz或者静态fuzz的方法，但最后" />
+  
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <meta property="og:title" content="honggfuzz漏洞挖掘技术深究系列（3）——Fuzz策略" />
+  <meta property="og:site_name" content="riusksk&#39;s blog" />
+
+  
+  
+
+  
+    <meta property="og:image" content="undefined" />
+  
+
+  
+  <link href="/css/images/favicon.ico" rel="icon" />
+  
+
+  <link rel="alternate" href="/atom.xml" title="riusksk&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78773323-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+
+  <!-- baidu webmaster push -->
+  <script src='//push.zhanzhang.baidu.com/push.js'></script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">riusksk&#39;s blog</a></h1>
+  <h2><a href="/">攀蟾折桂摄寰宇，摘星揽月御乾坤。踏云踩雾骋宵壤，驱风逐日闯天地。 ------泉哥</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/atom.xml">RSS订阅</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2018-09-16T03:54:16.000Z"><a href="/2018/09/16/honggfuzz3/">2018-09-16</a></time>
+      
+      
+  
+    <h1 class="title">honggfuzz漏洞挖掘技术深究系列（3）——Fuzz策略</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p> honggfuzz在对输入文件进行变异前，会先创建个临时文件名（honggfuzz+pid+time），然后将输入数据变异后写入临时文件。</p>
+<p> fuzz策略的实现主要集中在mangle.c中，在循环的fuzzloop函数中，会根据用户的选择的fuzz方式来调用动态fuzz或者静态fuzz的方法，但最后都是调用mangle_mangleContent来变异文件数据：</p>
+<p> <img src="https://pic1.zhimg.com/80/v2-3bdc1da036608cc745ef0cb89c2313ea_hd.png" alt=""></p>
+<p> 跟进mangle_mangleContent函数：</p>
+<p> <img src="https://pic4.zhimg.com/80/v2-529248182e9e09517288c6cbc0f4152d_hd.jpg" alt=""></p>
+<p> 重点就在于后半部分，它会随机选择变异函数进行处理，更改的字节数也是随机的，根据用户指定的mutation变异率来定，即允许变异文件大小的百分比，变异函数列表如下：</p>
+ <center><img src="https://pic1.zhimg.com/80/v2-9450da60b2082522f7aa9dff7757a921_hd.png" alt=""></center>
+
+<p> 这些函数都是在mangle_init中初始化，各函数之间也会相互调用：</p>
+<p> <img src="https://pic1.zhimg.com/80/v2-025eaad0cd3d34fb828240b30469bede_hd.png" alt=""></p>
+<p> 把这些函数过一遍就是honggfuzz中所有的文件变异规则了，如果想实现自己的fuzzer，这些规则来扣出来用Python实现一遍，顺便把afl的规则也扣过来就更完美了，下面是我之前写office fuzzer时的半成品代码，最后偷懒直接用radamas去实现变异了：</p>
+<p> <img src="https://pic2.zhimg.com/80/v2-a0d2b4262c74f02388926e1829e70a37_hd.png" alt=""></p>
+<p> 再回到刚才的变异函数列表，我们一个个走读源码。</p>
+<p> 1、mangle_Resize函数：</p>
+<p> 用空格填充随机位置</p>
+<p> <img src="https://pic3.zhimg.com/80/v2-51e43d8f246b8fcb2408bc0c8700baa2_hd.png" alt=""></p>
+<p> <img src="https://pic1.zhimg.com/80/v2-8875c992f90668d4a2be2817ee32acc8_hd.png" alt=""></p>
+<p> 2、mangle_Byte函数：</p>
+<p> 向随机位置写随机的uint8类型的数据</p>
+<p> <img src="https://pic3.zhimg.com/80/v2-b857966a5c005b1e95f80512382933d6_hd.png" alt=""></p>
+<p> 3、mangle_Bit函数：</p>
+<p> 取随机位置的数值做位翻转</p>
+<p> <img src="https://pic3.zhimg.com/80/v2-179d9066a2fd1fc2653f335ce5a41f72_hd.png" alt=""></p>
+<p> 4、mangle_Bytes函数：</p>
+<p> 在随机位置覆盖写2~4字节数据</p>
+<p> <img src="https://pic4.zhimg.com/80/v2-4857e9d3d3fb2722bb4705cff49d9bc9_hd.png" alt=""></p>
+<p> 5、mangle_Magic函数：</p>
+<p> 取各种边界值进行覆写，这些边界值部分跟AFL还不一样，我在自己的fuzzer里面把它们作了整合。由于边幅所限，我省略了不少边界值：</p>
+<p> <img src="https://pic4.zhimg.com/80/v2-8b34894b9c1fe0833e95dc6d426ff8fb_hd.png" alt=""></p>
+<p> 6、mangle_IncByte函数：</p>
+<p> 取随机位置的数据加1</p>
+<p> <img src="https://pic2.zhimg.com/80/v2-ea765d0bf263d6aed9cdaf94a1065631_hd.png" alt=""></p>
+<p> 7、mangle_DecByte函数：</p>
+<p> 取随机位置的数据减1</p>
+<p> <img src="https://pic2.zhimg.com/80/v2-bc2bf5117cb1495783b2d5501623e602_hd.png" alt=""></p>
+<p> 8、mangle_NegByte函数：</p>
+<p> 取随机位置的数据取反</p>
+<p> <img src="https://pic2.zhimg.com/80/v2-4ef170d3cbb5915de395b7f7aa304079_hd.png" alt=""></p>
+<p> 9、mangle_AddSub函数：</p>
+<p> 取随机位置的1、2、4或8字节的数据长度作加减操作，操作数取 rand(0~8192)-4096</p>
+<p> <img src="https://pic4.zhimg.com/80/v2-66a0ed1564725c2dbdf05439e6e26295_hd.png" alt=""></p>
+<p> 10、mangle_Dictionary函数：</p>
+<p> 变异目录名，也是随机取文件夹名称进行变异，如果有多个目录，那被变异的目录数也是随机的</p>
+<p> <img src="https://pic3.zhimg.com/80/v2-d5aaeb860ab0f32d1283e2d987e456ad_hd.png" alt=""></p>
+<p> 11、mangle_DictionaryInsert函数：</p>
+<p> 在目录的随机位置中插入随机数据</p>
+<p> <img src="https://pic3.zhimg.com/80/v2-0fa9250d8e778ca02841b66fc08a00ce_hd.png" alt=""></p>
+<p> 12、mangle_MemMove函数：</p>
+<p> 取随机位置的数据拷贝随机长度的数据，里面就是调用memmove函数实现的</p>
+<p> <img src="https://pic1.zhimg.com/80/v2-eabb7cafe2e6042ef8bd2e18d526b9df_hd.png" alt=""></p>
+<p> 13、mangle_MemSet函数：</p>
+<p> 取随机位置、随机大小，用UINT8_MAX数值填充</p>
+<p> <img src="https://pic2.zhimg.com/80/v2-82430bbef8b74651aea3a1bdeca9b2dc_hd.png" alt=""></p>
+<p> 14、mangle_Random函数：</p>
+<p> 取随机位置、随机大小的缓冲区，用随机数填充</p>
+<p> <img src="https://pic2.zhimg.com/80/v2-51e9a2621714c7a6d88dc68c4a859979_hd.png" alt=""></p>
+<p> 15、mangle_CloneByte函数：</p>
+<p> 取两处随机位置的作数据交换</p>
+<p> <img src="https://pic3.zhimg.com/80/v2-cac0e8c50be64a1174f9b7a6cc924a5e_hd.png" alt=""></p>
+<p> 16、mangle_Expand函数：</p>
+<p> 文件末尾扩展随机长度的空间，用空格填充，然后在随机位置，取前面的随机长度作数据拷贝</p>
+<p> <img src="https://pic1.zhimg.com/80/v2-0e199dd7f82c223a928ead2b7a6cdd04_hd.png" alt=""></p>
+<p> <img src="https://pic3.zhimg.com/80/v2-bb4820b762220d720d78928d34e923e1_hd.png" alt=""></p>
+<p> 17、mangle_Shrink函数：</p>
+<p> 删除随机长度的文件内容</p>
+<p> <img src="https://pic3.zhimg.com/80/v2-010ccb9f2dd19bd450b655cb9f9c7209_hd.png" alt=""></p>
+<p> 18、mangle_InsertRnd函数：</p>
+<p> 在文件的随机位置插入随机长度的数据</p>
+<p> <img src="https://pic2.zhimg.com/80/v2-325836aaf17585d5a02265ae000b72fc_hd.png" alt=""></p>
+<p> 19、mangle_ASCIIVal函数：</p>
+<p> 在随机位置覆盖32字节的随机数</p>
+<p> <img src="https://pic3.zhimg.com/80/v2-0385d1c51fda364543b22c77067b28ac_hd.png" alt=""></p>
+<p> 总结</p>
+<p> 在Fuzzing过程中，很多变异规则是共用的，可以参考一些主源的开源软件，比如afl\peach\honggfuzz\libfuzzer，提取规则作整合，然后写个自己的fuzzing框架，在后面作针对的fuzzer时，可以直接套用。</p>
+<p> 从上面的fuzz策略可以总结出常规的变异规则：</p>
+<ul>
+<li>随机数据替换</li>
+<li>数据值增减</li>
+<li>已知边界值替换</li>
+<li>插入随机数据</li>
+<li>删减文件内容</li>
+<li>目录变异</li>
+<li>数据拷贝覆盖</li>
+<li>……</li>
+</ul>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2018/09/16/honggfuzz3/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/honggfuzz/">honggfuzz</a>, <a href="/tags/fuzz/">fuzz</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+</section>
+
+
+ -->
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:riusksk.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2018/09/16/honggfuzz3/">honggfuzz漏洞挖掘技术深究系列（3）——Fuzz策略</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/15/知识的诅咒/">知识的诅咒</a>
+      </li>
+    
+      <li>
+        <a href="/2018/08/22/honggfuzz漏洞挖掘技术2/">honggfuzz漏洞挖掘技术深究系列（2）—— Persistent Fuzzing</a>
+      </li>
+    
+      <li>
+        <a href="/2018/08/11/从攻防角度谈黑客与程序员/">从攻防角度谈黑客与程序员</a>
+      </li>
+    
+      <li>
+        <a href="/2018/07/29/honggfuzz漏洞挖掘技术1/">honggfuzz漏洞挖掘技术深究系列（1）——反馈驱动（Feedback-Driven）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/07/21/编译原理与安全/">编译原理在安全领域的应用</a>
+      </li>
+    
+      <li>
+        <a href="/2018/07/15/谈谈写作/">谈谈写作</a>
+      </li>
+    
+      <li>
+        <a href="/2018/07/09/历史的错觉与误解——读《秦崩》/">历史的错觉与误解——读《秦崩》</a>
+      </li>
+    
+      <li>
+        <a href="/2018/07/07/《漏洞战争》出版2周年纪念文/">《漏洞战争》出版2周年纪念文</a>
+      </li>
+    
+      <li>
+        <a href="/2018/06/03/威胁建模：摆脱随机挖洞的命运/">威胁建模：摆脱随机挖洞的命运</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/技术分享/">技术分享</a><small>45</small></li>
+  
+    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>15</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/fuzz/" style="font-size: 10px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 13.33px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 11.67px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  <p>
+  
+  &copy; 2018 riusksk
+  
+  All rights reserved.</p>
+  <p>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+  & Hosted by <a href="http://github.com" target="_blank">GitHub</a>
+  <!--<span id="busuanzi_container_site_pv" >
+    ，本站总访问量<span id="busuanzi_value_site_pv" ></span>次
+  </span>
+  -->
+  </p>
+</div>
+<div class="clearfix"></div>
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+</footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+<div id='bg'></div>
+</body>
+</html>
