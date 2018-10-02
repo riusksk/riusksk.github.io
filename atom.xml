@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2018-09-16T03:55:54.000Z</updated>
+  <updated>2018-10-02T02:37:15.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -16,84 +16,129 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>honggfuzz漏洞挖掘技术深究系列（4）—— 扩展Fuzzer</title>
+    <link href="http://riusksk.github.io/2018/10/02/honggfuzz4/"/>
+    <id>http://riusksk.github.io/2018/10/02/honggfuzz4/</id>
+    <published>2018-10-02T01:35:52.000Z</published>
+    <updated>2018-10-02T02:37:15.000Z</updated>
+    
+    <content type="html">&lt;p&gt;对于一些复合文件格式，如果只是单纯的暴力Fuzzing，会导致生成很多无法被解析的文件，因此需要对文件变异作一些定制化的工作，比如docx、doc等office复合文件，docx是个压缩包，doc是个OLE格式，如果fuzz docx自然需要将其zip解压，再针对感兴趣的文件作变异，对于doc最好是作文件格式解析，只对感兴趣的stream作文件变异，这样的fuzzing的有效性才会更高。&lt;/p&gt;
+&lt;p&gt;庆幸地是，honggfuzz提供&lt;code&gt;-c&lt;/code&gt;参数用于扩展变异规则以代替原有变异方式，同时提供有&lt;code&gt;--pprocess_cmd&lt;/code&gt;在原有的文件变异后再作处理：&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;--mutate_cmd|-c VALUE&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;External command producing fuzz files (instead of internal mutators)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;--pprocess_cmd VALUE&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;External command postprocessing files produced by internal mutators&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;code&gt;-c&lt;/code&gt;功能比较有用，也是我用得比较多的，另一个&lt;code&gt;--pprocess_cmd&lt;/code&gt;基本我没用过。&lt;/p&gt;
+&lt;p&gt;当你通过&lt;code&gt;-f&lt;/code&gt;提供输入样本目录后，在fuzzing时，随机提取的文件会直接传递给&lt;code&gt;-c&lt;/code&gt;参数指定的扩展命令作变异。&lt;/p&gt;
+&lt;p&gt;比如想针对某文件特定offset范围内的内容进行变异，下面是针对macOS/iOS字体文件中的虚拟指令作Fuzzing时写的脚本：&lt;/p&gt;
+&lt;figure class=&quot;highlight py&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;29&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;#!/usr/bin/env python&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; mmap&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; os&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; random &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; randint&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; sys&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;RANGE_START = &lt;span class=&quot;number&quot;&gt;0x16D8&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;RANGE_END   = &lt;span class=&quot;number&quot;&gt;0x304D&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;MIN_BYTES_TO_FLIP = &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;MAX_BYTES_TO_FLIP = &lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&quot;.DS_Store&quot;&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; sys.argv[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;]:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    exit(&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;with&lt;/span&gt; open(sys.argv[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;], &lt;span class=&quot;string&quot;&gt;&quot;r+b&quot;&lt;/span&gt;) &lt;span class=&quot;keyword&quot;&gt;as&lt;/span&gt; f:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  mapped = mmap.mmap(f.fileno(), &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;comment&quot;&gt;#print &quot;file size: 0x%x&quot; % len(mapped)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  bytes_to_flip = randint(MIN_BYTES_TO_FLIP, MAX_BYTES_TO_FLIP)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  bytes_flipped = &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;while&lt;/span&gt; bytes_flipped &amp;lt; bytes_to_flip:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    byte_pos = randint(RANGE_START, RANGE_END)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;#print &quot;byte_pos: 0x%x&quot; %byte_pos &lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    byte_new = chr(randint(&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;255&lt;/span&gt;))&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    mapped[byte_pos] = byte_new&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    bytes_flipped += &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  mapped.close()&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;变异效果：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/font_rangfuzz.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;最后挖到一个TTF字体虚拟指令漏洞：&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;orig file:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2F90h: 00 3F C5 CD 2B 10 C1 10 DE 3F C5 *CD* 2B 10 C5 10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;poc file:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2F90h: 00 3F C5 CD 2B 10 C1 10 DE 3F C5 *DD* 2B 10 C5 10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;glyf table -&amp;gt; SimpleGlyf[] -&amp;gt; Instructions(&amp;apos;0xCD&amp;apos; =&amp;gt; ‘0xDD&amp;apos;) -&amp;gt; MDRP指令&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;同样的，你也可以写个doc、docx等office文件格式解析并变异的扩展fuzzer，比如利用olefile库（但只支持修改同等大小不变的doc，要插入或删除需要自行实现），或者通过COM接口来实现操作。&lt;/p&gt;
+&lt;p&gt;比如之前有段时间doc中的公式编辑器存在很多漏洞，你就可以专门针对&lt;code&gt;Equation Native&lt;/code&gt;流作fuzzing。&lt;/p&gt;
+&lt;p&gt;最后放两张图(riufuzz是自己对honggfuzz二次开发的版本，后面有机会再讲)：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/olefuzz.jpeg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/doc_crash.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;center&gt;&lt;img src=&quot;http://riusksk.me/media/gzh.png&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
+
+
+
+
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;对于一些复合文件格式，如果只是单纯的暴力Fuzzing，会导致生成很多无法被解析的文件，因此需要对文件变异作一些定制化的工作，比如docx、doc等office复合文件，docx是个压缩包，doc是个OLE格式，如果fuzz docx自然需要将其zip解压，再针对感兴趣的文
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+      <category term="honggfuzz" scheme="http://riusksk.github.io/tags/honggfuzz/"/>
+    
+      <category term="fuzz" scheme="http://riusksk.github.io/tags/fuzz/"/>
+    
+  </entry>
+  
+  <entry>
     <title>honggfuzz漏洞挖掘技术深究系列（3）——Fuzz策略</title>
     <link href="http://riusksk.github.io/2018/09/16/honggfuzz3/"/>
     <id>http://riusksk.github.io/2018/09/16/honggfuzz3/</id>
     <published>2018-09-16T03:54:16.000Z</published>
-    <updated>2018-09-16T03:55:54.000Z</updated>
+    <updated>2018-10-02T01:49:03.000Z</updated>
     
     <content type="html">&lt;p&gt; honggfuzz在对输入文件进行变异前，会先创建个临时文件名（honggfuzz+pid+time），然后将输入数据变异后写入临时文件。&lt;/p&gt;
 &lt;p&gt; fuzz策略的实现主要集中在mangle.c中，在循环的fuzzloop函数中，会根据用户的选择的fuzz方式来调用动态fuzz或者静态fuzz的方法，但最后都是调用mangle_mangleContent来变异文件数据：&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic1.zhimg.com/80/v2-3bdc1da036608cc745ef0cb89c2313ea_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-3bdc1da036608cc745ef0cb89c2313ea_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 跟进mangle_mangleContent函数：&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic4.zhimg.com/80/v2-529248182e9e09517288c6cbc0f4152d_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-529248182e9e09517288c6cbc0f4152d_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 重点就在于后半部分，它会随机选择变异函数进行处理，更改的字节数也是随机的，根据用户指定的mutation变异率来定，即允许变异文件大小的百分比，变异函数列表如下：&lt;/p&gt;
- &lt;center&gt;&lt;img src=&quot;https://pic1.zhimg.com/80/v2-9450da60b2082522f7aa9dff7757a921_hd.png&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
+ &lt;center&gt;&lt;img src=&quot;http://riusksk.me/media/v2-9450da60b2082522f7aa9dff7757a921_hd.png&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
 
 &lt;p&gt; 这些函数都是在mangle_init中初始化，各函数之间也会相互调用：&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic1.zhimg.com/80/v2-025eaad0cd3d34fb828240b30469bede_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-025eaad0cd3d34fb828240b30469bede_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 把这些函数过一遍就是honggfuzz中所有的文件变异规则了，如果想实现自己的fuzzer，这些规则来扣出来用Python实现一遍，顺便把afl的规则也扣过来就更完美了，下面是我之前写office fuzzer时的半成品代码，最后偷懒直接用radamas去实现变异了：&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic2.zhimg.com/80/v2-a0d2b4262c74f02388926e1829e70a37_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-a0d2b4262c74f02388926e1829e70a37_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 再回到刚才的变异函数列表，我们一个个走读源码。&lt;/p&gt;
 &lt;p&gt; 1、mangle_Resize函数：&lt;/p&gt;
 &lt;p&gt; 用空格填充随机位置&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic3.zhimg.com/80/v2-51e43d8f246b8fcb2408bc0c8700baa2_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic1.zhimg.com/80/v2-8875c992f90668d4a2be2817ee32acc8_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-51e43d8f246b8fcb2408bc0c8700baa2_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-8875c992f90668d4a2be2817ee32acc8_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 2、mangle_Byte函数：&lt;/p&gt;
 &lt;p&gt; 向随机位置写随机的uint8类型的数据&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic3.zhimg.com/80/v2-b857966a5c005b1e95f80512382933d6_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-b857966a5c005b1e95f80512382933d6_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 3、mangle_Bit函数：&lt;/p&gt;
 &lt;p&gt; 取随机位置的数值做位翻转&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic3.zhimg.com/80/v2-179d9066a2fd1fc2653f335ce5a41f72_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-179d9066a2fd1fc2653f335ce5a41f72_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 4、mangle_Bytes函数：&lt;/p&gt;
 &lt;p&gt; 在随机位置覆盖写2~4字节数据&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic4.zhimg.com/80/v2-4857e9d3d3fb2722bb4705cff49d9bc9_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-4857e9d3d3fb2722bb4705cff49d9bc9_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 5、mangle_Magic函数：&lt;/p&gt;
 &lt;p&gt; 取各种边界值进行覆写，这些边界值部分跟AFL还不一样，我在自己的fuzzer里面把它们作了整合。由于边幅所限，我省略了不少边界值：&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic4.zhimg.com/80/v2-8b34894b9c1fe0833e95dc6d426ff8fb_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-8b34894b9c1fe0833e95dc6d426ff8fb_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 6、mangle_IncByte函数：&lt;/p&gt;
 &lt;p&gt; 取随机位置的数据加1&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic2.zhimg.com/80/v2-ea765d0bf263d6aed9cdaf94a1065631_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-ea765d0bf263d6aed9cdaf94a1065631_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 7、mangle_DecByte函数：&lt;/p&gt;
 &lt;p&gt; 取随机位置的数据减1&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic2.zhimg.com/80/v2-bc2bf5117cb1495783b2d5501623e602_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-bc2bf5117cb1495783b2d5501623e602_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 8、mangle_NegByte函数：&lt;/p&gt;
 &lt;p&gt; 取随机位置的数据取反&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic2.zhimg.com/80/v2-4ef170d3cbb5915de395b7f7aa304079_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-4ef170d3cbb5915de395b7f7aa304079_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 9、mangle_AddSub函数：&lt;/p&gt;
 &lt;p&gt; 取随机位置的1、2、4或8字节的数据长度作加减操作，操作数取 rand(0~8192)-4096&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic4.zhimg.com/80/v2-66a0ed1564725c2dbdf05439e6e26295_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-66a0ed1564725c2dbdf05439e6e26295_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 10、mangle_Dictionary函数：&lt;/p&gt;
 &lt;p&gt; 变异目录名，也是随机取文件夹名称进行变异，如果有多个目录，那被变异的目录数也是随机的&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic3.zhimg.com/80/v2-d5aaeb860ab0f32d1283e2d987e456ad_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-d5aaeb860ab0f32d1283e2d987e456ad_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 11、mangle_DictionaryInsert函数：&lt;/p&gt;
 &lt;p&gt; 在目录的随机位置中插入随机数据&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic3.zhimg.com/80/v2-0fa9250d8e778ca02841b66fc08a00ce_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-0fa9250d8e778ca02841b66fc08a00ce_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 12、mangle_MemMove函数：&lt;/p&gt;
 &lt;p&gt; 取随机位置的数据拷贝随机长度的数据，里面就是调用memmove函数实现的&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic1.zhimg.com/80/v2-eabb7cafe2e6042ef8bd2e18d526b9df_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-eabb7cafe2e6042ef8bd2e18d526b9df_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 13、mangle_MemSet函数：&lt;/p&gt;
 &lt;p&gt; 取随机位置、随机大小，用UINT8_MAX数值填充&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic2.zhimg.com/80/v2-82430bbef8b74651aea3a1bdeca9b2dc_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-82430bbef8b74651aea3a1bdeca9b2dc_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 14、mangle_Random函数：&lt;/p&gt;
 &lt;p&gt; 取随机位置、随机大小的缓冲区，用随机数填充&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic2.zhimg.com/80/v2-51e9a2621714c7a6d88dc68c4a859979_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-51e9a2621714c7a6d88dc68c4a859979_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 15、mangle_CloneByte函数：&lt;/p&gt;
 &lt;p&gt; 取两处随机位置的作数据交换&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic3.zhimg.com/80/v2-cac0e8c50be64a1174f9b7a6cc924a5e_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-cac0e8c50be64a1174f9b7a6cc924a5e_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 16、mangle_Expand函数：&lt;/p&gt;
 &lt;p&gt; 文件末尾扩展随机长度的空间，用空格填充，然后在随机位置，取前面的随机长度作数据拷贝&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic1.zhimg.com/80/v2-0e199dd7f82c223a928ead2b7a6cdd04_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic3.zhimg.com/80/v2-bb4820b762220d720d78928d34e923e1_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-0e199dd7f82c223a928ead2b7a6cdd04_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-bb4820b762220d720d78928d34e923e1_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 17、mangle_Shrink函数：&lt;/p&gt;
 &lt;p&gt; 删除随机长度的文件内容&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic3.zhimg.com/80/v2-010ccb9f2dd19bd450b655cb9f9c7209_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-010ccb9f2dd19bd450b655cb9f9c7209_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 18、mangle_InsertRnd函数：&lt;/p&gt;
 &lt;p&gt; 在文件的随机位置插入随机长度的数据&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic2.zhimg.com/80/v2-325836aaf17585d5a02265ae000b72fc_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-325836aaf17585d5a02265ae000b72fc_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 19、mangle_ASCIIVal函数：&lt;/p&gt;
 &lt;p&gt; 在随机位置覆盖32字节的随机数&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;https://pic3.zhimg.com/80/v2-0385d1c51fda364543b22c77067b28ac_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-0385d1c51fda364543b22c77067b28ac_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt; 总结&lt;/p&gt;
 &lt;p&gt; 在Fuzzing过程中，很多变异规则是共用的，可以参考一些主源的开源软件，比如afl\peach\honggfuzz\libfuzzer，提取规则作整合，然后写个自己的fuzzing框架，在后面作针对的fuzzer时，可以直接套用。&lt;/p&gt;
 &lt;p&gt; 从上面的fuzz策略可以总结出常规的变异规则：&lt;/p&gt;
@@ -1293,149 +1338,6 @@
       <category term="Apple" scheme="http://riusksk.github.io/tags/Apple/"/>
     
       <category term="漏洞" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>2016年刷过的CVE</title>
-    <link href="http://riusksk.github.io/2016/12/17/2016%E5%B9%B4%E5%88%B7%E8%BF%87%E7%9A%84CVE/"/>
-    <id>http://riusksk.github.io/2016/12/17/2016年刷过的CVE/</id>
-    <published>2016-12-17T08:32:03.000Z</published>
-    <updated>2017-01-01T02:53:00.000Z</updated>
-    
-    <content type="html">&lt;p&gt;今年也开始尝试跟风刷CVE，主要是下半年才开始搞，开始聚集Google和Apple，Google Android 因为撞洞，最终连个CVE也没有，也是惨，只能寄希望于2017年了。革命尚未成功，同志仍需努力！&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;公司&lt;/th&gt;
-&lt;th&gt;产品&lt;/th&gt;
-&lt;th&gt;时间&lt;/th&gt;
-&lt;th&gt;类型&lt;/th&gt;
-&lt;th&gt;CVE号&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;/&lt;/td&gt;
-&lt;td&gt;libarchive&lt;/td&gt;
-&lt;td&gt;2016/12/29&lt;/td&gt;
-&lt;td&gt;Use After Free&lt;/td&gt;
-&lt;td&gt;CVE-2016-10080&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Apple&lt;/td&gt;
-&lt;td&gt;macOS/iOS&lt;/td&gt;
-&lt;td&gt;2016/12/14&lt;/td&gt;
-&lt;td&gt;Out-of-Bounds&lt;/td&gt;
-&lt;td&gt;CVE-2016-7595&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Apple&lt;/td&gt;
-&lt;td&gt;macOS/iOS&lt;/td&gt;
-&lt;td&gt;2016/12/14&lt;/td&gt;
-&lt;td&gt;Out-of-Bounds&lt;/td&gt;
-&lt;td&gt;CVE-2016-4691&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Apple&lt;/td&gt;
-&lt;td&gt;macOS&lt;/td&gt;
-&lt;td&gt;2016/12/14&lt;/td&gt;
-&lt;td&gt;Memory Corruption&lt;/td&gt;
-&lt;td&gt;CVE-2016-7618&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Apple&lt;/td&gt;
-&lt;td&gt;macOS&lt;/td&gt;
-&lt;td&gt;2016/12/14&lt;/td&gt;
-&lt;td&gt;Memory Corruption&lt;/td&gt;
-&lt;td&gt;CVE-2016-7622&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;/&lt;/td&gt;
-&lt;td&gt;giflib&lt;/td&gt;
-&lt;td&gt;2016/12/13&lt;/td&gt;
-&lt;td&gt;Out-of-Bounds&lt;/td&gt;
-&lt;td&gt;CVE-2016-9944&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;/&lt;/td&gt;
-&lt;td&gt;OpenJPEG&lt;/td&gt;
-&lt;td&gt;2016/12/07&lt;/td&gt;
-&lt;td&gt;Memory Corruption&lt;/td&gt;
-&lt;td&gt;CVE-2016-9890&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;/&lt;/td&gt;
-&lt;td&gt;libxml2&lt;/td&gt;
-&lt;td&gt;2016/12/05&lt;/td&gt;
-&lt;td&gt;Out-of-Bounds&lt;/td&gt;
-&lt;td&gt;CVE-2016-9833&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;/&lt;/td&gt;
-&lt;td&gt;OpenJPEG&lt;/td&gt;
-&lt;td&gt;2016/12/01&lt;/td&gt;
-&lt;td&gt;Memory Corruption&lt;/td&gt;
-&lt;td&gt;CVE-2016-9753&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Apple&lt;/td&gt;
-&lt;td&gt;Mac OS X&lt;/td&gt;
-&lt;td&gt;2016/09/21&lt;/td&gt;
-&lt;td&gt;Memory Corruption&lt;/td&gt;
-&lt;td&gt;CVE-2016-4779&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Apple&lt;/td&gt;
-&lt;td&gt;Xcode&lt;/td&gt;
-&lt;td&gt;2016/09/14&lt;/td&gt;
-&lt;td&gt;Memory Corruption&lt;/td&gt;
-&lt;td&gt;CVE-2016-4705&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;/&lt;/td&gt;
-&lt;td&gt;libgd&lt;/td&gt;
-&lt;td&gt;2016/05/01&lt;/td&gt;
-&lt;td&gt;Double Free&lt;/td&gt;
-&lt;td&gt;CVE-2016-4413&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;/&lt;/td&gt;
-&lt;td&gt;libav&lt;/td&gt;
-&lt;td&gt;2016/03/18&lt;/td&gt;
-&lt;td&gt;Memory Corruption&lt;/td&gt;
-&lt;td&gt;CVE-2016-3184&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;/&lt;/td&gt;
-&lt;td&gt;libav&lt;/td&gt;
-&lt;td&gt;2016/03/11&lt;/td&gt;
-&lt;td&gt;Memory Corruption&lt;/td&gt;
-&lt;td&gt;CVE-2016-3062&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Adobe&lt;/td&gt;
-&lt;td&gt;Flash Player&lt;/td&gt;
-&lt;td&gt;2016/03/11&lt;/td&gt;
-&lt;td&gt;Memory Corruption&lt;/td&gt;
-&lt;td&gt;CVE-2016-0992&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;今年也开始尝试跟风刷CVE，主要是下半年才开始搞，开始聚集Google和Apple，Google Android 因为撞洞，最终连个CVE也没有，也是惨，只能寄希望于2017年了。革命尚未成功，同志仍需努力！&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;公司&lt;
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
     
   </entry>
   

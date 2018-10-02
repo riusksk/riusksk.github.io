@@ -1,0 +1,270 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8" />
+  
+  <title>honggfuzz漏洞挖掘技术深究系列（4）—— 扩展Fuzzer | riusksk&#39;s blog</title>
+  <meta name="author" content="riusksk" />
+
+  
+  <meta name="description" content="对于一些复合文件格式，如果只是单纯的暴力Fuzzing，会导致生成很多无法被解析的文件，因此需要对文件变异作一些定制化的工作，比如docx、doc等office复合文件，docx是个压缩包，doc是个OLE格式，如果fuzz docx自然需要将其zip解压，再针对感兴趣的文件作变异，对于doc最好是" />
+  
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <meta property="og:title" content="honggfuzz漏洞挖掘技术深究系列（4）—— 扩展Fuzzer" />
+  <meta property="og:site_name" content="riusksk&#39;s blog" />
+
+  
+  
+
+  
+    <meta property="og:image" content="undefined" />
+  
+
+  
+  <link href="/css/images/favicon.ico" rel="icon" />
+  
+
+  <link rel="alternate" href="/atom.xml" title="riusksk&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78773323-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+
+  <!-- baidu webmaster push -->
+  <script src='//push.zhanzhang.baidu.com/push.js'></script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">riusksk&#39;s blog</a></h1>
+  <h2><a href="/">攀蟾折桂摄寰宇，摘星揽月御乾坤。踏云踩雾骋宵壤，驱风逐日闯天地。 ------泉哥</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/atom.xml">RSS订阅</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2018-10-02T01:35:52.000Z"><a href="/2018/10/02/honggfuzz4/">2018-10-02</a></time>
+      
+      
+  
+    <h1 class="title">honggfuzz漏洞挖掘技术深究系列（4）—— 扩展Fuzzer</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>对于一些复合文件格式，如果只是单纯的暴力Fuzzing，会导致生成很多无法被解析的文件，因此需要对文件变异作一些定制化的工作，比如docx、doc等office复合文件，docx是个压缩包，doc是个OLE格式，如果fuzz docx自然需要将其zip解压，再针对感兴趣的文件作变异，对于doc最好是作文件格式解析，只对感兴趣的stream作文件变异，这样的fuzzing的有效性才会更高。</p>
+<p>庆幸地是，honggfuzz提供<code>-c</code>参数用于扩展变异规则以代替原有变异方式，同时提供有<code>--pprocess_cmd</code>在原有的文件变异后再作处理：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">--mutate_cmd|-c VALUE</span><br><span class="line">External command producing fuzz files (instead of internal mutators)</span><br><span class="line">--pprocess_cmd VALUE</span><br><span class="line">External command postprocessing files produced by internal mutators</span><br></pre></td></tr></table></figure>
+<p><code>-c</code>功能比较有用，也是我用得比较多的，另一个<code>--pprocess_cmd</code>基本我没用过。</p>
+<p>当你通过<code>-f</code>提供输入样本目录后，在fuzzing时，随机提取的文件会直接传递给<code>-c</code>参数指定的扩展命令作变异。</p>
+<p>比如想针对某文件特定offset范围内的内容进行变异，下面是针对macOS/iOS字体文件中的虚拟指令作Fuzzing时写的脚本：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> mmap</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> random <span class="keyword">import</span> randint</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line">RANGE_START = <span class="number">0x16D8</span></span><br><span class="line">RANGE_END   = <span class="number">0x304D</span></span><br><span class="line">MIN_BYTES_TO_FLIP = <span class="number">1</span></span><br><span class="line">MAX_BYTES_TO_FLIP = <span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="string">".DS_Store"</span> <span class="keyword">in</span> sys.argv[<span class="number">1</span>]:</span><br><span class="line">    exit(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> open(sys.argv[<span class="number">1</span>], <span class="string">"r+b"</span>) <span class="keyword">as</span> f:</span><br><span class="line">  mapped = mmap.mmap(f.fileno(), <span class="number">0</span>)</span><br><span class="line">  <span class="comment">#print "file size: 0x%x" % len(mapped)</span></span><br><span class="line">  bytes_to_flip = randint(MIN_BYTES_TO_FLIP, MAX_BYTES_TO_FLIP)</span><br><span class="line">  bytes_flipped = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> bytes_flipped &lt; bytes_to_flip:</span><br><span class="line">    byte_pos = randint(RANGE_START, RANGE_END)</span><br><span class="line">    <span class="comment">#print "byte_pos: 0x%x" %byte_pos </span></span><br><span class="line">    byte_new = chr(randint(<span class="number">0</span>, <span class="number">255</span>))</span><br><span class="line">    mapped[byte_pos] = byte_new</span><br><span class="line">    bytes_flipped += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">  mapped.close()</span><br></pre></td></tr></table></figure>
+<p>变异效果：</p>
+<p><img src="http://riusksk.me/media/font_rangfuzz.png" alt=""></p>
+<p>最后挖到一个TTF字体虚拟指令漏洞：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">orig file:</span><br><span class="line">2F90h: 00 3F C5 CD 2B 10 C1 10 DE 3F C5 *CD* 2B 10 C5 10</span><br><span class="line"></span><br><span class="line">poc file:</span><br><span class="line">2F90h: 00 3F C5 CD 2B 10 C1 10 DE 3F C5 *DD* 2B 10 C5 10</span><br><span class="line"></span><br><span class="line">glyf table -&gt; SimpleGlyf[] -&gt; Instructions(&apos;0xCD&apos; =&gt; ‘0xDD&apos;) -&gt; MDRP指令</span><br></pre></td></tr></table></figure>
+<p>同样的，你也可以写个doc、docx等office文件格式解析并变异的扩展fuzzer，比如利用olefile库（但只支持修改同等大小不变的doc，要插入或删除需要自行实现），或者通过COM接口来实现操作。</p>
+<p>比如之前有段时间doc中的公式编辑器存在很多漏洞，你就可以专门针对<code>Equation Native</code>流作fuzzing。</p>
+<p>最后放两张图(riufuzz是自己对honggfuzz二次开发的版本，后面有机会再讲)：</p>
+<p><img src="http://riusksk.me/media/olefuzz.jpeg" alt=""></p>
+<p><img src="http://riusksk.me/media/doc_crash.jpg" alt=""></p>
+<center><img src="http://riusksk.me/media/gzh.png" alt=""></center>
+
+
+
+
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2018/10/02/honggfuzz4/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/honggfuzz/">honggfuzz</a>, <a href="/tags/fuzz/">fuzz</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+</section>
+
+
+ -->
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:riusksk.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2018/10/02/honggfuzz4/">honggfuzz漏洞挖掘技术深究系列（4）—— 扩展Fuzzer</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/16/honggfuzz3/">honggfuzz漏洞挖掘技术深究系列（3）——Fuzz策略</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/15/知识的诅咒/">知识的诅咒</a>
+      </li>
+    
+      <li>
+        <a href="/2018/08/22/honggfuzz漏洞挖掘技术2/">honggfuzz漏洞挖掘技术深究系列（2）—— Persistent Fuzzing</a>
+      </li>
+    
+      <li>
+        <a href="/2018/08/11/从攻防角度谈黑客与程序员/">从攻防角度谈黑客与程序员</a>
+      </li>
+    
+      <li>
+        <a href="/2018/07/29/honggfuzz漏洞挖掘技术1/">honggfuzz漏洞挖掘技术深究系列（1）——反馈驱动（Feedback-Driven）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/07/21/编译原理与安全/">编译原理在安全领域的应用</a>
+      </li>
+    
+      <li>
+        <a href="/2018/07/15/谈谈写作/">谈谈写作</a>
+      </li>
+    
+      <li>
+        <a href="/2018/07/09/历史的错觉与误解——读《秦崩》/">历史的错觉与误解——读《秦崩》</a>
+      </li>
+    
+      <li>
+        <a href="/2018/07/07/《漏洞战争》出版2周年纪念文/">《漏洞战争》出版2周年纪念文</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/技术分享/">技术分享</a><small>46</small></li>
+  
+    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>15</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/fuzz/" style="font-size: 11.67px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 15px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 11.67px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  <p>
+  
+  &copy; 2018 riusksk
+  
+  All rights reserved.</p>
+  <p>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+  & Hosted by <a href="http://github.com" target="_blank">GitHub</a>
+  <!--<span id="busuanzi_container_site_pv" >
+    ，本站总访问量<span id="busuanzi_value_site_pv" ></span>次
+  </span>
+  -->
+  </p>
+</div>
+<div class="clearfix"></div>
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+</footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+<div id='bg'></div>
+</body>
+</html>
