@@ -352,10 +352,10 @@
     <link href="http://riusksk.github.io/2018/07/29/honggfuzz%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E6%8A%80%E6%9C%AF1/"/>
     <id>http://riusksk.github.io/2018/07/29/honggfuzz漏洞挖掘技术1/</id>
     <published>2018-07-29T01:54:40.000Z</published>
-    <updated>2018-07-29T02:00:04.000Z</updated>
+    <updated>2018-10-02T03:09:09.000Z</updated>
     
     <content type="html">&lt;p&gt;&lt;strong&gt;“&lt;/strong&gt; 反馈驱动：通过监控样本触发的代码覆盖率，进而改进输入样本以提高代码覆盖率，增加发现漏洞的概率。&lt;strong&gt;”&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://pic3.zhimg.com/80/v2-9f0fe133af6f259bcc310cb7f1f14083_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-9f0fe133af6f259bcc310cb7f1f14083_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;目前业界中基于代码覆盖率的最著名的三大Fuzzer，当属Google开发的AFL、libfuzzer和honggfuzz，且他们都是开源的，在github上都可以搜索到。&lt;/p&gt;
 &lt;p&gt;相信很多搞fuzzing的同学都听过或用过这三款工具，本系列主要讲honggfuzz的原理与应用，之前把honggfuzz源码都阅读过一遍，并且二次开发过，该工具的挖洞效果还是不错的。&lt;/p&gt;
 &lt;h2 id=&quot;01-—-关于代码覆盖率的那些事&quot;&gt;&lt;a href=&quot;#01-—-关于代码覆盖率的那些事&quot; class=&quot;headerlink&quot; title=&quot;01 — 关于代码覆盖率的那些事&quot;&gt;&lt;/a&gt;&lt;strong&gt;01 — 关于代码覆盖率的那些事&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;计算代码覆盖率情况就需要有个计量单位，通常有3种：&lt;/p&gt;
@@ -364,42 +364,42 @@
 &lt;li&gt;基本块（BasicBlock-Level）&lt;/li&gt;
 &lt;li&gt;边界（Edge-Level）&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img src=&quot;https://pic2.zhimg.com/80/v2-e59bc6bc894b1d9aa84b69292ba8f3f8_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-e59bc6bc894b1d9aa84b69292ba8f3f8_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;1. 函数（Fuction-Level）&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;先说下函数，这个很容易理解，就是代码执行时调用到哪些函数，但是函数里面的具体代码行却不作统计，相对比较粗糙但高效的统计方式。&lt;/p&gt;
 &lt;p&gt;所以，通常的统计方式是用基本块，简称BB。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;2.基本块（BasicBlock-Level）&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;什么是基本块，直接看下图就很容易理解了。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://pic3.zhimg.com/80/v2-19797c5c8d99a42c36318718f29265d5_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-19797c5c8d99a42c36318718f29265d5_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;IDA中每一块代码就代表着一个基本块，就是以指令跳转为作划分界限的。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;3.边界（Edge-Level）&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;edge本身就涵盖了基本块部分，唯一的差别是edge多记录了一些执行边界的信息。比如示例代码：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://pic4.zhimg.com/80/v2-22c28c570cf9739b790c4c2969b5b5f2_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-22c28c570cf9739b790c4c2969b5b5f2_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;在IDA中可以看到A、B、C这3个基本块，但当a为假时，程序就会从A执行到C。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://pic4.zhimg.com/80/v2-9544f8e035e1874da0a0368ad39aa926_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-9544f8e035e1874da0a0368ad39aa926_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;前面基本块的方式就无法确切地知道是否曾从A执行到C，尤其是该段代码被多次执行的情况，就更无法知道，这时edge覆盖方式就出现了。&lt;/p&gt;
 &lt;p&gt;edge会在A跟C之间建立虚拟块D，通过判断D是否执行过，来确认是否曾从A执行到C，这种方式也会比较消耗性能就是：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://pic2.zhimg.com/80/v2-6a1b97ef1552f83c2e77b5ef2c927093_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-6a1b97ef1552f83c2e77b5ef2c927093_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;统计代码覆盖率又分两种情况：&lt;/p&gt;
 &lt;p&gt;1.【有源码】：直接使用SanitizerCoverage即可，在编译选项中添加相应的覆盖率统计方式，比如基本块统计方式可以添加：&lt;/p&gt;
 &lt;p&gt; &lt;code class=&quot;language-text&quot;&gt;CFLAG=“-fsanitize=address -fsanitize-coverage=bb”&lt;/code&gt; &lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://pic1.zhimg.com/80/v2-0b937d36b150db10b68416ecee96a18f_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-0b937d36b150db10b68416ecee96a18f_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;2.【无源码】：使用Pin、DynamoRIO等二进制插桩工具去hook统计，或者pediy改指令的方式去监控也是可以的，本系列的后续文章可能会细说。&lt;/p&gt;
 &lt;h2 id=&quot;02-—-Honggfuzz反馈驱动原理&quot;&gt;&lt;a href=&quot;#02-—-Honggfuzz反馈驱动原理&quot; class=&quot;headerlink&quot; title=&quot;02 — Honggfuzz反馈驱动原理&quot;&gt;&lt;/a&gt;&lt;strong&gt;02 — Honggfuzz反馈驱动原理&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;本文我们默认以基本块作为代码覆盖率的统计方式，比如采用如下编译选项：&lt;/p&gt;
 &lt;p&gt; &lt;code class=&quot;language-text&quot;&gt;ASAN_OPTIONS=coverage=1:coverage_direct=1 -fsanitize=address -fsanitize-coverage=bb&lt;/code&gt; &lt;/p&gt;
 &lt;p&gt;执行后它会生成两个文件：&lt;em&gt;.sancov.map和&lt;/em&gt;.sancov.raw，这是honggfuzz处理过的scancov文件。&lt;/p&gt;
 &lt;p&gt;其中&lt;em&gt;.sancov.map文件记录是模块信息，&lt;/em&gt;.sancov.raw文件则记录着执行过的基本块地址信息：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://pic4.zhimg.com/80/v2-fcc18ec6efcedcd5b19e4428b6844294_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-fcc18ec6efcedcd5b19e4428b6844294_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;1、首先，honggfuzz会先去分析.sancov.raw文件，保存命中的基本块地址，记录BB数，以及总共的BB数：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://pic4.zhimg.com/80/v2-be7bc26166e0f1d376ba1c712cf61b59_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-be7bc26166e0f1d376ba1c712cf61b59_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;2、计算代码覆盖率 = 命中BB数 / (命中BB数 + 未命中的BB数)&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://pic4.zhimg.com/80/v2-e9348eaa3c3712994d135045c8530231_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-e9348eaa3c3712994d135045c8530231_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;以下是旧版honggfuzz关于coverage的显示内容格式：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://pic1.zhimg.com/80/v2-67391dd336b6e4e343244f994c6aa52f_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-67391dd336b6e4e343244f994c6aa52f_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;新版的变成只记录BB/edge数：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://pic3.zhimg.com/80/v2-033f35d3e5e67fdd9661ca42c7b06cf9_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-033f35d3e5e67fdd9661ca42c7b06cf9_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;3、发现新路径或者新插桩链接库加载，则添加此变异样本为新的输入样本，供后面作进一步变异，以触发更多新路径&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://pic3.zhimg.com/80/v2-a2fec1e1ca91bbcefabe770da1b6d6b2_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-a2fec1e1ca91bbcefabe770da1b6d6b2_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;h2 id=&quot;03-—-总结&quot;&gt;&lt;a href=&quot;#03-—-总结&quot; class=&quot;headerlink&quot; title=&quot;03 — 总结&quot;&gt;&lt;/a&gt;&lt;strong&gt;03 — 总结&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;honggfuzz最早创建于2015年，跟AFL的发布时间差不多，AFL的出现可以说在安全界是项里程碑标志，给漏洞挖掘技术带来新的技术革命，网上对其源码分析的文章也到处可见，但对honggfuzz的详细分析还没有，因此才作此系列记录下。&lt;/p&gt;
 &lt;p&gt;个人也曾给honggfuzz贡献过代码，但由于某次pull request未被采用，于是就自己二次开发不再提交合并。因为我是在macOS下开发，而原作者主要是用Linux，那次提交的功能对我很有用，所以只好自己维护一份二次开发版本。&lt;/p&gt;
 &lt;p&gt;后来自己也在Windows和macOS平台上扩展了许多新功能，在本系列文章中，后面可能会单篇聊一聊，也感谢作者robertswiecki开发出这么好用的fuzzer，让我借此刷了不少CVE。&lt;/p&gt;
@@ -410,7 +410,7 @@
     <summary type="html">
     
       &lt;p&gt;&lt;strong&gt;“&lt;/strong&gt; 反馈驱动：通过监控样本触发的代码覆盖率，进而改进输入样本以提高代码覆盖率，增加发现漏洞的概率。&lt;strong&gt;”&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://pic3.zhimg.com/80/v2-9f0fe1
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-9f0fe133
     
     </summary>
     
