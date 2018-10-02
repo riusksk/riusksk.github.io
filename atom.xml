@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2018-10-02T02:37:15.000Z</updated>
+  <updated>2018-10-02T02:54:52.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://riusksk.github.io/2018/10/02/honggfuzz4/"/>
     <id>http://riusksk.github.io/2018/10/02/honggfuzz4/</id>
     <published>2018-10-02T01:35:52.000Z</published>
-    <updated>2018-10-02T02:37:15.000Z</updated>
+    <updated>2018-10-02T02:54:52.000Z</updated>
     
     <content type="html">&lt;p&gt;对于一些复合文件格式，如果只是单纯的暴力Fuzzing，会导致生成很多无法被解析的文件，因此需要对文件变异作一些定制化的工作，比如docx、doc等office复合文件，docx是个压缩包，doc是个OLE格式，如果fuzz docx自然需要将其zip解压，再针对感兴趣的文件作变异，对于doc最好是作文件格式解析，只对感兴趣的stream作文件变异，这样的fuzzing的有效性才会更高。&lt;/p&gt;
 &lt;p&gt;庆幸地是，honggfuzz提供&lt;code&gt;-c&lt;/code&gt;参数用于扩展变异规则以代替原有变异方式，同时提供有&lt;code&gt;--pprocess_cmd&lt;/code&gt;在原有的文件变异后再作处理：&lt;/p&gt;
@@ -32,7 +32,7 @@
 &lt;p&gt;变异效果：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/font_rangfuzz.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;最后挖到一个TTF字体虚拟指令漏洞：&lt;/p&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;orig file:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2F90h: 00 3F C5 CD 2B 10 C1 10 DE 3F C5 *CD* 2B 10 C5 10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;poc file:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2F90h: 00 3F C5 CD 2B 10 C1 10 DE 3F C5 *DD* 2B 10 C5 10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;glyf table -&amp;gt; SimpleGlyf[] -&amp;gt; Instructions(&amp;apos;0xCD&amp;apos; =&amp;gt; ‘0xDD&amp;apos;) -&amp;gt; MDRP指令&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;orig file:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2F90h: 00 3F C5 CD 2B 10 C1 10 DE 3F C5 【CD】 2B 10 C5 10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;poc file:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2F90h: 00 3F C5 CD 2B 10 C1 10 DE 3F C5 【DD】 2B 10 C5 10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;glyf table -&amp;gt; SimpleGlyf[] -&amp;gt; Instructions(&amp;apos;0xCD&amp;apos; =&amp;gt; ‘0xDD&amp;apos;) -&amp;gt; MDRP指令&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
 &lt;p&gt;同样的，你也可以写个doc、docx等office文件格式解析并变异的扩展fuzzer，比如利用olefile库（但只支持修改同等大小不变的doc，要插入或删除需要自行实现），或者通过COM接口来实现操作。&lt;/p&gt;
 &lt;p&gt;比如之前有段时间doc中的公式编辑器存在很多漏洞，你就可以专门针对&lt;code&gt;Equation Native&lt;/code&gt;流作fuzzing。&lt;/p&gt;
 &lt;p&gt;最后放两张图(riufuzz是自己对honggfuzz二次开发的版本，后面有机会再讲)：&lt;/p&gt;
