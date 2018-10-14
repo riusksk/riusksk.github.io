@@ -77,6 +77,86 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2018-10-14T01:48:40.000Z"><a href="/2018/10/14/honggfuzz5/">2018-10-14</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2018/10/14/honggfuzz5/">honggfuzz漏洞挖掘技术深究系列（5）—— Intel Processor Trace</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>对于闭源程序的反馈驱动Fuzzing，通常有3种方式：</p>
+<ul>
+<li><p>二进制插桩：使用Pin或DynamoRIO动态插桩监控代码覆盖率，比如winafl</p>
+</li>
+<li><p>虚拟化技术：使用Qemu或Boch等虚拟化技术实现应用层和内核层的代码覆盖率监控，比如afl、bochpwn</p>
+</li>
+<li><p>硬件级技术：使用Intel Processor Trace（PT）技术，比如honggfuzz</p>
+</li>
+</ul>
+<h4 id="Intel-PT"><a href="#Intel-PT" class="headerlink" title="Intel PT"></a>Intel PT</h4><p>Intel® Processor Trace (Intel® PT) 是在i5/i7 5000以上型号上加入的功能，由于它是硬件级的特性，相比Qemu或Boch，在性能上和代码工作量会占有一定优势。在Linux上可以通过perf来使用PT，可以先简单看是否支持PT：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">查看是否支持PT:</span><br><span class="line">ls /sys/devices/intel_pt/format</span><br><span class="line"></span><br><span class="line">追踪程序执行：</span><br><span class="line">perf record -e intel_pt// program</span><br></pre></td></tr></table></figure>
+<p>也可以使用开源工具simple-pt（<a href="https://github.com/andikleen/simple-pt）中的ptfeature命令行工具来检测" target="_blank" rel="external">https://github.com/andikleen/simple-pt）中的ptfeature命令行工具来检测</a>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./ptfeature pt</span><br><span class="line">Supports PT</span><br></pre></td></tr></table></figure>
+<p>最新版GDB也支持pt功能了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">gdb program</span><br><span class="line">start</span><br><span class="line">record btrace pt</span><br><span class="line">cont</span><br><span class="line"></span><br><span class="line">record instruction-history /m	# show instructions</span><br><span class="line">record function-history		# show functions executed</span><br></pre></td></tr></table></figure>
+<h4 id="honggfuzz-perf-event-open"><a href="#honggfuzz-perf-event-open" class="headerlink" title="honggfuzz perf_event_open"></a>honggfuzz perf_event_open</h4><p>在程序内通过<code>perf_event_open</code>（<a href="http://man7.org/linux/man-pages/man2/perf_event_open.2.html）函数可以使用PT实现BB基本块的覆盖率追踪，传递给指定进程pid来实现监控：" target="_blank" rel="external">http://man7.org/linux/man-pages/man2/perf_event_open.2.html）函数可以使用PT实现BB基本块的覆盖率追踪，传递给指定进程pid来实现监控：</a></p>
+<p><img src="http://riusksk.me/media/perf_event_open.png" alt=""></p>
+<p>将返回的文件描述符传递给mmap映射为可读写的用户内存空间，以便从中读取PT记录的追踪数据：</p>
+<p><img src="http://riusksk.me/media/mmapbuf.png" alt=""></p>
+<p>PT记录的追踪数据采用压缩的二进制格式输出，每秒每个CPU都会持续记录并输出，由于是硬件记录的，最早自然是出现在内核空间，为了使用它，就需要将其导出到用户空间，即通过前面mmap方法映射到用户可写的内存空间，然后再去定位数据解码。PT导出的追踪数据被存储在一个叫<code>AUX space</code>的内存区域，它相对<code>perfMmapBuf</code>的偏移记录在<code>perf_event_mmap_page-&gt;aux_offset</code>，大小为<code>perf_event_mmap_page-&gt;aux_size</code>，上面代码的第二步<code>mmap</code>就是去映射<code>AUX space</code>。</p>
+<p>接下来就是利用libpt来解码捕获到追踪数据，实现函数位于perf_ptAnalyzePkt中：</p>
+<p><img src="http://riusksk.me/media/ptAnalyzePkt.png" alt=""></p>
+<p>最后将执行到的BB基本块信息更新到feedback map，之后的实现步骤就跟本系列第1篇驱动反馈中所讲的一致。</p>
+<p>到这里，关于《honggfuzz漏洞挖掘技术深究系列》的文章先暂告一段落了，它就相当于是自己的学习笔记，也可以留作日后查询。</p>
+<p>本系列的其它文章如下：</p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzU0MzgzNTU0Mw==&amp;mid=2247483746&amp;idx=1&amp;sn=9d0ff5e0bae65f9ca9dbea4cf74449c6&amp;chksm=fb04159acc739c8c36e0785e2ce9c3a202066c6cc39a9ce32fd0fc9dfeb348e860a82e29c9d6&amp;token=3421110&amp;lang=zh_CN#rd" target="_blank" rel="external">honggfuzz漏洞挖掘技术深究系列（1）——反馈驱动（Feedback-Driven）</a></p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzU0MzgzNTU0Mw==&amp;mid=2247483780&amp;idx=1&amp;sn=8e634a1deb08006063156db60b1c1f77" target="_blank" rel="external">honggfuzz漏洞挖掘技术深究系列（2）—— Persistent Fuzzing</a></p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzU0MzgzNTU0Mw==&amp;mid=2247483819&amp;idx=1&amp;sn=daed3baf16e1211d6d869183ba1680f4&amp;chksm=fb041553cc739c457d54494c99d1870488dfa76831fde40a351098b0fcfcdb9f716a473ba213&amp;token=3421110&amp;lang=zh_CN#rd" target="_blank" rel="external">honggfuzz漏洞挖掘技术深究系列（3）——Fuzz策略</a></p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzU0MzgzNTU0Mw==&amp;mid=2247483828&amp;idx=1&amp;sn=e96241ce399781414db3ba556ce1f90d&amp;chksm=fb04154ccc739c5a12176eb7492e80abfd36e630193627ba140394e678e47ee2b0f1532516b1&amp;token=3421110&amp;lang=zh_CN#rd" target="_blank" rel="external">honggfuzz漏洞挖掘技术深究系列（4）—— 扩展Fuzzer</a></p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2018/10/14/honggfuzz5/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/honggfuzz/">honggfuzz</a>, <a href="/tags/fuzz/">fuzz</a>, <a href="/tags/漏洞挖掘/">漏洞挖掘</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2018-10-02T01:35:52.000Z"><a href="/2018/10/02/honggfuzz4/">2018-10-02</a></time>
       
       
@@ -422,7 +502,7 @@
         
   
   <div class="tags">
-    <a href="/tags/honggfuzz/">honggfuzz</a>, <a href="/tags/fuzzing/">fuzzing</a>, <a href="/tags/漏洞挖掘/">漏洞挖掘</a>
+    <a href="/tags/honggfuzz/">honggfuzz</a>, <a href="/tags/漏洞挖掘/">漏洞挖掘</a>, <a href="/tags/fuzzing/">fuzzing</a>
   </div>
 
         <!-- partial('post/share') -->
@@ -615,7 +695,7 @@
         
   
   <div class="tags">
-    <a href="/tags/honggfuzz/">honggfuzz</a>, <a href="/tags/fuzzing/">fuzzing</a>, <a href="/tags/漏洞挖掘/">漏洞挖掘</a>
+    <a href="/tags/honggfuzz/">honggfuzz</a>, <a href="/tags/漏洞挖掘/">漏洞挖掘</a>, <a href="/tags/fuzzing/">fuzzing</a>
   </div>
 
         <!-- partial('post/share') -->
@@ -910,79 +990,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2018-07-07T10:23:18.000Z"><a href="/2018/07/07/《漏洞战争》出版2周年纪念文/">2018-07-07</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2018/07/07/《漏洞战争》出版2周年纪念文/">《漏洞战争》出版2周年纪念文</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p><a href="https://item.jd.com/11983614.html" target="_blank" rel="external">《漏洞战争》</a>正式上架是在2016年7月1日，距今刚好差不多2周年了，于是在周末撰写了此文。</p>
-<p>常规套路，先感谢下各位读者的支持，书虽无异常畅销，但也卖得不差。</p>
-<p>知道你们很多人想问赚了多少稿费，其实不多，也就3万多一点：</p>
-<center><img src="http://riusksk.me/media/4000.png" alt=""></center>
-
-<p>出技术书籍本身就不赚钱，诸位如果想靠此发家，建议还是另谋出路，相比现在的知识付费、小视频主播，那真是天壤之别。</p>
-<p>2周年了，关于“书”的感想很多，简单聊几点：</p>
-<h3 id="1-暂无第2版的出版计划"><a href="#1-暂无第2版的出版计划" class="headerlink" title="1. 暂无第2版的出版计划"></a>1. 暂无第2版的出版计划</h3><p>一方面是时间问题；</p>
-<p>另一方面是觉得漏洞分析技巧性的内容没必要再更新太多东西，即使再换个漏洞案例讲也没多大作用，因为想分享的技巧都讲得差不多，换汤不换药对读者也是一种欺骗。</p>
-<p>况且现在网上还有得买，需要的话自己上<a href="https://item.jd.com/11983614.html" target="_blank" rel="external">京东</a>就行了。</p>
-<h3 id="2-关于出英文版的计划"><a href="#2-关于出英文版的计划" class="headerlink" title="2. 关于出英文版的计划"></a>2. 关于出英文版的计划</h3><p>之前曾联系过国外某著名出版社，目前还在洽谈中，但更大的问题其实还是在翻译上，曾联系其它国外的同行翻译，但一直翻译进展很慢。</p>
-<p>有这个想法，最初还是来源于Twitter上这位小哥，不懂中文，依然购买，然后用Google翻译阅读，真爱啊！！！</p>
-<center><img src="http://riusksk.me/media/twitter_book.png" alt=""></center>
-
-<p>至于有没有机会出版，套用我们吃鸡时常说的一句话：“生死有命，富贵在生！”</p>
-<h3 id="3-别太指望靠出书赚钱"><a href="#3-别太指望靠出书赚钱" class="headerlink" title="3. 别太指望靠出书赚钱"></a>3. 别太指望靠出书赚钱</h3><p>如果单纯谈钱的话，我觉得花4年写这本书完全是亏本，这也是为什么很多牛人不愿意出书的原因，还不如搞个培训实在。</p>
-<p>毕竟安全圈内人就这么多，专业性太强，读者受众就小。</p>
-<p>更多地还是当作为圈内做一点贡献，也为自己留点回忆的东西，初衷其实就是出一本写给自己的书，因为上面这几点在我写书时就知道了。</p>
-<p>顺道鄙视下，那些整天“换汤不换药”的出版多本书籍的人，稍作修改，再换个书名，又是一次大甩卖。</p>
-<p>看看那些常年占据榜前的“黑客xx从入门到精通”系列，真是让人厌恶又痛心。</p>
-<h3 id="4-希望有生之年能出本畅销的非技术书"><a href="#4-希望有生之年能出本畅销的非技术书" class="headerlink" title="4. 希望有生之年能出本畅销的非技术书"></a>4. 希望有生之年能出本畅销的非技术书</h3><p>《漏洞战争》可能成为我唯一且最后一本技术书籍，希望有生之年能出本畅销的非技术书。</p>
-<p>对于出书，我一直坚持宁缺勿滥的原则，这也是为何花了4年才出一本书的部分原因。</p>
-<p>但目前深感积累不足，也尚不知会写何种题材，只能说先多学习多积累，也不局限于安全领域本身，还是需要多涉猎诸多领域的知识。</p>
-<p>学无止境，与君共勉！</p>
-<p>如果大家对于《漏洞战争》有任何问题或建议，可通过公众号“漏洞战争”联系我：</p>
-<center><img src="http://riusksk.me/media/gzh.png" alt=""></center>
-
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2018/07/07/《漏洞战争》出版2周年纪念文/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/随笔杂谈/">随笔杂谈</a>
-  </div>
-
-        
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -1004,6 +1011,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2018/10/14/honggfuzz5/">honggfuzz漏洞挖掘技术深究系列（5）—— Intel Processor Trace</a>
+      </li>
     
       <li>
         <a href="/2018/10/02/honggfuzz4/">honggfuzz漏洞挖掘技术深究系列（4）—— 扩展Fuzzer</a>
@@ -1041,10 +1052,6 @@
         <a href="/2018/07/09/历史的错觉与误解——读《秦崩》/">历史的错觉与误解——读《秦崩》</a>
       </li>
     
-      <li>
-        <a href="/2018/07/07/《漏洞战争》出版2周年纪念文/">《漏洞战争》出版2周年纪念文</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -1054,7 +1061,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>46</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>47</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>15</small></li>
   
@@ -1066,7 +1073,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/fuzz/" style="font-size: 11.67px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 15px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 11.67px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/fuzz/" style="font-size: 13.33px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 16.67px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 13.33px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
   </div>
 </div>
 
