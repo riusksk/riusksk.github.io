@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2018-10-14T03:28:34.000Z</updated>
+  <updated>2018-10-14T03:58:30.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://riusksk.github.io/2018/10/14/honggfuzz5/"/>
     <id>http://riusksk.github.io/2018/10/14/honggfuzz5/</id>
     <published>2018-10-14T01:48:40.000Z</published>
-    <updated>2018-10-14T03:28:34.000Z</updated>
+    <updated>2018-10-14T03:58:30.000Z</updated>
     
     <content type="html">&lt;p&gt;对于闭源程序的反馈驱动Fuzzing，通常有3种方式：&lt;/p&gt;
 &lt;ul&gt;
@@ -33,7 +33,7 @@
 &lt;/ul&gt;
 &lt;h4 id=&quot;Intel-PT&quot;&gt;&lt;a href=&quot;#Intel-PT&quot; class=&quot;headerlink&quot; title=&quot;Intel PT&quot;&gt;&lt;/a&gt;Intel PT&lt;/h4&gt;&lt;p&gt;Intel® Processor Trace (Intel® PT) 是在i5/i7 5000以上型号上加入的功能，由于它是硬件级的特性，相比Qemu或Boch，在性能上和代码工作量会占有一定优势。在Linux上可以通过perf来使用PT，可以先简单看是否支持PT：&lt;/p&gt;
 &lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;查看是否支持PT:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;ls /sys/devices/intel_pt/format&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;追踪程序执行：&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;perf record -e intel_pt// program&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;也可以使用开源工具simple-pt（&lt;a href=&quot;https://github.com/andikleen/simple-pt）中的ptfeature命令行工具来检测&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/andikleen/simple-pt）中的ptfeature命令行工具来检测&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;也可以使用开源工具&lt;a href=&quot;https://github.com/andikleen/simple-pt&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;simple-pt&lt;/a&gt;中的ptfeature命令行工具来检测:&lt;/p&gt;
 &lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;./ptfeature pt&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Supports PT&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
 &lt;p&gt;最新版GDB也支持pt功能了：&lt;/p&gt;
 &lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;gdb program&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;start&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;record btrace pt&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;cont&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;record instruction-history /m	# show instructions&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;record function-history		# show functions executed&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
