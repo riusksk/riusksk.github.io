@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2018-11-10T02:47:23.000Z</updated>
+  <updated>2018-11-10T10:05:29.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,75 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>读《风格感觉：21世纪写作指南》</title>
+    <link href="http://riusksk.github.io/2018/11/10/%E8%AF%BB%E3%80%8A%E9%A3%8E%E6%A0%BC%E6%84%9F%E8%A7%89%EF%BC%9A21%E4%B8%96%E7%BA%AA%E5%86%99%E4%BD%9C%E6%8C%87%E5%8D%97%E3%80%8B/"/>
+    <id>http://riusksk.github.io/2018/11/10/读《风格感觉：21世纪写作指南》/</id>
+    <published>2018-11-10T08:17:37.000Z</published>
+    <updated>2018-11-10T10:05:29.000Z</updated>
+    
+    <content type="html">&lt;p&gt;1、节俭使用元话语（语句中标示话语结构的标记语言，即用来提醒读者应该注意什么），可以用提问代替元话语，比如：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;【改前】：这一章讨论引起名字流行程度上升和下降的因素。&lt;/p&gt;
+&lt;p&gt;【改后】：一个名字流行或不流行的原因是什么？&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;2、放弃专家腔、更自然地对话&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;【改前】：近年来，越来越多的心理学家和语言学家将注意力转向儿童语言习得的问题。本文将评述这一过程近年来的研究。&lt;/p&gt;
+&lt;p&gt;【改后】：小孩子不用专门上课，就能获得说一门语言的能力。他们怎么做到的？&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;3、写作清晰有力，少用模糊词汇&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;【改前】：杰克是个诚实的人。&lt;/p&gt;
+&lt;p&gt;【改后】：杰克是个&lt;code&gt;特别&lt;/code&gt;诚实的人。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;加了“特别”反而让人产生困惑，甚至以为说的是反话，所以少用“非常”、“十分”、“特别”这种过犹不及的强调词。&lt;/p&gt;
+&lt;p&gt;4、少用抽象词，比如“xx性”、“xx观”、“xx力”，这种特别容易出现在工作中，俗称“官僚体”，腾讯内部就有一堆此类名词（闭环、打法、自控力、大局观、专注度……）&lt;/p&gt;
+&lt;p&gt;5、去掉僵尸名词：比如“做出确认”变成“确认”、“做出辞职的决定”变成“决定辞职”。&lt;/p&gt;
+&lt;p&gt;6、采用主动和互动风格，即站在读者角度或者自己主动的角度。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;【改前】：我们很高兴地宣布，本实验室的新设施将对外开放，随时准备承接各类脑科学实验。&lt;/p&gt;
+&lt;p&gt;【改后】：你将有机会使用本实验室，来做你的脑科学实验。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;7、【有序地称呼反复出现的事物】避免读者过多思考，免得他们需要思考是否为新事物&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;一个&lt;code&gt;英国人&lt;/code&gt;、一个&lt;code&gt;法国人&lt;/code&gt;和一个&lt;code&gt;犹太人&lt;/code&gt;坐在一起，这个&lt;code&gt;英国人&lt;/code&gt;说……，这个&lt;code&gt;法国人&lt;/code&gt;说……，这个&lt;code&gt;犹太人&lt;/code&gt;说……&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;少用他/她/它去代替前面说过的人物事等，减少读者疑惑和思考，避免产生歧义，比如：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;愧疚、复仇和苦痛会从感情上毁掉你和你的孩子。&lt;code&gt;你&lt;/code&gt;必须摆脱他们。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;上面的&lt;code&gt;你&lt;/code&gt;是摆脱你的孩子，还是摆脱愧疚、复仇和苦痛？&lt;/p&gt;
+&lt;p&gt;8、避免使用过多的连接词，否则文章就会变得臃肿不堪，比如下句中的&lt;code&gt;因为&lt;/code&gt;就是多余的，因为前面的“原因”已经暗示我们正在做出解释：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;太多人生活在黑暗之中的原因是&lt;code&gt;因为&lt;/code&gt;他们想那样生活。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;9、【谨慎地运用否定】正如克林顿辩解道“我没有和那个女人发生过性关系”的时候，并没有使各种传言平息下来，有时甚至起到“此地无银三百两“的反作用。&lt;/p&gt;
+&lt;p&gt;10、正确的写作用法只是促成良好写作最小的因素，其重要性远远比不过保持连贯性、使用古典风格、克服知识的诅咒，更不用说在智力上维护勤恳了。假如真的希望提高写作质量，或者怒斥他人的文章，最需要关注的不是那些语法规则，而是那些支配批判性思考和发现事实的规则：&lt;/p&gt;
+&lt;p&gt;​    a. 查资料&lt;/p&gt;
+&lt;p&gt;​    b.确保论证有理有据&lt;/p&gt;
+&lt;p&gt;​    c. 不要把轶事或个人经历当作世界的常态，避免把特殊个例当作显著现象&lt;/p&gt;
+&lt;p&gt;​    d. 谨防虚假的二分法：把复杂问题化为两种思想之间的战争，几乎无法帮助我们增进理解&lt;/p&gt;
+&lt;p&gt;​    e.论证应当基于理性，而非个人。即“不要证明自己对，而要弄清什么是对的”&lt;/p&gt;
+&lt;p&gt;最后说一句最重要的话：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;热文或畅销书之所以流行，关键在于其内容，而非华丽的辞藻文法。&lt;/strong&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;1、节俭使用元话语（语句中标示话语结构的标记语言，即用来提醒读者应该注意什么），可以用提问代替元话语，比如：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;【改前】：这一章讨论引起名字流行程度上升和下降的因素。&lt;/p&gt;
+&lt;p&gt;【改后】：一个名字流行或不流行的原因是什么？&lt;/p&gt;
+
+    
+    </summary>
+    
+      <category term="随笔杂谈" scheme="http://riusksk.github.io/categories/%E9%9A%8F%E7%AC%94%E6%9D%82%E8%B0%88/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>我的挑书手段</title>
@@ -392,9 +461,9 @@
     
       <category term="honggfuzz" scheme="http://riusksk.github.io/tags/honggfuzz/"/>
     
-      <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
-    
       <category term="fuzzing" scheme="http://riusksk.github.io/tags/fuzzing/"/>
+    
+      <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
     
   </entry>
   
@@ -540,9 +609,9 @@
     
       <category term="honggfuzz" scheme="http://riusksk.github.io/tags/honggfuzz/"/>
     
-      <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
-    
       <category term="fuzzing" scheme="http://riusksk.github.io/tags/fuzzing/"/>
+    
+      <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
     
   </entry>
   
@@ -1347,30 +1416,6 @@
     
     
       <category term="CVE" scheme="http://riusksk.github.io/tags/CVE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>调试V8中JS对应的汇编代码</title>
-    <link href="http://riusksk.github.io/2017/06/04/%E8%B0%83%E8%AF%95V8%E4%B8%ADJS%E5%AF%B9%E5%BA%94%E7%9A%84%E6%B1%87%E7%BC%96%E4%BB%A3%E7%A0%81/"/>
-    <id>http://riusksk.github.io/2017/06/04/调试V8中JS对应的汇编代码/</id>
-    <published>2017-06-04T08:37:20.000Z</published>
-    <updated>2017-06-04T08:39:04.000Z</updated>
-    
-    <content type="html">&lt;h3 id=&quot;1、调试未优化代码&quot;&gt;&lt;a href=&quot;#1、调试未优化代码&quot; class=&quot;headerlink&quot; title=&quot;1、调试未优化代码&quot;&gt;&lt;/a&gt;1、调试未优化代码&lt;/h3&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;gdb --args ~/v8/out/ia32.debug/d8 --print-code poc.js&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;bp v8::internal::FullCodeGenerator::MakeCode&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;run&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;c&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;finish   &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;//跟c命令配对执行多次，直至打印出需要的汇编指令&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Run till exit from #0  v8::internal::FullCodeGenerator::MakeCode (info=0xff873eb8) at ../src/full-codegen.cc:283&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;--- Raw source ---&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;……&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;--- Code ---&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;source_position = 197&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;kind = FUNCTION&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;name = evil_object.toJSON&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Instructions (size = 128)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x2b3301a0     0  55             push ebp&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x2b3301a1     1  89e5           mov ebp,esp&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;……&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;bp * 0x2b3301a0&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;h3 id=&quot;2、调试优化代码&quot;&gt;&lt;a href=&quot;#2、调试优化代码&quot; class=&quot;headerlink&quot; title=&quot;2、调试优化代码&quot;&gt;&lt;/a&gt;2、调试优化代码&lt;/h3&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;29&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;30&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;31&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;32&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;33&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;34&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;35&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;36&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;37&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;38&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;39&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;40&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;41&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;42&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;43&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;44&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;45&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;46&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;47&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;gef&amp;gt;  bp v8::internal::Context::AddOptimizedFunctiongef&amp;gt;  run Thread 1 &amp;quot;d8&amp;quot; hit Breakpoint 1, v8::internal::Context::AddOptimizedFunction (this=0x1fe2a1083a79, function=0x1fe2a10ac281) at ../src/contexts.cc:413gef&amp;gt;  job function&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x1fe2a10ac281: [Function]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - map = 0xe7a59804099 [FastProperties]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - prototype = 0x1fe2a1084069&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - elements = 0x367f8ed82241 &amp;lt;FixedArray[0]&amp;gt; [FAST_HOLEY_ELEMENTS]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - initial_map = &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - shared_info = 0x1fe2a10abdd9 &amp;lt;SharedFunctionInfo Ctor&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - name = 0x1fe2a10abae9 &amp;lt;String[4]: Ctor&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - formal_parameter_count = 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - context = 0x1fe2a1083a79 &amp;lt;FixedArray[188]&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - literals = 0x1fe2a10ac551 &amp;lt;FixedArray[1]&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;code = 0x3e4da55066a1 &amp;lt;Code: OPTIMIZED_FUNCTION&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; - properties = &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   #length: 0x367f8edd2709 &amp;lt;AccessorInfo&amp;gt; (accessor constant)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   #name: 0x367f8edd2779 &amp;lt;AccessorInfo&amp;gt; (accessor constant)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   #arguments: 0x367f8edd27e9 &amp;lt;AccessorInfo&amp;gt; (accessor constant)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   #caller: 0x367f8edd2859 &amp;lt;AccessorInfo&amp;gt; (accessor constant)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   #prototype: 0x367f8edd28c9 &amp;lt;AccessorInfo&amp;gt; (accessor constant)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;gef&amp;gt; job 0x3e4da55066a1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da55066a1: [Code]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;kind = OPTIMIZED_FUNCTION&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;stack_slots = 5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;compiler = crankshaft&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Instructions (size = 218)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da5506700     0  55             push rbp&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da5506701     1  4889e5         REX.W movq rbp,rsp&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da5506704     4  56             push rsi&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da5506705     5  57             push rdi&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;……&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;gef&amp;gt; bp *0x3e4da5506700&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;gef&amp;gt; c&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Continuing.&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Thread 1 &amp;quot;d8&amp;quot; hit Breakpoint 2, 0x00003e4da5506700 in ?? ()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;……&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; code:i386:x86-64&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da5506700    push rbp   $pc&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da5506701    mov rbp, rsp&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da5506704    push rsi&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da5506705    push rdi&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da5506706    sub rsp, 0x8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;0x3e4da550670a    mov rax, QWORD PTR [rbp-0x8]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;1、调试未优化代码&quot;&gt;&lt;a href=&quot;#1、调试未优化代码&quot; class=&quot;headerlink&quot; title=&quot;1、调试未优化代码&quot;&gt;&lt;/a&gt;1、调试未优化代码&lt;/h3&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;t
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
-    
-      <category term="v8" scheme="http://riusksk.github.io/tags/v8/"/>
     
   </entry>
   
