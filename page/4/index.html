@@ -77,6 +77,59 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2016-07-17T12:21:48.000Z"><a href="/2016/07/17/《漏洞战争：软件漏洞分析精要》勘误表/">2016-07-17</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2016/07/17/《漏洞战争：软件漏洞分析精要》勘误表/">《漏洞战争：软件漏洞分析精要》勘误表</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>后面会在github上维护一款《漏洞战争》的勘误表：<a href="https://github.com/riusksk/vul_wars_error" target="_blank" rel="external">https://github.com/riusksk/vul_wars_error</a> ，会不定期更新，也欢迎各位读者通过微博<a href="http://weibo.com/riusksk" target="_blank" rel="external">@riusksk</a>反馈书中的错误，等后面重印时更正，并在前言添加感谢。</p>
+<h3 id="当前错误列表"><a href="#当前错误列表" class="headerlink" title="当前错误列表"></a>当前错误列表</h3><p>1、前言VIII 第4段落最后一句：<code>专研</code> =&gt; <code>钻研</code><br>2、P7页中多处的 <code>smail</code> =&gt; <code>smali</code>，<code>baksmail</code> ＝&gt; <code>baksmali</code> （感谢 陈良@科恩实验室）<br>3、P529页第2段中，“按照<code>图10-12所示</code>的方法重新编译内核源码” =&gt; “按照<code>第10.3.7章节</code>的方法重新编译内核源码”（感谢 江小照）<br>4、P16页最后一行中<code>Thread</code> =&gt; <code>Threat</code>（感谢 “不高兴撒”）<br>5、P164页第3段第3行<code>unsigned int（2字节）</code> =&gt; <code>unsigned int（4字符）</code>（感谢 “55-AA”）</p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2016/07/17/《漏洞战争：软件漏洞分析精要》勘误表/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/书籍/">书籍</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2016-07-12T09:20:48.000Z"><a href="/2016/07/12/《漏洞战争》配套资料下载/">2016-07-12</a></time>
       
       
@@ -662,77 +715,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2015-07-10T16:00:00.000Z"><a href="/2015/07/11/Hacking-Team-武器库研究（四）：Flash-New-0Day-opaqueBackground-UAF/">2015-07-11</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/07/11/Hacking-Team-武器库研究（四）：Flash-New-0Day-opaqueBackground-UAF/">Hacking Team 武器库研究（四）：Flash New 0Day (opaqueBackground UAF)</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>周末大清早起来，就看到知道创宇在微博上说，Hacking Team又泄露新的Flash 0Day，在当前最新实测可用。于是笔者下载了一份利用代码，经测试确实在最新版上可利用，目前Adobe官方未发布补丁。此次泄露的0day并没有在泄露的工具库里面，而是在邮件附件中被发现的。</p>
-<p><img src="http://riusksk.me/media/hackteam04/1.png" alt=""></p>
-<p>##【利用代码分析】</p>
-<p>1、这次的漏洞主要出现在AS3 “opaqueBackground” 属性上，它主要用于设置背景颜色。首先创建_ar Array数组，然后用vector.<uint>对象填充。</uint></p>
-<p><img src="http://riusksk.me/media/hackteam04/2.png" alt=""></p>
-<p>2、接着创建TextLine对象，然后设置它的opaqueBackground属性，再自定义valueOf函数，这个函数是触发漏洞的关键，跟前几个flash漏洞类似。</p>
-<p><img src="http://riusksk.me/media/hackteam04/3.png" alt=""></p>
-<p>3、设置opaqueBackground属性，将_mc（MyClass类型）赋予opaqueBackground，由于数据类型不同，AVM会进行类型转换，此时自定义的valueOf2就会被调用。</p>
-<p><img src="http://riusksk.me/media/hackteam04/4.png" alt=""></p>
-<p><img src="http://riusksk.me/media/hackteam04/5.png" alt=""></p>
-<p>4、调用recreateTextLine函数重建TextLine，导致原分配的TextLine对象内存被释放，但程序依然保留着对它的引用，所以漏洞也是个UAF漏洞。接着重新设置_ar[i].length的长度值（_vLen 大于原始长度值 ），会导致重新分配内存，从而占用已释放的内存，此时里面都是vector.<uint>对象。最后返回_vLen+8的值给_ar[_cnt].opaqueBackground，如果利用成功，它刚好会去篡改某个vector.<uint>对象的长度值，这里是改为106大小。</uint></uint></p>
-<p><img src="http://riusksk.me/media/hackteam04/6.png" alt=""></p>
-<p>5、找到被篡改了长度的vector对象，由于其长度值被更改，允许读取到更大内存空间的数据，再用这个被改的vector去覆盖下一个vector长度为0x40000000，从而获取需要调用的函数地址，绕过ASLR保护。根据不同的系统平台，选择不同的shellcode代码执行，这些跟前2个flash 漏洞的利用模板基本一致。</p>
-<p><img src="http://riusksk.me/media/hackteam04/7.png" alt=""></p>
-<p>6、内存搜索的方式也是采用搜索“MZ”PE头这种暴力方式，再去解析PE文件格式，从导入表中的找到kernel32.dll库，再从其函数名列表里找到VirtualProtect函数，进而找到对应的函数地址进行调用。</p>
-<p><img src="http://riusksk.me/media/hackteam04/8.png" alt=""></p>
-<p>7、看下ShellWin32.Exec函数，通过内存搜索找到VirtualProtect函数地址，将包含执行calc的shellcode设置为可执行权限，以此绕过DEP保护，并用指向shellcode的指针替换payload对应的JIT函数指针，当调用Payload.call 时则执行的正是shellcode。</p>
-<p><img src="http://riusksk.me/media/hackteam04/9.png" alt=""></p>
-<p>##【总结】</p>
-<p>此次漏洞主要是AS3 opaqueBackground 属性导致的UAF漏洞，依然是valueOf导致的漏洞，此次Hacking Team 曝光的3个漏洞均是valueOf问题，用的基本是同一套利用模板，并且支持多个平台环境，都是采用vector exploit技术去实现信息泄露，从而绕过ASLR，再调用virtualProtect去赋予shellcode可执行权限，以此绕过DEP保护。可以预见未来将会有很多flash exploit 采用类似技术，甚至可能在一些恶意样本中找到Hacking Team的Flash利用模板，未来的利用代码将会更加工程化，通用化。</p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2015/07/11/Hacking-Team-武器库研究（四）：Flash-New-0Day-opaqueBackground-UAF/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/Hacking-Team/">Hacking Team</a>, <a href="/tags/Flash/">Flash</a>, <a href="/tags/0day/">0day</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -754,6 +736,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2018/11/18/读《态度》/">读《态度》</a>
+      </li>
     
       <li>
         <a href="/2018/11/10/读《风格感觉：21世纪写作指南》/">读《风格感觉：21世纪写作指南》</a>
@@ -791,10 +777,6 @@
         <a href="/2018/07/29/honggfuzz漏洞挖掘技术1/">honggfuzz漏洞挖掘技术深究系列（1）——反馈驱动（Feedback-Driven）</a>
       </li>
     
-      <li>
-        <a href="/2018/07/21/编译原理与安全/">编译原理在安全领域的应用</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -806,7 +788,7 @@
   
     <li><a href="/categories/技术分享/">技术分享</a><small>47</small></li>
   
-    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>17</small></li>
+    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>18</small></li>
   
   </ul>
 </div>
@@ -816,7 +798,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/fuzz/" style="font-size: 13.33px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 16.67px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 13.33px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/fuzz/" style="font-size: 13.33px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 16.67px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 13.33px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
   </div>
 </div>
 
