@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2018-11-24T03:53:06.000Z</updated>
+  <updated>2018-11-24T04:33:42.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://riusksk.github.io/2018/11/24/%E6%9D%80%E8%BD%AF%E4%B9%8B%E6%AE%87/"/>
     <id>http://riusksk.github.io/2018/11/24/杀软之殇/</id>
     <published>2018-11-24T02:09:41.000Z</published>
-    <updated>2018-11-24T03:53:06.000Z</updated>
+    <updated>2018-11-24T04:33:42.000Z</updated>
     
     <content type="html">&lt;p&gt;&lt;img src=&quot;https://ws2.sinaimg.cn/large/006tNbRwgy1fxixl44cx8j30zk0i2tyn.jpg&quot; alt=&quot;百度&quot;&gt;&lt;/p&gt;
 &lt;p&gt;前几天，百度杀毒、百度卫士宣布停止服务，祭出“百度杀毒感谢一路有你”的殇曲，就此终结！&lt;/p&gt;
@@ -30,6 +30,8 @@
 &lt;p&gt;当年Android病毒那么严重，第一款Android主动防御软件LBE诞生时也是风光无限，甚至后面还利用系统漏洞作防御。&lt;/p&gt;
 &lt;p&gt;再看看现在，随着Windows系统自主安全能力以及自家杀软Windows Defender的不断完善，并且提供给杀软的接口越来越少，权限越来越集中管理，使得PC杀软越来越无用武之地，甚至曾经的头牌杀软已沦为流氓软件。&lt;/p&gt;
 &lt;p&gt;而这几年Google在Android安全上的投入也是非常大，整个系统的安全性相比前几年提升很大，他们家的chrome也曾在pwn2own黑客大赛幸存过几年，虽然今年被破了。&lt;/p&gt;
+&lt;p&gt;以前iOS截图后是不能直接分享的，然后就有一些软件直接提供截图后的分享功能，但是现在苹果自己在iOS上做了，如果软件还保留原分享功能，就成为一种干扰，有些软件就又不得不去掉：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://ws3.sinaimg.cn/large/006tNbRwgy1fxj1m5l2w9j30cc0m0adq.jpg&quot; alt=&quot;image-20181124123301131&quot;&gt;&lt;/p&gt;
 &lt;p&gt;所以，&lt;strong&gt;凡是面向系统的产品，自系统厂商打算自己做时，就没你啥事了，无论是现今的PC，还是未来的移动端，均是如此。&lt;/strong&gt;&lt;/p&gt;
 &lt;h4 id=&quot;面向业务的产品&quot;&gt;&lt;a href=&quot;#面向业务的产品&quot; class=&quot;headerlink&quot; title=&quot;面向业务的产品&quot;&gt;&lt;/a&gt;面向业务的产品&lt;/h4&gt;&lt;p&gt;以前，很多企业为了维护业务安全，都是从安全公司买服务或产品。&lt;/p&gt;
 &lt;p&gt;后来，随着企业的壮大，很多安全工作都企业自己做，自己开发扫描器、防火墙等等，然后各安全公司就开始被收购，乙方安全人员开始向甲方流动。&lt;/p&gt;
@@ -54,7 +56,7 @@
     
     </summary>
     
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+      <category term="随笔杂谈" scheme="http://riusksk.github.io/categories/%E9%9A%8F%E7%AC%94%E6%9D%82%E8%B0%88/"/>
     
     
   </entry>
@@ -609,9 +611,9 @@
     
       <category term="honggfuzz" scheme="http://riusksk.github.io/tags/honggfuzz/"/>
     
-      <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
-    
       <category term="fuzzing" scheme="http://riusksk.github.io/tags/fuzzing/"/>
+    
+      <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
     
   </entry>
   
@@ -757,9 +759,9 @@
     
       <category term="honggfuzz" scheme="http://riusksk.github.io/tags/honggfuzz/"/>
     
-      <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
-    
       <category term="fuzzing" scheme="http://riusksk.github.io/tags/fuzzing/"/>
+    
+      <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
     
   </entry>
   
