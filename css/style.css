@@ -702,6 +702,7 @@ article footer .addthis iframe {
   width: 100%;
 }
 .entry table th {
+  background-color: #000;
   border: 1px solid #fff;
   border-collapse: collapse;
 }
