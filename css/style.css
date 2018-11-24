@@ -696,6 +696,20 @@ article footer .addthis iframe {
   margin-bottom: 50px;
   font: 0.9em/1.6 "Microsoft YaHei";
 }
+.entry table {
+  border: 1px solid #fff;
+  border-collapse: collapse;
+  width: 100%;
+}
+.entry table th {
+  border: 1px solid #fff;
+  border-collapse: collapse;
+}
+.entry table td {
+  border: 1px solid #fff;
+  border-collapse: collapse;
+  padding: 1px 8px 1px;
+}
 .entry .gist {
   background: #eee;
   border: 1px solid #ddd;
@@ -764,7 +778,14 @@ figure.highlight pre {
 figure.highlight table {
   margin-top: 15;
   border-spacing: 0;
+  border: 1px;
   width: 100%;
+}
+figure.highlight table th {
+  border: 0px solid #fff;
+}
+figure.highlight table td {
+  border: 0px solid #fff;
 }
 figure.highlight .gutter {
   color: #fff;
