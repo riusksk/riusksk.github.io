@@ -762,8 +762,9 @@ figure.highlight pre {
   margin: 0;
 }
 figure.highlight table {
-  margin-top: 0;
+  margin-top: 15;
   border-spacing: 0;
+  width: 100%;
 }
 figure.highlight .gutter {
   color: #fff;
