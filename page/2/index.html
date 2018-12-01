@@ -77,6 +77,97 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2018-08-11T03:12:45.000Z"><a href="/2018/08/11/从攻防角度谈黑客与程序员/">2018-08-11</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2018/08/11/从攻防角度谈黑客与程序员/">从攻防角度谈黑客与程序员</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <blockquote>
+<p>常言道：“未知攻，焉知防”，然，“知攻未必知防”！</p>
+</blockquote>
+<p><img src="https://riusksk.me/media/hacker.jpg" alt=""></p>
+<p><strong>01 — 黑客的敌人是程序员</strong></p>
+<p>黑客所要攻破的任何一款产品，无论是网站、软件还是IoT硬件产品，这些都是由程序员开发的，所以他们要攻破的其实是程序员的安全思维缺陷。</p>
+<p>所以说，黑客的敌人是程序员。但如果黑客本身就是程序员呢？</p>
+<p><strong>02 — 会开发的黑客：知己知彼，百战不殆</strong></p>
+<p>有时某些大厂的漏洞致谢公告放出后，可能会出现连续几个月，某类漏洞突然暴增。因为程序员也常常会出现习惯性错误，比如习惯用memcpy危险函数，且不校验size，那么有一必有二，有可能顺藤摸瓜找到一堆此类漏洞。</p>
+<p>上面这种情况就是黑客从程序员的角度入手，去寻找突破口。</p>
+<p>在之前的工作中，也遇到过一些不懂安全的程序员，在转入安全漏洞挖掘领域后，能够快速上手，挖到不少Android等大厂产品的漏洞。这也利益于此前的开发基础，具备开发能力的程序员比只懂安全的技术人员更容易在安全道路上走得更远更深。</p>
+<p><strong>黑客是否需要精通开发？</strong>这是个老生常谈的问题了。</p>
+<p>如果你去看一些黑客大牛或漏洞挖掘高手写的代码，你会发现有时他们写得也跟我们一样烂。</p>
+<p>但也不是说搞安全就不需要学编程开发了，而是必学课程。只是，很多情况下，黑客具备的是基础开发能力，而非开发产品的能力，两者还是有区别的。但其实也不是绝对，我说的只是一种普遍情况。</p>
+<p><strong>对于安全从业人员，掌握基础开发能力是必备的，而是否具备产品开发能力成了一道分水岭。即，产品开发能力是加分项，而非必备项。</strong></p>
+<p><strong>03 — 懂安全的程序员：无存在感</strong></p>
+<center><img src="https://riusksk.me/media/god.jpg" alt=""></center>
+
+<p>先来看一幅漫画，估计这是许多安全开发同学的心声：防御住了，用户无感知；未防御住，用户就开始骂娘了，或者受公司处罚。</p>
+<p>程序员开发的产品出安全事故，肯定会受到处罚。大家常调侃道：CSO就是用来背锅的，多少有些道理。</p>
+<p>但如果懂安全的程序员开发出具有高安全性的产品，对用户，甚至对领导而言，都可能是无感知，跟不存在一般。</p>
+<p>常说赏罚分明，但上述普遍情况明显是不对等、不完善的赏罚机制。所以现在也有一些公司慢慢地增设“开发之星”、“质量之星”之类的奖励机制，也算是对此的一种弥补措施。</p>
+<p><strong>04 — 攻防不对等：攻击的是短板，防御的是体系</strong></p>
+<p>黑客攻击时，只需要找到系统的一处短板，就有可能攻破系统。</p>
+<p>业务防御时，则需要构建全面的防御体系，比黑客掌握更加全面的攻击点和防御策略，而非单一的技术点或者功能模块。</p>
+<p>因此，防御比攻击更难，两者是不对等的。</p>
+<p>有些大厂，比如微软就设有“纵深防御”奖励机制。纵深防御，通俗地讲，就是层层防御，一层防御失效后，仍有备用的其它防御策略生效。</p>
+<p>比如电影《侠盗联盟》中，去城堡偷项链的场景：</p>
+<p>翻过城墙后 =》还有保安 =》绕过保安后还有监控 =》绕过监控后还有防盗门 =》 进门后还有看门狗 =》最后还有指纹验证</p>
+<center><img src="https://riusksk.me/media/v2-838f8dccd10d662cbdd11f0972181b8f_hd.jpg" alt=""></center>
+
+<p><strong>05 — 知攻未必知防</strong></p>
+<p>常言道：“未知攻，焉知防”，对此我一直深信不疑。</p>
+<p>但这是必要不充分条件，因为现在互联网越来越方便，工具化、教程化的资源网上遍地都是，很多脚本小子随手就可以拿来入侵网站，但让他们提供防御方案，基本都要歇菜。</p>
+<p>之前面试过几个做渗透测试的同学，当问某个WEB漏洞的防御时，对方直接说，他只做攻击，不做防御，不懂这些。</p>
+<p>对于企业而言，让你做攻击测试的目的，还是为了提前作防御，如果只知攻，不懂防，又有多大价值呢？</p>
+<p><strong>06 — 结语</strong></p>
+<p>对于不懂产品开发的黑客，以及不懂安全的程序员，我们均表示理解；对于即懂安全又懂开发的同学，我们则爱之、惜之。但无论你是黑客（白帽子：无任何违法乱纪行为），还是程序员，如对【微信支付安全】感兴趣，均可私信本账号，共讨职业发展大计，承诺每条有效私信必回，欢迎搭讪。</p>
+<center><img src="http://riusksk.me/media/gzh.png" alt=""></center>
+
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2018/08/11/从攻防角度谈黑客与程序员/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/随笔杂谈/">随笔杂谈</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/攻防/">攻防</a>, <a href="/tags/黑客/">黑客</a>, <a href="/tags/程序员/">程序员</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2018-07-29T01:54:40.000Z"><a href="/2018/07/29/honggfuzz漏洞挖掘技术1/">2018-07-29</a></time>
       
       
@@ -158,7 +249,7 @@
         
   
   <div class="tags">
-    <a href="/tags/honggfuzz/">honggfuzz</a>, <a href="/tags/fuzzing/">fuzzing</a>, <a href="/tags/漏洞挖掘/">漏洞挖掘</a>
+    <a href="/tags/honggfuzz/">honggfuzz</a>, <a href="/tags/漏洞挖掘/">漏洞挖掘</a>, <a href="/tags/fuzzing/">fuzzing</a>
   </div>
 
         <!-- partial('post/share') -->
@@ -776,80 +867,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2018-03-14T11:01:47.000Z"><a href="/2018/03/14/计算机行业是否需要学历/">2018-03-14</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2018/03/14/计算机行业是否需要学历/">计算机行业是否需要学历？</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <h2 id="——-记《软技能：代码之外的生存指南》读后感"><a href="#——-记《软技能：代码之外的生存指南》读后感" class="headerlink" title="—— 记《软技能：代码之外的生存指南》读后感"></a>—— 记《软技能：代码之外的生存指南》读后感</h2><p>最近在读一本写给开发者，但又跟技术、代码无关的书籍叫<a href="http://item.jd.com/11987446.html" target="_blank" rel="external">《软技能：代码之外的生存指南》</a>，主要讲了关于理财、就业、健身、自我营销、精神等诸多软技能的书籍，如果你是个单纯痴迷于技术的IT民工，建议还是看一下。</p>
-<p>此书涉及面太广，本文主要就聊下学历方面的话题，估计在知乎上谈得最多的就是要不要考研的问题了。</p>
-<p>计算机行业应该算是对学历要求最低的行业之一了，但也不能说完全没用。</p>
-<p>事物总是具有两面性，如果只是单纯地说需要或者不需要学历，那都是片面的。</p>
-<h3 id="单纯说需要或者不需要学历都是片面的"><a href="#单纯说需要或者不需要学历都是片面的" class="headerlink" title="单纯说需要或者不需要学历都是片面的"></a>单纯说需要或者不需要学历都是片面的</h3><p>结果自身的一些经历和中国国情，总结下有无学历的一些优缺点，也欢迎大家补充：</p>
-<p><img src="/media/2018-03-14.7.43.31.png" alt=""></p>
-<h3 id="是否考研读博"><a href="#是否考研读博" class="headerlink" title="是否考研读博"></a>是否考研读博</h3><p>这个问题只有自己才能找到答案，因为只有自己才知道自己更需要什么。</p>
-<p>先说考研读博，关键看你的目的是什么。</p>
-<p>比如你想留校从事科研教育工作，或者进入政府银行、中科院等体制内的单位，那高学历几乎是必须的。</p>
-<p>像现在招行的招人条件是必须985/211的大学，否则可能连面试机会都没有。</p>
-<p>而如果是进体制外的一些企业，比如BAT等互联网公司，研究生的起步薪资比本科生高，但那只是给的辛苦费，并不是对你技术能力的认可。</p>
-<p>这些互联网企业一般要求本科以上学历，然后更看重工作经验，比如硕士毕业生是T1.3（助理工程师），而工作3年的本科生，快点是有可能到T3.1（高级工程师），在人脉、技术、薪资上已经不是一个量级了。</p>
-<p>至于那些特殊offer的就不在此讨论范围之内了。</p>
-<p>也不是说读研没用，或者专科的没机会，腾讯里面也有专科毕业的高工，正如前面所说的，学历不足就得靠工作经验去弥补了，只要你能力出足还是有机会的。</p>
-<p>现在AI（人工智能）很火，如果想从事这方面工作，对学术理论研究要求更高，继续求学可能更合适。</p>
-<p>现在很多互联网公司，对AI岗位的要求，很多是直接要求博士以上学历的，待遇也很有竞争力。</p>
-<p>不过互联网发展如此迅速，AI火个两三年也差不多了，不可能一直如此受热棒的，现在才考虑读博可能就赶不上这波热潮了，这个还需要用发展的眼光来看待。</p>
-<p>至于那些害怕就业，要延缓就业压力的，是否考研读博都一样，就业压力都需要面临的。</p>
-<p>还有些只是想过来体验人生，你怎么选都是对的^_^。</p>
-<h3 id="持续学习才是王道"><a href="#持续学习才是王道" class="headerlink" title="持续学习才是王道"></a>持续学习才是王道</h3><p>难道读完研或博士毕业了就不用学习了吗？决定一个人走得多远，关键还是在能否保持持续学习的心态，因此，个人是比较崇尚自学的学习方式，但这要求自律性较高。</p>
-<p>贴一张在看雪上看到的帖子，不看下，永远不知道别人有多努力，共勉！</p>
-<p><img src="/media/pediy.jpeg" alt=""></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>整体而言，拥有学历并不是什么坏事，就中国国情而言，学历还是需要的，至少拥有本科学历会更好，至于是否考研读博，可参考上一条自行选择。</p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2018/03/14/计算机行业是否需要学历/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/随笔杂谈/">随笔杂谈</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/职业/">职业</a>, <a href="/tags/学历/">学历</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -871,6 +888,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2018/12/01/bochspwn1/">Bochspwn漏洞挖掘技术深究(1)：Double Fetches 检测</a>
+      </li>
     
       <li>
         <a href="/2018/11/24/杀软之殇/">从杀软之殇谈产品</a>
@@ -908,10 +929,6 @@
         <a href="/2018/08/22/honggfuzz漏洞挖掘技术2/">honggfuzz漏洞挖掘技术深究系列（2）—— Persistent Fuzzing</a>
       </li>
     
-      <li>
-        <a href="/2018/08/11/从攻防角度谈黑客与程序员/">从攻防角度谈黑客与程序员</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -921,7 +938,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>47</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>48</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>19</small></li>
   
@@ -933,7 +950,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/fuzz/" style="font-size: 13.33px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 16.67px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 13.33px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 13.33px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 16.67px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 13.33px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
   </div>
 </div>
 
