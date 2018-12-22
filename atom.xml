@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2018-12-22T02:58:11.000Z</updated>
+  <updated>2018-12-22T03:16:33.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Bochspwn漏洞挖掘技术深究(2)：未初始化漏洞检测</title>
+    <title>Bochspwn漏洞挖掘技术深究(2)：内核未初始化漏洞检测</title>
     <link href="http://riusksk.github.io/2018/12/22/bochspwn-reloaded/"/>
     <id>http://riusksk.github.io/2018/12/22/bochspwn-reloaded/</id>
     <published>2018-12-22T00:13:28.000Z</published>
-    <updated>2018-12-22T02:58:11.000Z</updated>
+    <updated>2018-12-22T03:16:33.000Z</updated>
     
     <content type="html">&lt;p&gt;本文主要介绍&lt;a href=&quot;https://github.com/googleprojectzero/bochspwn-reloaded&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Bochspwn Reloaded&lt;/a&gt;内核未初始化漏洞检测技术，它采用污点追踪对内核层向用户层泄露数据的行为进行检测。&lt;/p&gt;
 &lt;p&gt;关于bochs插桩技术参考&lt;a href=&quot;http://riusksk.me/2018/12/01/bochspwn1/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;《Bochspwn漏洞挖掘技术深究(1)：Double Fetches 检测》&lt;/a&gt;，此处不再赘述。&lt;/p&gt;
@@ -476,9 +476,9 @@
     
       <category term="honggfuzz" scheme="http://riusksk.github.io/tags/honggfuzz/"/>
     
-      <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
-    
       <category term="fuzz" scheme="http://riusksk.github.io/tags/fuzz/"/>
+    
+      <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
     
   </entry>
   
@@ -738,9 +738,9 @@
     
       <category term="honggfuzz" scheme="http://riusksk.github.io/tags/honggfuzz/"/>
     
-      <category term="fuzzing" scheme="http://riusksk.github.io/tags/fuzzing/"/>
-    
       <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
+    
+      <category term="fuzzing" scheme="http://riusksk.github.io/tags/fuzzing/"/>
     
   </entry>
   
@@ -886,9 +886,9 @@
     
       <category term="honggfuzz" scheme="http://riusksk.github.io/tags/honggfuzz/"/>
     
-      <category term="fuzzing" scheme="http://riusksk.github.io/tags/fuzzing/"/>
-    
       <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
+    
+      <category term="fuzzing" scheme="http://riusksk.github.io/tags/fuzzing/"/>
     
   </entry>
   
