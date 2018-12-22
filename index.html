@@ -77,6 +77,107 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2018-12-22T00:13:28.000Z"><a href="/2018/12/22/bochspwn-reloaded/">2018-12-22</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2018/12/22/bochspwn-reloaded/">Bochspwn漏洞挖掘技术深究(2)：未初始化漏洞检测</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>本文主要介绍<a href="https://github.com/googleprojectzero/bochspwn-reloaded" target="_blank" rel="external">Bochspwn Reloaded</a>内核未初始化漏洞检测技术，它采用污点追踪对内核层向用户层泄露数据的行为进行检测。</p>
+<p>关于bochs插桩技术参考<a href="http://riusksk.me/2018/12/01/bochspwn1/" target="_blank" rel="external">《Bochspwn漏洞挖掘技术深究(1)：Double Fetches 检测》</a>，此处不再赘述。</p>
+<p>直接先看下instrument.h中实现插桩函数有哪些：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Bochs初始化CPU对象时的回调函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_initialize</span><span class="params">(<span class="keyword">unsigned</span> cpu)</span></span>;	</span><br><span class="line"><span class="comment">// Bochs析构CPU对象时的回调函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_exit</span><span class="params">(<span class="keyword">unsigned</span> cpu)</span></span>;</span><br><span class="line"><span class="comment">//Bochs每次执行中断操作（软件中断、硬件中断或异常）时的回调函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_interrupt</span><span class="params">(<span class="keyword">unsigned</span> cpu, <span class="keyword">unsigned</span> <span class="built_in">vector</span>)</span></span>;</span><br><span class="line"><span class="comment">// Bochs执行指令前的回调函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_before_execution</span><span class="params">(<span class="keyword">unsigned</span> cpu, bxInstruction_c *i)</span></span>;</span><br><span class="line"><span class="comment">// Bochs执行指令后的回调函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_after_execution</span><span class="params">(<span class="keyword">unsigned</span> cpu, bxInstruction_c *i)</span></span>;</span><br><span class="line"><span class="comment">// Bochs访问线性内存时的回调函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_lin_access</span><span class="params">(<span class="keyword">unsigned</span> cpu, bx_address lin, bx_address phy,</span></span></span><br><span class="line"><span class="function"><span class="params">                         <span class="keyword">unsigned</span> len, <span class="keyword">unsigned</span> memtype, <span class="keyword">unsigned</span> rw)</span></span>;</span><br><span class="line"><span class="comment">// WRMSR指令（写模式定义寄存器）被执行时的回调函数，MSR寄存器数与值作为参数传递给回调函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_wrmsr</span><span class="params">(<span class="keyword">unsigned</span> cpu, <span class="keyword">unsigned</span> addr, Bit64u value)</span></span>;</span><br></pre></td></tr></table></figure>
+<h3 id="初始化工作"><a href="#初始化工作" class="headerlink" title="初始化工作"></a>初始化工作</h3><p>第一篇中讲过<code>bx_instr_initialize</code>主要用来加载配置信息，针对不同的系统环境设置不同的数据结构偏移地址，用来提供需要的进程/线程等重要信息。在这里它另外增加污点追踪功能的初始化工作：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Initialize the taint subsystem.</span></span><br><span class="line">taint::initialize();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Initialize helper taint allocations.</span></span><br><span class="line">globals::pool_taint_alloc = (<span class="keyword">uint8_t</span> *)<span class="built_in">malloc</span>(kTaintHelperAllocSize);</span><br><span class="line"><span class="built_in">memset</span>(globals::pool_taint_alloc, kPoolTaintByte, kTaintHelperAllocSize);</span><br><span class="line"></span><br><span class="line">globals::stack_taint_alloc = (<span class="keyword">uint8_t</span> *)<span class="built_in">malloc</span>(kTaintHelperAllocSize);</span><br><span class="line"><span class="built_in">memset</span>(globals::stack_taint_alloc, kStackTaintByte, kTaintHelperAllocSize);</span><br></pre></td></tr></table></figure>
+<p>主要作一些用于污点信息记录的内存结构分配与VEH异常处理回调设置：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">initialize</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="comment">// Reserve a memory region for the taint data.</span></span><br><span class="line">  taint_area = (<span class="keyword">uint8_t</span> *)VirtualAlloc(<span class="literal">NULL</span>, kTaintAreaSize, MEM_RESERVE, PAGE_READWRITE);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Register a VEH handler to commit taint memory touched in other taint</span></span><br><span class="line">  <span class="comment">// functions.</span></span><br><span class="line">  AddVectoredExceptionHandler(<span class="comment">/*FirstHandler=*/</span><span class="number">1</span>, OvercommitHandler);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>VEH回调函数实现如下，当发生访问违例时，若异常地址不在污点内存区域，则将其设置为可读写内存，然后继续执行：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> LONG CALLBACK <span class="title">OvercommitHandler</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  _In_ PEXCEPTION_POINTERS ExceptionInfo</span></span></span><br><span class="line"><span class="function"><span class="params">)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (ExceptionInfo-&gt;ExceptionRecord-&gt;ExceptionCode == EXCEPTION_ACCESS_VIOLATION) &#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">uint8_t</span> *excp_address = (<span class="keyword">uint8_t</span> *)ExceptionInfo-&gt;ExceptionRecord-&gt;ExceptionInformation[<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">if</span> (excp_address &gt;= taint_area &amp;&amp; excp_address &lt; &amp;taint_area[kTaintAreaSize]) &#123;</span><br><span class="line">      <span class="keyword">if</span> (VirtualAlloc((<span class="keyword">void</span> *)((<span class="keyword">uint64_t</span>)excp_address &amp; (~<span class="number">0xffff</span>)), <span class="number">0x10000</span>, MEM_COMMIT, PAGE_READWRITE)) &#123;</span><br><span class="line">        <span class="keyword">return</span> EXCEPTION_CONTINUE_EXECUTION;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> EXCEPTION_CONTINUE_SEARCH;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>###中断响应</p>
+<p>再看下<code>bx_instr_interrupt</code>函数实现，主要是发生中断时，检测该中断地址是否可写，并设置全局标志：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_interrupt</span><span class="params">(<span class="keyword">unsigned</span> cpu, <span class="keyword">unsigned</span> <span class="built_in">vector</span>)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (globals::bp_active &amp;&amp; <span class="built_in">vector</span> == <span class="number">3</span>) &#123;</span><br><span class="line">    BX_CPU_C *pcpu = BX_CPU(cpu);</span><br><span class="line">    write_lin_mem(pcpu, globals::bp_address, <span class="number">1</span>, &amp;globals::bp_orig_byte);</span><br><span class="line"></span><br><span class="line">    globals::bp_active = <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="污点标记与追踪"><a href="#污点标记与追踪" class="headerlink" title="污点标记与追踪"></a>污点标记与追踪</h3><p>bochspwn-reloaded会对内核分配的stack/heap/pools作污点标记：</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNbRwgy1fyf9luidhdj30jy09m75c.jpg" alt="image-20181222092741926"></p>
+<ol>
+<li><strong>栈污点标记</strong></li>
+</ol>
+<p>检测修改ESP寄存器的指令，比如：<code>ADD ESP, ...</code> <code>SUB ESP, ...</code> <code>AND ESP, …</code>，若在执行后（<code>bx_instr_after_execution</code>）ESP发生递减，则调用<code>taint::set_taint(new_rsp, length, /*tainted=*/true)</code>标记为污点</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_before_execution</span><span class="params">(<span class="keyword">unsigned</span> cpu, bxInstruction_c *i)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> opcode = i-&gt;getIaOpcode();</span><br><span class="line">  <span class="keyword">switch</span> (opcode) &#123;</span><br><span class="line">    <span class="keyword">case</span> BX_IA_SUB_EqId:</span><br><span class="line">    <span class="keyword">case</span> BX_IA_SUB_GqEq: <span class="comment">/* Stack allocation handling */</span> </span><br><span class="line">          ...</span><br><span class="line">	<span class="keyword">case</span> BX_IA_PUSH_Eq: <span class="comment">/* Allocator prologue handling. */</span> </span><br><span class="line">          ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_after_execution</span><span class="params">(<span class="keyword">unsigned</span> cpu, bxInstruction_c *i)</span> </span>&#123;</span><br><span class="line">  globals::rep_movs = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (globals::rsp_change) &#123;</span><br><span class="line">    BX_CPU_C *pcpu = BX_CPU(cpu);</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">uint64_t</span> new_rsp = pcpu-&gt;gen_reg[BX_64BIT_REG_RSP].rrx;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (new_rsp &lt; globals::rsp_value) &#123;</span><br><span class="line">      <span class="keyword">uint64_t</span> length = globals::rsp_value - new_rsp;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (length &lt;= kTaintHelperAllocSize) &#123;</span><br><span class="line">        taint::set_taint(new_rsp, length, <span class="comment">/*tainted=*/</span><span class="literal">true</span>);</span><br><span class="line">        write_lin_mem(pcpu, new_rsp, length, (<span class="keyword">void</span> *)globals::stack_taint_alloc);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (globals::config.track_origins) &#123;</span><br><span class="line">          taint::set_origin(new_rsp, length, pcpu-&gt;prev_rip);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    globals::rsp_change = <span class="literal">false</span>;</span><br><span class="line">    globals::rsp_value = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><strong>堆/Pools污点标记</strong></li>
+</ol>
+<p>检测内核内存分配操作的指令，则调用<code>taint::set_taint(address, size, /*tainted=*/true)</code>进行污点标记，主要通过<code>bx_instr_wrmsr</code>函数来实现，当写入的地址是<code>MSR_LSTAR</code>寄存器时，它代表着syscall调用：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MSR_LSTAR	0xc0000082 <span class="comment">/* long mode SYSCALL target */</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_wrmsr</span><span class="params">(<span class="keyword">unsigned</span> cpu, <span class="keyword">unsigned</span> addr, Bit64u value)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (addr == MSR_LSTAR) &#123;</span><br><span class="line">    globals::nt_base = value - globals::config.KiSystemCall64_offset; <span class="comment">// ntoskrnl.exe中nt!KiSystemCall64偏移地址，用于获取内核基址</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; globals::config.pool_alloc_prologues.size(); i++) &#123;</span><br><span class="line">      globals::config.pool_alloc_prologues[i] += globals::nt_base;</span><br><span class="line">    &#125;</span><br><span class="line">    set_breakpoints_bulk(globals::config.pool_alloc_prologues, BP_POOL_ALLOC_PROLOGUE);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; globals::config.pool_alloc_epilogues.size(); i++) &#123;</span><br><span class="line">      globals::config.pool_alloc_epilogues[i] += globals::nt_base;</span><br><span class="line">    &#125;</span><br><span class="line">    set_breakpoints_bulk(globals::config.pool_alloc_epilogues, BP_POOL_ALLOC_EPILOGUE);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中<code>pool_alloc_prologues</code>与<code>pool_alloc_epilogues</code>分别代表alloc函数的前序与后序函数，以下是windows-x64系统配置下的地址：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pool_alloc_prologues  = 0x1E0590</span><br><span class="line">pool_alloc_epilogues  = 0x1E07AD</span><br></pre></td></tr></table></figure>
+<ol>
+<li><strong>污点清除</strong><br>当栈顶弹出或者堆块调用free函数前序指令（Linux下配置地址），以及内存拷贝的目标地址是内核地址时，均将其污点标记清除，如果是win平台则主要依靠<code>bx_instr_lin_access</code>来实现：</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_lin_access</span><span class="params">(<span class="keyword">unsigned</span> cpu, bx_address lin, bx_address phy,</span></span></span><br><span class="line"><span class="function"><span class="params">                         <span class="keyword">unsigned</span> len, <span class="keyword">unsigned</span> memtype, <span class="keyword">unsigned</span> rw)</span> </span>&#123;</span><br><span class="line">  BX_CPU_C *pcpu = BX_CPU(cpu);</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">uint64_t</span> pc = pcpu-&gt;prev_rip;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (rw != BX_WRITE &amp;&amp; rw != BX_RW) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!pcpu-&gt;long_mode() || !windows::check_kernel_addr(pc) || !windows::check_kernel_addr(lin)) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (globals::rep_movs) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">uint64_t</span> rsp = pcpu-&gt;gen_reg[BX_64BIT_REG_RSP].rrx;</span><br><span class="line">  <span class="keyword">if</span> (globals::rsp_locked.find(rsp) != globals::rsp_locked.end()) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  taint::set_taint(lin, len, <span class="comment">/*tainted=*/</span><span class="literal">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><strong>污点传播</strong><br>在<code>bx_instr_before_execution</code>中主要对以下操作指令作检测，指令形式主要为 <code>&lt;REP&gt; MOVS{B,D}</code>，用于污点传播追踪：</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> opcode = i-&gt;getIaOpcode();</span><br><span class="line">  <span class="keyword">switch</span> (opcode) &#123;</span><br><span class="line">    <span class="keyword">case</span> BX_IA_MOV_GqEq: <span class="comment">/* Standard library memcpy() prologue handling. */</span> </span><br><span class="line">          ...</span><br><span class="line">    <span class="keyword">case</span> BX_IA_REP_MOVSB_YbXb:</span><br><span class="line">    <span class="keyword">case</span> BX_IA_REP_MOVSW_YwXw:</span><br><span class="line">    <span class="keyword">case</span> BX_IA_REP_MOVSD_YdXd:</span><br><span class="line">    <span class="keyword">case</span> BX_IA_REP_MOVSQ_YqXq: <span class="comment">/* Inline memcpy handling */</span> </span><br><span class="line">          ...</span><br><span class="line">        <span class="keyword">switch</span> (opcode) &#123;</span><br><span class="line">        	<span class="keyword">case</span> BX_IA_REP_MOVSB_YbXb: mult = <span class="number">1</span>; <span class="keyword">break</span>;</span><br><span class="line">        	<span class="keyword">case</span> BX_IA_REP_MOVSW_YwXw: mult = <span class="number">2</span>; <span class="keyword">break</span>;</span><br><span class="line">        	<span class="keyword">case</span> BX_IA_REP_MOVSD_YdXd: mult = <span class="number">4</span>; <span class="keyword">break</span>;</span><br><span class="line">        	<span class="keyword">case</span> BX_IA_REP_MOVSQ_YqXq: mult = <span class="number">8</span>; <span class="keyword">break</span>;</span><br><span class="line">      	&#125;</span><br><span class="line">        ...</span><br><span class="line">   </span><br><span class="line">    <span class="keyword">case</span> BX_IA_RET_Op64: <span class="comment">/* Allocator and memcpy() epilogue handling. */</span> </span><br><span class="line">          ...</span><br></pre></td></tr></table></figure>
+<p>对于非<code>&lt;REP&gt; MOVS{B,D}</code>指令的内存访问：</p>
+<ul>
+<li>写操作：清除内存污点标记，标记为已初始化；</li>
+<li>读操作：检测污点标记，如果shadow memory中标记为未初始化读取，则在guest memory中验证：标记不匹配则清除污点，否则若真为未初始化读取就当漏洞报告出来</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* src_in_kernel */</span> &#123;</span><br><span class="line">    <span class="keyword">uint64_t</span> tainted_offset = <span class="number">0</span>;</span><br><span class="line">    taint::access_type type = taint::check_taint(pcpu, src, size, &amp;tainted_offset);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (type == taint::METADATA_MARKER_MISMATCH) &#123;</span><br><span class="line">      taint::set_taint(src, size, <span class="comment">/*tainted=*/</span><span class="literal">false</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (type == taint::ACCESS_INVALID) &#123;</span><br><span class="line">      process_bug_candidate(</span><br><span class="line">          pcpu, i, pcpu-&gt;prev_rip, src, size, dst, taint::get_origin(src + tainted_offset));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>总结起来，是否为漏洞主要基于以下几点：</p>
+<ol>
+<li><p><code>&lt;REP&gt; MOVS{B,D}</code>中 源地址为内核，目标地址为用户地址，从内核输出数据到用户</p>
+</li>
+<li><p>源地址被标记为污点</p>
+</li>
+</ol>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2018/12/22/bochspwn-reloaded/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Bochspwn/">Bochspwn</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2018-12-01T03:08:09.000Z"><a href="/2018/12/01/bochspwn1/">2018-12-01</a></time>
       
       
@@ -91,7 +192,7 @@
 <p>对于应用程序的代码插桩，有现成的Pin和DynamoRIO插桩框架，在Fuzzing中可以用来实现代码覆盖率的反馈驱动，这已经被应用到winafl，效果很好。除了挖洞，在逆向工程领域应用也很广泛。</p>
 <p>上面都是针对应用层的，内核层的，上面的Pin和DynamoRIO就派不上用场了，对于这种系统内核级的指令插桩，有时就会采用虚拟化技术为实现，比如通过Qemu或Bochs虚拟机。</p>
 <p>ProjectZero的j00ru大神就用bochs的插桩API为实现针对内核double fetches的监测，项目称为bochspwn，后来又采用污点追踪方式检测未初始化漏洞导致的内核信息泄露，叫bochspwn-reloaded。</p>
-<p>Bochs Instrument API 文档参考：<a href="http://bochs.sourceforge.net/cgi-bin/lxr/source/instrument/instrumentation.txt，在编译bochs时指定插桩代码目录：" target="_blank" rel="external">http://bochs.sourceforge.net/cgi-bin/lxr/source/instrument/instrumentation.txt，在编译bochs时指定插桩代码目录：</a></p>
+<p>Bochs Instrument API 文档参考：<a href="http://bochs.sourceforge.net/cgi-bin/lxr/source/instrument/instrumentation.txt" target="_blank" rel="external">http://bochs.sourceforge.net/cgi-bin/lxr/source/instrument/instrumentation.txt</a> ，在编译bochs时指定插桩代码目录：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure [...] --enable-instrumentation=&quot;instrument/myinstrument&quot;</span><br></pre></td></tr></table></figure>
 <p>下面是bochspwn中用到的API：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Bochs初始化CPU对象时的回调函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_initialize</span><span class="params">(<span class="keyword">unsigned</span> cpu)</span></span>;	</span><br><span class="line"><span class="comment">// Bochs析构CPU对象时的回调函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_exit</span><span class="params">(<span class="keyword">unsigned</span> cpu)</span></span>;	</span><br><span class="line"><span class="comment">// Bochs访问线性内存时的回调函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_lin_access</span><span class="params">(<span class="keyword">unsigned</span> cpu, bx_address lin, bx_address phy,<span class="keyword">unsigned</span> len, <span class="keyword">unsigned</span> memtype, <span class="keyword">unsigned</span> rw)</span></span>;	</span><br><span class="line"><span class="comment">// Bochs执行指令前的回调函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_before_execution</span><span class="params">(<span class="keyword">unsigned</span> cpu, bxInstruction_c *i)</span></span>;</span><br></pre></td></tr></table></figure>
@@ -599,7 +700,7 @@
         
   
   <div class="tags">
-    <a href="/tags/honggfuzz/">honggfuzz</a>, <a href="/tags/fuzz/">fuzz</a>, <a href="/tags/漏洞挖掘/">漏洞挖掘</a>
+    <a href="/tags/honggfuzz/">honggfuzz</a>, <a href="/tags/漏洞挖掘/">漏洞挖掘</a>, <a href="/tags/fuzz/">fuzz</a>
   </div>
 
         <!-- partial('post/share') -->
@@ -889,97 +990,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2018-08-22T12:21:28.000Z"><a href="/2018/08/22/honggfuzz漏洞挖掘技术2/">2018-08-22</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2018/08/22/honggfuzz漏洞挖掘技术2/">honggfuzz漏洞挖掘技术深究系列（2）—— Persistent Fuzzing</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>上篇<a href="https://mp.weixin.qq.com/s?__biz=MzU0MzgzNTU0Mw==&amp;mid=2247483746&amp;idx=1&amp;sn=9d0ff5e0bae65f9ca9dbea4cf74449c6" target="_blank" rel="external">《honggfuzz漏洞挖掘技术深究系列（1）——反馈驱动（Feedback-Driven）》</a>讲到基于软件的代码覆盖率驱动fuzzing的方式，除了软件还有硬件方式，即基于Intel BTS (Branch Trace Store) 或Intel PT (Processor Tracing) 去计算代码覆盖率，同时要求Linux内核&gt;=4.2，这种方式的最大好处是完全由硬件支配，无所谓软件是闭源还是开源。由于硬件环境受限，我也一直未使用过，有此条件的同学可以试下。</p>
-<p>本篇主要讲下持久型fuzzing（Persistent Fuzzing），即fuzzing API，这种方式会更精准和高效的。</p>
-<p>先看使用方法：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ cat test.c</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;inttypes.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;testlib.h&gt;   </span></span></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">LLVMFuzzerTestOneInput</span><span class="params">(<span class="keyword">uint8_t</span> **buf, <span class="keyword">size_t</span> *len)</span></span>;</span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">LLVMFuzzerTestOneInput</span><span class="params">(<span class="keyword">uint8_t</span> *buf, <span class="keyword">size_t</span> len)</span> </span>&#123;</span><br><span class="line">  _FuncFromFuzzedLib_(buf, len);  <span class="comment">// 目标函数</span></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line">$ clang<span class="number">-4.0</span> -fsanitize-coverage=trace-pc,indirect-calls,trace-cmp fuzzedlib.c -o fuzzedlib.o</span><br><span class="line">$ clang<span class="number">-4.0</span> test.c fuzzedlib.o honggfuzz/libhfuzz/libhfuzz.a -o test</span><br><span class="line">$ honggfuzz -z -P -f INPUT.corpus -- ./test</span><br></pre></td></tr></table></figure>
-<p>这里用到几个编译选项：</p>
-<ul>
-<li><strong>trace-pc</strong>：追踪执行过的基本块BB，在每个edge中插入__saitizer_cov_trace_pc()函数，可定义该函数作为相应的回调处理</li>
-<li><strong>indirect-calls</strong>：在每个间接调用中添加PC追踪，与前面的trace-pc或trace-pc-guard联合使用，回调函数：__sanitizer_cov_trace_pc_indir</li>
-<li><strong>trace-cmp</strong>：追踪每个比较指令和swith语句</li>
-</ul>
-<p>以trace-pc为例，测试代码如下：</p>
-<center><img src="http://riusksk.me/media/trace_pc1.png" alt=""></center><br>用trace_pc编译：<br><center><img src="http://riusksk.me/media/trace_pc2.png" alt=""></center>
-
-<p>可以看到自定义的函数被执行，输出执行过的不同pc地址，其它编译选项的用法同上。<br>下面是honggfuzz对各个回调函数的定义情况：</p>
-<center><img src="http://riusksk.me/media/instrument.png" alt=""></center>
-
-<p>然后就是记录代码覆盖率情况并进行统计，跟驱动反馈的方式一样了。</p>
-<p>再回头看使用示例中的<code>LLVMFuzzerTestOneInput</code>函数,honggfuzz是如何处理它的呢？</p>
-<center><img src="http://riusksk.me/media/persistent.png" alt=""></center>
-
-<p>通过for无限循环调用目标函数进行Fuzzing，其中参数buf，即样本文件内容，len是数据长度。</p>
-<p>最后根据发现的新路径，将相应的样本作为新样本继续fuzzing。</p>
-<center><img src="http://riusksk.me/media/fuzz_back.png" alt=""></center>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2018/08/22/honggfuzz漏洞挖掘技术2/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/honggfuzz/">honggfuzz</a>, <a href="/tags/漏洞挖掘/">漏洞挖掘</a>, <a href="/tags/fuzzing/">fuzzing</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -1001,6 +1011,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2018/12/22/bochspwn-reloaded/">Bochspwn漏洞挖掘技术深究(2)：未初始化漏洞检测</a>
+      </li>
     
       <li>
         <a href="/2018/12/01/bochspwn1/">Bochspwn漏洞挖掘技术深究(1)：Double Fetches 检测</a>
@@ -1038,10 +1052,6 @@
         <a href="/2018/09/15/知识的诅咒/">知识的诅咒</a>
       </li>
     
-      <li>
-        <a href="/2018/08/22/honggfuzz漏洞挖掘技术2/">honggfuzz漏洞挖掘技术深究系列（2）—— Persistent Fuzzing</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -1051,7 +1061,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>48</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>49</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>19</small></li>
   
@@ -1063,7 +1073,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 13.33px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 16.67px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 13.33px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/Bochspwn/" style="font-size: 10px;">Bochspwn</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 13.33px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 16.67px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 13.33px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
   </div>
 </div>
 
