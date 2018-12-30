@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2018-12-28T12:17:48.000Z</updated>
+  <updated>2018-12-30T14:09:55.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,82 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>推荐今年C3黑客大会上的几个议题</title>
+    <link href="http://riusksk.github.io/2018/12/30/%E6%8E%A8%E8%8D%90%E4%BB%8A%E5%B9%B4C3%E9%BB%91%E5%AE%A2%E5%A4%A7%E4%BC%9A%E4%B8%8A%E7%9A%84%E5%87%A0%E4%B8%AA%E8%AE%AE%E9%A2%98/"/>
+    <id>http://riusksk.github.io/2018/12/30/推荐今年C3黑客大会上的几个议题/</id>
+    <published>2018-12-30T11:06:31.000Z</published>
+    <updated>2018-12-30T14:09:55.000Z</updated>
+    
+    <content type="html">&lt;p&gt;最近几天在德国举办的 The 35th Chaos Communication Congress (35C3) 黑客大会，在Twitter上传得火热，在国内却无人问津。&lt;/p&gt;
+&lt;p&gt;从这可以看出同为微博的安全圈氛围是完全不同的，新浪微博还是偏娱乐些的，而且国外的圈子自然比天朝的要大得多，很多国家的人在上面交流。&lt;/p&gt;
+&lt;p&gt;所以，我现在经常混Twitter，当作获取安全资讯的途径，新浪微博就真的当作看新闻的了……&lt;/p&gt;
+&lt;h3 id=&quot;德国C3混沌黑客大会&quot;&gt;&lt;a href=&quot;#德国C3混沌黑客大会&quot; class=&quot;headerlink&quot; title=&quot;德国C3混沌黑客大会&quot;&gt;&lt;/a&gt;德国C3混沌黑客大会&lt;/h3&gt;&lt;p&gt;Chaos Communication Congress（C3）大会是每年在德国举办的黑客大会，直译过来就是”混沌通信大会“，圈内通常叫”C3“，今年是第35届，所以叫35c3，今年还有CTF比赛，一些打过pwn2own的人出了一些浏览器实际漏洞的题目，也蛮具有实战价值的。&lt;/p&gt;
+&lt;p&gt;每年这大会都会以演讲视频的方式分享出各个议题，以前大多是聚焦在无线电安全，所以一些什么2G\3G\4G短信、电话窃听经常出自该会议。今年也有一些不错的软件安全相关的议题，下面推荐几个鄙人自认为不错的几个议题。&lt;/p&gt;
+&lt;h3 id=&quot;From-Zero-to-Zero-Day&quot;&gt;&lt;a href=&quot;#From-Zero-to-Zero-Day&quot; class=&quot;headerlink&quot; title=&quot;From Zero to Zero Day&quot;&gt;&lt;/a&gt;From Zero to Zero Day&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;https://ws3.sinaimg.cn/large/006tNbRwgy1fyp0431o6oj30ju0hxtft.jpg&quot; alt=&quot;image-20181230193447667&quot;&gt;&lt;/p&gt;
+&lt;p&gt;大会上有个议题叫 “From Zero to Zero Day”，演讲者是位高中生，讲述他自己如何在一年之内，从无任何安全基础到挖掘到第一枚Edge浏览器远程执行代码漏洞的经历。&lt;/p&gt;
+&lt;p&gt;总结来讲就是：&lt;/p&gt;
+&lt;p&gt;1、学习编程语言（C/C++、asm等等）&lt;/p&gt;
+&lt;p&gt;2、学习操作系统原理&lt;/p&gt;
+&lt;p&gt;3、学习常见二进制漏洞原理&lt;/p&gt;
+&lt;p&gt;4、打打CTF，写写write-up&lt;/p&gt;
+&lt;p&gt;5、学习并实践去分析真实的漏洞案例，就是直接看代码，调代码&lt;/p&gt;
+&lt;p&gt;6、不断重复上述练习&lt;/p&gt;
+&lt;p&gt;我直接帖几张关键截图，也推荐大家去听听（视频链接：&lt;a href=&quot;https://media.ccc.de/v/35c3-9657-from_zero_to_zero_day）：&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://media.ccc.de/v/35c3-9657-from_zero_to_zero_day）：&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://ws3.sinaimg.cn/large/006tNbRwgy1fyozsxuptzj30hz0aatcu.jpg&quot; alt=&quot;image-20181230192405638&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://ws3.sinaimg.cn/large/006tNbRwgy1fyozt7f18tj30jf0avwjw.jpg&quot; alt=&quot;image-20181230192425929&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://ws1.sinaimg.cn/large/006tNbRwgy1fyozqdnwdwj30k30axgoz.jpg&quot; alt=&quot;image-20181230192131880&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://ws2.sinaimg.cn/large/006tNbRwgy1fyozs2o8i2j30k70awtb3.jpg&quot; alt=&quot;image-20181230192320182&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://ws2.sinaimg.cn/large/006tNbRwgy1fyozrme322j30k50atadg.jpg&quot; alt=&quot;image-20181230192254473&quot;&gt;&lt;/p&gt;
+&lt;h3 id=&quot;Attack-Chrome-IPC&quot;&gt;&lt;a href=&quot;#Attack-Chrome-IPC&quot; class=&quot;headerlink&quot; title=&quot;Attack Chrome IPC&quot;&gt;&lt;/a&gt;Attack Chrome IPC&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/Users/riusksk/Library/Application Support/typora-user-images/image-20181230193950157.png&quot; alt=&quot;image-20181230193950157&quot;&gt;&lt;/p&gt;
+&lt;p&gt;这个议题之前作者在韩国PoC大会上讲过，并在网上公布过pdf（&lt;a href=&quot;https://data.hackinn.com/ppt/2018韩国POC安全大会/ned.pdf），主要讲他之前在Hack2Win&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://data.hackinn.com/ppt/2018韩国POC安全大会/ned.pdf），主要讲他之前在Hack2Win&lt;/a&gt; bevx黑客大赛上用于黑掉Chrome浏览器的IPC漏洞，此次C3大会的演讲视频参见：&lt;a href=&quot;https://media.ccc.de/v/35c3-9579-attacking_chrome_ipc&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://media.ccc.de/v/35c3-9579-attacking_chrome_ipc&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;这议题里面讲了作者一些研究二进制漏洞的一些学习和研究的方法，比如做代码审计、打CTF，也介绍了他这几年的安全研究历程，比国内流行晒crash+CVE的方式更接地气。&lt;/p&gt;
+&lt;p&gt;最后介绍如何使用 libfuzzer+libprotobuf-mutator去fuzz chrome IPC，并开源fuzzer代码合并到chroium项目中。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://ws3.sinaimg.cn/large/006tNbRwgy1fyp0grvcxuj30wk0g3aej.jpg&quot; alt=&quot;image-20181230194648886&quot;&gt;&lt;/p&gt;
+&lt;h3 id=&quot;Jailbreaking-iOS-From-past-to-present&quot;&gt;&lt;a href=&quot;#Jailbreaking-iOS-From-past-to-present&quot; class=&quot;headerlink&quot; title=&quot;Jailbreaking iOS From past to present&quot;&gt;&lt;/a&gt;Jailbreaking iOS From past to present&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/Users/riusksk/Library/Application Support/typora-user-images/image-20181230202552499.png&quot; alt=&quot;image-20181230202552499&quot;&gt;&lt;/p&gt;
+&lt;p&gt;讲iOS越狱发展史的，可以学习到iOS上各种安全机制的原理以及绕过方法，画了不少原理图，通俗易懂不少。对于想了解整个iOS越狱技术发展历程的同学，这确实是份不错的资料。&lt;/p&gt;
+&lt;p&gt;作者这次也在推持上放出了pdf和视频：&lt;/p&gt;
+&lt;p&gt;pdf: &lt;a href=&quot;https://api.tihmstar.net/35c3slides.pdf&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://api.tihmstar.net/35c3slides.pdf&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;video: &lt;a href=&quot;https://media.ccc.de/v/35c3-9618-jailbreaking_ios&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://media.ccc.de/v/35c3-9618-jailbreaking_ios&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;整个议题主要围绕以下几点展开：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;越狱类型（非完美越狱、完美越狱……）&lt;/li&gt;
+&lt;li&gt;Exploit mitigations (ASLR, iBoot-level AES, KPP, KTRR, PAC) &lt;/li&gt;
+&lt;li&gt;Kernel patches (h3lix) &lt;/li&gt;
+&lt;li&gt;Kppless jailbreaks&lt;/li&gt;
+&lt;li&gt;越狱的未来趋势&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;The-Layman’s-Guide-to-Zero-Day-Engineering&quot;&gt;&lt;a href=&quot;#The-Layman’s-Guide-to-Zero-Day-Engineering&quot; class=&quot;headerlink&quot; title=&quot;The Layman’s Guide to Zero-Day Engineering&quot;&gt;&lt;/a&gt;The Layman’s Guide to Zero-Day Engineering&lt;/h1&gt;&lt;p&gt;&lt;img src=&quot;https://ws1.sinaimg.cn/large/006tNbRwly1fyp2wxxr28j30yw0ihgr0.jpg&quot; alt=&quot;image-20181230211151217&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Ret2公司分享如何寻找webkit攻击面并fuzz的方法，是基于MozillaSecurity的dharma语法生成框架写的js fuzzer，以及如何借助IDA+&lt;a href=&quot;https://github.com/gaasedelen/lighthouse&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Lighthouse&lt;/a&gt;开源插件（正是Ret2团队开发的，曾获得过IDA插件比赛的二等奖）来分析代码覆盖率问题。&lt;/p&gt;
+&lt;p&gt;除此之外，也介绍如何利用frida去hook mach_msg，用来fuzz WindowServer，最后用WindowServer的漏洞来实现root提权。&lt;/p&gt;
+&lt;p&gt;他们在其博客（&lt;a href=&quot;https://blog.ret2.io）上也分享过不少漏洞研究方面的干货，这次分享的内容也大部分就是来自博客上的一些文章。&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://blog.ret2.io）上也分享过不少漏洞研究方面的干货，这次分享的内容也大部分就是来自博客上的一些文章。&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;里面还提到长亭的real world ctf比赛了。&lt;/p&gt;
+&lt;p&gt;这里有张比较有意思的图，发出来给大伙看下：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://ws1.sinaimg.cn/large/006tNbRwly1fyp3j3xqdgj30z00jn4qp.jpg&quot; alt=&quot;image-20181230213304029&quot;&gt;&lt;/p&gt;
+&lt;p&gt;视频链接：&lt;a href=&quot;https://media.ccc.de/v/35c3-9979-the_layman_s_guide_to_zero-day_engineering&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://media.ccc.de/v/35c3-9979-the_layman_s_guide_to_zero-day_engineering&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&quot;Modern-Windows-Userspace-Exploitation&quot;&gt;&lt;a href=&quot;#Modern-Windows-Userspace-Exploitation&quot; class=&quot;headerlink&quot; title=&quot;Modern Windows Userspace Exploitation&quot;&gt;&lt;/a&gt;Modern Windows Userspace Exploitation&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;https://ws3.sinaimg.cn/large/006tNbRwly1fyp3yvr0eaj30tl0i815k.jpg&quot; alt=&quot;image-20181230214817405&quot;&gt;&lt;/p&gt;
+&lt;p&gt;视频链接：&lt;a href=&quot;https://media.ccc.de/v/35c3-9660-modern_windows_userspace_exploitation&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://media.ccc.de/v/35c3-9660-modern_windows_userspace_exploitation&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;微软MSRC的人过来分享下windows平台下的一些二进制漏洞利用方法，包括ROP绕过DEP、信息泄露绕过ASLR、绕过CFG、ACG、CIG等等，并现场给了一些演示，不过看起来像是一些CTF赛题，演示的相关代码已放在作者的github上：&lt;a href=&quot;https://github.com/saaramar&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/saaramar&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;都是一些利用系统漏洞防御技术的原理与绕过技术的总结，连各种漏洞缓解机制绕过的微软奖励都给大家标注上了，其实有点类似上面Jailbreaking iOS议题的Windows版本。&lt;/p&gt;
+&lt;p&gt;最后来张Exploit Mitigations清单：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://ws2.sinaimg.cn/large/006tNbRwly1fyp4b42qn5j30rs0hvdir.jpg&quot; alt=&quot;image-20181230215938958&quot;&gt;&lt;/p&gt;
+&lt;h3 id=&quot;结语&quot;&gt;&lt;a href=&quot;#结语&quot; class=&quot;headerlink&quot; title=&quot;结语&quot;&gt;&lt;/a&gt;结语&lt;/h3&gt;&lt;p&gt;后面官方可能还会继续更新演讲视频，可以关注官方twitter（@c3voc_releases）获取消息。&lt;/p&gt;
+&lt;p&gt;另外，对于英语不好的同学，不妨下个”腾讯翻译“同声翻译试下，虽然中文翻译没那么准确，但看看显示的英文单词也能知道个大意：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://ws4.sinaimg.cn/large/006tNbRwly1fyp0n9b99lj31400u0b29.jpg&quot; alt=&quot;image-20181230195201468&quot;&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最近几天在德国举办的 The 35th Chaos Communication Congress (35C3) 黑客大会，在Twitter上传得火热，在国内却无人问津。&lt;/p&gt;
+&lt;p&gt;从这可以看出同为微博的安全圈氛围是完全不同的，新浪微博还是偏娱乐些的，而且国外的圈子自然比
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>2018年读过的书</title>
@@ -1251,54 +1327,6 @@
     
     
       <category term="威胁建模" scheme="http://riusksk.github.io/tags/%E5%A8%81%E8%83%81%E5%BB%BA%E6%A8%A1/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>安全圈乱象杂谈</title>
-    <link href="http://riusksk.github.io/2018/04/30/%E5%AE%89%E5%85%A8%E5%9C%88%E4%B9%B1%E8%B1%A1%E6%9D%82%E8%B0%88/"/>
-    <id>http://riusksk.github.io/2018/04/30/安全圈乱象杂谈/</id>
-    <published>2018-04-30T09:34:21.000Z</published>
-    <updated>2018-04-30T11:28:45.000Z</updated>
-    
-    <content type="html">&lt;p&gt;【声明】：本文纯属个人言论，与公司立场无关。&lt;/p&gt;
-&lt;h3 id=&quot;玩名词概念&quot;&gt;&lt;a href=&quot;#玩名词概念&quot; class=&quot;headerlink&quot; title=&quot;玩名词概念&quot;&gt;&lt;/a&gt;玩名词概念&lt;/h3&gt;&lt;p&gt;技术命名，将一些旧知识赋予个新名词进行炒作，比如APT，还有可视化概念，一串串攻击流飞来飞去。&lt;/p&gt;
-&lt;p&gt;漏洞命名，似乎已成为圈内常态，不管漏洞危害如何，先取个名字，再以名字单独地注册个域名。&lt;/p&gt;
-&lt;p&gt;BlackHat Pwnine上专门设置有一个“最名不副实漏洞奖”，就是用来批评这类恶意炒作的漏洞。&lt;/p&gt;
-&lt;center&gt;&lt;img src=&quot;/media/pwnine.png&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
-
-&lt;h3 id=&quot;会议式社交&quot;&gt;&lt;a href=&quot;#会议式社交&quot; class=&quot;headerlink&quot; title=&quot;会议式社交&quot;&gt;&lt;/a&gt;会议式社交&lt;/h3&gt;&lt;p&gt;国内与国外的安全会议的最大区别就是，国内以吃喝聊天、拉关系为主要目的，国外以技术交流为主；&lt;/p&gt;
-&lt;p&gt;这几年，国内已经有越来越多的安全会议、安全沙龙，每次会前，朋友圈的邀请函就会被刷爆，那些常年占据朋友圈的会棍，我一般都是拉黑再说……&lt;/p&gt;
-&lt;p&gt;不单是会议，特殊节日，你也会发现朋友圈清一色的各公司的礼品晒照！！！&lt;/p&gt;
-&lt;center&gt;&lt;img src=&quot;/media/116417766.jpg&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
-
-&lt;h3 id=&quot;炒作营销&quot;&gt;&lt;a href=&quot;#炒作营销&quot; class=&quot;headerlink&quot; title=&quot;炒作营销&quot;&gt;&lt;/a&gt;炒作营销&lt;/h3&gt;&lt;p&gt;“世界第一”、“中国第一”、“全球最强”等各种违反广告法的公关稿随处可见，尤以某数字公司最为推崇。&lt;/p&gt;
-&lt;center&gt;&lt;img src=&quot;/media/62728.png&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
-
-&lt;p&gt;安全圈的营销类标题大体可以分为两种，”碰瓷”(蹭热点、名人，比如Hashcat破解密码之强，连FBI都惊呆了)和”意外”(这文章的标题就是这套路，破解256个字符，意不意外，惊不惊喜)，满满是《爆款文案》中的套路:&lt;/p&gt;
-&lt;p&gt;普通标题：《火辣健身 App 深度产品分析报告》&lt;br&gt;碰瓷式标题：《同样是健身 App，它比 Keep 到底 NB 在哪儿》&lt;br&gt;意外式标题：《改了两个版本就融资 1500 万，这款产品如何做到的》&lt;/p&gt;
-&lt;p&gt;我并不完全反对PR，但我反对那些夸张不符事实的PR，以及惋惜那些以PR带动技术发展的不幸！&lt;/p&gt;
-&lt;h3 id=&quot;快餐式的付费知识&quot;&gt;&lt;a href=&quot;#快餐式的付费知识&quot; class=&quot;headerlink&quot; title=&quot;快餐式的付费知识&quot;&gt;&lt;/a&gt;快餐式的付费知识&lt;/h3&gt;&lt;center&gt;&lt;img src=&quot;/media/know.jpg&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
-
-&lt;p&gt;最近好多个平台提供付费知识的功能，算是一项靠名气快速套现的捷径，随便开个课或拉个群收费，几天就可能几十万收入，令人羡慕！&lt;/p&gt;
-&lt;p&gt;但反观付费的用户，你以为真的付费就一定可以获得知识吗？&lt;/p&gt;
-&lt;p&gt;对于技术而言，那都是常年积累的过程，非一两小时言语所有传授；&lt;br&gt;对于知识而言，个人思考所得的才叫知识，而非单纯地从别人口中得到；&lt;br&gt;对于学习而言，学以致用才是目的，而非纯理论学习。&lt;/p&gt;
-&lt;p&gt;所以，我不相信靠知识付费，就能够让你的认识、思维、技术有本质提高！&lt;/p&gt;
-&lt;p&gt;况且，有那么多比付费知识更廉价的书籍（可参考&lt;a href=&quot;https://github.com/riusksk/secbook&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;2018年安全从业人员书单推荐&lt;/a&gt;），完全可以更系统化地学习。&lt;/p&gt;
-&lt;p&gt;我不反对知识付费，但是系统性学习比碎片化学习更重要！&lt;br&gt;我不反对碎片化学习，但别妄想能靠它实现知识速成！&lt;/p&gt;
-&lt;p&gt;最近在网上看到一个故事，与各位分享下：&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;爱因斯坦提出相对论后，震惊世界，&lt;br&gt;于是被很多大学邀请去做报告，&lt;br&gt;爱因斯坦因此而被弄得疲惫不堪。&lt;br&gt;有一天，司机对他说：“你太累了，今天我帮你作报告吧？”&lt;br&gt;爱因斯坦问：“你能行吗？”&lt;br&gt;司机说：“我闭着眼睛都能背出来。”&lt;br&gt;那天司机上台，果然讲得滴水不漏。&lt;br&gt;但刚想下台时，一位博士站了起来，&lt;br&gt;然后提了一个非常深奥刁钻的问题。&lt;br&gt;司机不知怎么作答，幸好脑瓜转得快：&lt;br&gt;“你这问题太简单了，我司机都能回答。”&lt;br&gt;爱因斯坦站起来，几句话就解决了问题。&lt;br&gt;博士惊呆了：“没想到他的司机也远胜于我。”&lt;br&gt;但在回去的路上，司机对爱因斯坦说：&lt;br&gt;“我知道的只是概念，你懂得的才是知识。”&lt;/em&gt;&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;【声明】：本文纯属个人言论，与公司立场无关。&lt;/p&gt;
-&lt;h3 id=&quot;玩名词概念&quot;&gt;&lt;a href=&quot;#玩名词概念&quot; class=&quot;headerlink&quot; title=&quot;玩名词概念&quot;&gt;&lt;/a&gt;玩名词概念&lt;/h3&gt;&lt;p&gt;技术命名，将一些旧知识赋予个新名词进行炒作，比如APT，
-    
-    </summary>
-    
-      <category term="随笔杂谈" scheme="http://riusksk.github.io/categories/%E9%9A%8F%E7%AC%94%E6%9D%82%E8%B0%88/"/>
-    
     
   </entry>
   

@@ -77,6 +77,142 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2018-09-16T03:54:16.000Z"><a href="/2018/09/16/honggfuzz3/">2018-09-16</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2018/09/16/honggfuzz3/">honggfuzz漏洞挖掘技术深究系列（3）——Fuzz策略</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p> honggfuzz在对输入文件进行变异前，会先创建个临时文件名（honggfuzz+pid+time），然后将输入数据变异后写入临时文件。</p>
+<p> fuzz策略的实现主要集中在mangle.c中，在循环的fuzzloop函数中，会根据用户的选择的fuzz方式来调用动态fuzz或者静态fuzz的方法，但最后都是调用mangle_mangleContent来变异文件数据：</p>
+<p> <img src="http://riusksk.me/media/v2-3bdc1da036608cc745ef0cb89c2313ea_hd.png" alt=""></p>
+<p> 跟进mangle_mangleContent函数：</p>
+<p> <img src="http://riusksk.me/media/v2-529248182e9e09517288c6cbc0f4152d_hd.jpg" alt=""></p>
+<p> 重点就在于后半部分，它会随机选择变异函数进行处理，更改的字节数也是随机的，根据用户指定的mutation变异率来定，即允许变异文件大小的百分比，变异函数列表如下：</p>
+ <center><img src="http://riusksk.me/media/v2-9450da60b2082522f7aa9dff7757a921_hd.png" alt=""></center>
+
+<p> 这些函数都是在mangle_init中初始化，各函数之间也会相互调用：</p>
+<p> <img src="http://riusksk.me/media/v2-025eaad0cd3d34fb828240b30469bede_hd.png" alt=""></p>
+<p> 把这些函数过一遍就是honggfuzz中所有的文件变异规则了，如果想实现自己的fuzzer，这些规则来扣出来用Python实现一遍，顺便把afl的规则也扣过来就更完美了，下面是我之前写office fuzzer时的半成品代码，最后偷懒直接用radamas去实现变异了：</p>
+<p> <img src="http://riusksk.me/media/v2-a0d2b4262c74f02388926e1829e70a37_hd.png" alt=""></p>
+<p> 再回到刚才的变异函数列表，我们一个个走读源码。</p>
+<p> 1、mangle_Resize函数：</p>
+<p> 用空格填充随机位置</p>
+<p> <img src="http://riusksk.me/media/v2-51e43d8f246b8fcb2408bc0c8700baa2_hd.png" alt=""></p>
+<p> <img src="http://riusksk.me/media/v2-8875c992f90668d4a2be2817ee32acc8_hd.png" alt=""></p>
+<p> 2、mangle_Byte函数：</p>
+<p> 向随机位置写随机的uint8类型的数据</p>
+<p> <img src="http://riusksk.me/media/v2-b857966a5c005b1e95f80512382933d6_hd.png" alt=""></p>
+<p> 3、mangle_Bit函数：</p>
+<p> 取随机位置的数值做位翻转</p>
+<p> <img src="http://riusksk.me/media/v2-179d9066a2fd1fc2653f335ce5a41f72_hd.png" alt=""></p>
+<p> 4、mangle_Bytes函数：</p>
+<p> 在随机位置覆盖写2~4字节数据</p>
+<p> <img src="http://riusksk.me/media/v2-4857e9d3d3fb2722bb4705cff49d9bc9_hd.png" alt=""></p>
+<p> 5、mangle_Magic函数：</p>
+<p> 取各种边界值进行覆写，这些边界值部分跟AFL还不一样，我在自己的fuzzer里面把它们作了整合。由于边幅所限，我省略了不少边界值：</p>
+<p> <img src="http://riusksk.me/media/v2-8b34894b9c1fe0833e95dc6d426ff8fb_hd.png" alt=""></p>
+<p> 6、mangle_IncByte函数：</p>
+<p> 取随机位置的数据加1</p>
+<p> <img src="http://riusksk.me/media/v2-ea765d0bf263d6aed9cdaf94a1065631_hd.png" alt=""></p>
+<p> 7、mangle_DecByte函数：</p>
+<p> 取随机位置的数据减1</p>
+<p> <img src="http://riusksk.me/media/v2-bc2bf5117cb1495783b2d5501623e602_hd.png" alt=""></p>
+<p> 8、mangle_NegByte函数：</p>
+<p> 取随机位置的数据取反</p>
+<p> <img src="http://riusksk.me/media/v2-4ef170d3cbb5915de395b7f7aa304079_hd.png" alt=""></p>
+<p> 9、mangle_AddSub函数：</p>
+<p> 取随机位置的1、2、4或8字节的数据长度作加减操作，操作数取 rand(0~8192)-4096</p>
+<p> <img src="http://riusksk.me/media/v2-66a0ed1564725c2dbdf05439e6e26295_hd.png" alt=""></p>
+<p> 10、mangle_Dictionary函数：</p>
+<p> 变异目录名，也是随机取文件夹名称进行变异，如果有多个目录，那被变异的目录数也是随机的</p>
+<p> <img src="http://riusksk.me/media/v2-d5aaeb860ab0f32d1283e2d987e456ad_hd.png" alt=""></p>
+<p> 11、mangle_DictionaryInsert函数：</p>
+<p> 在目录的随机位置中插入随机数据</p>
+<p> <img src="http://riusksk.me/media/v2-0fa9250d8e778ca02841b66fc08a00ce_hd.png" alt=""></p>
+<p> 12、mangle_MemMove函数：</p>
+<p> 取随机位置的数据拷贝随机长度的数据，里面就是调用memmove函数实现的</p>
+<p> <img src="http://riusksk.me/media/v2-eabb7cafe2e6042ef8bd2e18d526b9df_hd.png" alt=""></p>
+<p> 13、mangle_MemSet函数：</p>
+<p> 取随机位置、随机大小，用UINT8_MAX数值填充</p>
+<p> <img src="http://riusksk.me/media/v2-82430bbef8b74651aea3a1bdeca9b2dc_hd.png" alt=""></p>
+<p> 14、mangle_Random函数：</p>
+<p> 取随机位置、随机大小的缓冲区，用随机数填充</p>
+<p> <img src="http://riusksk.me/media/v2-51e9a2621714c7a6d88dc68c4a859979_hd.png" alt=""></p>
+<p> 15、mangle_CloneByte函数：</p>
+<p> 取两处随机位置的作数据交换</p>
+<p> <img src="http://riusksk.me/media/v2-cac0e8c50be64a1174f9b7a6cc924a5e_hd.png" alt=""></p>
+<p> 16、mangle_Expand函数：</p>
+<p> 文件末尾扩展随机长度的空间，用空格填充，然后在随机位置，取前面的随机长度作数据拷贝</p>
+<p> <img src="http://riusksk.me/media/v2-0e199dd7f82c223a928ead2b7a6cdd04_hd.png" alt=""></p>
+<p> <img src="http://riusksk.me/media/v2-bb4820b762220d720d78928d34e923e1_hd.png" alt=""></p>
+<p> 17、mangle_Shrink函数：</p>
+<p> 删除随机长度的文件内容</p>
+<p> <img src="http://riusksk.me/media/v2-010ccb9f2dd19bd450b655cb9f9c7209_hd.png" alt=""></p>
+<p> 18、mangle_InsertRnd函数：</p>
+<p> 在文件的随机位置插入随机长度的数据</p>
+<p> <img src="http://riusksk.me/media/v2-325836aaf17585d5a02265ae000b72fc_hd.png" alt=""></p>
+<p> 19、mangle_ASCIIVal函数：</p>
+<p> 在随机位置覆盖32字节的随机数</p>
+<p> <img src="http://riusksk.me/media/v2-0385d1c51fda364543b22c77067b28ac_hd.png" alt=""></p>
+<p> 总结</p>
+<p> 在Fuzzing过程中，很多变异规则是共用的，可以参考一些主源的开源软件，比如afl\peach\honggfuzz\libfuzzer，提取规则作整合，然后写个自己的fuzzing框架，在后面作针对的fuzzer时，可以直接套用。</p>
+<p> 从上面的fuzz策略可以总结出常规的变异规则：</p>
+<ul>
+<li>随机数据替换</li>
+<li>数据值增减</li>
+<li>已知边界值替换</li>
+<li>插入随机数据</li>
+<li>删减文件内容</li>
+<li>目录变异</li>
+<li>数据拷贝覆盖</li>
+<li>……</li>
+</ul>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2018/09/16/honggfuzz3/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/honggfuzz/">honggfuzz</a>, <a href="/tags/fuzz/">fuzz</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2018-09-15T05:45:05.000Z"><a href="/2018/09/15/知识的诅咒/">2018-09-15</a></time>
       
       
@@ -847,84 +983,11 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2018-04-30T09:34:21.000Z"><a href="/2018/04/30/安全圈乱象杂谈/">2018-04-30</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2018/04/30/安全圈乱象杂谈/">安全圈乱象杂谈</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>【声明】：本文纯属个人言论，与公司立场无关。</p>
-<h3 id="玩名词概念"><a href="#玩名词概念" class="headerlink" title="玩名词概念"></a>玩名词概念</h3><p>技术命名，将一些旧知识赋予个新名词进行炒作，比如APT，还有可视化概念，一串串攻击流飞来飞去。</p>
-<p>漏洞命名，似乎已成为圈内常态，不管漏洞危害如何，先取个名字，再以名字单独地注册个域名。</p>
-<p>BlackHat Pwnine上专门设置有一个“最名不副实漏洞奖”，就是用来批评这类恶意炒作的漏洞。</p>
-<center><img src="/media/pwnine.png" alt=""></center>
-
-<h3 id="会议式社交"><a href="#会议式社交" class="headerlink" title="会议式社交"></a>会议式社交</h3><p>国内与国外的安全会议的最大区别就是，国内以吃喝聊天、拉关系为主要目的，国外以技术交流为主；</p>
-<p>这几年，国内已经有越来越多的安全会议、安全沙龙，每次会前，朋友圈的邀请函就会被刷爆，那些常年占据朋友圈的会棍，我一般都是拉黑再说……</p>
-<p>不单是会议，特殊节日，你也会发现朋友圈清一色的各公司的礼品晒照！！！</p>
-<center><img src="/media/116417766.jpg" alt=""></center>
-
-<h3 id="炒作营销"><a href="#炒作营销" class="headerlink" title="炒作营销"></a>炒作营销</h3><p>“世界第一”、“中国第一”、“全球最强”等各种违反广告法的公关稿随处可见，尤以某数字公司最为推崇。</p>
-<center><img src="/media/62728.png" alt=""></center>
-
-<p>安全圈的营销类标题大体可以分为两种，”碰瓷”(蹭热点、名人，比如Hashcat破解密码之强，连FBI都惊呆了)和”意外”(这文章的标题就是这套路，破解256个字符，意不意外，惊不惊喜)，满满是《爆款文案》中的套路:</p>
-<p>普通标题：《火辣健身 App 深度产品分析报告》<br>碰瓷式标题：《同样是健身 App，它比 Keep 到底 NB 在哪儿》<br>意外式标题：《改了两个版本就融资 1500 万，这款产品如何做到的》</p>
-<p>我并不完全反对PR，但我反对那些夸张不符事实的PR，以及惋惜那些以PR带动技术发展的不幸！</p>
-<h3 id="快餐式的付费知识"><a href="#快餐式的付费知识" class="headerlink" title="快餐式的付费知识"></a>快餐式的付费知识</h3><center><img src="/media/know.jpg" alt=""></center>
-
-<p>最近好多个平台提供付费知识的功能，算是一项靠名气快速套现的捷径，随便开个课或拉个群收费，几天就可能几十万收入，令人羡慕！</p>
-<p>但反观付费的用户，你以为真的付费就一定可以获得知识吗？</p>
-<p>对于技术而言，那都是常年积累的过程，非一两小时言语所有传授；<br>对于知识而言，个人思考所得的才叫知识，而非单纯地从别人口中得到；<br>对于学习而言，学以致用才是目的，而非纯理论学习。</p>
-<p>所以，我不相信靠知识付费，就能够让你的认识、思维、技术有本质提高！</p>
-<p>况且，有那么多比付费知识更廉价的书籍（可参考<a href="https://github.com/riusksk/secbook" target="_blank" rel="external">2018年安全从业人员书单推荐</a>），完全可以更系统化地学习。</p>
-<p>我不反对知识付费，但是系统性学习比碎片化学习更重要！<br>我不反对碎片化学习，但别妄想能靠它实现知识速成！</p>
-<p>最近在网上看到一个故事，与各位分享下：</p>
-<p><em>爱因斯坦提出相对论后，震惊世界，<br>于是被很多大学邀请去做报告，<br>爱因斯坦因此而被弄得疲惫不堪。<br>有一天，司机对他说：“你太累了，今天我帮你作报告吧？”<br>爱因斯坦问：“你能行吗？”<br>司机说：“我闭着眼睛都能背出来。”<br>那天司机上台，果然讲得滴水不漏。<br>但刚想下台时，一位博士站了起来，<br>然后提了一个非常深奥刁钻的问题。<br>司机不知怎么作答，幸好脑瓜转得快：<br>“你这问题太简单了，我司机都能回答。”<br>爱因斯坦站起来，几句话就解决了问题。<br>博士惊呆了：“没想到他的司机也远胜于我。”<br>但在回去的路上，司机对爱因斯坦说：<br>“我知道的只是概念，你懂得的才是知识。”</em></p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2018/04/30/安全圈乱象杂谈/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/随笔杂谈/">随笔杂谈</a>
-  </div>
-
-        
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/">&laquo; 上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/">下一页 &raquo;</a>
+    <a class="extend prev" rel="prev" href="/">&laquo; 上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/3/">下一页 &raquo;</a>
   </nav>
 
 </nav>
@@ -941,6 +1004,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2018/12/30/推荐今年C3黑客大会上的几个议题/">推荐今年C3黑客大会上的几个议题</a>
+      </li>
     
       <li>
         <a href="/2018/12/28/2018年读过的书/">2018年读过的书</a>
@@ -978,10 +1045,6 @@
         <a href="/2018/10/02/honggfuzz4/">honggfuzz漏洞挖掘技术深究系列（4）—— 扩展Fuzzer</a>
       </li>
     
-      <li>
-        <a href="/2018/09/16/honggfuzz3/">honggfuzz漏洞挖掘技术深究系列（3）——Fuzz策略</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -991,7 +1054,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>49</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>50</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>20</small></li>
   
