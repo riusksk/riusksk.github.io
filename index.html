@@ -77,6 +77,102 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2019-01-06T08:43:31.000Z"><a href="/2019/01/06/安全研究者的自我修养/">2019-01-06</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2019/01/06/安全研究者的自我修养/">安全研究者的自我修养</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>在上篇文章《<a href="http://riusksk.me/2018/12/30/%E6%8E%A8%E8%8D%90%E4%BB%8A%E5%B9%B4C3%E9%BB%91%E5%AE%A2%E5%A4%A7%E4%BC%9A%E4%B8%8A%E7%9A%84%E5%87%A0%E4%B8%AA%E8%AE%AE%E9%A2%98/" target="_blank" rel="external">推荐今年C3黑客大会上的几个议题</a>》中提到”Attacking Chrome IPC“这个议题，我觉得该议题最大的亮点是在前半场，作者nedwill是之前在hack2win大赛上因攻破Chrome浏览器而一战成名，他讲了如何训练漏洞研究能力的过程，讲述自己这几年在漏洞研究上的历程和心得，很励志，其建议也非常具有可操作性，值得效仿学习。我反复看了多遍，对其作了一些总结和补充。</p>
+<h3 id="1、刻意练习10000小时"><a href="#1、刻意练习10000小时" class="headerlink" title="1、刻意练习10000小时"></a>1、刻意练习10000小时</h3><p>这份“鸡汤”道理，想必大家都懂，就不解释了，不懂的自行百度，或者去读读《异类》这本经典书籍。</p>
+<p>作者建议以月为单位来制定研究目标，他曾连续花了6个月的时间来研究Chrome Sandbox，但最终一无所获。</p>
+<p>所以，有时坚持了不一定能达到目标，但不坚持，就更没戏了。</p>
+<h3 id="2、训练挖洞的双技能"><a href="#2、训练挖洞的双技能" class="headerlink" title="2、训练挖洞的双技能"></a>2、训练挖洞的双技能</h3><p>（1）看洞：哪里看？历史漏洞的git log、bug报告、代码质量报告等等</p>
+<p>（2）识洞：就是肉眼看代码找漏洞，即代码审计，难点也就是在这上面，训练方法继续往下看</p>
+<h3 id="3、代码审计训练"><a href="#3、代码审计训练" class="headerlink" title="3、代码审计训练"></a>3、代码审计训练</h3><p>（1）根据自己目标定位，寻找相应的历史漏洞案例进行学习，比如要搞chrome就找chrome的历史漏洞</p>
+<p>（2）掌握漏洞所在的模块或子系统，但不看完整的漏洞细节描述，尝试在漏洞版本中找出对应的漏洞</p>
+<p>（3）如果（2）中未能找出漏洞，就去看漏洞细节描述，对比自己的审计过程，看遗漏了哪一步骤</p>
+<p>（4）不断重复上述训练，直至相信：挖洞只是体力消耗，而非能力问题</p>
+<p>这第4点说得，非常励志，因为挖洞挖久了，有时真的容易怀疑自己的能力，目标难度越大，越容易打击人。</p>
+<p>作者第一次训练的漏洞是j00ru（Project Zero成员）的IDA漏洞：<a href="https://j00ru.vexillium.org/2014/10/secure-2014-slide-deck-and-hex-rays-ida-pro-advisories-published/，2014年的文章了" target="_blank" rel="external">https://j00ru.vexillium.org/2014/10/secure-2014-slide-deck-and-hex-rays-ida-pro-advisories-published/，2014年的文章了</a></p>
+<h3 id="4、3-5年的训练计划"><a href="#4、3-5年的训练计划" class="headerlink" title="4、3~5年的训练计划"></a>4、3~5年的训练计划</h3><p>1~2年：做做 CTF 或 WarGames 题目，网上有很多CTF writeup可以参考学习</p>
+<p>2~3年：简单点的目标，就是找相对容易挖的产品</p>
+<p>3~5年：困难点的目标</p>
+<p>目标的难易程度可以直接参考相应的产品的漏洞奖励计划或私有市场的价格，挑选出一份目标清单，按难易程度排序，逐一去实现它。</p>
+<h3 id="5、努力往往比运气和天赋更重要"><a href="#5、努力往往比运气和天赋更重要" class="headerlink" title="5、努力往往比运气和天赋更重要"></a>5、努力往往比运气和天赋更重要</h3><p>虽然挖洞也需要一定运气和天赋，但多数你认为的挖洞天才，其实只不过是花了比你多100倍，甚至更多的时间在这项技术研究上而已</p>
+<h3 id="6、进入研究者团队或社区，互相学习"><a href="#6、进入研究者团队或社区，互相学习" class="headerlink" title="6、进入研究者团队或社区，互相学习"></a>6、进入研究者团队或社区，互相学习</h3><p>国外的交流氛围会比国内的更好一些，也更愿意分享。</p>
+<p>很多时候自己的交流圈，大多是一些熟识的同行，或者同事，一般可交流的人还是比较少的。</p>
+<p>经常在网上看到不少人会问，如何认识xx大牛、黑客，但其实很多时候却是：</p>
+<p>努力提高自己的专业能力，圈子最终会吸纳你进去认识更多圈内人。</p>
+<h3 id="7、建立自己的漏洞信息来源"><a href="#7、建立自己的漏洞信息来源" class="headerlink" title="7、建立自己的漏洞信息来源"></a>7、建立自己的漏洞信息来源</h3><p>RSS订阅无疑是自己最好的方式，这个需要依赖平时自己去不断收集订阅。</p>
+<p>很多漏洞相关的博文，往往曝露出某些软件新的攻击面，抢占先机就显得尤为重要，比如当年Android stagefirght mp4漏洞、word公式编辑器、adobe图片转换器等等，如果能及时关注并尝试去挖掘，往往可以收获不少漏洞的。</p>
+<h3 id="8、收集和学习开源的漏洞挖掘工具"><a href="#8、收集和学习开源的漏洞挖掘工具" class="headerlink" title="8、收集和学习开源的漏洞挖掘工具"></a>8、收集和学习开源的漏洞挖掘工具</h3><p>比如afl、honggfuzz、libfuzzer等很多优秀的漏洞挖掘工具，都是值得好好阅读代码，学习其中的fuzzing思路，可以更好地应用到未来的漏洞挖掘研究上。</p>
+<h3 id="9、很多不愿搞研究工作的挖洞人，只不过是为了权衡利弊"><a href="#9、很多不愿搞研究工作的挖洞人，只不过是为了权衡利弊" class="headerlink" title="9、很多不愿搞研究工作的挖洞人，只不过是为了权衡利弊"></a>9、很多不愿搞研究工作的挖洞人，只不过是为了权衡利弊</h3><p>在《从0到1：开启商业与未来的秘密》一书中有一章叫做“秘密”，漏洞研究可以当作挖掘秘密，为什么人们不探索秘密呢？书中提到4种原因，我觉得同样适用于漏洞研究领域：</p>
+<p>（1）<strong>渐进主义</strong>：把目标定得低一些，更容易取得好成绩；</p>
+<p>（2）<strong>风险规避</strong>：人们害怕秘密是因为怕犯错，除此之外，可能也担心KPI没法完成，又或者挖洞拿到的奖金又该如何跟公司“分赃”呢？</p>
+<p>（3）<strong>自满</strong>：很多时候，某些人可以坐享其成，又何必自己去挖掘秘密；国内研究氛围又喜欢搞营销吹牛逼，牛逼吹多了吹大了，有时连自己都信了；</p>
+<p>（4）<strong>扁平化</strong>：任何一个拥有雄心壮志的人，在涉及某一研究领域之前都会问自己一个问题：如果有可能挖掘到漏洞，难道全球人才库中更加聪明、更加有技术能力的人还没有发现吗？这种怀疑的声音阻止了不少人去探索秘密，从事研究工作，因为身处的世界似乎大到任何个人都无法做出独特的贡献。</p>
+<h3 id="10、结语"><a href="#10、结语" class="headerlink" title="10、结语"></a>10、结语</h3><p>今年因个人原因，已从安全研究转向业务安全，深知研究的不易。</p>
+<p>最后以白桦的《船》致谢所有仍在安全研究道路上前进的人，愿一切安好：</p>
+<blockquote>
+<p>我有过多次这样的奇遇，<br>从天堂到地狱只在瞬息之间：<br>每一朵可爱、温柔的浪花<br>都成了突然崛起、随即倾倒的高山。</p>
+<p>每一滴海水都变脸色，<br>刚刚还是那样的美丽、蔚蓝；<br>旋涡纠缠着旋涡，<br>我被抛向高空又投进深渊……</p>
+<p>当时我甚至想到过轻生，<br>眼前一片苦海无边；<br>放弃了希望就像放弃了舵柄，<br>在暴力之下只能沉默和哀叹。</p>
+<p>今天我才有资格嘲笑昨天的自己，<br>为昨天落叶似的惶恐感到羞惭；<br>虚度了多少年华，<br>船身多次被礁石撞穿……</p>
+<p>千万次在大洋里撒网，<br>才捕获到一点点生活的经验，<br>才恍然大悟，<br>啊！道理原是如此浅显；</p>
+<p>你要航行吗<br>必然会有千妖百怪出来阻拦；<br>暴虐的欺凌是它们的游戏，<br>制造灭亡是它们唯一的才干。</p>
+<p>命中注定我要常常和它们相逢，<br>因为我的名字叫做船；<br>面对强大于自身千万倍的对手，<br>能援救自己的只有清醒和勇敢。</p>
+<p>恐惧只能使自己盲目，<br>盲目只能夸大魔鬼的狰狞嘴脸；<br>也许我的样子比它们更可怕，<br>当我以命相拼，一往无前！</p>
+<p>只要我还有一根完整的龙骨，<br>绝不驶进避风的港湾；<br>把生命放在征途上，<br>让勇敢来决定道路的宽窄、长短。</p>
+<p>我完完全全的自由了，<br>船头成为埋葬它们的铁铲；<br>我在波浪中有节奏地跳跃，<br>就像荡着一个巨大的秋千。</p>
+<p>即使它们终于把我撕碎，<br>变成一些残破的木片，<br>我不会沉沦，决不！<br>我还会在浪尖上飞旋。</p>
+<p>后来者还会在残片上认出我，<br>未来的诗人会唱然长叹：<br>“这里有一个幸福的灵魂，<br>它曾经是一艘前进着的航船……”</p>
+</blockquote>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2019/01/06/安全研究者的自我修养/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/随笔杂谈/">随笔杂谈</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/安全研究/">安全研究</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2018-12-30T11:06:31.000Z"><a href="/2018/12/30/推荐今年C3黑客大会上的几个议题/">2018-12-30</a></time>
       
       
@@ -917,78 +1013,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2018-10-02T01:35:52.000Z"><a href="/2018/10/02/honggfuzz4/">2018-10-02</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2018/10/02/honggfuzz4/">honggfuzz漏洞挖掘技术深究系列（4）—— 扩展Fuzzer</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>对于一些复合文件格式，如果只是单纯的暴力Fuzzing，会导致生成很多无法被解析的文件，因此需要对文件变异作一些定制化的工作，比如docx、doc等office复合文件，docx是个压缩包，doc是个OLE格式，如果fuzz docx自然需要将其zip解压，再针对感兴趣的文件作变异，对于doc最好是作文件格式解析，只对感兴趣的stream作文件变异，这样的fuzzing的有效性才会更高。</p>
-<p>庆幸地是，honggfuzz提供<code>-c</code>参数用于扩展变异规则以代替原有变异方式，同时提供有<code>--pprocess_cmd</code>在原有的文件变异后再作处理：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">--mutate_cmd|-c VALUE</span><br><span class="line">External command producing fuzz files (instead of internal mutators)</span><br><span class="line">--pprocess_cmd VALUE</span><br><span class="line">External command postprocessing files produced by internal mutators</span><br></pre></td></tr></table></figure>
-<p><code>-c</code>功能比较有用，也是我用得比较多的，另一个<code>--pprocess_cmd</code>基本我没用过。</p>
-<p>当你通过<code>-f</code>提供输入样本目录后，在fuzzing时，随机提取的文件会直接传递给<code>-c</code>参数指定的扩展命令作变异。</p>
-<p>比如想针对某文件特定offset范围内的内容进行变异，下面是针对macOS/iOS字体文件中的虚拟指令作Fuzzing时写的脚本：</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> mmap</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> random <span class="keyword">import</span> randint</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line">RANGE_START = <span class="number">0x16D8</span></span><br><span class="line">RANGE_END   = <span class="number">0x304D</span></span><br><span class="line">MIN_BYTES_TO_FLIP = <span class="number">1</span></span><br><span class="line">MAX_BYTES_TO_FLIP = <span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="string">".DS_Store"</span> <span class="keyword">in</span> sys.argv[<span class="number">1</span>]:</span><br><span class="line">    exit(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> open(sys.argv[<span class="number">1</span>], <span class="string">"r+b"</span>) <span class="keyword">as</span> f:</span><br><span class="line">  mapped = mmap.mmap(f.fileno(), <span class="number">0</span>)</span><br><span class="line">  <span class="comment">#print "file size: 0x%x" % len(mapped)</span></span><br><span class="line">  bytes_to_flip = randint(MIN_BYTES_TO_FLIP, MAX_BYTES_TO_FLIP)</span><br><span class="line">  bytes_flipped = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> bytes_flipped &lt; bytes_to_flip:</span><br><span class="line">    byte_pos = randint(RANGE_START, RANGE_END)</span><br><span class="line">    <span class="comment">#print "byte_pos: 0x%x" %byte_pos </span></span><br><span class="line">    byte_new = chr(randint(<span class="number">0</span>, <span class="number">255</span>))</span><br><span class="line">    mapped[byte_pos] = byte_new</span><br><span class="line">    bytes_flipped += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">  mapped.close()</span><br></pre></td></tr></table></figure>
-<p>变异效果：</p>
-<p><img src="http://riusksk.me/media/font_rangfuzz.png" alt=""></p>
-<p>最后挖到一个TTF字体虚拟指令漏洞：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">orig file:</span><br><span class="line">2F90h: 00 3F C5 CD 2B 10 C1 10 DE 3F C5 【CD】 2B 10 C5 10</span><br><span class="line"></span><br><span class="line">poc file:</span><br><span class="line">2F90h: 00 3F C5 CD 2B 10 C1 10 DE 3F C5 【DD】 2B 10 C5 10</span><br><span class="line"></span><br><span class="line">glyf table -&gt; SimpleGlyf[] -&gt; Instructions(&apos;0xCD&apos; =&gt; ‘0xDD&apos;) -&gt; MDRP指令</span><br></pre></td></tr></table></figure>
-<p>同样的，你也可以写个doc、docx等office文件格式解析并变异的扩展fuzzer，比如利用olefile库（但只支持修改同等大小不变的doc，要插入或删除需要自行实现），或者通过COM接口来实现操作。</p>
-<p>比如之前有段时间doc中的公式编辑器存在很多漏洞，你就可以专门针对<code>Equation Native</code>流作fuzzing。</p>
-<p>最后放两张图(riufuzz是自己对honggfuzz二次开发的版本，后面有机会再讲)：</p>
-<p><img src="http://riusksk.me/media/olefuzz.jpeg" alt=""></p>
-<p><img src="http://riusksk.me/media/doc_crash.jpg" alt=""></p>
-<center><img src="http://riusksk.me/media/gzh.png" alt=""></center>
-
-
-
-
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2018/10/02/honggfuzz4/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/honggfuzz/">honggfuzz</a>, <a href="/tags/fuzz/">fuzz</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -1010,6 +1034,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2019/01/06/安全研究者的自我修养/">安全研究者的自我修养</a>
+      </li>
     
       <li>
         <a href="/2018/12/30/推荐今年C3黑客大会上的几个议题/">推荐今年C3黑客大会上的几个议题</a>
@@ -1047,10 +1075,6 @@
         <a href="/2018/10/14/honggfuzz5/">honggfuzz漏洞挖掘技术深究系列（5）—— Intel Processor Trace</a>
       </li>
     
-      <li>
-        <a href="/2018/10/02/honggfuzz4/">honggfuzz漏洞挖掘技术深究系列（4）—— 扩展Fuzzer</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -1062,7 +1086,7 @@
   
     <li><a href="/categories/技术分享/">技术分享</a><small>50</small></li>
   
-    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>20</small></li>
+    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>21</small></li>
   
   </ul>
 </div>
@@ -1072,7 +1096,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/Bochspwn/" style="font-size: 10px;">Bochspwn</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 13.33px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 16.67px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 13.33px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/Bochspwn/" style="font-size: 10px;">Bochspwn</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 13.33px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 16.67px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/安全研究/" style="font-size: 10px;">安全研究</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 13.33px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
   </div>
 </div>
 
@@ -1082,7 +1106,7 @@
   <footer id="footer" class="inner"><div class="alignleft">
   <p>
   
-  &copy; 2018 riusksk
+  &copy; 2019 riusksk
   
   All rights reserved.</p>
   <p>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
