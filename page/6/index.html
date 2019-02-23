@@ -77,6 +77,77 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2015-07-10T16:00:00.000Z"><a href="/2015/07/11/Hacking-Team-武器库研究（四）：Flash-New-0Day-opaqueBackground-UAF/">2015-07-11</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/07/11/Hacking-Team-武器库研究（四）：Flash-New-0Day-opaqueBackground-UAF/">Hacking Team 武器库研究（四）：Flash New 0Day (opaqueBackground UAF)</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>周末大清早起来，就看到知道创宇在微博上说，Hacking Team又泄露新的Flash 0Day，在当前最新实测可用。于是笔者下载了一份利用代码，经测试确实在最新版上可利用，目前Adobe官方未发布补丁。此次泄露的0day并没有在泄露的工具库里面，而是在邮件附件中被发现的。</p>
+<p><img src="http://riusksk.me/media/hackteam04/1.png" alt=""></p>
+<p>##【利用代码分析】</p>
+<p>1、这次的漏洞主要出现在AS3 “opaqueBackground” 属性上，它主要用于设置背景颜色。首先创建_ar Array数组，然后用vector.<uint>对象填充。</uint></p>
+<p><img src="http://riusksk.me/media/hackteam04/2.png" alt=""></p>
+<p>2、接着创建TextLine对象，然后设置它的opaqueBackground属性，再自定义valueOf函数，这个函数是触发漏洞的关键，跟前几个flash漏洞类似。</p>
+<p><img src="http://riusksk.me/media/hackteam04/3.png" alt=""></p>
+<p>3、设置opaqueBackground属性，将_mc（MyClass类型）赋予opaqueBackground，由于数据类型不同，AVM会进行类型转换，此时自定义的valueOf2就会被调用。</p>
+<p><img src="http://riusksk.me/media/hackteam04/4.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam04/5.png" alt=""></p>
+<p>4、调用recreateTextLine函数重建TextLine，导致原分配的TextLine对象内存被释放，但程序依然保留着对它的引用，所以漏洞也是个UAF漏洞。接着重新设置_ar[i].length的长度值（_vLen 大于原始长度值 ），会导致重新分配内存，从而占用已释放的内存，此时里面都是vector.<uint>对象。最后返回_vLen+8的值给_ar[_cnt].opaqueBackground，如果利用成功，它刚好会去篡改某个vector.<uint>对象的长度值，这里是改为106大小。</uint></uint></p>
+<p><img src="http://riusksk.me/media/hackteam04/6.png" alt=""></p>
+<p>5、找到被篡改了长度的vector对象，由于其长度值被更改，允许读取到更大内存空间的数据，再用这个被改的vector去覆盖下一个vector长度为0x40000000，从而获取需要调用的函数地址，绕过ASLR保护。根据不同的系统平台，选择不同的shellcode代码执行，这些跟前2个flash 漏洞的利用模板基本一致。</p>
+<p><img src="http://riusksk.me/media/hackteam04/7.png" alt=""></p>
+<p>6、内存搜索的方式也是采用搜索“MZ”PE头这种暴力方式，再去解析PE文件格式，从导入表中的找到kernel32.dll库，再从其函数名列表里找到VirtualProtect函数，进而找到对应的函数地址进行调用。</p>
+<p><img src="http://riusksk.me/media/hackteam04/8.png" alt=""></p>
+<p>7、看下ShellWin32.Exec函数，通过内存搜索找到VirtualProtect函数地址，将包含执行calc的shellcode设置为可执行权限，以此绕过DEP保护，并用指向shellcode的指针替换payload对应的JIT函数指针，当调用Payload.call 时则执行的正是shellcode。</p>
+<p><img src="http://riusksk.me/media/hackteam04/9.png" alt=""></p>
+<p>##【总结】</p>
+<p>此次漏洞主要是AS3 opaqueBackground 属性导致的UAF漏洞，依然是valueOf导致的漏洞，此次Hacking Team 曝光的3个漏洞均是valueOf问题，用的基本是同一套利用模板，并且支持多个平台环境，都是采用vector exploit技术去实现信息泄露，从而绕过ASLR，再调用virtualProtect去赋予shellcode可执行权限，以此绕过DEP保护。可以预见未来将会有很多flash exploit 采用类似技术，甚至可能在一些恶意样本中找到Hacking Team的Flash利用模板，未来的利用代码将会更加工程化，通用化。</p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2015/07/11/Hacking-Team-武器库研究（四）：Flash-New-0Day-opaqueBackground-UAF/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Hacking-Team/">Hacking Team</a>, <a href="/tags/Flash/">Flash</a>, <a href="/tags/0day/">0day</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2015-07-10T04:00:33.000Z"><a href="/2015/07/10/Hacking-Team-武器库研究（三）：core-android-audiocapture/">2015-07-10</a></time>
       
       
@@ -672,68 +743,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2013-03-06T16:00:00.000Z"><a href="/2013/03/07/若干flash-xss漏洞分析/">2013-03-07</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2013/03/07/若干flash-xss漏洞分析/">若干flash xss漏洞分析</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <h3 id="漏洞一"><a href="#漏洞一" class="headerlink" title="漏洞一"></a>漏洞一</h3><figure class="highlight as"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Parameters.getInstance().data = loaderInfo.parameters;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">get</span> <span class="title">onPlayStart</span><span class="params">()</span>:String</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> (_data[<span class="string">"onPlayStart"</span>]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ExternalInterface.call(Parameters.getInstance().onPlayStart, _arg1);</span><br><span class="line">ExternalInterface.call(Parameters.getInstance().onPlayStop);</span><br><span class="line">ExternalInterface.call(Parameters.getInstance().onFileLoadedError);</span><br></pre></td></tr></table></figure>
-<h3 id="漏洞二"><a href="#漏洞二" class="headerlink" title="漏洞二"></a>漏洞二</h3><figure class="highlight as"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">reload</span><span class="params">(u, show_loading)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (show_loading == <span class="literal">undefined</span>) &#123;</span><br><span class="line">        show_loading = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (show_loading) &#123;</span><br><span class="line">        _root.loading = <span class="keyword">new</span> Loading(<span class="string">"Loading data..."</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> _local2 = <span class="string">""</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (_root.data != <span class="literal">undefined</span>) &#123;</span><br><span class="line">        _local2 = _root.data;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (u != <span class="literal">undefined</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (u.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            _local2 = u;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _root.lv = <span class="literal">undefined</span>;</span><br><span class="line">    _root.lv = <span class="keyword">new</span> LoadVars();</span><br><span class="line">    _root.lv.onLoad = LoadVarsOnLoad;</span><br><span class="line">    _root.lv.make_chart = make_chart;</span><br><span class="line">    _root.lv.make_pie = make_pie;</span><br><span class="line">    _root.lv.load(_local2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="漏洞三"><a href="#漏洞三" class="headerlink" title="漏洞三"></a>漏洞三</h3><figure class="highlight as"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> csPreloader;</span><br><span class="line">loader.loadClip(csPreloader, preloader_mc.target);</span><br></pre></td></tr></table></figure>
-<h3 id="漏洞四"><a href="#漏洞四" class="headerlink" title="漏洞四"></a>漏洞四</h3><figure class="highlight as"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.loadXML(file);</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">init</span><span class="params">(file, ploader, bookmark, contentpath)</span></span></span><br><span class="line">container.init(csConfigFile, preloader_mc, csFilesetBookmark, contentpath);</span><br><span class="line"><span class="keyword">var</span> csConfigFile;</span><br></pre></td></tr></table></figure>
-<h3 id="漏洞五"><a href="#漏洞五" class="headerlink" title="漏洞五"></a>漏洞五</h3><figure class="highlight as"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">    getURL(_loc2, <span class="keyword">this</span>.playList.currentClip().getLinkWindow());</span><br><span class="line">    <span class="keyword">var</span> _loc2 = <span class="keyword">this</span>.playList.currentClip().getLinkURL();</span><br><span class="line"></span><br><span class="line">    _loc1.getLinkURL = <span class="function"><span class="keyword">function</span> <span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">this</span>.linkUrl);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _loc1 = (_global.org.flowplayer.playlist.Clip = <span class="function"><span class="keyword">function</span> <span class="params">(name, baseUrl, fileName, start, end, protected, enableControl, linkUrl, linkWindow, type, allowResize, overlayFileName, overlayId, live, showOnLoadBegin, maxPlayCount, info, thumbnailUrl, suggestedClipsInfoUrl, id, keywords)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.linkUrl = linkUrl;</span><br><span class="line">    ｝</span><br></pre></td></tr></table></figure>
-<h3 id="漏洞六"><a href="#漏洞六" class="headerlink" title="漏洞六"></a>漏洞六</h3><figure class="highlight as"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">     <span class="keyword">this</span>.textField.htmlText = [<span class="string">''</span>, content, <span class="string">''</span>].join(<span class="string">''</span>);</span><br><span class="line"></span><br><span class="line">_global.sIFR = <span class="function"><span class="keyword">function</span> <span class="params">(textField, content)</span></span></span><br><span class="line"><span class="function"></span>&#123;  ……</span><br><span class="line">   	   <span class="keyword">this</span>.write(content);</span><br><span class="line">  	   ……</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">     sIFR.instance = <span class="keyword">new</span> sIFR(_loc3.txtF, _loc4);</span><br><span class="line">     _loc4 = sIFR.VERSION_WARNING.split(<span class="string">"%s"</span>).join(_root.version);</span><br></pre></td></tr></table></figure>
-<h3 id="漏洞七"><a href="#漏洞七" class="headerlink" title="漏洞七"></a>漏洞七</h3><figure class="highlight as"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>._setVar(<span class="string">"_onClick"</span>, [_root.onclick, pConfig.onclick], <span class="string">"String"</span>);</span><br><span class="line">getURL(<span class="keyword">this</span>._onClick, <span class="keyword">this</span>._onClickTarget);</span><br></pre></td></tr></table></figure>
-<h3 id="自动化检测脚本"><a href="#自动化检测脚本" class="headerlink" title="自动化检测脚本"></a>自动化检测脚本</h3><p>顺手写了个简单的检测已知漏洞的flash xss检测脚本，下载地址见 <a href="https://github.com/riusksk/FlashScanner" target="_blank" rel="external">FlashScanner</a>：</p>
-<center><br><img src="/media/flash_xss/checker.png" alt=""><br></center>
-
-
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2013/03/07/若干flash-xss漏洞分析/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/Flash/">Flash</a>, <a href="/tags/XSS/">XSS</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -755,6 +764,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2019/02/22/今年的OffensiveCon大会议题不错/">今年的OffensiveCon大会议题质量不错</a>
+      </li>
     
       <li>
         <a href="/2019/02/02/winafl中基于插桩的覆盖率反馈原理/">winafl中基于插桩的覆盖率反馈原理</a>
@@ -792,10 +805,6 @@
         <a href="/2018/11/24/杀软之殇/">从杀软之殇谈产品</a>
       </li>
     
-      <li>
-        <a href="/2018/11/18/读《态度》/">读《态度》</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -805,7 +814,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>51</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>52</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>23</small></li>
   
