@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2019-02-23T06:15:53.000Z</updated>
+  <updated>2019-02-23T06:28:04.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -20,9 +20,9 @@
     <link href="http://riusksk.github.io/2019/02/22/%E4%BB%8A%E5%B9%B4%E7%9A%84OffensiveCon%E5%A4%A7%E4%BC%9A%E8%AE%AE%E9%A2%98%E4%B8%8D%E9%94%99/"/>
     <id>http://riusksk.github.io/2019/02/22/今年的OffensiveCon大会议题不错/</id>
     <published>2019-02-22T13:15:48.000Z</published>
-    <updated>2019-02-23T06:15:53.000Z</updated>
+    <updated>2019-02-23T06:28:04.000Z</updated>
     
-    <content type="html">&lt;p&gt;年前曾在微博上推荐过OffensiveCon 2019大会议题，议题列表与介绍可参见官网（&lt;a href=&quot;https://www.offensivecon.org/agenda/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://www.offensivecon.org/agenda/&lt;/a&gt;），很多专注于漏洞挖掘与利用的干货分享，目前只有部分议题ppt公开，通过点击文末的“阅读原文”可打包下载（包含8个议题），包括ppt、paper和code。&lt;/p&gt;
+    <content type="html">&lt;p&gt;年前曾在微博上推荐过OffensiveCon 2019大会议题，议题列表与介绍可参见官网（&lt;a href=&quot;https://www.offensivecon.org/agenda/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://www.offensivecon.org/agenda/&lt;/a&gt;），很多专注于漏洞挖掘与利用的干货分享，目前只有部分议题ppt公开，文末附打包下载链接（包含8个议题），包括ppt、paper和code。&lt;/p&gt;
 &lt;p&gt;会议结束后，Twitter上赞声一片，议题质量很赞。&lt;/p&gt;
 &lt;p&gt;本文主要聊聊已公开的一些议题，学习下思路。&lt;/p&gt;
 &lt;h3 id=&quot;议题列表&quot;&gt;&lt;a href=&quot;#议题列表&quot; class=&quot;headerlink&quot; title=&quot;议题列表&quot;&gt;&lt;/a&gt;议题列表&lt;/h3&gt;&lt;ol&gt;
@@ -73,7 +73,7 @@
 &lt;p&gt;整个Fuzzing过程如下：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;https://ws1.sinaimg.cn/large/006tKfTcgy1g0gbmzq8rqj30l50c4wg5.jpg&quot; alt=&quot;image-20190223140416987&quot;&gt;&lt;/p&gt;
 &lt;p&gt;作者未来会在github上开源（&lt;a href=&quot;https://github.com/googleprojectzero/fuzzilli&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/googleprojectzero/fuzzilli&lt;/a&gt;），拭目以待。&lt;/p&gt;
-&lt;h3 id=&quot;结语&quot;&gt;&lt;a href=&quot;#结语&quot; class=&quot;headerlink&quot; title=&quot;结语&quot;&gt;&lt;/a&gt;结语&lt;/h3&gt;&lt;p&gt;点击”阅读原文“可获取议题的打包资料，除上述推荐的议题资料外，还有3个议题，包括”Bypass_Windows_Defender_ASR“、”macOS-How to Gain Root with CVE-2018-4193“，以及”OSX Privileged Helper Tool“，有兴趣的同学自行下载阅读。&lt;/p&gt;
+&lt;h3 id=&quot;结语&quot;&gt;&lt;a href=&quot;#结语&quot; class=&quot;headerlink&quot; title=&quot;结语&quot;&gt;&lt;/a&gt;结语&lt;/h3&gt;&lt;p&gt;访问 &lt;a href=&quot;https://github.com/riusksk/SecConArchive&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/riusksk/SecConArchive&lt;/a&gt;可获取议题的打包资料，除上述推荐的议题资料外，还有3个议题，包括”Bypass_Windows_Defender_ASR“、”macOS-How to Gain Root with CVE-2018-4193“，以及”OSX Privileged Helper Tool“，有兴趣的同学自行下载阅读。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;https://ws1.sinaimg.cn/large/006tKfTcgy1g0gbyta5c9j307107oq3x.jpg&quot; alt=&quot;image-20190223141538809&quot;&gt;&lt;/p&gt;
 </content>
     
