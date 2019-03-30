@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2019-02-23T06:28:04.000Z</updated>
+  <updated>2019-03-30T02:38:14.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,48 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>RSS: 优秀的个人情报来源</title>
+    <link href="http://riusksk.github.io/2019/03/30/RSS-%E4%BC%98%E7%A7%80%E7%9A%84%E4%B8%AA%E4%BA%BA%E6%83%85%E6%8A%A5%E6%9D%A5%E6%BA%90/"/>
+    <id>http://riusksk.github.io/2019/03/30/RSS-优秀的个人情报来源/</id>
+    <published>2019-03-30T01:42:03.000Z</published>
+    <updated>2019-03-30T02:38:14.000Z</updated>
+    
+    <content type="html">&lt;p&gt;早些年，关注了一些技术博客，但不知道它是否更新文章，就只好偶而去翻翻看。关注的博客量少的时候，还应付得来，一旦多了，就觉得甚是费时间。&lt;/p&gt;
+&lt;p&gt;后来才发现有RSS（聚合内容）这款神器，大大地节省时间，不用再不停地翻看别人的博客，一有更新，在自己的订阅网站或app上就可以查看到。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://ws3.sinaimg.cn/large/006tKfTcgy1g1kl77qw0pj30ku11244m.jpg&quot; alt=&quot;image-20190330095736471&quot;&gt;&lt;/p&gt;
+&lt;p&gt;以前用Google Reader，现在用Inoreader（&lt;a href=&quot;https://www.inoreader.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://www.inoreader.com&lt;/a&gt;），还提供手机APP，特别适合利用碎片时间查看和学习。&lt;/p&gt;
+&lt;p&gt;我现在基本保持每天翻看，一定要把未读消息消灭掉。&lt;/p&gt;
+&lt;p&gt;由于多年订阅源的收集积累，每天都有不少更新的消息，即使前天刚把失效的订阅源清理掉，也还有700多个。&lt;/p&gt;
+&lt;p&gt;以前曾看到某同事的RSS订阅，上千条未读消息，平时看得少，结果越堆越多，导致未能发挥RSS应有的价值。&lt;/p&gt;
+&lt;p&gt;我觉得RSS应该是每个想保持学习进步的人应该必备的工具。&lt;/p&gt;
+&lt;p&gt;对于我个人而言，RSS有以下作用：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;应急响应&lt;/strong&gt;：及时获取外部曝光的漏洞，包括公司产品漏洞，以及可能影响公司产品的第三方通用组件/开源项目漏洞，以便能够及时响应处理；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;刷CVE&lt;/strong&gt;：及时获知某些主流软件的攻击面，或者一些漏洞挖掘技巧，然后主动尝试去挖掘。以前有不少人在乌云上曝光某一通用漏洞，就经常有一大堆去刷SRC，或者在乌云上不停地刷别人的漏洞，这种行为我觉得挺无聊的。这里刷CVE主要是指Microsoft、Apple、Adobe等一系列主流厂商的产品的0day，而不是以往乌云上这种相同漏洞在不同平台刷洞的行为。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;技术与工具的收集&lt;/strong&gt;：包括技术文章和工具的收集与学习，对于好的工具，会下载学习其源码，并应用实践；对于好的文章，会保存到印象笔记，方便以后查询复习。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;安全资讯&lt;/strong&gt;：看看一些发安全界发生哪些安全事件，比如入侵事件、facebook信息泄露事件等等，也学习下别人如何就应对此类事件。除此之外，当然也包括安全界的一些八卦。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;新书资讯&lt;/strong&gt;：专门订阅一些出版社的相关博客/官网，以便能够及时获取即将出版的新书。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;其它&lt;/strong&gt;：更多的用途靠自己去挖掘，毕竟每个人的期望的目标不一样。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;对于那些未提供RSS功能，又非常不错的网站，推荐使用Feed43(&lt;a href=&quot;https://feed43.com/feed.html?action=new)自定义规则来生成RSS，可直接导入到Inoreader，使用教程参考：《利用&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://feed43.com/feed.html?action=new)自定义规则来生成RSS，可直接导入到Inoreader，使用教程参考：《利用&lt;/a&gt; Feed43，将任意网页制作成 RSS 订阅源》&lt;a href=&quot;https://sspai.com/post/34320&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://sspai.com/post/34320&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;最后分享一下个人收集的RSS，共731个，Inoreader免费版最多支持500个，不想付费的可以找下其它免费RSS工具，或者选择部分订阅。&lt;/p&gt;
+&lt;p&gt;下载地址：&lt;a href=&quot;http://riusksk.me/media/riusksk_RSS_20190330.xml&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://riusksk.me/media/riusksk_RSS_20190330.xml&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://ws4.sinaimg.cn/large/006tKfTcgy1g1km7tyayfj30qv0eztc8.jpg&quot; alt=&quot;image-20190330103252935&quot;&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;早些年，关注了一些技术博客，但不知道它是否更新文章，就只好偶而去翻翻看。关注的博客量少的时候，还应付得来，一旦多了，就觉得甚是费时间。&lt;/p&gt;
+&lt;p&gt;后来才发现有RSS（聚合内容）这款神器，大大地节省时间，不用再不停地翻看别人的博客，一有更新，在自己的订阅网站或app上就可
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>今年的OffensiveCon大会议题质量不错</title>
@@ -1239,9 +1281,9 @@
     
       <category term="honggfuzz" scheme="http://riusksk.github.io/tags/honggfuzz/"/>
     
-      <category term="fuzzing" scheme="http://riusksk.github.io/tags/fuzzing/"/>
-    
       <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
+    
+      <category term="fuzzing" scheme="http://riusksk.github.io/tags/fuzzing/"/>
     
   </entry>
   
@@ -1312,84 +1354,6 @@
       <category term="黑客" scheme="http://riusksk.github.io/tags/%E9%BB%91%E5%AE%A2/"/>
     
       <category term="程序员" scheme="http://riusksk.github.io/tags/%E7%A8%8B%E5%BA%8F%E5%91%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>honggfuzz漏洞挖掘技术深究系列（1）——反馈驱动（Feedback-Driven）</title>
-    <link href="http://riusksk.github.io/2018/07/29/honggfuzz%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E6%8A%80%E6%9C%AF1/"/>
-    <id>http://riusksk.github.io/2018/07/29/honggfuzz漏洞挖掘技术1/</id>
-    <published>2018-07-29T01:54:40.000Z</published>
-    <updated>2018-10-02T03:09:09.000Z</updated>
-    
-    <content type="html">&lt;p&gt;&lt;strong&gt;“&lt;/strong&gt; 反馈驱动：通过监控样本触发的代码覆盖率，进而改进输入样本以提高代码覆盖率，增加发现漏洞的概率。&lt;strong&gt;”&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-9f0fe133af6f259bcc310cb7f1f14083_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;目前业界中基于代码覆盖率的最著名的三大Fuzzer，当属Google开发的AFL、libfuzzer和honggfuzz，且他们都是开源的，在github上都可以搜索到。&lt;/p&gt;
-&lt;p&gt;相信很多搞fuzzing的同学都听过或用过这三款工具，本系列主要讲honggfuzz的原理与应用，之前把honggfuzz源码都阅读过一遍，并且二次开发过，该工具的挖洞效果还是不错的。&lt;/p&gt;
-&lt;h2 id=&quot;01-—-关于代码覆盖率的那些事&quot;&gt;&lt;a href=&quot;#01-—-关于代码覆盖率的那些事&quot; class=&quot;headerlink&quot; title=&quot;01 — 关于代码覆盖率的那些事&quot;&gt;&lt;/a&gt;&lt;strong&gt;01 — 关于代码覆盖率的那些事&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;计算代码覆盖率情况就需要有个计量单位，通常有3种：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;函数（Fuction-Level）&lt;/li&gt;
-&lt;li&gt;基本块（BasicBlock-Level）&lt;/li&gt;
-&lt;li&gt;边界（Edge-Level）&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-e59bc6bc894b1d9aa84b69292ba8f3f8_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;1. 函数（Fuction-Level）&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;先说下函数，这个很容易理解，就是代码执行时调用到哪些函数，但是函数里面的具体代码行却不作统计，相对比较粗糙但高效的统计方式。&lt;/p&gt;
-&lt;p&gt;所以，通常的统计方式是用基本块，简称BB。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;2.基本块（BasicBlock-Level）&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;什么是基本块，直接看下图就很容易理解了。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-19797c5c8d99a42c36318718f29265d5_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;IDA中每一块代码就代表着一个基本块，就是以指令跳转为作划分界限的。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;3.边界（Edge-Level）&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;edge本身就涵盖了基本块部分，唯一的差别是edge多记录了一些执行边界的信息。比如示例代码：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-22c28c570cf9739b790c4c2969b5b5f2_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;在IDA中可以看到A、B、C这3个基本块，但当a为假时，程序就会从A执行到C。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-9544f8e035e1874da0a0368ad39aa926_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;前面基本块的方式就无法确切地知道是否曾从A执行到C，尤其是该段代码被多次执行的情况，就更无法知道，这时edge覆盖方式就出现了。&lt;/p&gt;
-&lt;p&gt;edge会在A跟C之间建立虚拟块D，通过判断D是否执行过，来确认是否曾从A执行到C，这种方式也会比较消耗性能就是：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-6a1b97ef1552f83c2e77b5ef2c927093_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;统计代码覆盖率又分两种情况：&lt;/p&gt;
-&lt;p&gt;1.【有源码】：直接使用SanitizerCoverage即可，在编译选项中添加相应的覆盖率统计方式，比如基本块统计方式可以添加：&lt;/p&gt;
-&lt;p&gt; &lt;code class=&quot;language-text&quot;&gt;CFLAG=“-fsanitize=address -fsanitize-coverage=bb”&lt;/code&gt; &lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-0b937d36b150db10b68416ecee96a18f_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;2.【无源码】：使用Pin、DynamoRIO等二进制插桩工具去hook统计，或者pediy改指令的方式去监控也是可以的，本系列的后续文章可能会细说。&lt;/p&gt;
-&lt;h2 id=&quot;02-—-Honggfuzz反馈驱动原理&quot;&gt;&lt;a href=&quot;#02-—-Honggfuzz反馈驱动原理&quot; class=&quot;headerlink&quot; title=&quot;02 — Honggfuzz反馈驱动原理&quot;&gt;&lt;/a&gt;&lt;strong&gt;02 — Honggfuzz反馈驱动原理&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;本文我们默认以基本块作为代码覆盖率的统计方式，比如采用如下编译选项：&lt;/p&gt;
-&lt;p&gt; &lt;code class=&quot;language-text&quot;&gt;ASAN_OPTIONS=coverage=1:coverage_direct=1 -fsanitize=address -fsanitize-coverage=bb&lt;/code&gt; &lt;/p&gt;
-&lt;p&gt;执行后它会生成两个文件：&lt;em&gt;.sancov.map和&lt;/em&gt;.sancov.raw，这是honggfuzz处理过的scancov文件。&lt;/p&gt;
-&lt;p&gt;其中&lt;em&gt;.sancov.map文件记录是模块信息，&lt;/em&gt;.sancov.raw文件则记录着执行过的基本块地址信息：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-fcc18ec6efcedcd5b19e4428b6844294_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;1、首先，honggfuzz会先去分析.sancov.raw文件，保存命中的基本块地址，记录BB数，以及总共的BB数：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-be7bc26166e0f1d376ba1c712cf61b59_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;2、计算代码覆盖率 = 命中BB数 / (命中BB数 + 未命中的BB数)&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-e9348eaa3c3712994d135045c8530231_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;以下是旧版honggfuzz关于coverage的显示内容格式：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-67391dd336b6e4e343244f994c6aa52f_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;新版的变成只记录BB/edge数：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-033f35d3e5e67fdd9661ca42c7b06cf9_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;3、发现新路径或者新插桩链接库加载，则添加此变异样本为新的输入样本，供后面作进一步变异，以触发更多新路径&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-a2fec1e1ca91bbcefabe770da1b6d6b2_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;h2 id=&quot;03-—-总结&quot;&gt;&lt;a href=&quot;#03-—-总结&quot; class=&quot;headerlink&quot; title=&quot;03 — 总结&quot;&gt;&lt;/a&gt;&lt;strong&gt;03 — 总结&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;honggfuzz最早创建于2015年，跟AFL的发布时间差不多，AFL的出现可以说在安全界是项里程碑标志，给漏洞挖掘技术带来新的技术革命，网上对其源码分析的文章也到处可见，但对honggfuzz的详细分析还没有，因此才作此系列记录下。&lt;/p&gt;
-&lt;p&gt;个人也曾给honggfuzz贡献过代码，但由于某次pull request未被采用，于是就自己二次开发不再提交合并。因为我是在macOS下开发，而原作者主要是用Linux，那次提交的功能对我很有用，所以只好自己维护一份二次开发版本。&lt;/p&gt;
-&lt;p&gt;后来自己也在Windows和macOS平台上扩展了许多新功能，在本系列文章中，后面可能会单篇聊一聊，也感谢作者robertswiecki开发出这么好用的fuzzer，让我借此刷了不少CVE。&lt;/p&gt;
-&lt;center&gt;&lt;img src=&quot;http://riusksk.me/media/gzh.png&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
-
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;&lt;strong&gt;“&lt;/strong&gt; 反馈驱动：通过监控样本触发的代码覆盖率，进而改进输入样本以提高代码覆盖率，增加发现漏洞的概率。&lt;strong&gt;”&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/v2-9f0fe133
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
-    
-      <category term="honggfuzz" scheme="http://riusksk.github.io/tags/honggfuzz/"/>
-    
-      <category term="fuzzing" scheme="http://riusksk.github.io/tags/fuzzing/"/>
-    
-      <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
     
   </entry>
   
