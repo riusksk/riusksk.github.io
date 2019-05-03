@@ -77,6 +77,60 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2016-09-09T01:55:19.000Z"><a href="/2016/09/09/Perl-Bug-一枚/">2016-09-09</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2016/09/09/Perl-Bug-一枚/">Perl Bug 一枚</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p><img src="http://riusksk.me/media/perl_oob.png" alt=""></p>
+<p>官方回复：</p>
+<p><img src="http://riusksk.me/media/perl_reply.png" alt=""></p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2016/09/09/Perl-Bug-一枚/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Perl/">Perl</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2016-07-23T05:06:02.000Z"><a href="/2016/07/23/China-Pub计算机类图书畅销榜第一/">2016-07-23</a></time>
       
       
@@ -584,111 +638,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2015-07-15T16:00:00.000Z"><a href="/2015/07/16/Hacking-Team-武器库研究（六）：Mac-OSX-Rootkit-技术分析/">2015-07-16</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/07/16/Hacking-Team-武器库研究（六）：Mac-OSX-Rootkit-技术分析/">Hacking Team 武器库研究（六）：Mac OSX Rootkit 技术分析</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>泄露的 driver-macos-master 项目是一个Mac OS X Rootkit 病毒，从源码看，它可能就是当年红极一时的病毒“OSX.Crisis”，因为两者之间连一些函数名都一模一样（比如关键函数hide_proc、hide_kext_osarray，甚至连废弃的hide_kext_leopard也有），逻辑也基本相同。更为牛逼之处的是，Crisis是在2012年爆发的，而该份代码在2009就已完工，想想之间的差距吧，这也再一次证明Hacking Team的技术实力有多强大。</p>
-<p><img src="http://riusksk.me/media/hackteam06/1.png" alt=""></p>
-<p>##【源码分析】</p>
-<p>下面分析下该 OSX rootkit 技术内幕：</p>
-<p>1、先从入口函数 mchook_start 开始分析，主要就是注册字符设备，然后在文件系统上创建设备节点，常规的驱动入口行为。</p>
-<p><img src="http://riusksk.me/media/hackteam06/2.png" alt=""></p>
-<p>对应的字符设备转换表如下：</p>
-<p><img src="http://riusksk.me/media/hackteam06/3.png" alt=""></p>
-<p>主IOCTL回调函数就下面3个，其中cdev_open和cdev_close为空，整个处理逻辑都包含在cdev_ioctl函数中：</p>
-<p><img src="http://riusksk.me/media/hackteam06/4.png" alt=""></p>
-<p>2、关键看下cdev_ioctl 回调函数，里面包括各种潜伏隐藏的行为。在mchook.h文件头中就定义了一些cdev_ioctl中调用到的函数，从函数名上基本可以推测出该rootkit包含文件隐藏、进程隐藏、内核模块隐藏等功能。</p>
-<p><img src="http://riusksk.me/media/hackteam06/5.png" alt=""></p>
-<p>3、进程隐藏：在mac osx上,每个进程的上下文都保存在proc结构中,而在allproc链表中就保存着所有进程proc结构的指针，通过allproc链表移除相应进程的proc结构可隐藏正在运行的进程，下面是关于隐藏进程的代码，位于hide_proc函数中（还有另一个未被调用到的函数hide_proc_l，也是用于实现相同功能）,它相应进程从进程链表和进程Hash表里都移除掉。之前笔者在分析 rubilyn osx rootkit 时，发现它就没有从Hash表里移除进程相关信息，导致可通过“ps -p pid ”命令查找到进程。</p>
-<p><img src="http://riusksk.me/media/hackteam06/6.png" alt=""></p>
-<p>4、内核模块隐藏：早期针对leopard系统的内核模块隐藏是调用 hide_kext_leopard 函数，现在已经不再使用，它只是简单地遍历kmod_info 内核模块链表结构，找到相匹配的模块名，然后将从它链表中踢除，这样当执行kextstat命令时就查看不到隐藏的内核模块，但这种方法现在无效。</p>
-<p><img src="http://riusksk.me/media/hackteam06/7.png" alt=""></p>
-<p>为了支持多个系统版本，后来重写了个 hide_kext_osarray 函数。在“雪豹”苹果系统之后，有个叫sLoadedKexts 的 IOKit OSArray类引用到内核模块列表，不过它并没有导出符号，只要能够找到它，那么就可以对sLoadedKexts 数组进行修改,以达到隐藏内核模块的目的。</p>
-<p>庆幸的是，OSKext::lookupKextWithLoadTag 函数里面引用到sLoadKexts（源码参见：<a href="http://www.opensource.apple.com/source/xnu/xnu-2782.1.97/libkern/c++/OSKext.cpp），通过它可以定位到sLoadKexts地址。" target="_blank" rel="external">http://www.opensource.apple.com/source/xnu/xnu-2782.1.97/libkern/c++/OSKext.cpp），通过它可以定位到sLoadKexts地址。</a></p>
-<p><img src="http://riusksk.me/media/hackteam06/8.png" alt=""></p>
-<p>它对应的内核模块位于/System/Library/Extensions/System.kext/PlugIns/LibKern.kext/LibKern，不过当用IDA加载分析时，发现它只有导入表的函数信息，并无实际函数，包括PlugIns目录下的其它驱动也是大多如此。进一步分析，发现这些驱动其实都链接到/System/Library/Kernels/kernel里面，可以发现OSKext::lookupKextWithLoadTag函数对应的符号名为__ZN6OSKext21lookupKextWithLoadTagEj。</p>
-<p><img src="http://riusksk.me/media/hackteam06/9.png" alt=""></p>
-<p>通过该符号即可找到OSKext::lookupKextWithLoadTag函数，然后开始搜索机器 E8，即CALL指令，从上面的源码看，调用的第一个函数是IORecursiveLockLock，然后跳过call指令（共5字节）进入下一条指令。</p>
-<p><img src="http://riusksk.me/media/hackteam06/10.png" alt=""></p>
-<p>再根据32位/64位系统进行区分，对于32位比较简单，call下一条指令就包含有sLoadedKexts地址，下图就是32位系统Snow Leopard 10.6.8的OSKext::lookupKextWithLoadTag函数，由于笔者缺乏该环境，因此图片是从网上扣来的：</p>
-<p><img src="http://riusksk.me/media/hackteam06/11.png" alt=""></p>
-<p>但对于64位系统会相对繁琐一些，它先找到机器码 48 8B，即mov指令，获取第2个操作数的实际内存地址，即为sLoadKexts，不过笔者在最新版10.10.4上发现必须是在第2个 48 8B才有效，因此该份rookit只适用于低版本的 64位Leopard系统</p>
-<p><img src="http://riusksk.me/media/hackteam06/12.png" alt=""></p>
-<p><img src="http://riusksk.me/media/hackteam06/13.png" alt=""></p>
-<p>定位到sLoadedKext这个OSArray数组之后， sLoadedKext[OFFT_KEXT_COUNT] ＝  sLoadedKext[0x14] = 元素个数，即已加载的内核模块个数。接着找到最后一个kext模块的kmod_info结构信息，判断该内核模块是否为com.apple.mdworker，若是则将递减模块数量，进而隐藏kext模块，所以实际要隐藏哪个模块就得去更改com.apple.mdworker为相应的模块名。</p>
-<p><img src="http://riusksk.me/media/hackteam06/14.png" alt=""></p>
-<p>5、文件隐藏：为了对列出文件的相应系统函数进行挂钩，我们需要先对finder和ls所使用的函数进行进程跟踪，在mac上已经用Dtrace代替ktrace，在finder上主要是使用getdirentriesattr函数，而ls主要是使用getdirentries64，下面是用Dtrace分别对finder和ls的进程跟踪情况：</p>
-<p><img src="http://riusksk.me/media/hackteam06/15.png" alt=""></p>
-<p>下面是查看finder进程2841的调用函数，其中的getdirentriesattr在最新版10.10.4上未发现被调用，以下测试是之前在10.9系统上测试的，但是在10.10.4中getdirentriesattr函数依然在syscall.h中被定义着。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">riusksk@macosx:/usr/include/sys$ sudo dtrace -s ~/Reverse\ engineering/Dtrace/calltrace.d -p 2841 | grep getdir</span><br><span class="line"></span><br><span class="line">dtrace: script &apos;/Users/riusksk/Reverse engineering/Dtrace/calltrace.d&apos; matched 573227 probes</span><br><span class="line"></span><br><span class="line">  2 1078881          getdirentriesattr:entry</span><br><span class="line">  2 1363229         getdirentriesattr:return =1</span><br><span class="line">……</span><br></pre></td></tr></table></figure>
-<p>下面是ls命令(64位系统)调用的函数：</p>
-<p><img src="http://riusksk.me/media/hackteam06/16.png" alt=""></p>
-<p>因此，我们若想在finder和ls中隐藏文件，只要对这两个函数 getdirentriesattr 和 getdirentries64 （32位的为getdirentries）进行挂钩处理即可。在系统调用函数表中，主要是由sysent结构数组构成，每个sysent结构中都包括参数个数sy_narg，执行函数sy_call 这些重要数据。sysent结构如下：</p>
-<p><img src="http://riusksk.me/media/hackteam06/17.png" alt=""></p>
-<p>为了实现对上述系统函数的挂钩，通过修改相应函数sysent结构的sy_call来进行偷梁换柱，关于各系统函数的调用号和宏名均可在 /usr/include/sys/syscall.h中找到：</p>
-<p><img src="http://riusksk.me/media/hackteam06/18.png" alt=""></p>
-<p>回头看源码，发现该rootkit也是对上面这3个函数进行hook：</p>
-<p><img src="http://riusksk.me/media/hackteam06/19.png" alt=""></p>
-<p>看下其中的hook_getdirentiries64函数，其它类似，主要还是移除指定文件的dirent结构，其中dirent结构原型如下：</p>
-<p><img src="http://riusksk.me/media/hackteam06/20.png" alt=""></p>
-<p>先调用原始函数，获取真实的文件信息（源码中的direntry对应的其实是dirent结构，在新版版本中这两个结构是独立存在的了）：</p>
-<p><img src="http://riusksk.me/media/hackteam06/21.png" alt=""></p>
-<p>然后遍历文件链表，找到相匹配的文件名，然后用后一个dirent文件结构覆盖当前找到的dirent文件结构，这样就相当于指定的文件结构信息从链表中移除，从而实现文件隐藏的目的。</p>
-<p><img src="http://riusksk.me/media/hackteam06/22.png" alt=""></p>
-<p>10、官方另外在testuint目录下放有用于测试的rootkit的工具kextControl.c 和 solveKernel.c。</p>
-<p><img src="http://riusksk.me/media/hackteam06/23.png" alt=""></p>
-<p>【总结】</p>
-<p>实际测试时，由于没有合法签名，导致驱动也无法被正常加载，因此未能作实际测试。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">15/7/17 下午2:23:27.921 com.apple.kextd[44]: ERROR: invalid signature for com.revenge.kext.machooker, will not load</span><br></pre></td></tr></table></figure>
-<p>此次泄露的OSX rootkit 相对还是比较常规的技术，毕竟是2009的源码了，年代久远，但在最新OSX 10.10上稍作修改，应该还是可以用的。</p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2015/07/16/Hacking-Team-武器库研究（六）：Mac-OSX-Rootkit-技术分析/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/Hacking-Team/">Hacking Team</a>, <a href="/tags/OSX/">OSX</a>, <a href="/tags/rootkit/">rootkit</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -710,6 +659,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2019/05/03/读《一本小小的蓝色逻辑书》/">读《一本小小的蓝色逻辑书》：识别常见的逻辑漏洞</a>
+      </li>
     
       <li>
         <a href="/2019/03/30/RSS-优秀的个人情报来源/">RSS: 优秀的个人情报来源</a>
@@ -747,10 +700,6 @@
         <a href="/2018/12/22/bochspwn-reloaded/">Bochspwn漏洞挖掘技术深究(2)：内核未初始化漏洞检测</a>
       </li>
     
-      <li>
-        <a href="/2018/12/01/bochspwn1/">Bochspwn漏洞挖掘技术深究(1)：Double Fetches 检测</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -762,7 +711,7 @@
   
     <li><a href="/categories/技术分享/">技术分享</a><small>53</small></li>
   
-    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>23</small></li>
+    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>24</small></li>
   
   </ul>
 </div>
@@ -772,7 +721,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/Bochspwn/" style="font-size: 10px;">Bochspwn</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 13.33px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 16.67px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/winafl/" style="font-size: 10px;">winafl</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/安全研究/" style="font-size: 11.67px;">安全研究</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 13.33px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/Bochspwn/" style="font-size: 10px;">Bochspwn</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 13.33px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 16.67px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/winafl/" style="font-size: 10px;">winafl</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/安全研究/" style="font-size: 11.67px;">安全研究</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 13.33px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/逻辑/" style="font-size: 10px;">逻辑</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
   </div>
 </div>
 

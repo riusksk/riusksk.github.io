@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2019-03-30T02:45:21.000Z</updated>
+  <updated>2019-05-03T07:25:49.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,144 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>读《一本小小的蓝色逻辑书》：识别常见的逻辑漏洞</title>
+    <link href="http://riusksk.github.io/2019/05/03/%E8%AF%BB%E3%80%8A%E4%B8%80%E6%9C%AC%E5%B0%8F%E5%B0%8F%E7%9A%84%E8%93%9D%E8%89%B2%E9%80%BB%E8%BE%91%E4%B9%A6%E3%80%8B/"/>
+    <id>http://riusksk.github.io/2019/05/03/读《一本小小的蓝色逻辑书》/</id>
+    <published>2019-05-03T01:46:24.000Z</published>
+    <updated>2019-05-03T07:25:49.000Z</updated>
+    
+    <content type="html">&lt;p&gt;[TOC]&lt;/p&gt;
+&lt;p&gt;最近读了一本书叫《一本小小的蓝色逻辑书》，算是逻辑推理入门书籍，觉得不错，推荐给大家。&lt;/p&gt;
+&lt;p&gt;这本书在微信读书上可以找到，大概需要4个多小时的阅读时间。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://ws1.sinaimg.cn/large/006tNc79gy1g2nwae2o1hj30ku0engpd.jpg&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+&lt;h3 id=&quot;什么是逻辑推理&quot;&gt;&lt;a href=&quot;#什么是逻辑推理&quot; class=&quot;headerlink&quot; title=&quot;什么是逻辑推理&quot;&gt;&lt;/a&gt;什么是逻辑推理&lt;/h3&gt;&lt;p&gt;在生活、学习与工作中，我们总是要运用到逻辑推理能力，甚至我们自己也经常挂在嘴边，但若问什么是逻辑推理呢，估计没多少人能说清。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;所谓”逻辑推理”，在广义上被定义为”我们评估信息的过程”。要想做出正确的决定，我们首先要占有充分的信息，而要想占有充分的信息，就必须提出正确的问题。所以那些擅长逻辑推理的人，往往也比较善于提出问题，搜集相关信息，用”正确的”方式对这些信息进行评估。最重要提，他们可以在不受他人干扰的情况下独立完成这一过程。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;在我记忆中，整个学生时代，几乎没有过这门课程，大部分的逻辑推理能力都是基于以往的中学数学课程训练，比如真假命题、逆命题、证明题等等，本书中也有讲到这些。&lt;/p&gt;
+&lt;p&gt;也许我们的日常数学真的只需要加减乘除的运算，但以前的数学课程培养出来的逻辑思维，却可以运用一生。&lt;/p&gt;
+&lt;h3 id=&quot;推翻前提找答案&quot;&gt;&lt;a href=&quot;#推翻前提找答案&quot; class=&quot;headerlink&quot; title=&quot;推翻前提找答案&quot;&gt;&lt;/a&gt;推翻前提找答案&lt;/h3&gt;&lt;p&gt;这里说的”推翻前提找答案”，其实是想说”&lt;strong&gt;水平思考法&lt;/strong&gt;“，一种摆脱前提设想而进行创意思考的方式，不走寻常路，换个角度看待问题，而不是接受他人提出的前提条件。我们多数人一般都是使用“&lt;strong&gt;垂直思考法&lt;/strong&gt;”，却沿着原定的逻辑路线思考下去，就是我们俗语常说的“&lt;strong&gt;直脑筋&lt;/strong&gt;”，多少略带有点贬义。&lt;/p&gt;
+&lt;p&gt;下面是两种思考方法的对比表：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://ws1.sinaimg.cn/large/006tNc79gy1g2nws25a6hj30ps0eswht.jpg&quot; alt=&quot;image-20190503101519293&quot;&gt;&lt;/p&gt;
+&lt;p&gt;可能还是太抽象了，因此作者讲了一个故事：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;许多年前，一个倒霉的商人欠了别人一大笔钱。由于没钱还债，商人很可能会被债主投进大牢。&lt;/p&gt;
+&lt;p&gt;债主是个脾气又坏又丑的糟老头，但他却看上了商人年轻貌美的女儿。于是他告诉商人：”我有个办法，不仅可以把你的债务一笔勾销，还能让你的女儿免于因为你入狱而流落街头。”&lt;/p&gt;
+&lt;p&gt;具体办法是：债主把一黑一白的小石头放进空袋子，让商人女儿摸一块。如果摸到白石头，则她父亲的债一笔勾销，她也无须嫁给债主；如果摸到的是黑石头，债务仍然可以一笔勾销，但她必须嫁给债主。如果她不答应这个游戏，那么她父亲会被立刻投进监狱。&lt;/p&gt;
+&lt;p&gt;商人父女别无选择，只好答应。&lt;/p&gt;
+&lt;p&gt;于是三人来到债主花园内铺满鹅卵石的小路上，债主俯身捡两块黑石头扔进袋子里，他自以为神不知鬼不觉，却不知这一切都被商人女儿看在眼里。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;如果是个”直脑筋”的人，可能就想到下面两种做法：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;当场揭穿糟老头的阴谋，然后商人进监狱；&lt;/li&gt;
+&lt;li&gt;女儿认命，抽到黑石头，嫁给糟老头，债务一笔勾销。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;最后的结局是这样：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;商人的女儿摸出一块石头，但故意把它掉到地上，跟一堆鹅卵石混到一起。然后一边假装寻找石头，一边若有所思地说道，”但没关系，只要看看袋子里的那块石头是什么颜色，就可以判断我刚才摸出的那块石头是什么颜色了。”&lt;/p&gt;
+&lt;p&gt;债主一时愣住了，不知道该说什么，只好让那个女孩拿出袋子里的石头，结果可想而知。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这就是水平思考法，我们可以回顾下这个故事，若要想免债的话，其中的”前提条件”是：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;前提条件&lt;/strong&gt;：从袋子中摸出白石头。&lt;/p&gt;
+&lt;p&gt;现在通过改变该前提条件来思考，比如这样：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;从袋子中摸出&lt;strong&gt;&lt;code&gt;黑&lt;/code&gt;&lt;/strong&gt;石头：现场改变规则，摸出黑石头可免债。&lt;/li&gt;
+&lt;li&gt;摸出石头后，&lt;strong&gt;根据剩下的石头颜色来判断是否摸到的是白石头&lt;/strong&gt;，正如故事中所做的。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;日常生活中，阻碍我们进行创意思考的是，不假思索的程序性反应，就是不费脑子的事情，比如商店购物、开车等等，但有时遇到一些新情况，这些程序性反应就不灵了，这时就需要启动非程序性反应。&lt;/p&gt;
+&lt;p&gt;书中还给了一道训练”水平思考法”的题目，大家可以先试着做下，一开始我也没做出来（答案见文末附录）：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;用最多4条直线(笔尖不离纸)把下面的9个点连接起来。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/Users/riusksk/Downloads/006tNc79gy1g2nxsccj6aj30ck096t8z.jpg&quot; alt=&quot;image-20190503105014426&quot;&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;还有另一道题，是当年面试微信支付时被问到的类似题目，但微信的更难一点（拿3个桶倒出想要的重量），答案亦见文末附录：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;马戏团老板派小丑去附近河边打水给大象喝。因为想在里面加入一种特殊健康浓缩剂。所以需要整整7加仑水，不能多，也不能少。他给了小丑两个水桶，一个5加仑，一个3加仑，让小丑去打整整7加仑水。请问小丑该怎么办？&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;效用概率做决策&quot;&gt;&lt;a href=&quot;#效用概率做决策&quot; class=&quot;headerlink&quot; title=&quot;效用概率做决策&quot;&gt;&lt;/a&gt;效用概率做决策&lt;/h3&gt;&lt;p&gt;如果大家经常逛知乎的话，会发现很多人在问：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;做安全需不需要考研？&lt;/li&gt;
+&lt;li&gt;选择什么样的学校和专业好就业？&lt;/li&gt;
+&lt;li&gt;选择什么样的职业更适合自己？&lt;/li&gt;
+&lt;li&gt;其它…….&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;相信很多人做决策的时候，多会先分析出各项选择的优缺点再打分对比，选择出最佳方案，这叫&lt;strong&gt;利弊分析法&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;有时，我们又会先列出在意的点，根据重要程度作个加权值，然后给个选择打分，根据分数高低来排序选择，这叫&lt;strong&gt;加权排序法&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;还有决策法、矩阵分析法、概率树等等多种决策分析方法，在我们在决策时，能够给我们提供很大的帮助。&lt;/p&gt;
+&lt;p&gt;不过我在这里，重点是想介绍下&lt;strong&gt;效用分析法&lt;/strong&gt;，即分析某个结果对我们的价值，通常跟概率一块使用。&lt;/p&gt;
+&lt;p&gt;打个比方，一名大四学生在规划自己的人生。摆在他面前的有三种选择：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;成为旅行作家；&lt;/li&gt;
+&lt;li&gt;加入外交部；&lt;/li&gt;
+&lt;li&gt;成为公司销售人员。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这里肯定不能只从金钱回报来考虑这个问题，因为这名学生真正看重的并不是赚多少钱，而是自己从事这份工作时的内心感受。&lt;/p&gt;
+&lt;p&gt;若是以前，我可能会列出收入、职业前景、兴趣、工作环境等多个维度来考虑。但是某些场景下，我们常常忽略实现这一结果的概率，比如我想当皇帝，这种不是靠努力就能实现的。&lt;/p&gt;
+&lt;p&gt;因此这里最好的办法就是去计算每份职业的期望值（Expected Value, 简称EV）。EV计算公式：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;EV = 效用(某种结果带给我们的心理满足度) x 出现这种结果的概率&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;根据上述公式，我们得到：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://ws1.sinaimg.cn/large/006tNc79gy1g2nzxuyujbj30lj088jsm.jpg&quot; alt=&quot;image-20190503120444342&quot;&gt;&lt;/p&gt;
+&lt;p&gt;这里每种结果存在实现概率，是因为该结果要求一定的技能，而这名学生此时并不完全具备这些技能。&lt;/p&gt;
+&lt;p&gt;根据上面的分析，该学生选择加入外部部的期望值最高，所以理性地说，他应该选择这份工作。&lt;/p&gt;
+&lt;h3 id=&quot;五大常见推理漏洞&quot;&gt;&lt;a href=&quot;#五大常见推理漏洞&quot; class=&quot;headerlink&quot; title=&quot;五大常见推理漏洞&quot;&gt;&lt;/a&gt;五大常见推理漏洞&lt;/h3&gt;&lt;p&gt;通常说的推理漏洞，大多是指那些跟我们所做假设相关的漏洞。书中列举出五大常见推理漏洞：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;比较和类比假设漏洞：偷换概念&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;把两个虽然不同，但逻辑上却相等的事物进行对比。&lt;/p&gt;
+&lt;p&gt;比如拿橘子和苹果作比较。再比如说，医学院校经常拿小白鼠做实验，然后把在动物身上得到的实验结果当作参考，但是若因小白鼠身上实验某种药物时发生某种并发症，就认为人类在使用这种药物时也会出现同样的并发症，就是错误的。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;代表性假设漏洞：以偏概全&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;不能拿特殊案例来代表整体，统计的样本要足够多才行，否则它就会弱化我们的论断。&lt;/p&gt;
+&lt;p&gt;比如《思考，快与慢》中曾举过一个例子：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;最近，某大医院出生婴儿1000人， 某小医院出生婴儿50人， 问哪家医院生男婴的比例大于60%的可能性较大？&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;我们都知道生男生女的概率分别是50%，统计样本越多就越会接进这个数值，但如果你若去小医院，它的波动概率就很大，可能生男80%，也可以40%，所以小医院生男婴的比例就越有可能大于60%。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;“好证据”假设漏洞：对相关证据视而不见&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;当我们不经验证就想当然地认为自己的证据有效时，就很容易犯此错误。那些比较客观、相关、精确、真实的证据有利于强化我们的论述；而主观、不具代表性、不精确的论据则只会弱化我们的论述。&lt;/p&gt;
+&lt;p&gt;比如，一个不愿意戒烟的人总是会看到吸烟有利的一面，而对那些支持戒烟的事实会视而不见。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;因果假设漏洞：混淆因果关系&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;当我们错误地做出因果假设，或者在没有证据的情况下就认定一件事会导致另外一件事时，就会犯这种错误。&lt;/p&gt;
+&lt;p&gt;比如，每个活过百岁的人都喝过白开水，所以就认定经常喝白开水就能长命百岁，这显然是错误，它们不存在直接的因果关系。很多学术界的社会/生物健康调查相关的报导就经常出现这种错误。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;实施假设漏洞：在执行计划时没有提前考虑可能出现的瓶颈&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;当我们没有预料到计划实施过程可能出一的瓶颈，或者盲目地相信自己的计划会轻而易举地得到落实时，我们就会犯这种错误。&lt;/p&gt;
+&lt;p&gt;比如，几年前，西方某旅行杂志曾登过一篇文章说：”因为如今搭乘飞机很方便，而且人们手头余钱也越来越多，所以很快大家都会去非洲看狮子了。”&lt;/p&gt;
+&lt;p&gt;这显然就是错误的，去不去非洲看狮子，并非单纯考虑金钱和交通就行，比如先问问你有没有年假再说吧！&lt;/p&gt;
+&lt;h3 id=&quot;识别常见的逻辑漏洞&quot;&gt;&lt;a href=&quot;#识别常见的逻辑漏洞&quot; class=&quot;headerlink&quot; title=&quot;识别常见的逻辑漏洞&quot;&gt;&lt;/a&gt;识别常见的逻辑漏洞&lt;/h3&gt;&lt;p&gt;根据书中列举的常见逻辑漏洞，我画了张思维导图：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://riusksk.me/media/常见逻辑漏洞识别.svg&quot; alt=&quot;常见逻辑漏洞识别&quot;&gt;&lt;/p&gt;
+&lt;h3 id=&quot;附录&quot;&gt;&lt;a href=&quot;#附录&quot; class=&quot;headerlink&quot; title=&quot;附录&quot;&gt;&lt;/a&gt;附录&lt;/h3&gt;&lt;p&gt;1、9点连线的答案：多数人会受限于前提条件：只能在9个点内形成的长方形之内画线，如果能够摆脱该前提条件，那么答案就会有很多种：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://ws1.sinaimg.cn/large/006tNc79gy1g2nyan53h1j30440a73yu.jpg&quot; alt=&quot;image-20190503110749773&quot;&gt;&lt;img src=&quot;https://ws3.sinaimg.cn/large/006tNc79gy1g2nz31v5o9j30900akwfd.jpg&quot; alt=&quot;image-20190503113506286&quot;&gt;&lt;img src=&quot;https://ws4.sinaimg.cn/large/006tNc79gy1g2nz1dfjtvj30af071t93.jpg&quot; alt=&quot;image-20190503113329718&quot;&gt;&lt;/p&gt;
+&lt;p&gt;2、水桶题目的答案：先倒满5加仑的水桶，再把它倒进3加仑水桶，把3加仑水桶里的水倒掉，把5加仑水桶里剩下的2加仑水倒进3加仑水桶里，重新装满5加仑水桶（5加仑 + 2加仑 = 7加仓）。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;[TOC]&lt;/p&gt;
+&lt;p&gt;最近读了一本书叫《一本小小的蓝色逻辑书》，算是逻辑推理入门书籍，觉得不错，推荐给大家。&lt;/p&gt;
+&lt;p&gt;这本书在微信读书上可以找到，大概需要4个多小时的阅读时间。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://ws1.sinaimg.cn/lar
+    
+    </summary>
+    
+      <category term="随笔杂谈" scheme="http://riusksk.github.io/categories/%E9%9A%8F%E7%AC%94%E6%9D%82%E8%B0%88/"/>
+    
+    
+      <category term="逻辑" scheme="http://riusksk.github.io/tags/%E9%80%BB%E8%BE%91/"/>
+    
+  </entry>
   
   <entry>
     <title>RSS: 优秀的个人情报来源</title>
@@ -1019,9 +1157,9 @@
     
       <category term="honggfuzz" scheme="http://riusksk.github.io/tags/honggfuzz/"/>
     
-      <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
-    
       <category term="fuzz" scheme="http://riusksk.github.io/tags/fuzz/"/>
+    
+      <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
     
   </entry>
   
@@ -1281,79 +1419,9 @@
     
       <category term="honggfuzz" scheme="http://riusksk.github.io/tags/honggfuzz/"/>
     
-      <category term="fuzzing" scheme="http://riusksk.github.io/tags/fuzzing/"/>
-    
       <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
     
-  </entry>
-  
-  <entry>
-    <title>从攻防角度谈黑客与程序员</title>
-    <link href="http://riusksk.github.io/2018/08/11/%E4%BB%8E%E6%94%BB%E9%98%B2%E8%A7%92%E5%BA%A6%E8%B0%88%E9%BB%91%E5%AE%A2%E4%B8%8E%E7%A8%8B%E5%BA%8F%E5%91%98/"/>
-    <id>http://riusksk.github.io/2018/08/11/从攻防角度谈黑客与程序员/</id>
-    <published>2018-08-11T03:12:45.000Z</published>
-    <updated>2018-08-11T03:28:27.000Z</updated>
-    
-    <content type="html">&lt;blockquote&gt;
-&lt;p&gt;常言道：“未知攻，焉知防”，然，“知攻未必知防”！&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;https://riusksk.me/media/hacker.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;01 — 黑客的敌人是程序员&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;黑客所要攻破的任何一款产品，无论是网站、软件还是IoT硬件产品，这些都是由程序员开发的，所以他们要攻破的其实是程序员的安全思维缺陷。&lt;/p&gt;
-&lt;p&gt;所以说，黑客的敌人是程序员。但如果黑客本身就是程序员呢？&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;02 — 会开发的黑客：知己知彼，百战不殆&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;有时某些大厂的漏洞致谢公告放出后，可能会出现连续几个月，某类漏洞突然暴增。因为程序员也常常会出现习惯性错误，比如习惯用memcpy危险函数，且不校验size，那么有一必有二，有可能顺藤摸瓜找到一堆此类漏洞。&lt;/p&gt;
-&lt;p&gt;上面这种情况就是黑客从程序员的角度入手，去寻找突破口。&lt;/p&gt;
-&lt;p&gt;在之前的工作中，也遇到过一些不懂安全的程序员，在转入安全漏洞挖掘领域后，能够快速上手，挖到不少Android等大厂产品的漏洞。这也利益于此前的开发基础，具备开发能力的程序员比只懂安全的技术人员更容易在安全道路上走得更远更深。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;黑客是否需要精通开发？&lt;/strong&gt;这是个老生常谈的问题了。&lt;/p&gt;
-&lt;p&gt;如果你去看一些黑客大牛或漏洞挖掘高手写的代码，你会发现有时他们写得也跟我们一样烂。&lt;/p&gt;
-&lt;p&gt;但也不是说搞安全就不需要学编程开发了，而是必学课程。只是，很多情况下，黑客具备的是基础开发能力，而非开发产品的能力，两者还是有区别的。但其实也不是绝对，我说的只是一种普遍情况。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;对于安全从业人员，掌握基础开发能力是必备的，而是否具备产品开发能力成了一道分水岭。即，产品开发能力是加分项，而非必备项。&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;03 — 懂安全的程序员：无存在感&lt;/strong&gt;&lt;/p&gt;
-&lt;center&gt;&lt;img src=&quot;https://riusksk.me/media/god.jpg&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
-
-&lt;p&gt;先来看一幅漫画，估计这是许多安全开发同学的心声：防御住了，用户无感知；未防御住，用户就开始骂娘了，或者受公司处罚。&lt;/p&gt;
-&lt;p&gt;程序员开发的产品出安全事故，肯定会受到处罚。大家常调侃道：CSO就是用来背锅的，多少有些道理。&lt;/p&gt;
-&lt;p&gt;但如果懂安全的程序员开发出具有高安全性的产品，对用户，甚至对领导而言，都可能是无感知，跟不存在一般。&lt;/p&gt;
-&lt;p&gt;常说赏罚分明，但上述普遍情况明显是不对等、不完善的赏罚机制。所以现在也有一些公司慢慢地增设“开发之星”、“质量之星”之类的奖励机制，也算是对此的一种弥补措施。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;04 — 攻防不对等：攻击的是短板，防御的是体系&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;黑客攻击时，只需要找到系统的一处短板，就有可能攻破系统。&lt;/p&gt;
-&lt;p&gt;业务防御时，则需要构建全面的防御体系，比黑客掌握更加全面的攻击点和防御策略，而非单一的技术点或者功能模块。&lt;/p&gt;
-&lt;p&gt;因此，防御比攻击更难，两者是不对等的。&lt;/p&gt;
-&lt;p&gt;有些大厂，比如微软就设有“纵深防御”奖励机制。纵深防御，通俗地讲，就是层层防御，一层防御失效后，仍有备用的其它防御策略生效。&lt;/p&gt;
-&lt;p&gt;比如电影《侠盗联盟》中，去城堡偷项链的场景：&lt;/p&gt;
-&lt;p&gt;翻过城墙后 =》还有保安 =》绕过保安后还有监控 =》绕过监控后还有防盗门 =》 进门后还有看门狗 =》最后还有指纹验证&lt;/p&gt;
-&lt;center&gt;&lt;img src=&quot;https://riusksk.me/media/v2-838f8dccd10d662cbdd11f0972181b8f_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
-
-&lt;p&gt;&lt;strong&gt;05 — 知攻未必知防&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;常言道：“未知攻，焉知防”，对此我一直深信不疑。&lt;/p&gt;
-&lt;p&gt;但这是必要不充分条件，因为现在互联网越来越方便，工具化、教程化的资源网上遍地都是，很多脚本小子随手就可以拿来入侵网站，但让他们提供防御方案，基本都要歇菜。&lt;/p&gt;
-&lt;p&gt;之前面试过几个做渗透测试的同学，当问某个WEB漏洞的防御时，对方直接说，他只做攻击，不做防御，不懂这些。&lt;/p&gt;
-&lt;p&gt;对于企业而言，让你做攻击测试的目的，还是为了提前作防御，如果只知攻，不懂防，又有多大价值呢？&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;06 — 结语&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;对于不懂产品开发的黑客，以及不懂安全的程序员，我们均表示理解；对于即懂安全又懂开发的同学，我们则爱之、惜之。但无论你是黑客（白帽子：无任何违法乱纪行为），还是程序员，如对【微信支付安全】感兴趣，均可私信本账号，共讨职业发展大计，承诺每条有效私信必回，欢迎搭讪。&lt;/p&gt;
-&lt;center&gt;&lt;img src=&quot;http://riusksk.me/media/gzh.png&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
-
-</content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;常言道：“未知攻，焉知防”，然，“知攻未必知防”！&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;https://riusksk.me/media/hacker.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;01 — 黑客
-    
-    </summary>
-    
-      <category term="随笔杂谈" scheme="http://riusksk.github.io/categories/%E9%9A%8F%E7%AC%94%E6%9D%82%E8%B0%88/"/>
-    
-    
-      <category term="攻防" scheme="http://riusksk.github.io/tags/%E6%94%BB%E9%98%B2/"/>
-    
-      <category term="黑客" scheme="http://riusksk.github.io/tags/%E9%BB%91%E5%AE%A2/"/>
-    
-      <category term="程序员" scheme="http://riusksk.github.io/tags/%E7%A8%8B%E5%BA%8F%E5%91%98/"/>
+      <category term="fuzzing" scheme="http://riusksk.github.io/tags/fuzzing/"/>
     
   </entry>
   
