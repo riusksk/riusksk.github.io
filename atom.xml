@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2019-05-03T07:37:01.000Z</updated>
+  <updated>2019-05-11T08:10:17.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,103 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>2019年哪些安全大会的议题值得学习</title>
+    <link href="http://riusksk.github.io/2019/05/11/2019%E5%B9%B4%E5%93%AA%E4%BA%9B%E5%AE%89%E5%85%A8%E5%A4%A7%E4%BC%9A%E7%9A%84%E8%AE%AE%E9%A2%98%E5%80%BC%E5%BE%97%E5%AD%A6%E4%B9%A0/"/>
+    <id>http://riusksk.github.io/2019/05/11/2019年哪些安全大会的议题值得学习/</id>
+    <published>2019-05-11T02:19:22.000Z</published>
+    <updated>2019-05-11T08:10:17.000Z</updated>
+    
+    <content type="html">&lt;p&gt;“2019年哪些安全大会值得参加？”或者这更符合多数人心中的标题，但为何不这么写呢？&lt;/p&gt;
+&lt;p&gt;因为有些拥有好议题的大会一般都会公开PPT，尤其是国外会议，来回参会成本比较高，如果有现成的PPT供学习，自然不用每次都参加。当然，也有因作者拒绝公开的议题，这种只能现场听了。&lt;/p&gt;
+&lt;p&gt;评价安全大会的好坏，是多方面的，绝不是单纯的议题质量这一维度。但这里我主要想从技术者的角度来看评价，所以后面你发现很多知名大会未在此列，请不要惊讶。&lt;/p&gt;
+&lt;p&gt;即使是同一举办方，也无法保证每年的议题质量呈上升状态，有些会议也开始没落了，所以这里以2019年为时间点来点评。&lt;/p&gt;
+&lt;p&gt;下面来聊聊2019年哪些安全大会的议题值得学习，有些已经举办过，有些尚未开始。&lt;/p&gt;
+&lt;h2 id=&quot;推荐的安全会议&quot;&gt;&lt;a href=&quot;#推荐的安全会议&quot; class=&quot;headerlink&quot; title=&quot;推荐的安全会议&quot;&gt;&lt;/a&gt;推荐的安全会议&lt;/h2&gt;&lt;h3 id=&quot;1、BlackHat&quot;&gt;&lt;a href=&quot;#1、BlackHat&quot; class=&quot;headerlink&quot; title=&quot;1、BlackHat&quot;&gt;&lt;/a&gt;1、BlackHat&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/Volumes/Macintosh/Users/riusksk/riusksk.github.io/source/media/image-20190511125059375.png&quot; alt=&quot;image-20190511125059375&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;官网&lt;/strong&gt;：&lt;a href=&quot;https://www.blackhat.com&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://www.blackhat.com&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;如果你不知道BlackHat，说明你不在安全圈混。&lt;/p&gt;
+&lt;p&gt;USA是主会场，议题质量和数量也是最高的，议题类型覆盖面也很广，除此之外还有欧洲和亚洲等分会场，质量相对次一些。&lt;/p&gt;
+&lt;p&gt;这次BlackHat USA的议题也陆续公开了：&lt;a href=&quot;https://www.blackhat.com/us-19/briefings/schedule/index.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://www.blackhat.com/us-19/briefings/schedule/index.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;早几年的议题水平参差不齐，很水的也有，打广告也有。最近几年反而议题质量提高，不少华人面孔出现，为了PR效果而竞争，促进大家都拿出干货来分享，这也是其有利的一面。&lt;/p&gt;
+&lt;p&gt;每年都有几千个议题投稿，竞争很大，但这很好地促进议题质量的提高。&lt;/p&gt;
+&lt;p&gt;每年会后，官方都会放出PPT与视频，非常开放地分享知识。&lt;/p&gt;
+&lt;p&gt;所以，首推BlackHat，自然无疑。&lt;/p&gt;
+&lt;p&gt;但如果你以为接下我会写Defcon，那我会告诉你：No！&lt;/p&gt;
+&lt;h3 id=&quot;2、OffensiveCon&quot;&gt;&lt;a href=&quot;#2、OffensiveCon&quot; class=&quot;headerlink&quot; title=&quot;2、OffensiveCon&quot;&gt;&lt;/a&gt;2、OffensiveCon&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/Volumes/Macintosh/Users/riusksk/riusksk.github.io/source/media/Logo_Offensivecon_by_BFS_1.jpg&quot; alt=&quot;offensivecon&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;官网&lt;/strong&gt;：&lt;a href=&quot;https://www.offensivecon.org/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://www.offensivecon.org/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;我之前还专门写了篇文章&lt;a href=&quot;http://riusksk.me/2019/02/22/今年的OffensiveCon大会议题不错/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;《今年的OffensiveCon大会议题质量不错》&lt;/a&gt;介绍2019年大会中一些不错的议题。&lt;/p&gt;
+&lt;p&gt;虽然OffensiveCon是从2018年才开始举办的，但议题质量一直保持不错，演讲者中包括Project Zero、Google syzkaller作者、Pwn2Own与Hack2Win获奖者等等。&lt;/p&gt;
+&lt;p&gt;会后，一般是由演讲者选择是否公开ppt，多数人是在Twitter上公开的，官网上我没找到资源（&lt;a href=&quot;https://github.com/riusksk/SecConArchive/tree/master/OffensiveCon2019），所以之前收集的ppt都是从twitter上扒下来的。&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/riusksk/SecConArchive/tree/master/OffensiveCon2019），所以之前收集的ppt都是从twitter上扒下来的。&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&quot;3、HITB-Hack-In-The-Box&quot;&gt;&lt;a href=&quot;#3、HITB-Hack-In-The-Box&quot; class=&quot;headerlink&quot; title=&quot;3、HITB (Hack In The Box)&quot;&gt;&lt;/a&gt;3、HITB (Hack In The Box)&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/Volumes/Macintosh/Users/riusksk/riusksk.github.io/source/media/image-20190511133408850.png&quot; alt=&quot;image-20190511133408850&quot;&gt;&lt;/p&gt;
+&lt;p&gt;官网：&lt;a href=&quot;https://conference.hitb.org/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://conference.hitb.org/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;这几天HITB刚在荷兰阿姆斯特丹举办完，议题PPT也一并公开(&lt;a href=&quot;https://conference.hitb.org/hitbsecconf2019ams/materials/)。&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://conference.hitb.org/hitbsecconf2019ams/materials/)。&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;如果要说国内外安全会议中，哪个公开PPT最快的，一定是HITB，他们一般是现场演讲完，就直接扔官网下载。然后过一段时间，也同样发布演讲视频。&lt;/p&gt;
+&lt;p&gt;他们有时会同时搞两个演讲会场，一个是收费的主会场，议题质量高一些，一个是免费的，叫CommSec，用来提携新人，议题质量相对比较次，每个议题分享时间也比较短，最多半小时。&lt;/p&gt;
+&lt;p&gt;之前去新加坡参加过一次HITB，人数不多，场地也不大，但可以感受到与国内安全会议的区别：更注重技术交流，而非搞关系。&lt;/p&gt;
+&lt;p&gt;2018年开始，HITB也开始与京东合作，在北京举办分会场，没去过，不作评价，但国际会议本土化，总会产生一些差异的。&lt;/p&gt;
+&lt;h3 id=&quot;4、InfiltrateCon&quot;&gt;&lt;a href=&quot;#4、InfiltrateCon&quot; class=&quot;headerlink&quot; title=&quot;4、InfiltrateCon&quot;&gt;&lt;/a&gt;4、InfiltrateCon&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/Volumes/Macintosh/Users/riusksk/riusksk.github.io/source/media/image-20190511134410680.png&quot; alt=&quot;image-20190511134410680&quot;&gt;&lt;/p&gt;
+&lt;p&gt;官网：&lt;a href=&quot;https://infiltratecon.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://infiltratecon.com&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;从2011年开始举办的，已经走过8个年头。&lt;/p&gt;
+&lt;p&gt;看了今年的议题，还是有干货的，但只有4个议题ppt在twitter上公开。&lt;/p&gt;
+&lt;p&gt;以前，会后都会在官网上公开PPT和视频，但目前官方还没公开。&lt;/p&gt;
+&lt;p&gt;今年的议题涉及Chrome RCE、iOS与Android提权、Pwn TEE、浏览器JS Fuzzing等等，只能坐等官方公开PPT了。&lt;/p&gt;
+&lt;h3 id=&quot;5、Chaos-Communication-Congress-C3&quot;&gt;&lt;a href=&quot;#5、Chaos-Communication-Congress-C3&quot; class=&quot;headerlink&quot; title=&quot;5、Chaos Communication Congress(C3)&quot;&gt;&lt;/a&gt;5、Chaos Communication Congress(C3)&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/Volumes/Macintosh/Users/riusksk/riusksk.github.io/source/media/image-20190511141920353.png&quot; alt=&quot;image-20190511141920353&quot;&gt;&lt;/p&gt;
+&lt;p&gt;官网：&lt;a href=&quot;https://www.ccc.de/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://www.ccc.de/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;德国混淆黑客大会，常叫C3会议，常在C3前面加上第几届，比如今年第35届，所以叫35C3，历史非常悠久。&lt;/p&gt;
+&lt;p&gt;以前大多是聚焦在无线电安全，所以一些什么2G\3G\4G短信、电话窃听经常出自该会议。熟悉无线电安全的同学，应该都听过。2018年也有一些不错的软件安全相关的议题，这些在之前写的文章&lt;a href=&quot;http://riusksk.me/2018/12/30/%E6%8E%A8%E8%8D%90%E4%BB%8A%E5%B9%B4C3%E9%BB%91%E5%AE%A2%E5%A4%A7%E4%BC%9A%E4%B8%8A%E7%9A%84%E5%87%A0%E4%B8%AA%E8%AE%AE%E9%A2%98/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;《推荐今年C3黑客大会上的几个议题》&lt;/a&gt;介绍过了。&lt;/p&gt;
+&lt;p&gt;除了大会议题，不得不提下他们的CTF，非常具有实战价值，比如2018年的题目，直接拿pwn2own漏洞当比赛，从safari代码执行到提权，还有VisualBox沙盒逃逸题目，需要利用到0Dday，出题者是ProjectZero的人，早就将其卖给ZDI，刷了不少VBox漏洞。这些CTF题目在网上都有相应的WriteUp可供学习。&lt;/p&gt;
+&lt;p&gt;这些议题只有演讲视频公开，没有PPT，官方会放在&lt;a href=&quot;https://media/ccc.de，可在线或下载观看。&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://media/ccc.de，可在线或下载观看。&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;都是在每年的12月份举办，2019的还有半年呢……&lt;/p&gt;
+&lt;h3 id=&quot;6、CanSecWest&quot;&gt;&lt;a href=&quot;#6、CanSecWest&quot; class=&quot;headerlink&quot; title=&quot;6、CanSecWest&quot;&gt;&lt;/a&gt;6、CanSecWest&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/Volumes/Macintosh/Users/riusksk/riusksk.github.io/source/media/image-20190511143022033.png&quot; alt=&quot;image-20190511143022033&quot;&gt;&lt;/p&gt;
+&lt;p&gt;官网：&lt;a href=&quot;https://cansecwest.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://cansecwest.com&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;CanSecWest都是与Pwn2Own一块出现的，以前议题PPT都是放在&lt;a href=&quot;https://www.slideshare.net/上分享，但从2018年开始又不搞了。&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://www.slideshare.net/上分享，但从2018年开始又不搞了。&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;每年议题不多，但质量还是可以的，不过感觉这两年的质量略有下降。&lt;/p&gt;
+&lt;p&gt;今年3月的议题也没看到有下载，也是混Twitter找ppt的，只看了《&lt;strong&gt;vs com.apple.security.sandbox&lt;/strong&gt;》这个议题，今年我感兴趣的议题没几个，大家根据自己喜好选择吧。&lt;/p&gt;
+&lt;p&gt;如果你各个议题PPT，也欢迎分享下。&lt;/p&gt;
+&lt;h3 id=&quot;7、MOSEC-移动安全技术峰会&quot;&gt;&lt;a href=&quot;#7、MOSEC-移动安全技术峰会&quot; class=&quot;headerlink&quot; title=&quot;7、MOSEC 移动安全技术峰会&quot;&gt;&lt;/a&gt;7、MOSEC 移动安全技术峰会&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/Volumes/Macintosh/Users/riusksk/riusksk.github.io/source/media/image-20190511145201148.png&quot; alt=&quot;image-20190511145201148&quot;&gt;&lt;/p&gt;
+&lt;p&gt;官网：&lt;a href=&quot;http://mosec.org&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://mosec.org&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;MOSEC是从2015年开始举办的，由盘古与韩国POC联合举办，聚集移动安全领域，包括Android、iOS、IoT以及无线电等领域。虽然起步晚，但议题干货满满的，应该是目前国内最好的安全会议了。&lt;/p&gt;
+&lt;p&gt;今年的议题也已经陆续公开了，包括iOS越狱、Android提权、LTE、基带、卫星系统等等。&lt;/p&gt;
+&lt;p&gt;官网是不公开大会的议题PPT，由演讲者选择，所以想学习的同学，可能还是得去参会。&lt;/p&gt;
+&lt;p&gt;从2015年第一届我就开始参加，本月底还会去。去年参会，早上出酒店一辆车都打不到，又不在地铁口，最后骑了1个多小时的单车到会场，不容易啊……&lt;/p&gt;
+&lt;h3 id=&quot;8、POC&quot;&gt;&lt;a href=&quot;#8、POC&quot; class=&quot;headerlink&quot; title=&quot;8、POC&quot;&gt;&lt;/a&gt;8、POC&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/Volumes/Macintosh/Users/riusksk/riusksk.github.io/source/media/poclogo.png&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+&lt;p&gt;官网：&lt;a href=&quot;http://powerofcommunity.net/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://powerofcommunity.net/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;POC(PowerOfCommunity)起始于2006年，在韩国举办的。单从议题质量看，确实不错，大多漏洞研究领域的前沿技术，但它经常是”二手货”，也就是在其它安全会议讲过后，但去韩国观光旅游顺便讲下。&lt;/p&gt;
+&lt;p&gt;还有个意思的现象就是，每年的议题超过一半是中国人讲的。&lt;/p&gt;
+&lt;p&gt;所以，你推荐也对，你不推荐也没错。&lt;/p&gt;
+&lt;p&gt;不过，有个好处就是，POC议题PPT都是提供下载的。有时在其它会议找不到PPT时，到POC官网翻下，偶有小惊喜。&lt;/p&gt;
+&lt;p&gt;另外还有个会议叫ZeroNights，同一举办方，更多是面向老外的。&lt;/p&gt;
+&lt;h2 id=&quot;那些未提及的知名大会&quot;&gt;&lt;a href=&quot;#那些未提及的知名大会&quot; class=&quot;headerlink&quot; title=&quot;那些未提及的知名大会&quot;&gt;&lt;/a&gt;那些未提及的知名大会&lt;/h2&gt;&lt;h3 id=&quot;1、Defcon&quot;&gt;&lt;a href=&quot;#1、Defcon&quot; class=&quot;headerlink&quot; title=&quot;1、Defcon&quot;&gt;&lt;/a&gt;1、Defcon&lt;/h3&gt;&lt;p&gt;很多时候，Defcon议题都是BlackHat挑剩的，有的人也会直接议题双投。上面的议题质量更是参差不齐，相对BlackHat要求更低，更开放。我很少看Defcon议题，偶而网上有人发才看。&lt;/p&gt;
+&lt;h3 id=&quot;2、RSA&quot;&gt;&lt;a href=&quot;#2、RSA&quot; class=&quot;headerlink&quot; title=&quot;2、RSA&quot;&gt;&lt;/a&gt;2、RSA&lt;/h3&gt;&lt;p&gt;RSA是一个充满商业气息的大会，如果你看过官网的PPT，就会发现里面充满诸多广告，有的议题可能就几页图片，所以从技术角度来看，是没有多少学习的价值。&lt;/p&gt;
+&lt;p&gt;但是，RSA有时也反应出的安全的风向标，虽有炒作的成分，但显然PR得甚是成功。比如当年的APT、数据可视化、威胁情报等等&lt;/p&gt;
+&lt;p&gt;RSA的创新沙盒是一项不错的活动，很多创业公司把他们研发的新产品拿出来比赛，从中可以反映出一些行业发展的方向。&lt;/p&gt;
+&lt;p&gt;所以，RSA比较适合管理者、创业者以及产品运营者。&lt;/p&gt;
+&lt;h3 id=&quot;3、XCon&quot;&gt;&lt;a href=&quot;#3、XCon&quot; class=&quot;headerlink&quot; title=&quot;3、XCon&quot;&gt;&lt;/a&gt;3、XCon&lt;/h3&gt;&lt;p&gt;以前国内安全会议很少，基本唯XCon为首。以前参加都是为了跟圈内朋友相聚聊天，有时场外比场内还热闹。&lt;/p&gt;
+&lt;p&gt;但这几年开始，XCon逐渐没落了。如果你参加过XCon2018，相信会有很大的体会，会场已经没几个人，有时在场人数可能达到个位数，找个同行聊天都难，且门票还是国内同类会议最贵的。&lt;/p&gt;
+&lt;h3 id=&quot;4、KCon&quot;&gt;&lt;a href=&quot;#4、KCon&quot; class=&quot;headerlink&quot; title=&quot;4、KCon&quot;&gt;&lt;/a&gt;4、KCon&lt;/h3&gt;&lt;p&gt;KCon应该算是国内比较有自己特色的会议，2018年的议题质量也还可以，中场休息的摇滚音乐很赞，场地与音效很好。&lt;/p&gt;
+&lt;p&gt;之前几届的议题质量忽上忽下，2019年的议题还没出来，大家可以关注下先。&lt;/p&gt;
+&lt;p&gt;若是在2018年，我还是会给个推荐的。&lt;/p&gt;
+&lt;h3 id=&quot;5、BlueHat&quot;&gt;&lt;a href=&quot;#5、BlueHat&quot; class=&quot;headerlink&quot; title=&quot;5、BlueHat&quot;&gt;&lt;/a&gt;5、BlueHat&lt;/h3&gt;&lt;p&gt;以前微软的闭门邀请制会议，从今年开始在上海举办国内版，议题列表已经放出，感觉质量一般。但跟MOSEC时间联着，可以考虑一并参加下。&lt;/p&gt;
+&lt;h3 id=&quot;6、RECON&quot;&gt;&lt;a href=&quot;#6、RECON&quot; class=&quot;headerlink&quot; title=&quot;6、RECON&quot;&gt;&lt;/a&gt;6、RECON&lt;/h3&gt;&lt;p&gt;因为多数议题自己不感兴趣，它比较偏向于逆向工程，以及系统底层、硬件、固件等方向，对此方向感兴趣的话，依然可以看看。&lt;/p&gt;
+&lt;h3 id=&quot;7、Syscan-Syscan360&quot;&gt;&lt;a href=&quot;#7、Syscan-Syscan360&quot; class=&quot;headerlink&quot; title=&quot;7、Syscan/Syscan360&quot;&gt;&lt;/a&gt;7、Syscan/Syscan360&lt;/h3&gt;&lt;p&gt;官网已经打不开了，聊啥……&lt;/p&gt;
+&lt;h2 id=&quot;后话&quot;&gt;&lt;a href=&quot;#后话&quot; class=&quot;headerlink&quot; title=&quot;后话&quot;&gt;&lt;/a&gt;后话&lt;/h2&gt;&lt;p&gt;评价一个会议的好坏真是很容易，但要举办一个好的会议却是不容易，影响的因素特别多，且非一人之力可以搞定。&lt;/p&gt;
+&lt;p&gt;无论最终质量如何，对于为行业提供沟通交流平台的一些会议，还是值得点赞的。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;“2019年哪些安全大会值得参加？”或者这更符合多数人心中的标题，但为何不这么写呢？&lt;/p&gt;
+&lt;p&gt;因为有些拥有好议题的大会一般都会公开PPT，尤其是国外会议，来回参会成本比较高，如果有现成的PPT供学习，自然不用每次都参加。当然，也有因作者拒绝公开的议题，这种只能现场听了
+    
+    </summary>
+    
+      <category term="随笔杂谈" scheme="http://riusksk.github.io/categories/%E9%9A%8F%E7%AC%94%E6%9D%82%E8%B0%88/"/>
+    
+    
+      <category term="安全大会" scheme="http://riusksk.github.io/tags/%E5%AE%89%E5%85%A8%E5%A4%A7%E4%BC%9A/"/>
+    
+  </entry>
   
   <entry>
     <title>读《一本小小的蓝色逻辑书》：识别常见的逻辑漏洞</title>
@@ -1354,72 +1451,6 @@
     
       <category term="随笔杂谈" scheme="http://riusksk.github.io/categories/%E9%9A%8F%E7%AC%94%E6%9D%82%E8%B0%88/"/>
     
-    
-  </entry>
-  
-  <entry>
-    <title>honggfuzz漏洞挖掘技术深究系列（2）—— Persistent Fuzzing</title>
-    <link href="http://riusksk.github.io/2018/08/22/honggfuzz%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E6%8A%80%E6%9C%AF2/"/>
-    <id>http://riusksk.github.io/2018/08/22/honggfuzz漏洞挖掘技术2/</id>
-    <published>2018-08-22T12:21:28.000Z</published>
-    <updated>2018-08-22T13:12:36.000Z</updated>
-    
-    <content type="html">&lt;p&gt;上篇&lt;a href=&quot;https://mp.weixin.qq.com/s?__biz=MzU0MzgzNTU0Mw==&amp;amp;mid=2247483746&amp;amp;idx=1&amp;amp;sn=9d0ff5e0bae65f9ca9dbea4cf74449c6&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;《honggfuzz漏洞挖掘技术深究系列（1）——反馈驱动（Feedback-Driven）》&lt;/a&gt;讲到基于软件的代码覆盖率驱动fuzzing的方式，除了软件还有硬件方式，即基于Intel BTS (Branch Trace Store) 或Intel PT (Processor Tracing) 去计算代码覆盖率，同时要求Linux内核&amp;gt;=4.2，这种方式的最大好处是完全由硬件支配，无所谓软件是闭源还是开源。由于硬件环境受限，我也一直未使用过，有此条件的同学可以试下。&lt;/p&gt;
-&lt;p&gt;本篇主要讲下持久型fuzzing（Persistent Fuzzing），即fuzzing API，这种方式会更精准和高效的。&lt;/p&gt;
-&lt;p&gt;先看使用方法：&lt;/p&gt;
-&lt;figure class=&quot;highlight c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;$ cat test.c&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;meta-keyword&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;meta-string&quot;&gt;&amp;lt;inttypes.h&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;meta-keyword&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;meta-string&quot;&gt;&amp;lt;testlib.h&amp;gt;   &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;extern&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;LLVMFuzzerTestOneInput&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;uint8_t&lt;/span&gt; **buf, &lt;span class=&quot;keyword&quot;&gt;size_t&lt;/span&gt; *len)&lt;/span&gt;&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;LLVMFuzzerTestOneInput&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;uint8_t&lt;/span&gt; *buf, &lt;span class=&quot;keyword&quot;&gt;size_t&lt;/span&gt; len)&lt;/span&gt; &lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  _FuncFromFuzzedLib_(buf, len);  &lt;span class=&quot;comment&quot;&gt;// 目标函数&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;$ clang&lt;span class=&quot;number&quot;&gt;-4.0&lt;/span&gt; -fsanitize-coverage=trace-pc,indirect-calls,trace-cmp fuzzedlib.c -o fuzzedlib.o&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;$ clang&lt;span class=&quot;number&quot;&gt;-4.0&lt;/span&gt; test.c fuzzedlib.o honggfuzz/libhfuzz/libhfuzz.a -o test&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;$ honggfuzz -z -P -f INPUT.corpus -- ./test&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;这里用到几个编译选项：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;trace-pc&lt;/strong&gt;：追踪执行过的基本块BB，在每个edge中插入__saitizer_cov_trace_pc()函数，可定义该函数作为相应的回调处理&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;indirect-calls&lt;/strong&gt;：在每个间接调用中添加PC追踪，与前面的trace-pc或trace-pc-guard联合使用，回调函数：__sanitizer_cov_trace_pc_indir&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;trace-cmp&lt;/strong&gt;：追踪每个比较指令和swith语句&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;以trace-pc为例，测试代码如下：&lt;/p&gt;
-&lt;center&gt;&lt;img src=&quot;http://riusksk.me/media/trace_pc1.png&quot; alt=&quot;&quot;&gt;&lt;/center&gt;&lt;br&gt;用trace_pc编译：&lt;br&gt;&lt;center&gt;&lt;img src=&quot;http://riusksk.me/media/trace_pc2.png&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
-
-&lt;p&gt;可以看到自定义的函数被执行，输出执行过的不同pc地址，其它编译选项的用法同上。&lt;br&gt;下面是honggfuzz对各个回调函数的定义情况：&lt;/p&gt;
-&lt;center&gt;&lt;img src=&quot;http://riusksk.me/media/instrument.png&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
-
-&lt;p&gt;然后就是记录代码覆盖率情况并进行统计，跟驱动反馈的方式一样了。&lt;/p&gt;
-&lt;p&gt;再回头看使用示例中的&lt;code&gt;LLVMFuzzerTestOneInput&lt;/code&gt;函数,honggfuzz是如何处理它的呢？&lt;/p&gt;
-&lt;center&gt;&lt;img src=&quot;http://riusksk.me/media/persistent.png&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
-
-&lt;p&gt;通过for无限循环调用目标函数进行Fuzzing，其中参数buf，即样本文件内容，len是数据长度。&lt;/p&gt;
-&lt;p&gt;最后根据发现的新路径，将相应的样本作为新样本继续fuzzing。&lt;/p&gt;
-&lt;center&gt;&lt;img src=&quot;http://riusksk.me/media/fuzz_back.png&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;上篇&lt;a href=&quot;https://mp.weixin.qq.com/s?__biz=MzU0MzgzNTU0Mw==&amp;amp;mid=2247483746&amp;amp;idx=1&amp;amp;sn=9d0ff5e0bae65f9ca9dbea4cf74449c6&quot; target
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
-    
-      <category term="honggfuzz" scheme="http://riusksk.github.io/tags/honggfuzz/"/>
-    
-      <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
-    
-      <category term="fuzzing" scheme="http://riusksk.github.io/tags/fuzzing/"/>
     
   </entry>
   
