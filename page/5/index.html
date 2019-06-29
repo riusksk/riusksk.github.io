@@ -77,6 +77,54 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2016-09-16T05:54:53.000Z"><a href="/2016/09/16/fsmon-多平台文件监控工具/">2016-09-16</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2016/09/16/fsmon-多平台文件监控工具/">fsmon:多平台文件监控工具</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>近日在Mac上跑测试，时间一长就硬盘空间就被占用完了，几小时就生成10多G文件，导致系统卡死，程序也没法继续运行，但一直没找到生成的文件路径。<br>于是在Github上找到fsmon (<a href="https://github.com/nowsecure/fsmon" target="_blank" rel="external">https://github.com/nowsecure/fsmon</a> )这个工具，一款多平台下文件监控工具，最后终于找到生成垃圾文件的路径：<code>/private/var/folders/</code>，原来是<code>QuickLook</code>缓存文件，后面写个定时脚本清除即可。</p>
+<p><img src="http://riusksk.me/media/fsmon.png" alt=""></p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2016/09/16/fsmon-多平台文件监控工具/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2016-09-13T07:18:21.000Z"><a href="/2016/09/13/Vulnerability-War-The-Essence-of-Software-Vulnerabilities-Analysis/">2016-09-13</a></time>
       
       
@@ -582,66 +630,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-04-13T03:47:32.000Z"><a href="/2016/04/13/CanSecWest_2016/">2016-04-13</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2016/04/13/CanSecWest_2016/">CanSecWest 2016 大会议题分析</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>本周分析的安全大会主要以2016年CanSecWest黑客大会上的精彩议题为主，整体上，议题主要偏向于<strong>系统/软件漏洞挖掘与利用技术</strong>。</p>
-<p>各议题下载链接参见：<a href="http://www.slideshare.net/CanSecWest/presentations" target="_blank" rel="external">http://www.slideshare.net/CanSecWest/presentations</a></p>
-<h3 id="1、《Sandbox-Escape-with-Generous-Help-from-Security-Software》"><a href="#1、《Sandbox-Escape-with-Generous-Help-from-Security-Software》" class="headerlink" title="1、《Sandbox Escape with Generous Help from Security Software》"></a>1、《Sandbox Escape with Generous Help from Security Software》</h3><p><img src="/media/14605192523708/14605295530449.jpg" alt=""></p>
-<p>腾讯玄武实验室分享的杀毒软件漏洞挖掘技巧，比如BitDefender、Comodo、Avast、Kaspersky等等国外知名杀软厂商，大多是一些敏感功能未鉴权导致的代码执行或者信息泄露的问题，比如攻击者伪造IO请求去读写、执行本地文件。这里比较好的一点是在漏洞利用场景上，他们将杀软漏洞用来绕过沙盒保护，因为杀软漏洞可以直接以System最高权限执行，允许直接关闭一些软件的沙盒防护。</p>
-      
-    </div>
-    
-    <footer>
-      <div class="alignleft">
-        <a href="/2016/04/13/CanSecWest_2016/#more" class="more-link">更多内容</a>
-      </div>
-    </footer>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2016/04/13/CanSecWest_2016/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/CanSecWest/">CanSecWest</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -663,6 +651,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2019/06/29/Infiltrate2019议题学习/">Infiltrate2019议题学习</a>
+      </li>
     
       <li>
         <a href="/2019/05/11/2019年哪些安全大会的议题值得学习/">2019年哪些安全大会的议题值得学习</a>
@@ -700,10 +692,6 @@
         <a href="/2018/12/30/推荐今年C3黑客大会上的几个议题/">推荐今年C3黑客大会上的几个议题</a>
       </li>
     
-      <li>
-        <a href="/2018/12/28/2018年读过的书/">2018年读过的书</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -713,7 +701,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>53</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>54</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>25</small></li>
   
