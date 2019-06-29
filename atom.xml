@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2019-06-29T03:54:46.000Z</updated>
+  <updated>2019-06-29T04:38:42.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -20,23 +20,23 @@
     <link href="http://riusksk.github.io/2019/06/29/Infiltrate2019%E8%AE%AE%E9%A2%98%E5%AD%A6%E4%B9%A0/"/>
     <id>http://riusksk.github.io/2019/06/29/Infiltrate2019议题学习/</id>
     <published>2019-06-29T02:26:18.000Z</published>
-    <updated>2019-06-29T03:54:46.000Z</updated>
+    <updated>2019-06-29T04:38:42.000Z</updated>
     
     <content type="html">&lt;p&gt;Infiltrate2019安全大会是在5月初举办的，会议资料收集后放在电脑上1个多月了，连续几个周末都有事，一直没来得及学习，今天刚好学习下，有些议题其实跟MOSEC上有重复。&lt;/p&gt;
 &lt;p&gt;重点聊几个个人感兴趣的议题，并最后附上10个议题ppt资料下载。&lt;/p&gt;
 &lt;h3 id=&quot;2PAC-2Furious-Envisioning-an-iOS&quot;&gt;&lt;a href=&quot;#2PAC-2Furious-Envisioning-an-iOS&quot; class=&quot;headerlink&quot; title=&quot;2PAC 2Furious Envisioning an iOS&quot;&gt;&lt;/a&gt;2PAC 2Furious Envisioning an iOS&lt;/h3&gt;&lt;p&gt;科恩出品，分两部分：PAC绕过与基带研究，刚好在MOSEC上project zero的人讲了5种PAC绕过方法，议题名叫”A study in PAC”，涵盖了其中的方法，而基带研究部分也作为独立议题在MOSEC上分享过，介绍 基带攻击方法、逆向分析固件的方法。&lt;/p&gt;
 &lt;p&gt;之前在MOSEC上，我对5种PAC绕过方法作了学习笔记，直接上图：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://ww4.sinaimg.cn/large/006tNc79gy1g4htu5v9uwj30kt0bu117.jpg&quot; alt=&quot;image-20190629104044528&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://ww1.sinaimg.cn/large/006tNc79gy1g4htugqt77j30l60azk14.jpg&quot; alt=&quot;image-20190629104108330&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://ww4.sinaimg.cn/large/006tNc79gy1g4htvdapshj30ln0bjqdc.jpg&quot; alt=&quot;image-20190629104158997&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://ww3.sinaimg.cn/large/006tNc79gy1g4htvmwxq5j30lb0bvtic.jpg&quot; alt=&quot;image-20190629104215919&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://ww2.sinaimg.cn/large/006tNc79gy1g4htw8f19bj30l20bv47u.jpg&quot; alt=&quot;image-20190629104249591&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/006tNc79gy1g4htu5v9uwj30kt0bu117.jpg&quot; alt=&quot;image-20190629104044528&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/006tNc79gy1g4htugqt77j30l60azk14.jpg&quot; alt=&quot;image-20190629104108330&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/006tNc79gy1g4htvdapshj30ln0bjqdc.jpg&quot; alt=&quot;image-20190629104158997&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/006tNc79gy1g4htvmwxq5j30lb0bvtic.jpg&quot; alt=&quot;image-20190629104215919&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/006tNc79gy1g4htw8f19bj30l20bv47u.jpg&quot; alt=&quot;image-20190629104249591&quot;&gt;&lt;/p&gt;
 &lt;h3 id=&quot;EL3-Tour-Get-The-Ultimate-Privilege-of-Android-Phone&quot;&gt;&lt;a href=&quot;#EL3-Tour-Get-The-Ultimate-Privilege-of-Android-Phone&quot; class=&quot;headerlink&quot; title=&quot;EL3 Tour - Get The Ultimate Privilege of Android Phone&quot;&gt;&lt;/a&gt;EL3 Tour - Get The Ultimate Privilege of Android Phone&lt;/h3&gt;&lt;p&gt;盘古出品，拿华为P20开刀，应该是手工逆向分析TEE相关代码，挖到一个代码执行漏洞攻击EL3的过程。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://ww3.sinaimg.cn/large/006tNc79gy1g4htzfth2jj30ki08ytfb.jpg&quot; alt=&quot;image-20190629104554838&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/006tNc79gy1g4htzfth2jj30ki08ytfb.jpg&quot; alt=&quot;image-20190629104554838&quot;&gt;&lt;/p&gt;
 &lt;p&gt;通过VBAR_EL+0x400的异常处理例程来定位SMC处理例程：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://ww3.sinaimg.cn/large/006tNc79gy1g4hu1jvypuj30eo08ctdm.jpg&quot; alt=&quot;image-20190629104757284&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/006tNc79gy1g4hu1jvypuj30eo08ctdm.jpg&quot; alt=&quot;image-20190629104757284&quot;&gt;&lt;/p&gt;
 &lt;p&gt;漏洞代码：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://ww3.sinaimg.cn/large/006tNc79gy1g4hu25urjvj30l10930y7.jpg&quot; alt=&quot;image-20190629104832507&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/006tNc79gy1g4hu25urjvj30l10930y7.jpg&quot; alt=&quot;image-20190629104832507&quot;&gt;&lt;/p&gt;
 &lt;p&gt;对方的漏洞利用思路：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;p&gt;通过漏洞实现任意内存读写&lt;/p&gt;
@@ -58,17 +58,17 @@
 &lt;p&gt;&lt;a href=&quot;https://googleprojectzero.blogspot.com/2018/12/adventures-in-video-conferencing-part-4.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Adventures in Video Conferencing Part 4: What Didn’t Work Out with WhatsApp&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;https://googleprojectzero.blogspot.com/2018/12/adventures-in-video-conferencing-part-5.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Adventures in Video Conferencing Part 5: Where Do We Go from Here?&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Natalie Silvanovich 作为PZ的头牌女黑客，在此议题的厉害之处就是用了几行fuzz代码挖了包括浏览器、FaceTime、WhatsApp在内的主流应用10多个CVE远程漏洞。就是下面这段代码：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://ww4.sinaimg.cn/large/006tNc79gy1g4huf2vvhfj30c80df3zm.jpg&quot; alt=&quot;image-20190629110057733&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me//media/006tNc79gy1g4huf2vvhfj30c80df3zm.jpg&quot; alt=&quot;image-20190629110057733&quot;&gt;&lt;/p&gt;
 &lt;p&gt;通过分析视频交互过程，找到外部数据传递的关键点，开源的改代码插入fuzz，闭源的写Hook去实现fuzz，相关的工具也已在GitHub上开源：&lt;a href=&quot;https://github.com/googleprojectzero/Street-Party。之前看到国内也有人顺势搞到几个FaceTime的漏洞。&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/googleprojectzero/Street-Party。之前看到国内也有人顺势搞到几个FaceTime的漏洞。&lt;/a&gt;&lt;/p&gt;
 &lt;h3 id=&quot;TEE-Exploitation-Exploiting-Trusted-Apps-on-Samsung’s-TEE&quot;&gt;&lt;a href=&quot;#TEE-Exploitation-Exploiting-Trusted-Apps-on-Samsung’s-TEE&quot; class=&quot;headerlink&quot; title=&quot;TEE Exploitation: Exploiting Trusted Apps on Samsung’s TEE&quot;&gt;&lt;/a&gt;TEE Exploitation: Exploiting Trusted Apps on Samsung’s TEE&lt;/h3&gt;&lt;p&gt;Blue Frost Security出品，举了几个三星漏洞的例子：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;TA的栈溢出案例：由于只有NX(没有栈保护和ASLR)，所以直接上ROP搞定的&lt;/li&gt;
 &lt;li&gt;共享内存Double Fectch漏洞：TA在验证和使用命令数据的时间窗口内，可能被篡改数据，实现任意读写&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;img src=&quot;http://ww1.sinaimg.cn/large/006tNc79gy1g4huyzbl81j30id0dh0tr.jpg&quot; alt=&quot;image-20190629112004922&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me//media/006tNc79gy1g4huyzbl81j30id0dh0tr.jpg&quot; alt=&quot;image-20190629112004922&quot;&gt;&lt;/p&gt;
 &lt;p&gt;由于缺乏一些常见的内存保护机制（仅有NX），在TA利用上反而更加容易。TA攻破后，对于厂商最大的影响可能是DRM版权与支付密钥等问题；而对于用户而言，主要是用户数据的窃取问题。&lt;/p&gt;
 &lt;h3 id=&quot;资料打包下载&quot;&gt;&lt;a href=&quot;#资料打包下载&quot; class=&quot;headerlink&quot; title=&quot;资料打包下载&quot;&gt;&lt;/a&gt;资料打包下载&lt;/h3&gt;&lt;p&gt;下载链接：&lt;a href=&quot;https://github.com/riusksk/SecConArchive/tree/master/Infiltrate2019&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/riusksk/SecConArchive/tree/master/Infiltrate2019&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://ww1.sinaimg.cn/large/006tNc79gy1g4hvqqcgb5j30co05y759.jpg&quot; alt=&quot;image-20190629114646339&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me//media/006tNc79gy1g4hvqqcgb5j30co05y759.jpg&quot; alt=&quot;image-20190629114646339&quot;&gt;&lt;/p&gt;
 </content>
     
     <summary type="html">

@@ -94,17 +94,17 @@
 <p>重点聊几个个人感兴趣的议题，并最后附上10个议题ppt资料下载。</p>
 <h3 id="2PAC-2Furious-Envisioning-an-iOS"><a href="#2PAC-2Furious-Envisioning-an-iOS" class="headerlink" title="2PAC 2Furious Envisioning an iOS"></a>2PAC 2Furious Envisioning an iOS</h3><p>科恩出品，分两部分：PAC绕过与基带研究，刚好在MOSEC上project zero的人讲了5种PAC绕过方法，议题名叫”A study in PAC”，涵盖了其中的方法，而基带研究部分也作为独立议题在MOSEC上分享过，介绍 基带攻击方法、逆向分析固件的方法。</p>
 <p>之前在MOSEC上，我对5种PAC绕过方法作了学习笔记，直接上图：</p>
-<p><img src="http://ww4.sinaimg.cn/large/006tNc79gy1g4htu5v9uwj30kt0bu117.jpg" alt="image-20190629104044528"></p>
-<p><img src="http://ww1.sinaimg.cn/large/006tNc79gy1g4htugqt77j30l60azk14.jpg" alt="image-20190629104108330"></p>
-<p><img src="http://ww4.sinaimg.cn/large/006tNc79gy1g4htvdapshj30ln0bjqdc.jpg" alt="image-20190629104158997"></p>
-<p><img src="http://ww3.sinaimg.cn/large/006tNc79gy1g4htvmwxq5j30lb0bvtic.jpg" alt="image-20190629104215919"></p>
-<p><img src="http://ww2.sinaimg.cn/large/006tNc79gy1g4htw8f19bj30l20bv47u.jpg" alt="image-20190629104249591"></p>
+<p><img src="http://riusksk.me/media/006tNc79gy1g4htu5v9uwj30kt0bu117.jpg" alt="image-20190629104044528"></p>
+<p><img src="http://riusksk.me/media/006tNc79gy1g4htugqt77j30l60azk14.jpg" alt="image-20190629104108330"></p>
+<p><img src="http://riusksk.me/media/006tNc79gy1g4htvdapshj30ln0bjqdc.jpg" alt="image-20190629104158997"></p>
+<p><img src="http://riusksk.me/media/006tNc79gy1g4htvmwxq5j30lb0bvtic.jpg" alt="image-20190629104215919"></p>
+<p><img src="http://riusksk.me/media/006tNc79gy1g4htw8f19bj30l20bv47u.jpg" alt="image-20190629104249591"></p>
 <h3 id="EL3-Tour-Get-The-Ultimate-Privilege-of-Android-Phone"><a href="#EL3-Tour-Get-The-Ultimate-Privilege-of-Android-Phone" class="headerlink" title="EL3 Tour - Get The Ultimate Privilege of Android Phone"></a>EL3 Tour - Get The Ultimate Privilege of Android Phone</h3><p>盘古出品，拿华为P20开刀，应该是手工逆向分析TEE相关代码，挖到一个代码执行漏洞攻击EL3的过程。</p>
-<p><img src="http://ww3.sinaimg.cn/large/006tNc79gy1g4htzfth2jj30ki08ytfb.jpg" alt="image-20190629104554838"></p>
+<p><img src="http://riusksk.me/media/006tNc79gy1g4htzfth2jj30ki08ytfb.jpg" alt="image-20190629104554838"></p>
 <p>通过VBAR_EL+0x400的异常处理例程来定位SMC处理例程：</p>
-<p><img src="http://ww3.sinaimg.cn/large/006tNc79gy1g4hu1jvypuj30eo08ctdm.jpg" alt="image-20190629104757284"></p>
+<p><img src="http://riusksk.me/media/006tNc79gy1g4hu1jvypuj30eo08ctdm.jpg" alt="image-20190629104757284"></p>
 <p>漏洞代码：</p>
-<p><img src="http://ww3.sinaimg.cn/large/006tNc79gy1g4hu25urjvj30l10930y7.jpg" alt="image-20190629104832507"></p>
+<p><img src="http://riusksk.me/media/006tNc79gy1g4hu25urjvj30l10930y7.jpg" alt="image-20190629104832507"></p>
 <p>对方的漏洞利用思路：</p>
 <ol>
 <li><p>通过漏洞实现任意内存读写</p>
@@ -126,17 +126,17 @@
 <p><a href="https://googleprojectzero.blogspot.com/2018/12/adventures-in-video-conferencing-part-4.html" target="_blank" rel="external">Adventures in Video Conferencing Part 4: What Didn’t Work Out with WhatsApp</a></p>
 <p><a href="https://googleprojectzero.blogspot.com/2018/12/adventures-in-video-conferencing-part-5.html" target="_blank" rel="external">Adventures in Video Conferencing Part 5: Where Do We Go from Here?</a></p>
 <p>Natalie Silvanovich 作为PZ的头牌女黑客，在此议题的厉害之处就是用了几行fuzz代码挖了包括浏览器、FaceTime、WhatsApp在内的主流应用10多个CVE远程漏洞。就是下面这段代码：</p>
-<p><img src="http://ww4.sinaimg.cn/large/006tNc79gy1g4huf2vvhfj30c80df3zm.jpg" alt="image-20190629110057733"></p>
+<p><img src="http://riusksk.me//media/006tNc79gy1g4huf2vvhfj30c80df3zm.jpg" alt="image-20190629110057733"></p>
 <p>通过分析视频交互过程，找到外部数据传递的关键点，开源的改代码插入fuzz，闭源的写Hook去实现fuzz，相关的工具也已在GitHub上开源：<a href="https://github.com/googleprojectzero/Street-Party。之前看到国内也有人顺势搞到几个FaceTime的漏洞。" target="_blank" rel="external">https://github.com/googleprojectzero/Street-Party。之前看到国内也有人顺势搞到几个FaceTime的漏洞。</a></p>
 <h3 id="TEE-Exploitation-Exploiting-Trusted-Apps-on-Samsung’s-TEE"><a href="#TEE-Exploitation-Exploiting-Trusted-Apps-on-Samsung’s-TEE" class="headerlink" title="TEE Exploitation: Exploiting Trusted Apps on Samsung’s TEE"></a>TEE Exploitation: Exploiting Trusted Apps on Samsung’s TEE</h3><p>Blue Frost Security出品，举了几个三星漏洞的例子：</p>
 <ol>
 <li>TA的栈溢出案例：由于只有NX(没有栈保护和ASLR)，所以直接上ROP搞定的</li>
 <li>共享内存Double Fectch漏洞：TA在验证和使用命令数据的时间窗口内，可能被篡改数据，实现任意读写</li>
 </ol>
-<p><img src="http://ww1.sinaimg.cn/large/006tNc79gy1g4huyzbl81j30id0dh0tr.jpg" alt="image-20190629112004922"></p>
+<p><img src="http://riusksk.me//media/006tNc79gy1g4huyzbl81j30id0dh0tr.jpg" alt="image-20190629112004922"></p>
 <p>由于缺乏一些常见的内存保护机制（仅有NX），在TA利用上反而更加容易。TA攻破后，对于厂商最大的影响可能是DRM版权与支付密钥等问题；而对于用户而言，主要是用户数据的窃取问题。</p>
 <h3 id="资料打包下载"><a href="#资料打包下载" class="headerlink" title="资料打包下载"></a>资料打包下载</h3><p>下载链接：<a href="https://github.com/riusksk/SecConArchive/tree/master/Infiltrate2019" target="_blank" rel="external">https://github.com/riusksk/SecConArchive/tree/master/Infiltrate2019</a></p>
-<p><img src="http://ww1.sinaimg.cn/large/006tNc79gy1g4hvqqcgb5j30co05y759.jpg" alt="image-20190629114646339"></p>
+<p><img src="http://riusksk.me//media/006tNc79gy1g4hvqqcgb5j30co05y759.jpg" alt="image-20190629114646339"></p>
 
       
     </div>
