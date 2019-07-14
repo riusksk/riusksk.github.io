@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2019-06-29T04:38:42.000Z</updated>
+  <updated>2019-07-14T05:50:36.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,111 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>一些值得学习的Fuzzer开源项目</title>
+    <link href="http://riusksk.github.io/2019/07/14/%E4%B8%80%E4%BA%9B%E5%80%BC%E5%BE%97%E5%AD%A6%E4%B9%A0%E7%9A%84Fuzzer%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/"/>
+    <id>http://riusksk.github.io/2019/07/14/一些值得学习的Fuzzer开源项目/</id>
+    <published>2019-07-14T02:42:40.000Z</published>
+    <updated>2019-07-14T05:50:36.000Z</updated>
+    
+    <content type="html">&lt;p&gt;之前&lt;code&gt;GitHub&lt;/code&gt;上有人整理过一个叫&lt;code&gt;Awesome-Fuzzing&lt;/code&gt;的资料，整理了关于&lt;code&gt;Fuzzing&lt;/code&gt;技术的电子书、视频、工具、教程以及用于练习的漏洞程序。整体上不错，但工具上还是不够全，有些不错且希望阅读代码学习的工具，发现未在其中，因此重新整理出下面这一份资源，其中有些还曾二次开发过，有些是还未来得及学习的，写出来权且当作学习计划。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;AFL&lt;/strong&gt;——支持源码插桩的代码覆盖引导的Fuzzer，绝对是fuzzer领域的一大里程碑，虽然它也支持基于QEMU的闭源程序，但效果不好，且容易出错，由它衍生出来非常多afl分支版本，借助它已经被挖出非常多的漏洞，但它的变异策略其实有待提高。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://lcamtuf.coredump.cx/afl/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://lcamtuf.coredump.cx/afl/&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;WinAFL&lt;/strong&gt;——windows版本的afl，使用&lt;code&gt;DynamoRIO&lt;/code&gt;去插桩闭源程序以获取代码覆盖率信息，同时支持硬件PT获取覆盖率信息，但PT获取覆盖率其实并没有插桩获取得全，但速度可能会快一些。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/googleprojectzero/winafl&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/googleprojectzero/winafl&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;AFLFast&lt;/strong&gt;——加速版的AFL，Fuzzing速度确实会比原版快一些。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/mboehme/aflfast&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/mboehme/aflfast&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Vuzzer&lt;/strong&gt;——支持闭源程序的覆盖引导Fuzzer，使用LibDFT的pin工具实现数据流追踪，结合动静态分析，以获取更多的代码路径，比如比较语句中的比较值，它会先作记录，再未来变异时使用。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/vusec/vuzzer&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/vusec/vuzzer&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;PTfuzzer&lt;/strong&gt;——Linux平台下的采用 Interl PT硬件支持的覆盖引导Fuzzer，所以它支持闭源程序。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/hunter-ht-2018/ptfuzzer&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/hunter-ht-2018/ptfuzzer&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;afl-unicorn&lt;/strong&gt;——采用Unicorn模拟指令的AFL，支持Linux闭源程序&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/tigerpuma/Afl_unicorn&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/tigerpuma/Afl_unicorn&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;pe-afl&lt;/strong&gt;——通过静态插桩实现针对Windows闭源程序的覆盖引导的AFL Fuzzer，支持用户层应用和内核驱动&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/wmliang/pe-afl&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/wmliang/pe-afl&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;kAFL&lt;/strong&gt;——支持QEMU虚拟机下的系统内核Fuzzing的AFL，适用于Linux、macOS与Windows&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/RUB-SysSec/kAFL/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/RUB-SysSec/kAFL/&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;TriforceAFL&lt;/strong&gt;——基于QEMU全系统模拟的AFL，借助系统仿真器实现分支信息跟踪，支持Linux内核Fuzzing&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/nccgroup/TriforceAFL&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/nccgroup/TriforceAFL&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;ClusterFuzzer&lt;/strong&gt;——Google开源的可扩展的Fuzzing基础设施&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/google/clusterfuzz&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/google/clusterfuzz&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;LibFuzzer&lt;/strong&gt;——进程内覆盖率引导的开源的fuzz引擎库，属于llvm的一部分，在各大主流开源库中，以及Google内部最经常用的安全测试工具&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://llvm.org/docs/LibFuzzer.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://llvm.org/docs/LibFuzzer.html&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;OSS-Fuzz&lt;/strong&gt;——基于LibFuzzer的开源软件Fuzzer集合，实现docker下自动下载、编译安装及运行&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/google/oss-fuzz&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/google/oss-fuzz&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;honggfuzz&lt;/strong&gt;——Google开发的基于软硬件的覆盖驱动型Fuzzer，单纯暴力Fuzz的效果也挺好的，支持多平台，包括Linux\macOS\Windows\Android&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/google/honggfuzz&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/google/honggfuzz&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;KernelFuzzer&lt;/strong&gt;——跨平台内核Fuzzer框架，不开源策略，只在其paper中提及变异策略，需要自己实现，支持Windows、OSX和QNX系统，但只提供Windows编译脚本&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/mwrlabs/KernelFuzzer&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/mwrlabs/KernelFuzzer&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;OSXFuzzer&lt;/strong&gt;——基于Kernel Fuzzer的macOS内核Fuzzer&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/mwrlabs/OSXFuzz.git&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/mwrlabs/OSXFuzz.git&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;PassiveFuzzFrameworkOSX&lt;/strong&gt;——通过Hook实现被动式的OSX内核Fuzzer&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/SilverMoonSecurity/PassiveFuzzFrameworkOSX&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/SilverMoonSecurity/PassiveFuzzFrameworkOSX&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Bochspwn&lt;/strong&gt;——基于Boch插桩API实现Double Fetches内核漏洞的检测&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/googleprojectzero/bochspwn&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/googleprojectzero/bochspwn&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Bochspwn-reloaded&lt;/strong&gt;——基于Boch插桩API实现内核信息泄露的检测&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/googleprojectzero/bochspwn-reloaded&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/googleprojectzero/bochspwn-reloaded&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;syzkaller&lt;/strong&gt;——基于覆盖率引导的Linux内核Fuzzer，需要基于其模板语法实现API调用模板，提供给syzkaller进行数据变异，也曾被移植到其它平台&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/google/syzkaller&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/google/syzkaller&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;dharma&lt;/strong&gt;——基于语法模板生成的Fuzzer，由Mozilla开源的用于Fuzz Firefox JS引擎&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/MozillaSecurity/dharma&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/MozillaSecurity/dharma&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;domator&lt;/strong&gt;——Project Zero团队开源的DOM Fuzzer，用python实现基于模板生成的Fuzzer&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/googleprojectzero/domato&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/googleprojectzero/domato&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Fuzzilli&lt;/strong&gt;——基于语法变异的JavaScript引擎Fuzzer，先通过语法模板生成测试用例，再生成中间语法进行变异，结合覆盖率引导以触发更多代码路径&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/googleprojectzero/fuzzilli&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/googleprojectzero/fuzzilli&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Razzer&lt;/strong&gt;——内核竞争条件漏洞Fuzzer&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/compsec-snu/razzer&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/compsec-snu/razzer&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;ViridianFuzzer&lt;/strong&gt;——用于Fuzzing Hyper-V hypercalls的内核驱动，由MWRLabs公司出品&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/mwrlabs/ViridianFuzzer&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/mwrlabs/ViridianFuzzer&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;ChromeFuzzer&lt;/strong&gt;——基于grinder语法生成器改装的Chrome浏览器Fuzzer&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/demi6od/ChromeFuzzer&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/demi6od/ChromeFuzzer&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;funfuzz&lt;/strong&gt;——Mozilla开源的JS fuzzer工具集合，主要用于Fuzz SpiderMonkey&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/MozillaSecurity/funfuzz&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/MozillaSecurity/funfuzz&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;之前&lt;code&gt;GitHub&lt;/code&gt;上有人整理过一个叫&lt;code&gt;Awesome-Fuzzing&lt;/code&gt;的资料，整理了关于&lt;code&gt;Fuzzing&lt;/code&gt;技术的电子书、视频、工具、教程以及用于练习的漏洞程序。整体上不错，但工具上还是不够全，有些不错且希望
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+      <category term="Fuzzing" scheme="http://riusksk.github.io/tags/Fuzzing/"/>
+    
+      <category term="Fuzzer" scheme="http://riusksk.github.io/tags/Fuzzer/"/>
+    
+  </entry>
   
   <entry>
     <title>Infiltrate2019议题学习</title>
@@ -1360,116 +1465,6 @@
     <summary type="html">
     
       &lt;p&gt;对于一些复合文件格式，如果只是单纯的暴力Fuzzing，会导致生成很多无法被解析的文件，因此需要对文件变异作一些定制化的工作，比如docx、doc等office复合文件，docx是个压缩包，doc是个OLE格式，如果fuzz docx自然需要将其zip解压，再针对感兴趣的文
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
-    
-      <category term="honggfuzz" scheme="http://riusksk.github.io/tags/honggfuzz/"/>
-    
-      <category term="fuzz" scheme="http://riusksk.github.io/tags/fuzz/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>honggfuzz漏洞挖掘技术深究系列（3）——Fuzz策略</title>
-    <link href="http://riusksk.github.io/2018/09/16/honggfuzz3/"/>
-    <id>http://riusksk.github.io/2018/09/16/honggfuzz3/</id>
-    <published>2018-09-16T03:54:16.000Z</published>
-    <updated>2018-10-02T01:49:03.000Z</updated>
-    
-    <content type="html">&lt;p&gt; honggfuzz在对输入文件进行变异前，会先创建个临时文件名（honggfuzz+pid+time），然后将输入数据变异后写入临时文件。&lt;/p&gt;
-&lt;p&gt; fuzz策略的实现主要集中在mangle.c中，在循环的fuzzloop函数中，会根据用户的选择的fuzz方式来调用动态fuzz或者静态fuzz的方法，但最后都是调用mangle_mangleContent来变异文件数据：&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-3bdc1da036608cc745ef0cb89c2313ea_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 跟进mangle_mangleContent函数：&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-529248182e9e09517288c6cbc0f4152d_hd.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 重点就在于后半部分，它会随机选择变异函数进行处理，更改的字节数也是随机的，根据用户指定的mutation变异率来定，即允许变异文件大小的百分比，变异函数列表如下：&lt;/p&gt;
- &lt;center&gt;&lt;img src=&quot;http://riusksk.me/media/v2-9450da60b2082522f7aa9dff7757a921_hd.png&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
-
-&lt;p&gt; 这些函数都是在mangle_init中初始化，各函数之间也会相互调用：&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-025eaad0cd3d34fb828240b30469bede_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 把这些函数过一遍就是honggfuzz中所有的文件变异规则了，如果想实现自己的fuzzer，这些规则来扣出来用Python实现一遍，顺便把afl的规则也扣过来就更完美了，下面是我之前写office fuzzer时的半成品代码，最后偷懒直接用radamas去实现变异了：&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-a0d2b4262c74f02388926e1829e70a37_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 再回到刚才的变异函数列表，我们一个个走读源码。&lt;/p&gt;
-&lt;p&gt; 1、mangle_Resize函数：&lt;/p&gt;
-&lt;p&gt; 用空格填充随机位置&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-51e43d8f246b8fcb2408bc0c8700baa2_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-8875c992f90668d4a2be2817ee32acc8_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 2、mangle_Byte函数：&lt;/p&gt;
-&lt;p&gt; 向随机位置写随机的uint8类型的数据&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-b857966a5c005b1e95f80512382933d6_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 3、mangle_Bit函数：&lt;/p&gt;
-&lt;p&gt; 取随机位置的数值做位翻转&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-179d9066a2fd1fc2653f335ce5a41f72_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 4、mangle_Bytes函数：&lt;/p&gt;
-&lt;p&gt; 在随机位置覆盖写2~4字节数据&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-4857e9d3d3fb2722bb4705cff49d9bc9_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 5、mangle_Magic函数：&lt;/p&gt;
-&lt;p&gt; 取各种边界值进行覆写，这些边界值部分跟AFL还不一样，我在自己的fuzzer里面把它们作了整合。由于边幅所限，我省略了不少边界值：&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-8b34894b9c1fe0833e95dc6d426ff8fb_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 6、mangle_IncByte函数：&lt;/p&gt;
-&lt;p&gt; 取随机位置的数据加1&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-ea765d0bf263d6aed9cdaf94a1065631_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 7、mangle_DecByte函数：&lt;/p&gt;
-&lt;p&gt; 取随机位置的数据减1&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-bc2bf5117cb1495783b2d5501623e602_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 8、mangle_NegByte函数：&lt;/p&gt;
-&lt;p&gt; 取随机位置的数据取反&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-4ef170d3cbb5915de395b7f7aa304079_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 9、mangle_AddSub函数：&lt;/p&gt;
-&lt;p&gt; 取随机位置的1、2、4或8字节的数据长度作加减操作，操作数取 rand(0~8192)-4096&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-66a0ed1564725c2dbdf05439e6e26295_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 10、mangle_Dictionary函数：&lt;/p&gt;
-&lt;p&gt; 变异目录名，也是随机取文件夹名称进行变异，如果有多个目录，那被变异的目录数也是随机的&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-d5aaeb860ab0f32d1283e2d987e456ad_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 11、mangle_DictionaryInsert函数：&lt;/p&gt;
-&lt;p&gt; 在目录的随机位置中插入随机数据&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-0fa9250d8e778ca02841b66fc08a00ce_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 12、mangle_MemMove函数：&lt;/p&gt;
-&lt;p&gt; 取随机位置的数据拷贝随机长度的数据，里面就是调用memmove函数实现的&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-eabb7cafe2e6042ef8bd2e18d526b9df_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 13、mangle_MemSet函数：&lt;/p&gt;
-&lt;p&gt; 取随机位置、随机大小，用UINT8_MAX数值填充&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-82430bbef8b74651aea3a1bdeca9b2dc_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 14、mangle_Random函数：&lt;/p&gt;
-&lt;p&gt; 取随机位置、随机大小的缓冲区，用随机数填充&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-51e9a2621714c7a6d88dc68c4a859979_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 15、mangle_CloneByte函数：&lt;/p&gt;
-&lt;p&gt; 取两处随机位置的作数据交换&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-cac0e8c50be64a1174f9b7a6cc924a5e_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 16、mangle_Expand函数：&lt;/p&gt;
-&lt;p&gt; 文件末尾扩展随机长度的空间，用空格填充，然后在随机位置，取前面的随机长度作数据拷贝&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-0e199dd7f82c223a928ead2b7a6cdd04_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-bb4820b762220d720d78928d34e923e1_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 17、mangle_Shrink函数：&lt;/p&gt;
-&lt;p&gt; 删除随机长度的文件内容&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-010ccb9f2dd19bd450b655cb9f9c7209_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 18、mangle_InsertRnd函数：&lt;/p&gt;
-&lt;p&gt; 在文件的随机位置插入随机长度的数据&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-325836aaf17585d5a02265ae000b72fc_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 19、mangle_ASCIIVal函数：&lt;/p&gt;
-&lt;p&gt; 在随机位置覆盖32字节的随机数&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;http://riusksk.me/media/v2-0385d1c51fda364543b22c77067b28ac_hd.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 总结&lt;/p&gt;
-&lt;p&gt; 在Fuzzing过程中，很多变异规则是共用的，可以参考一些主源的开源软件，比如afl\peach\honggfuzz\libfuzzer，提取规则作整合，然后写个自己的fuzzing框架，在后面作针对的fuzzer时，可以直接套用。&lt;/p&gt;
-&lt;p&gt; 从上面的fuzz策略可以总结出常规的变异规则：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;随机数据替换&lt;/li&gt;
-&lt;li&gt;数据值增减&lt;/li&gt;
-&lt;li&gt;已知边界值替换&lt;/li&gt;
-&lt;li&gt;插入随机数据&lt;/li&gt;
-&lt;li&gt;删减文件内容&lt;/li&gt;
-&lt;li&gt;目录变异&lt;/li&gt;
-&lt;li&gt;数据拷贝覆盖&lt;/li&gt;
-&lt;li&gt;……&lt;/li&gt;
-&lt;/ul&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt; honggfuzz在对输入文件进行变异前，会先创建个临时文件名（honggfuzz+pid+time），然后将输入数据变异后写入临时文件。&lt;/p&gt;
-&lt;p&gt; fuzz策略的实现主要集中在mangle.c中，在循环的fuzzloop函数中，会根据用户的选择的fuzz方式来调用
     
     </summary>
     

@@ -77,6 +77,138 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2019-07-14T02:42:40.000Z"><a href="/2019/07/14/一些值得学习的Fuzzer开源项目/">2019-07-14</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2019/07/14/一些值得学习的Fuzzer开源项目/">一些值得学习的Fuzzer开源项目</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>之前<code>GitHub</code>上有人整理过一个叫<code>Awesome-Fuzzing</code>的资料，整理了关于<code>Fuzzing</code>技术的电子书、视频、工具、教程以及用于练习的漏洞程序。整体上不错，但工具上还是不够全，有些不错且希望阅读代码学习的工具，发现未在其中，因此重新整理出下面这一份资源，其中有些还曾二次开发过，有些是还未来得及学习的，写出来权且当作学习计划。</p>
+<ol>
+<li><p><strong>AFL</strong>——支持源码插桩的代码覆盖引导的Fuzzer，绝对是fuzzer领域的一大里程碑，虽然它也支持基于QEMU的闭源程序，但效果不好，且容易出错，由它衍生出来非常多afl分支版本，借助它已经被挖出非常多的漏洞，但它的变异策略其实有待提高。</p>
+<p><a href="http://lcamtuf.coredump.cx/afl/" target="_blank" rel="external">http://lcamtuf.coredump.cx/afl/</a></p>
+</li>
+<li><p><strong>WinAFL</strong>——windows版本的afl，使用<code>DynamoRIO</code>去插桩闭源程序以获取代码覆盖率信息，同时支持硬件PT获取覆盖率信息，但PT获取覆盖率其实并没有插桩获取得全，但速度可能会快一些。</p>
+<p><a href="https://github.com/googleprojectzero/winafl" target="_blank" rel="external">https://github.com/googleprojectzero/winafl</a></p>
+</li>
+<li><p><strong>AFLFast</strong>——加速版的AFL，Fuzzing速度确实会比原版快一些。</p>
+<p><a href="https://github.com/mboehme/aflfast" target="_blank" rel="external">https://github.com/mboehme/aflfast</a></p>
+</li>
+<li><p><strong>Vuzzer</strong>——支持闭源程序的覆盖引导Fuzzer，使用LibDFT的pin工具实现数据流追踪，结合动静态分析，以获取更多的代码路径，比如比较语句中的比较值，它会先作记录，再未来变异时使用。</p>
+<p><a href="https://github.com/vusec/vuzzer" target="_blank" rel="external">https://github.com/vusec/vuzzer</a></p>
+</li>
+<li><p><strong>PTfuzzer</strong>——Linux平台下的采用 Interl PT硬件支持的覆盖引导Fuzzer，所以它支持闭源程序。</p>
+<p><a href="https://github.com/hunter-ht-2018/ptfuzzer" target="_blank" rel="external">https://github.com/hunter-ht-2018/ptfuzzer</a></p>
+</li>
+<li><p><strong>afl-unicorn</strong>——采用Unicorn模拟指令的AFL，支持Linux闭源程序</p>
+<p><a href="https://github.com/tigerpuma/Afl_unicorn" target="_blank" rel="external">https://github.com/tigerpuma/Afl_unicorn</a></p>
+</li>
+<li><p><strong>pe-afl</strong>——通过静态插桩实现针对Windows闭源程序的覆盖引导的AFL Fuzzer，支持用户层应用和内核驱动</p>
+<p><a href="https://github.com/wmliang/pe-afl" target="_blank" rel="external">https://github.com/wmliang/pe-afl</a></p>
+</li>
+<li><p><strong>kAFL</strong>——支持QEMU虚拟机下的系统内核Fuzzing的AFL，适用于Linux、macOS与Windows</p>
+<p><a href="https://github.com/RUB-SysSec/kAFL/" target="_blank" rel="external">https://github.com/RUB-SysSec/kAFL/</a></p>
+</li>
+<li><p><strong>TriforceAFL</strong>——基于QEMU全系统模拟的AFL，借助系统仿真器实现分支信息跟踪，支持Linux内核Fuzzing</p>
+<p><a href="https://github.com/nccgroup/TriforceAFL" target="_blank" rel="external">https://github.com/nccgroup/TriforceAFL</a></p>
+</li>
+<li><p><strong>ClusterFuzzer</strong>——Google开源的可扩展的Fuzzing基础设施</p>
+<p><a href="https://github.com/google/clusterfuzz" target="_blank" rel="external">https://github.com/google/clusterfuzz</a></p>
+</li>
+<li><p><strong>LibFuzzer</strong>——进程内覆盖率引导的开源的fuzz引擎库，属于llvm的一部分，在各大主流开源库中，以及Google内部最经常用的安全测试工具</p>
+<p><a href="https://llvm.org/docs/LibFuzzer.html" target="_blank" rel="external">https://llvm.org/docs/LibFuzzer.html</a></p>
+</li>
+<li><p><strong>OSS-Fuzz</strong>——基于LibFuzzer的开源软件Fuzzer集合，实现docker下自动下载、编译安装及运行</p>
+<p><a href="https://github.com/google/oss-fuzz" target="_blank" rel="external">https://github.com/google/oss-fuzz</a></p>
+</li>
+<li><p><strong>honggfuzz</strong>——Google开发的基于软硬件的覆盖驱动型Fuzzer，单纯暴力Fuzz的效果也挺好的，支持多平台，包括Linux\macOS\Windows\Android</p>
+<p><a href="https://github.com/google/honggfuzz" target="_blank" rel="external">https://github.com/google/honggfuzz</a></p>
+</li>
+<li><p><strong>KernelFuzzer</strong>——跨平台内核Fuzzer框架，不开源策略，只在其paper中提及变异策略，需要自己实现，支持Windows、OSX和QNX系统，但只提供Windows编译脚本</p>
+<p><a href="https://github.com/mwrlabs/KernelFuzzer" target="_blank" rel="external">https://github.com/mwrlabs/KernelFuzzer</a></p>
+</li>
+<li><p><strong>OSXFuzzer</strong>——基于Kernel Fuzzer的macOS内核Fuzzer</p>
+<p><a href="https://github.com/mwrlabs/OSXFuzz.git" target="_blank" rel="external">https://github.com/mwrlabs/OSXFuzz.git</a></p>
+</li>
+<li><p><strong>PassiveFuzzFrameworkOSX</strong>——通过Hook实现被动式的OSX内核Fuzzer</p>
+<p><a href="https://github.com/SilverMoonSecurity/PassiveFuzzFrameworkOSX" target="_blank" rel="external">https://github.com/SilverMoonSecurity/PassiveFuzzFrameworkOSX</a></p>
+</li>
+<li><p><strong>Bochspwn</strong>——基于Boch插桩API实现Double Fetches内核漏洞的检测</p>
+<p><a href="https://github.com/googleprojectzero/bochspwn" target="_blank" rel="external">https://github.com/googleprojectzero/bochspwn</a></p>
+</li>
+<li><p><strong>Bochspwn-reloaded</strong>——基于Boch插桩API实现内核信息泄露的检测</p>
+<p><a href="https://github.com/googleprojectzero/bochspwn-reloaded" target="_blank" rel="external">https://github.com/googleprojectzero/bochspwn-reloaded</a></p>
+</li>
+<li><p><strong>syzkaller</strong>——基于覆盖率引导的Linux内核Fuzzer，需要基于其模板语法实现API调用模板，提供给syzkaller进行数据变异，也曾被移植到其它平台</p>
+<p><a href="https://github.com/google/syzkaller" target="_blank" rel="external">https://github.com/google/syzkaller</a></p>
+</li>
+<li><p><strong>dharma</strong>——基于语法模板生成的Fuzzer，由Mozilla开源的用于Fuzz Firefox JS引擎</p>
+<p><a href="https://github.com/MozillaSecurity/dharma" target="_blank" rel="external">https://github.com/MozillaSecurity/dharma</a></p>
+</li>
+<li><p><strong>domator</strong>——Project Zero团队开源的DOM Fuzzer，用python实现基于模板生成的Fuzzer</p>
+<p><a href="https://github.com/googleprojectzero/domato" target="_blank" rel="external">https://github.com/googleprojectzero/domato</a></p>
+</li>
+<li><p><strong>Fuzzilli</strong>——基于语法变异的JavaScript引擎Fuzzer，先通过语法模板生成测试用例，再生成中间语法进行变异，结合覆盖率引导以触发更多代码路径</p>
+<p><a href="https://github.com/googleprojectzero/fuzzilli" target="_blank" rel="external">https://github.com/googleprojectzero/fuzzilli</a></p>
+</li>
+<li><p><strong>Razzer</strong>——内核竞争条件漏洞Fuzzer</p>
+<p><a href="https://github.com/compsec-snu/razzer" target="_blank" rel="external">https://github.com/compsec-snu/razzer</a></p>
+</li>
+<li><p><strong>ViridianFuzzer</strong>——用于Fuzzing Hyper-V hypercalls的内核驱动，由MWRLabs公司出品</p>
+<p><a href="https://github.com/mwrlabs/ViridianFuzzer" target="_blank" rel="external">https://github.com/mwrlabs/ViridianFuzzer</a></p>
+</li>
+<li><p><strong>ChromeFuzzer</strong>——基于grinder语法生成器改装的Chrome浏览器Fuzzer</p>
+<p><a href="https://github.com/demi6od/ChromeFuzzer" target="_blank" rel="external">https://github.com/demi6od/ChromeFuzzer</a></p>
+</li>
+<li><p><strong>funfuzz</strong>——Mozilla开源的JS fuzzer工具集合，主要用于Fuzz SpiderMonkey</p>
+<p><a href="https://github.com/MozillaSecurity/funfuzz" target="_blank" rel="external">https://github.com/MozillaSecurity/funfuzz</a></p>
+</li>
+</ol>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2019/07/14/一些值得学习的Fuzzer开源项目/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Fuzzing/">Fuzzing</a>, <a href="/tags/Fuzzer/">Fuzzer</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2019-06-29T02:26:18.000Z"><a href="/2019/06/29/Infiltrate2019议题学习/">2019-06-29</a></time>
       
       
@@ -1007,112 +1139,11 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2018-12-30T11:06:31.000Z"><a href="/2018/12/30/推荐今年C3黑客大会上的几个议题/">2018-12-30</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2018/12/30/推荐今年C3黑客大会上的几个议题/">推荐今年C3黑客大会上的几个议题</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>最近几天在德国举办的 The 35th Chaos Communication Congress (35C3) 黑客大会，在Twitter上传得火热，在国内却无人问津。</p>
-<p>从这可以看出同为微博的安全圈氛围是完全不同的，新浪微博还是偏娱乐些的，而且国外的圈子自然比天朝的要大得多，很多国家的人在上面交流。</p>
-<p>所以，我现在经常混Twitter，当作获取安全资讯的途径，新浪微博就真的当作看新闻的了……</p>
-<h3 id="德国C3混沌黑客大会"><a href="#德国C3混沌黑客大会" class="headerlink" title="德国C3混沌黑客大会"></a>德国C3混沌黑客大会</h3><p>Chaos Communication Congress（C3）大会是每年在德国举办的黑客大会，直译过来就是”混沌通信大会“，圈内通常叫”C3“，今年是第35届，所以叫35c3，今年还有CTF比赛，一些打过pwn2own的人出了一些浏览器实际漏洞的题目，也蛮具有实战价值的。</p>
-<p>每年这大会都会以演讲视频的方式分享出各个议题，以前大多是聚焦在无线电安全，所以一些什么2G\3G\4G短信、电话窃听经常出自该会议。今年也有一些不错的软件安全相关的议题，下面推荐几个鄙人自认为不错的几个议题。</p>
-<h3 id="From-Zero-to-Zero-Day"><a href="#From-Zero-to-Zero-Day" class="headerlink" title="From Zero to Zero Day"></a>From Zero to Zero Day</h3><p><img src="https://ws3.sinaimg.cn/large/006tNbRwgy1fyp0431o6oj30ju0hxtft.jpg" alt="image-20181230193447667"></p>
-<p>大会上有个议题叫 “From Zero to Zero Day”，演讲者是位高中生，讲述他自己如何在一年之内，从无任何安全基础到挖掘到第一枚Edge浏览器远程执行代码漏洞的经历。</p>
-<p>总结来讲就是：</p>
-<p>1、学习编程语言（C/C++、asm等等）</p>
-<p>2、学习操作系统原理</p>
-<p>3、学习常见二进制漏洞原理</p>
-<p>4、打打CTF，写写write-up</p>
-<p>5、学习并实践去分析真实的漏洞案例，就是直接看代码，调代码</p>
-<p>6、不断重复上述练习</p>
-<p>我直接帖几张关键截图，也推荐大家去听听（视频链接：<a href="https://media.ccc.de/v/35c3-9657-from_zero_to_zero_day）：" target="_blank" rel="external">https://media.ccc.de/v/35c3-9657-from_zero_to_zero_day）：</a></p>
-<p><img src="https://ws3.sinaimg.cn/large/006tNbRwgy1fyozsxuptzj30hz0aatcu.jpg" alt="image-20181230192405638"></p>
-<p><img src="https://ws3.sinaimg.cn/large/006tNbRwgy1fyozt7f18tj30jf0avwjw.jpg" alt="image-20181230192425929"></p>
-<p><img src="https://ws1.sinaimg.cn/large/006tNbRwgy1fyozqdnwdwj30k30axgoz.jpg" alt="image-20181230192131880"></p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNbRwgy1fyozs2o8i2j30k70awtb3.jpg" alt="image-20181230192320182"></p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNbRwgy1fyozrme322j30k50atadg.jpg" alt="image-20181230192254473"></p>
-<h3 id="Attack-Chrome-IPC"><a href="#Attack-Chrome-IPC" class="headerlink" title="Attack Chrome IPC"></a>Attack Chrome IPC</h3><p><img src="/Users/riusksk/Library/Application Support/typora-user-images/image-20181230193950157.png" alt="image-20181230193950157"></p>
-<p>这个议题之前作者在韩国PoC大会上讲过，并在网上公布过pdf（<a href="https://data.hackinn.com/ppt/2018韩国POC安全大会/ned.pdf），主要讲他之前在Hack2Win" target="_blank" rel="external">https://data.hackinn.com/ppt/2018韩国POC安全大会/ned.pdf），主要讲他之前在Hack2Win</a> bevx黑客大赛上用于黑掉Chrome浏览器的IPC漏洞，此次C3大会的演讲视频参见：<a href="https://media.ccc.de/v/35c3-9579-attacking_chrome_ipc" target="_blank" rel="external">https://media.ccc.de/v/35c3-9579-attacking_chrome_ipc</a></p>
-<p>这议题里面讲了作者一些研究二进制漏洞的一些学习和研究的方法，比如做代码审计、打CTF，也介绍了他这几年的安全研究历程，比国内流行晒crash+CVE的方式更接地气。</p>
-<p>最后介绍如何使用 libfuzzer+libprotobuf-mutator去fuzz chrome IPC，并开源fuzzer代码合并到chroium项目中。</p>
-<p><img src="https://ws3.sinaimg.cn/large/006tNbRwgy1fyp0grvcxuj30wk0g3aej.jpg" alt="image-20181230194648886"></p>
-<h3 id="Jailbreaking-iOS-From-past-to-present"><a href="#Jailbreaking-iOS-From-past-to-present" class="headerlink" title="Jailbreaking iOS From past to present"></a>Jailbreaking iOS From past to present</h3><p><img src="https://ws2.sinaimg.cn/large/006tNbRwly1fyp4tb6ppej30lb0c04cb.jpg" alt="image-20181230202552499"></p>
-<p>讲iOS越狱发展史的，可以学习到iOS上各种安全机制的原理以及绕过方法，画了不少原理图，通俗易懂不少。对于想了解整个iOS越狱技术发展历程的同学，这确实是份不错的资料。</p>
-<p>作者这次也在推持上放出了pdf和视频：</p>
-<p>pdf: <a href="https://api.tihmstar.net/35c3slides.pdf" target="_blank" rel="external">https://api.tihmstar.net/35c3slides.pdf</a></p>
-<p>video: <a href="https://media.ccc.de/v/35c3-9618-jailbreaking_ios" target="_blank" rel="external">https://media.ccc.de/v/35c3-9618-jailbreaking_ios</a></p>
-<p>整个议题主要围绕以下几点展开：</p>
-<ul>
-<li>越狱类型（非完美越狱、完美越狱……）</li>
-<li>Exploit mitigations (ASLR, iBoot-level AES, KPP, KTRR, PAC) </li>
-<li>Kernel patches (h3lix) </li>
-<li>Kppless jailbreaks</li>
-<li>越狱的未来趋势</li>
-</ul>
-<h1 id="The-Layman’s-Guide-to-Zero-Day-Engineering"><a href="#The-Layman’s-Guide-to-Zero-Day-Engineering" class="headerlink" title="The Layman’s Guide to Zero-Day Engineering"></a>The Layman’s Guide to Zero-Day Engineering</h1><p><img src="https://ws1.sinaimg.cn/large/006tNbRwly1fyp2wxxr28j30yw0ihgr0.jpg" alt="image-20181230211151217"></p>
-<p>Ret2公司分享如何寻找webkit攻击面并fuzz的方法，是基于MozillaSecurity的dharma语法生成框架写的js fuzzer，以及如何借助IDA+<a href="https://github.com/gaasedelen/lighthouse" target="_blank" rel="external">Lighthouse</a>开源插件（正是Ret2团队开发的，曾获得过IDA插件比赛的二等奖）来分析代码覆盖率问题。</p>
-<p>除此之外，也介绍如何利用frida去hook mach_msg，用来fuzz WindowServer，最后用WindowServer的漏洞来实现root提权。</p>
-<p>他们在其博客（<a href="https://blog.ret2.io）上也分享过不少漏洞研究方面的干货，这次分享的内容也大部分就是来自博客上的一些文章。" target="_blank" rel="external">https://blog.ret2.io）上也分享过不少漏洞研究方面的干货，这次分享的内容也大部分就是来自博客上的一些文章。</a></p>
-<p>里面还提到长亭的real world ctf比赛了。</p>
-<p>这里有张比较有意思的图，发出来给大伙看下：</p>
-<p><img src="https://ws1.sinaimg.cn/large/006tNbRwly1fyp3j3xqdgj30z00jn4qp.jpg" alt="image-20181230213304029"></p>
-<p>视频链接：<a href="https://media.ccc.de/v/35c3-9979-the_layman_s_guide_to_zero-day_engineering" target="_blank" rel="external">https://media.ccc.de/v/35c3-9979-the_layman_s_guide_to_zero-day_engineering</a></p>
-<h3 id="Modern-Windows-Userspace-Exploitation"><a href="#Modern-Windows-Userspace-Exploitation" class="headerlink" title="Modern Windows Userspace Exploitation"></a>Modern Windows Userspace Exploitation</h3><p><img src="https://ws3.sinaimg.cn/large/006tNbRwly1fyp3yvr0eaj30tl0i815k.jpg" alt="image-20181230214817405"></p>
-<p>视频链接：<a href="https://media.ccc.de/v/35c3-9660-modern_windows_userspace_exploitation" target="_blank" rel="external">https://media.ccc.de/v/35c3-9660-modern_windows_userspace_exploitation</a></p>
-<p>微软MSRC的人过来分享下windows平台下的一些二进制漏洞利用方法，包括ROP绕过DEP、信息泄露绕过ASLR、绕过CFG、ACG、CIG等等，并现场给了一些演示，不过看起来像是一些CTF赛题，演示的相关代码已放在作者的github上：<a href="https://github.com/saaramar" target="_blank" rel="external">https://github.com/saaramar</a></p>
-<p>都是一些利用系统漏洞防御技术的原理与绕过技术的总结，连各种漏洞缓解机制绕过的微软奖励都给大家标注上了，其实有点类似上面Jailbreaking iOS议题的Windows版本。</p>
-<p>最后来张Exploit Mitigations清单：</p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNbRwly1fyp4b42qn5j30rs0hvdir.jpg" alt="image-20181230215938958"></p>
-<h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>后面官方可能还会继续更新演讲视频，可以关注官方twitter（@c3voc_releases）获取消息。</p>
-<p>另外，对于英语不好的同学，不妨下个”腾讯翻译“同声翻译试下，虽然中文翻译没那么准确，但看看显示的英文单词也能知道个大意：</p>
-<p><img src="https://ws4.sinaimg.cn/large/006tNbRwly1fyp0n9b99lj31400u0b29.jpg" alt="image-20181230195201468"></p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2018/12/30/推荐今年C3黑客大会上的几个议题/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
   <nav id="page-nav">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/">下一页 &raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/">下一页 &raquo;</a>
   </nav>
 
 </nav>
@@ -1129,6 +1160,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/14/一些值得学习的Fuzzer开源项目/">一些值得学习的Fuzzer开源项目</a>
+      </li>
     
       <li>
         <a href="/2019/06/29/Infiltrate2019议题学习/">Infiltrate2019议题学习</a>
@@ -1166,10 +1201,6 @@
         <a href="/2019/01/06/安全研究者的自我修养/">安全研究者的自我修养</a>
       </li>
     
-      <li>
-        <a href="/2018/12/30/推荐今年C3黑客大会上的几个议题/">推荐今年C3黑客大会上的几个议题</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -1179,7 +1210,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>54</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>55</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>25</small></li>
   
@@ -1191,7 +1222,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/Bochspwn/" style="font-size: 10px;">Bochspwn</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzing/" style="font-size: 10px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 13.33px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 16.67px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/winafl/" style="font-size: 10px;">winafl</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全大会/" style="font-size: 10px;">安全大会</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/安全研究/" style="font-size: 11.67px;">安全研究</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 13.33px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/逻辑/" style="font-size: 10px;">逻辑</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/Bochspwn/" style="font-size: 10px;">Bochspwn</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzer/" style="font-size: 10px;">Fuzzer</a> <a href="/tags/Fuzzing/" style="font-size: 11.67px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 13.33px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 16.67px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/winafl/" style="font-size: 10px;">winafl</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全大会/" style="font-size: 10px;">安全大会</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/安全研究/" style="font-size: 11.67px;">安全研究</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 13.33px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/逻辑/" style="font-size: 10px;">逻辑</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
   </div>
 </div>
 
