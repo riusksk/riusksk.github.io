@@ -77,6 +77,78 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2018-10-02T01:35:52.000Z"><a href="/2018/10/02/honggfuzz4/">2018-10-02</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2018/10/02/honggfuzz4/">honggfuzz漏洞挖掘技术深究系列（4）—— 扩展Fuzzer</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>对于一些复合文件格式，如果只是单纯的暴力Fuzzing，会导致生成很多无法被解析的文件，因此需要对文件变异作一些定制化的工作，比如docx、doc等office复合文件，docx是个压缩包，doc是个OLE格式，如果fuzz docx自然需要将其zip解压，再针对感兴趣的文件作变异，对于doc最好是作文件格式解析，只对感兴趣的stream作文件变异，这样的fuzzing的有效性才会更高。</p>
+<p>庆幸地是，honggfuzz提供<code>-c</code>参数用于扩展变异规则以代替原有变异方式，同时提供有<code>--pprocess_cmd</code>在原有的文件变异后再作处理：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">--mutate_cmd|-c VALUE</span><br><span class="line">External command producing fuzz files (instead of internal mutators)</span><br><span class="line">--pprocess_cmd VALUE</span><br><span class="line">External command postprocessing files produced by internal mutators</span><br></pre></td></tr></table></figure>
+<p><code>-c</code>功能比较有用，也是我用得比较多的，另一个<code>--pprocess_cmd</code>基本我没用过。</p>
+<p>当你通过<code>-f</code>提供输入样本目录后，在fuzzing时，随机提取的文件会直接传递给<code>-c</code>参数指定的扩展命令作变异。</p>
+<p>比如想针对某文件特定offset范围内的内容进行变异，下面是针对macOS/iOS字体文件中的虚拟指令作Fuzzing时写的脚本：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> mmap</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> random <span class="keyword">import</span> randint</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line">RANGE_START = <span class="number">0x16D8</span></span><br><span class="line">RANGE_END   = <span class="number">0x304D</span></span><br><span class="line">MIN_BYTES_TO_FLIP = <span class="number">1</span></span><br><span class="line">MAX_BYTES_TO_FLIP = <span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="string">".DS_Store"</span> <span class="keyword">in</span> sys.argv[<span class="number">1</span>]:</span><br><span class="line">    exit(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> open(sys.argv[<span class="number">1</span>], <span class="string">"r+b"</span>) <span class="keyword">as</span> f:</span><br><span class="line">  mapped = mmap.mmap(f.fileno(), <span class="number">0</span>)</span><br><span class="line">  <span class="comment">#print "file size: 0x%x" % len(mapped)</span></span><br><span class="line">  bytes_to_flip = randint(MIN_BYTES_TO_FLIP, MAX_BYTES_TO_FLIP)</span><br><span class="line">  bytes_flipped = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> bytes_flipped &lt; bytes_to_flip:</span><br><span class="line">    byte_pos = randint(RANGE_START, RANGE_END)</span><br><span class="line">    <span class="comment">#print "byte_pos: 0x%x" %byte_pos </span></span><br><span class="line">    byte_new = chr(randint(<span class="number">0</span>, <span class="number">255</span>))</span><br><span class="line">    mapped[byte_pos] = byte_new</span><br><span class="line">    bytes_flipped += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">  mapped.close()</span><br></pre></td></tr></table></figure>
+<p>变异效果：</p>
+<p><img src="http://riusksk.me/media/font_rangfuzz.png" alt=""></p>
+<p>最后挖到一个TTF字体虚拟指令漏洞：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">orig file:</span><br><span class="line">2F90h: 00 3F C5 CD 2B 10 C1 10 DE 3F C5 【CD】 2B 10 C5 10</span><br><span class="line"></span><br><span class="line">poc file:</span><br><span class="line">2F90h: 00 3F C5 CD 2B 10 C1 10 DE 3F C5 【DD】 2B 10 C5 10</span><br><span class="line"></span><br><span class="line">glyf table -&gt; SimpleGlyf[] -&gt; Instructions(&apos;0xCD&apos; =&gt; ‘0xDD&apos;) -&gt; MDRP指令</span><br></pre></td></tr></table></figure>
+<p>同样的，你也可以写个doc、docx等office文件格式解析并变异的扩展fuzzer，比如利用olefile库（但只支持修改同等大小不变的doc，要插入或删除需要自行实现），或者通过COM接口来实现操作。</p>
+<p>比如之前有段时间doc中的公式编辑器存在很多漏洞，你就可以专门针对<code>Equation Native</code>流作fuzzing。</p>
+<p>最后放两张图(riufuzz是自己对honggfuzz二次开发的版本，后面有机会再讲)：</p>
+<p><img src="http://riusksk.me/media/olefuzz.jpeg" alt=""></p>
+<p><img src="http://riusksk.me/media/doc_crash.jpg" alt=""></p>
+<center><img src="http://riusksk.me/media/gzh.png" alt=""></center>
+
+
+
+
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2018/10/02/honggfuzz4/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/honggfuzz/">honggfuzz</a>, <a href="/tags/fuzz/">fuzz</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2018-09-16T03:54:16.000Z"><a href="/2018/09/16/honggfuzz3/">2018-09-16</a></time>
       
       
@@ -911,78 +983,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2018-06-03T13:15:55.000Z"><a href="/2018/06/03/威胁建模：摆脱随机挖洞的命运/">2018-06-03</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2018/06/03/威胁建模：摆脱随机挖洞的命运/">威胁建模：摆脱随机挖洞的命运</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <center><img src="http://riusksk.me/media/threat.png" alt="威胁"></center>
-
-<h3 id="楔子：聊聊Web与二进制安全"><a href="#楔子：聊聊Web与二进制安全" class="headerlink" title="楔子：聊聊Web与二进制安全"></a>楔子：聊聊Web与二进制安全</h3><p>经常有人会说<code>“Web安全门槛低，二进制安全门槛高”</code>，先不讨论它是对是错，但至少这让多数人意识到：开始搞Web安全时，<code>xss</code>弹个框，sql注入写个单引号，<code>sqlmap</code>跑一下就拖库了，这种总是令人感觉那么容易（懂这些就敢对外自称“高级渗透测试工程师”的大有人在）；搞二进制的就没那么容易出效果了，因为得先学C、汇编，而且一些自动化工具也没web多，就算费九牛二虎之力搞出来，也没黑个站酷炫。</p>
-<p>所以，搞Web的人总是比搞二进制的人要多得多。</p>
-<p>个人觉得，Web是个前期容易出效果，中后期容易遇瓶颈的安全分支，因为不知道该往哪使力，相当于<code>“前期英雄”</code>；二进制是个前期不容易出效果，且水很深，难达瓶颈的安全分支，因为你很容易知道高山在哪里，即使很多时间只能仰望，相当于<code>“后期英雄”</code>。</p>
-<p>在搞Web渗透测试时，不知道大家是否有过这种感觉：</p>
-<ol>
-<li>看到别人发的漏洞文章，发现原来这么简单，自己明明有能力发现，之前怎么没挖到呢？</li>
-<li>感觉力不从心，有点“<strong>随机挖洞</strong>”的感觉。</li>
-</ol>
-<p>其实这都是一些技术或方法论上的瓶颈，二进制上也会有“随机挖洞”的感觉的，只是没Web上那么容易碰到，所以拿web举例。</p>
-<h3 id="STRIDE：突破瓶颈的方法论"><a href="#STRIDE：突破瓶颈的方法论" class="headerlink" title="STRIDE：突破瓶颈的方法论"></a>STRIDE：突破瓶颈的方法论</h3><p>某天在网上看到一篇关于<code>STRIDE</code>威胁建模的文章，这是微软总结出来的一套方法论，其实就是一些威胁的助记符，帮助大家在做安全测试时能够更加全面系统。虽然它也不能100%覆盖所有系统/软件面临的安全威胁，但至少能覆盖个90%。</p>
-<center><img src="http://riusksk.me/media/stride.png" alt="img"></center>
-
-<p>上图是STRIDE所代表的6种威胁，无论在做Web渗透测试，还是软件安全测试，先通过对测试目标做功能上的分析，再按STRIDE模型对其进行全面的分析，最后就是实际测试验证。</p>
-<center><br><br><img src="http://riusksk.me/media/image-20180603223947071.png" alt="image-20180603223947071"><br><br></center>
-
-<p><strong>STRIDE本质上并不会提高你的技术能力，但可以改变你挖洞的思维方法，更加系统全面，摆脱随机挖洞的命运。</strong></p>
-<p>关于STRIDE更详细地信息，可以参考以下这本书<a href="http://product.china-pub.com/4694314" target="_blank" rel="external">《威胁建模：设置和交付更安全的软件》</a>，看前半本就可以了，后半本有点啰嗦，且可操作性不强。</p>
-<center><img src="http://images.china-pub.com/ebook4690001-4695000/4694314/zcover.jpg" alt="威胁建模"></center>
-
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2018/06/03/威胁建模：摆脱随机挖洞的命运/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/威胁建模/">威胁建模</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -1004,6 +1004,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2019/08/18/安全研究的价值思考/">安全研究的价值思考</a>
+      </li>
     
       <li>
         <a href="/2019/07/14/一些值得学习的Fuzzer开源项目/">一些值得学习的Fuzzer开源项目</a>
@@ -1041,10 +1045,6 @@
         <a href="/2019/01/12/安全研究者的自我修养（续）/">安全研究者的自我修养（续）</a>
       </li>
     
-      <li>
-        <a href="/2019/01/06/安全研究者的自我修养/">安全研究者的自我修养</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -1056,7 +1056,7 @@
   
     <li><a href="/categories/技术分享/">技术分享</a><small>55</small></li>
   
-    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>25</small></li>
+    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>26</small></li>
   
   </ul>
 </div>

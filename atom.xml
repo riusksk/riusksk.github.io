@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2019-07-14T05:50:36.000Z</updated>
+  <updated>2019-08-18T07:59:12.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,79 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>安全研究的价值思考</title>
+    <link href="http://riusksk.github.io/2019/08/18/%E5%AE%89%E5%85%A8%E7%A0%94%E7%A9%B6%E7%9A%84%E4%BB%B7%E5%80%BC%E6%80%9D%E8%80%83/"/>
+    <id>http://riusksk.github.io/2019/08/18/安全研究的价值思考/</id>
+    <published>2019-08-18T05:27:14.000Z</published>
+    <updated>2019-08-18T07:59:12.000Z</updated>
+    
+    <content type="html">&lt;p&gt;【注】：纯属个人言论，与公司立场无关！&lt;/p&gt;
+&lt;p&gt;最近的Black Hat大会议题ppt已提供下载，里面有两个非技术议题，其视角比较有趣，一些问题值得思考，因此才有本文。&lt;/p&gt;
+&lt;p&gt;这两个议题分别是”Project Zero File Years Of Make 0day Hard”和”Selling 0-days to governments and offensive security companies”，一个讲述5年来Google的Project Zero团队在漏洞研究上的工作效果，一个讲述关于漏洞交易的一些现状、流程。&lt;/p&gt;
+&lt;h3 id=&quot;安全研究都干啥&quot;&gt;&lt;a href=&quot;#安全研究都干啥&quot; class=&quot;headerlink&quot; title=&quot;安全研究都干啥&quot;&gt;&lt;/a&gt;安全研究都干啥&lt;/h3&gt;&lt;p&gt;安全研究并不局限于漏洞领域，但它依然是目前最主流的方向，研究范围也可以包括网络安全、反病毒、大数据安全、业务安全等诸多安全领域。这里主要聊下漏洞领域的研究，看看Project Zero的人主要都在干啥：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/image-20190818142847773.png&quot; alt=&quot;image-20190818142847773&quot;&gt;&lt;/p&gt;
+&lt;p&gt;总结一下就是（主要指漏洞研究领域，估计很多人只干1、3、4的工作）：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;漏洞挖掘与利用&lt;/li&gt;
+&lt;li&gt;方法论建设&lt;/li&gt;
+&lt;li&gt;技术写作&lt;/li&gt;
+&lt;li&gt;行业交流与合作&lt;/li&gt;
+&lt;li&gt;软件工程化建设，可能是指DevSecOps，包括安全防御策略建设、libfuzzer自动化测试等的应用&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;###从招聘职责看研究目的&lt;/p&gt;
+&lt;p&gt;谈研究价值，不妨先来谈谈研究的目的，我特意从各招聘网站上搜集了一些关于安全研究岗位的招聘信息，主要统计其岗位职责描述的关键词，生成如下词云：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/职责.png&quot; alt=&quot;职责&quot;&gt;&lt;/p&gt;
+&lt;p&gt;可以看到，当前的研究岗位普遍就是招漏洞挖掘职位的，都是搞主流系统及软件为主，但挖洞的目的又是为什么呢，这种在很少企业会写在招聘帖的。从统计结果看，主要有以下3个研究目的：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;挖掘主流系统/软件漏洞；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;帮助安全产品提升检测能力；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;为业务提供技术支持。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;第一点是手段，等于啥也没说，第2点算是做安全产品，第3点是得看是什么业务，如第2点也算业务，但如果是一些非安全产品业务，其实所能提供的技术支持就相对比较局限，可能人家业务也不一定看得上你这研究。&lt;/p&gt;
+&lt;h3 id=&quot;影响力价值&quot;&gt;&lt;a href=&quot;#影响力价值&quot; class=&quot;headerlink&quot; title=&quot;影响力价值&quot;&gt;&lt;/a&gt;影响力价值&lt;/h3&gt;&lt;p&gt;搞安全研究，普遍都是为了影响力公关（PR），国内外均是如此，BlackHat上的Pwnie Awards都有一个“&lt;em&gt;最名不副实&lt;/em&gt;漏洞奖”，叫做”most over-hyped bug”，就是用来批评那些过度炒作的漏洞。但是一些确实危害比较大的漏洞，及时负责任地披露反而有利于防御工作的开展。Project Zero议题中讲到一句话，开放的攻击研究相对攻击者而言，对防御者更为有利。之前国内试颁行的某提案，因可能阻碍安全研究者公开研究成果，遭到不少圈内人的反对。这跟古时候，有的国家禁止人民用刀一样，最终只是阻碍生产力的发展而已。其实只要不是急功近利，获得与研究成果相匹配的影响力也是合理的。那获得影响力之后的价值呢？对团队，对个人，可能获取得更多交流与学习的机会，也可能获得更多业务合作机会，直接点，可能找份工作防止中年危机都更有资本了。&lt;/p&gt;
+&lt;h3 id=&quot;商业价值&quot;&gt;&lt;a href=&quot;#商业价值&quot; class=&quot;headerlink&quot; title=&quot;商业价值&quot;&gt;&lt;/a&gt;商业价值&lt;/h3&gt;&lt;p&gt;何为商业价值？就是赚钱嘛！通过安全研究落地为产品，然后拿去卖；也可提供技术服务，比如帮助对IoT、车联网产品等新兴行业产品进行安全测试。产品一般比技术服务更值钱，技术服务经常是一波过，产品却是可以长期收费的，比如IDA一年卖几万刀，用户每年都得交钱，而若只是提供逆向服务，费劲且不持久，赚得还少。如果是漏洞交易，高质量的漏洞利用链也是可以获得不菲的利益。在0day漏洞交易感兴趣的，主要涉及以下3类角色：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/image-20190818144822263.png&quot; alt=&quot;image-20190818144822263&quot;&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;防御型企业、漏洞奖励计划和平台&lt;/li&gt;
+&lt;li&gt;黑客比赛举办者，类似漏洞收购中间商，自己可能也会去挖洞，也可能收购poc来自己写exploit，或者直接收购exploit，再转手卖出去赚差价&lt;/li&gt;
+&lt;li&gt;攻击型企业、政府、黑产团伙&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;现在国内已经限制参加Pwn2Own之类的国外比赛，从2018年开始，国内由”天府杯”比赛代替，主要是防止漏洞外流危害国家网络安全。这些比赛也推动了厂商对漏洞处理的态度，以及漏洞奖励计划的建设，使得报告者能够合法地获得相应的奖励和认可。&lt;/p&gt;
+&lt;h3 id=&quot;新型业务安全预防&quot;&gt;&lt;a href=&quot;#新型业务安全预防&quot; class=&quot;headerlink&quot; title=&quot;新型业务安全预防&quot;&gt;&lt;/a&gt;新型业务安全预防&lt;/h3&gt;&lt;p&gt;提前研究一些公司业务可能涉足的新领域，避免新兴业务产品出来后，无能力解决上面的安全问题。但整个的前提是，该新产品能活下来，否则一切都是白搭。&lt;/p&gt;
+&lt;h3 id=&quot;行业贡献&quot;&gt;&lt;a href=&quot;#行业贡献&quot; class=&quot;headerlink&quot; title=&quot;行业贡献&quot;&gt;&lt;/a&gt;行业贡献&lt;/h3&gt;&lt;p&gt;在安全行业贡献榜上，Project Zero无疑是佼佼者。在5年内，他们共贡献1500+个主流系统/软件漏洞，推动很多安全防御机制的诞生，甚至影响漏洞在市场上的价格。漏洞研究者有时担心手上的漏洞被撞掉，会直接报给厂商，混个致谢，搞不好年底还能混个”MSRC Top 100”，今年开始它改名叫”最具价值安全研究员”，更高大上了。这个月，我就被Project Zero的人撞掉了一个微软漏洞。在PZ分享的议题里面，提出一些衡量”make 0day hard”的标准，但毕竟是相对概念，仅当作参考：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;挖到品相优秀的漏洞所花费的时间；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;漏洞平均生存时间；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;撞洞数量；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;漏洞利用链的长度；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;新型高质量的攻击面的发现概率。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;个人保值防老&quot;&gt;&lt;a href=&quot;#个人保值防老&quot; class=&quot;headerlink&quot; title=&quot;个人保值防老&quot;&gt;&lt;/a&gt;个人保值防老&lt;/h3&gt;&lt;p&gt;研究本身就是一种学习方式。相信爱学习的人，最终运气都不会太差。尤其是现在鼓吹35岁中年危机的互联网时代，保持学习是最靠谱的个人保值防老方式。如果保持工作内容不变，那么通常头一年所积累的技术与工作方法足够应付绝大部分工作。若再不搞点有挑战的新工作内容，或者业余做点研究，那就要成为拿着一套技术吃N年的”老白兔”了。持续学习，保持或者超越与年龄相符的技术能力才是王道。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/gzh.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;【注】：纯属个人言论，与公司立场无关！&lt;/p&gt;
+&lt;p&gt;最近的Black Hat大会议题ppt已提供下载，里面有两个非技术议题，其视角比较有趣，一些问题值得思考，因此才有本文。&lt;/p&gt;
+&lt;p&gt;这两个议题分别是”Project Zero File Years Of Make 0
+    
+    </summary>
+    
+      <category term="随笔杂谈" scheme="http://riusksk.github.io/categories/%E9%9A%8F%E7%AC%94%E6%9D%82%E8%B0%88/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>一些值得学习的Fuzzer开源项目</title>
@@ -1429,51 +1502,6 @@
       <category term="fuzz" scheme="http://riusksk.github.io/tags/fuzz/"/>
     
       <category term="漏洞挖掘" scheme="http://riusksk.github.io/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>honggfuzz漏洞挖掘技术深究系列（4）—— 扩展Fuzzer</title>
-    <link href="http://riusksk.github.io/2018/10/02/honggfuzz4/"/>
-    <id>http://riusksk.github.io/2018/10/02/honggfuzz4/</id>
-    <published>2018-10-02T01:35:52.000Z</published>
-    <updated>2018-10-02T02:54:52.000Z</updated>
-    
-    <content type="html">&lt;p&gt;对于一些复合文件格式，如果只是单纯的暴力Fuzzing，会导致生成很多无法被解析的文件，因此需要对文件变异作一些定制化的工作，比如docx、doc等office复合文件，docx是个压缩包，doc是个OLE格式，如果fuzz docx自然需要将其zip解压，再针对感兴趣的文件作变异，对于doc最好是作文件格式解析，只对感兴趣的stream作文件变异，这样的fuzzing的有效性才会更高。&lt;/p&gt;
-&lt;p&gt;庆幸地是，honggfuzz提供&lt;code&gt;-c&lt;/code&gt;参数用于扩展变异规则以代替原有变异方式，同时提供有&lt;code&gt;--pprocess_cmd&lt;/code&gt;在原有的文件变异后再作处理：&lt;/p&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;--mutate_cmd|-c VALUE&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;External command producing fuzz files (instead of internal mutators)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;--pprocess_cmd VALUE&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;External command postprocessing files produced by internal mutators&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;&lt;code&gt;-c&lt;/code&gt;功能比较有用，也是我用得比较多的，另一个&lt;code&gt;--pprocess_cmd&lt;/code&gt;基本我没用过。&lt;/p&gt;
-&lt;p&gt;当你通过&lt;code&gt;-f&lt;/code&gt;提供输入样本目录后，在fuzzing时，随机提取的文件会直接传递给&lt;code&gt;-c&lt;/code&gt;参数指定的扩展命令作变异。&lt;/p&gt;
-&lt;p&gt;比如想针对某文件特定offset范围内的内容进行变异，下面是针对macOS/iOS字体文件中的虚拟指令作Fuzzing时写的脚本：&lt;/p&gt;
-&lt;figure class=&quot;highlight py&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;29&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;#!/usr/bin/env python&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; mmap&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; os&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; random &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; randint&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; sys&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;RANGE_START = &lt;span class=&quot;number&quot;&gt;0x16D8&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;RANGE_END   = &lt;span class=&quot;number&quot;&gt;0x304D&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;MIN_BYTES_TO_FLIP = &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;MAX_BYTES_TO_FLIP = &lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&quot;.DS_Store&quot;&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; sys.argv[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;]:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    exit(&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;with&lt;/span&gt; open(sys.argv[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;], &lt;span class=&quot;string&quot;&gt;&quot;r+b&quot;&lt;/span&gt;) &lt;span class=&quot;keyword&quot;&gt;as&lt;/span&gt; f:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  mapped = mmap.mmap(f.fileno(), &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;comment&quot;&gt;#print &quot;file size: 0x%x&quot; % len(mapped)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  bytes_to_flip = randint(MIN_BYTES_TO_FLIP, MAX_BYTES_TO_FLIP)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  bytes_flipped = &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;while&lt;/span&gt; bytes_flipped &amp;lt; bytes_to_flip:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    byte_pos = randint(RANGE_START, RANGE_END)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;#print &quot;byte_pos: 0x%x&quot; %byte_pos &lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    byte_new = chr(randint(&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;255&lt;/span&gt;))&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    mapped[byte_pos] = byte_new&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    bytes_flipped += &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  mapped.close()&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;变异效果：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/font_rangfuzz.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;最后挖到一个TTF字体虚拟指令漏洞：&lt;/p&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;orig file:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2F90h: 00 3F C5 CD 2B 10 C1 10 DE 3F C5 【CD】 2B 10 C5 10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;poc file:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2F90h: 00 3F C5 CD 2B 10 C1 10 DE 3F C5 【DD】 2B 10 C5 10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;glyf table -&amp;gt; SimpleGlyf[] -&amp;gt; Instructions(&amp;apos;0xCD&amp;apos; =&amp;gt; ‘0xDD&amp;apos;) -&amp;gt; MDRP指令&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;同样的，你也可以写个doc、docx等office文件格式解析并变异的扩展fuzzer，比如利用olefile库（但只支持修改同等大小不变的doc，要插入或删除需要自行实现），或者通过COM接口来实现操作。&lt;/p&gt;
-&lt;p&gt;比如之前有段时间doc中的公式编辑器存在很多漏洞，你就可以专门针对&lt;code&gt;Equation Native&lt;/code&gt;流作fuzzing。&lt;/p&gt;
-&lt;p&gt;最后放两张图(riufuzz是自己对honggfuzz二次开发的版本，后面有机会再讲)：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/olefuzz.jpeg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/doc_crash.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;center&gt;&lt;img src=&quot;http://riusksk.me/media/gzh.png&quot; alt=&quot;&quot;&gt;&lt;/center&gt;
-
-
-
-
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;对于一些复合文件格式，如果只是单纯的暴力Fuzzing，会导致生成很多无法被解析的文件，因此需要对文件变异作一些定制化的工作，比如docx、doc等office复合文件，docx是个压缩包，doc是个OLE格式，如果fuzz docx自然需要将其zip解压，再针对感兴趣的文
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
-    
-      <category term="honggfuzz" scheme="http://riusksk.github.io/tags/honggfuzz/"/>
-    
-      <category term="fuzz" scheme="http://riusksk.github.io/tags/fuzz/"/>
     
   </entry>
   
