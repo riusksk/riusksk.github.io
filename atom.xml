@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2019-09-07T12:26:23.000Z</updated>
+  <updated>2019-09-07T12:34:44.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://riusksk.github.io/2019/09/07/%E6%BC%AB%E8%B0%88%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%BA%94%E6%80%A5%E6%8C%87%E5%AF%BC%E6%80%9D%E6%83%B3/"/>
     <id>http://riusksk.github.io/2019/09/07/漫谈网络安全应急指导思想/</id>
     <published>2019-09-07T02:04:32.000Z</published>
-    <updated>2019-09-07T12:26:23.000Z</updated>
+    <updated>2019-09-07T12:34:44.000Z</updated>
     
     <content type="html">&lt;p&gt;【注】：本文仅代表个人观点，与公司立场无关。&lt;/p&gt;
 &lt;p&gt;早上看到朋友圈有人说Metasploit公布BlueKeep远程执行漏洞的利用，一些安全群里也有人喊着加班了，但这漏洞明明很早就已经发布补丁了，现在才加班应急明显是有问题的。因此才有了本文，谈谈关于安全应急的一些个人想法。&lt;/p&gt;
@@ -56,7 +56,7 @@
 &lt;p&gt;为何提到以德服人，一方面是指善待白帽子，保持有效沟通，另一方面是指避免”文人相轻”的现象。谁都年轻过，搞技术的人有时多少有点傲气，报洞的BS收洞的，甚至报洞者之间互相BS。如果企业也带着相同的情绪，难免会导致与白帽子之间沟通矛盾，所以说善待白帽子，以德服人，哪怕白帽子少凌晨两三点搞事，也是好的。&lt;/p&gt;
 &lt;p&gt;这些年，微软对漏洞的处理的态度变化最大，从最初放言绝不为漏洞买卖，散漫地漏洞处理态度，到现在及时响应，建立完善的漏洞奖励计划，奖金力度也在不断提高，同时每年在BlackHat上公布TOP 100最具价值的安全研究员名单，赋予帽子荣誉感。&lt;/p&gt;
 &lt;p&gt;这些都代表着行业对漏洞，对白帽子的态度的一路转变历程。&lt;/p&gt;
-&lt;h3 id=&quot;要略五：未雨绸缪，防范未然&quot;&gt;&lt;a href=&quot;#要略五：未雨绸缪，防范未然&quot; class=&quot;headerlink&quot; title=&quot;要略五：未雨绸缪，防范未然&quot;&gt;&lt;/a&gt;要略五：未雨绸缪，防范未然&lt;/h3&gt;&lt;p&gt;![timg (&lt;a href=&quot;http://riusksk.me/media/timg2.jpeg&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://riusksk.me/media/timg2.jpeg&lt;/a&gt;)&lt;/p&gt;
+&lt;h3 id=&quot;要略五：未雨绸缪，防范未然&quot;&gt;&lt;a href=&quot;#要略五：未雨绸缪，防范未然&quot; class=&quot;headerlink&quot; title=&quot;要略五：未雨绸缪，防范未然&quot;&gt;&lt;/a&gt;要略五：未雨绸缪，防范未然&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/timg2.jpeg&quot; alt=&quot;timg2&quot;&gt;&lt;/p&gt;
 &lt;p&gt;现在行业都在推广DevSecOps，是由Gartner 在2012年的一份报告中提出的概念。在这份报告中，Gartner提出信息安全专业人士需要更主动的融入DevOps的实践中，秉承DevOps的精神，拥抱团队协作、敏捷和职责共担的哲学。说得直白点就是，将安全融入到研发、运营等各个流程中，以实现安全自动化，连续响应和检测机制，帮助各团队之间协同合作。&lt;/p&gt;
 &lt;p&gt;在应急事件中至少覆盖到：&lt;/p&gt;
 &lt;ol&gt;
