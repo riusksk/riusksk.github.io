@@ -77,6 +77,66 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2016-06-22T16:00:00.000Z"><a href="/2016/06/23/ios-auditor/">2016-06-23</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2016/06/23/ios-auditor/">浅谈iOS应用安全自动化审计</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>此前有人统计过2015年漏洞最多的产品，苹果的OSX与iOS系统分别占据第一二名，虽有人怀疑统计数据可能存在重复的不准确情况，但相信大趋势是不会变的。</p>
+<p>2015年在iOS平台上也发生过不少安全大事，比如“XcodeGhost”事件、iOS9越狱、“iBackDoor“、“YouMi“事件等等，尤其是XcodeGhost影响甚大，注定要在iOS安全史上留下重重的一笔。</p>
+<p>结合CVEDetails站点上对iOS系统漏洞的统计情况【图1】，整体处于上升的趋势，尤其是2015年增长迅速，是2014年的3倍多，由此也可以预见iOS平台上的安全漏洞正在快速增长，iOS应用亦然。</p>
+<center><br><img src="/media/ios_auditor/1.png" alt=""><br>图1：iOS系统历年漏洞数量统计图<br></center>
+      
+    </div>
+    
+    <footer>
+      <div class="alignleft">
+        <a href="/2016/06/23/ios-auditor/#more" class="more-link">更多内容</a>
+      </div>
+    </footer>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2016/06/23/ios-auditor/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/iOS/">iOS</a>, <a href="/tags/安全审计/">安全审计</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2016-06-17T08:11:06.000Z"><a href="/2016/06/17/add-articles/">2016-06-17</a></time>
       
       
@@ -693,72 +753,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2015-07-10T02:00:33.000Z"><a href="/2015/07/10/Hacking-Team-武器库研究（一）：CVE-2015-0349-Flash-ConvolutionFilter-UAF/">2015-07-10</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/07/10/Hacking-Team-武器库研究（一）：CVE-2015-0349-Flash-ConvolutionFilter-UAF/">Hacking Team 武器库研究（一）：CVE-2015-0349 Flash ConvolutionFilter UAF</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>CVE-2015-0349 Flash ConvolutionFilter UAF 是今年Pwn2Own大赛上被用于攻破64位Flash的漏洞，在泄露的Hacking Team武器库中就包括了该漏洞的利用代码，以及利用本地提权漏洞作为shellcode，以绕过沙盒的保护。泄露的利用代码包含完整的工程文件，用Flash Develop打开项目即可编译。</p>
-<h2 id="【源码分析】"><a href="#【源码分析】" class="headerlink" title="【源码分析】"></a><strong>【源码分析】</strong></h2><p>1、MyClass.TryExp1是漏洞利用的入口函数，它先创建ConvolutionFilter类，它是一个矩阵环绕滤镜，比如用于实现模糊、斜边、锐化等效果。它的2个参数分别为matrixX矩阵列数和matrixY矩阵行数，这里分别是14和15。</p>
-<p><img src="http://riusksk.me/media/hackteam01/1.png" alt=""></p>
-<p>2、接下来程序将分配ConvolutionFilter的a（Array类型）赋值给_cf （ConvolutionFilter对象），并设置matrix值为m（Array类型），接着将matrix数组的第一个元素赋值给m0，当它不为0是则表示漏洞不存在，否则即存在UAF漏洞。为何如此？在第一点中，我们知道m[0]是MyClass类，该类里面定义有valueOf方法，在设置martix值时会调用到该方法，具体见第3点分析。</p>
-<p><img src="http://riusksk.me/media/hackteam01/2.png" alt=""></p>
-<p>3、在valueOf 函数中，matrixX会被重新设置为15（原始值为14），导致原先有matrix数组被释放，然后重新分配矩阵滤镜的matrixX内存，但此时_cf.matrix依然保持着对已释放的matrix数组的引用，所以在第2点会会去判断matrix数组首个元素值是否为0（原初始值也是0），也就是判断已释放的数组是否还可被引用。</p>
-<p><img src="http://riusksk.me/media/hackteam01/3.png" alt=""></p>
-<p>4、通过分配一堆Vector.<uint>对象去占用已释放的内存，长度刚好与matrix数组长度相同，也就是matrixX <em> matrixY = 14</em>15，每个vector.<uint>对象的实际大小就是14<em>15</em>4=0x348(840)，最后在从valueOf函数中返回2，2会被写入matrix数组首个元素中，但此时实际是向Vector对象写入数据，从而更改vector对象长度，实现任意内存读写。</uint></uint></p>
-<p><img src="http://riusksk.me/media/hackteam01/4.png" alt=""></p>
-<p>5、再回头继续看MyClass.TryExp1函数，找到已经被篡改长度值的vector对象，再根据不同的系统平台执行不同的shellcode代码。</p>
-<p><img src="http://riusksk.me/media/hackteam01/5.png" alt=""></p>
-<p>6、看下32位windows平台的shellcode执行相关的ShellWin32类，先看初始化函数init，它只是做一些全局变量赋值。</p>
-<p><img src="http://riusksk.me/media/hackteam01/6.png" alt=""></p>
-<p>7、真正用于执行代码的是ShellWin32.Exec函数，先获取包含shellcode的_x32对象地址，然后在内存中搜索PE头，解析PE文件格式，从导入表中找到VirtualProtect函数地址，调用它对shellcode内存地址设置可执行权限，接着找到自定义的payload空函数对应的JIT函数指针，用shellcode地址去替换JIT指针，最后调用payload.call 以执行shellcode的。</p>
-<p><img src="http://riusksk.me/media/hackteam01/7.png" alt=""></p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2015/07/10/Hacking-Team-武器库研究（一）：CVE-2015-0349-Flash-ConvolutionFilter-UAF/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/Hacking-Team/">Hacking Team</a>, <a href="/tags/Flash/">Flash</a>, <a href="/tags/UAF/">UAF</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -780,6 +774,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2019/09/07/漫谈网络安全应急指导思想/">漫谈网络安全应急要略</a>
+      </li>
     
       <li>
         <a href="/2019/08/18/安全研究的价值思考/">安全研究的价值思考</a>
@@ -817,10 +815,6 @@
         <a href="/2019/01/27/聊聊那些黑客小说/">聊聊那些黑客小说</a>
       </li>
     
-      <li>
-        <a href="/2019/01/12/安全研究者的自我修养（续）/">安全研究者的自我修养（续）</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -830,7 +824,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>55</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>56</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>26</small></li>
   

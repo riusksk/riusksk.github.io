@@ -77,6 +77,109 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2019-01-12T05:17:58.000Z"><a href="/2019/01/12/安全研究者的自我修养（续）/">2019-01-12</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2019/01/12/安全研究者的自我修养（续）/">安全研究者的自我修养（续）</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>接上篇继续聊安全研究者的自我修养，上篇重点讲技术修炼，本篇聊聊行业现象、谈谈沉淀、情怀等等。</p>
+<h3 id="11、工具与方法论沉淀"><a href="#11、工具与方法论沉淀" class="headerlink" title="11、工具与方法论沉淀"></a>11、工具与方法论沉淀</h3><p>虽说代码审计是项必备技能，但终究是项体力活。</p>
+<p>有些漏洞（比如逻辑漏洞）可能就需要人工审计，但也有不少漏洞是可以自动化Fuzzing，一些能自动化或半自动化实现的，尽量写程序自动化。</p>
+<p>因为，纯人工审计终究熬不过年纪，熬不过团队人员的离散变迁，熬不过互联网的快速发展……</p>
+<p>比如，2012年刚开始写《漏洞战争》时，单身一人，从早上8点多起床吃饭，然后开始调代码、看代码，一直奋战到晚上12点，身体无压力。近7年过去了，现在要是这么折腾，身体就要散架了……</p>
+<p>比如，团队里的人分工做不同领域的代码审计，若无工具和方法论沉淀，那么有人走的话，此人对应的领域可能就无法持续产出；若有新人加入，代码审计的技能又不好传承，很多得自己重头来。所以，一直觉得，好的团队应该是，即使人员离散变迁，依然能够独立运作、持续产出的。</p>
+<p>比如，Linux内核在2018年净增87万行代码，很多类似复杂庞大的项目，看代码有时看都看不过来，一般都是针对性地挑模块作代码审计。</p>
+<p>比如，Fuzzer开发里面就有很多共用功能是可以直接做成框架沉淀下来，文件变异、崩溃监控、样本去重精简等等，很多时候有个新的攻击面需要测试，就可以直接在框架的基础上写fuzzer，将会高效很多。下文提到的一个IE漏洞挖掘案例就是基于这思路挖到的。</p>
+<p>我曾经想开发两个漏洞挖掘系统，一个二进制，一个Web，名字都想好了，合称”<strong>冰弓玄箭</strong>“，但业余一直都没什么时间开发，仅写了个界面，希望2019年能够完成：</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fz3shymb6cj30z90g2q9e.jpg" alt="image-20190112143451515"></p>
+<p>”冰弓“的Logo直接用的是“破甲弓”，感觉很酷……</p>
+<p>再说说方法论，这词虽有点虚，但其实本质上就是一种技术方法的总结而已。</p>
+<p>比如，渗透测试的时候，总有些人每次都能搞到RCE，无论啥网站，完全摆脱“随机挖洞”的命运。多数情况下，他们都会有一套自己测试方法，或者将一些经验转换成工具，测试时就拿自己的工具和以往总结的方法论开搞。</p>
+<p>比如，STRIDE威胁建模本身就是一套方法论，一套简单的风险助记符，当然我这里不是说安全研究要用它，只是举个方法论的例子，它也没有那么万能。</p>
+<p>写这么多，总结起来就一句话：多总结，多沉淀！</p>
+<h3 id="12、漏洞研究风向标：安全公告"><a href="#12、漏洞研究风向标：安全公告" class="headerlink" title="12、漏洞研究风向标：安全公告"></a>12、漏洞研究风向标：安全公告</h3><p>如果大家有关注四大厂商（Google、Microsoft、Apple、Adobe）的安全公告的话，会发现有段时间会出现很多类似漏洞的公告，出现一个新的攻击面之后，一帮研究人员就蜂捅而上狂刷一波。</p>
+<p>这种情况一向是先下手为强，而上文提到的工具和方法论就更显得尤为重要了，否则最后都只能捡剩的。</p>
+<p>比如本周 Microsoft 安全公告出来后，我仔细分析了下，然后下班回家写了个Fuzzer，挂着跑了一天，出来个Crash，再用几分钟成功构造出PoC，实现IE浏览器的远程代码执行，可见也是个品相极佳的神洞：</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz3u7wx6a8j30jw0bvjsf.jpg" alt="image-20190112153428430"></p>
+<p>但不幸的是，我打了1月的补丁后，发现修复了，成功“撞洞”，真的是欲哭无泪……</p>
+<p>但至少证明，通过安全公告寻找新的攻击面，然后挖掘一些类似漏洞，一直是一种高效的漏洞研究方式。</p>
+<h3 id="13、老一辈研究者都去哪儿了？"><a href="#13、老一辈研究者都去哪儿了？" class="headerlink" title="13、老一辈研究者都去哪儿了？"></a>13、老一辈研究者都去哪儿了？</h3><p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz3vtt20n8j30hs0sn428.jpg" alt="img"></p>
+<p>最近腾讯AILab张潼离职的事传得很火，还有之前各大厂聘请的AI科学家陆续辞职，回归学术界，很多人因此唱起科学家之于科技公司的无用论，主要有以下几点原因：</p>
+<ol>
+<li><strong>研究成果无法落地为产品</strong>：做安全研究也是如此，很多事情是无法落地的，圈内很多研究团队都是拿漏洞来打比赛赚影响力，真正能实现为公司营利的（打比赛赚奖金的忽略不计，因为那些都不够给研究者们的工资），我只知道有1个研究团队/实验室今年营利了。</li>
+<li><strong>长期无产出，KPI压力大</strong>：研究了很长时间，最后仍一无所获，那KPI咋办、PPT怎么写、晋级怎么答辩。安全行业有句老话来形容安全研究工作，叫“三年不开锅，开锅吃三年”，但多数个人和企业都等不到三年。之前同事说王小云为何能破解出MD5，是因为她在学校里很长时间没搞出东西的时候，领导没找她麻烦，没有KPI压力，以致能够长期专注于此。具体原因我不确定，但学术界自然是没有企业有这般KPI压力。</li>
+<li><strong>业务数据不共享</strong>：业务部门的产品数据基本不太可能共享给实验室作研究的，一般都是实验室以SDK的形式提供给业务用，数据由业务自主控制。这种情况对于安全研究的影响相对较少一些。</li>
+</ol>
+<p>头两点是多数安全研究者的困境，也跟圈内同行讨论过，下面聊聊这帮老一代“知青”最后都去哪儿了？这里我主要总结一些圈内人的应对方法（其实多数都是转型），具体不作点评，总结为主，也欢迎私信讨论（新注册的公众号已不允许留言）。</p>
+<ol>
+<li><strong>坚持研究</strong>：这帮人主要还是那些研究能力较强的，且有一定研究成果的人，围观下各大实验室就知道个大概，不多说；</li>
+<li><strong>转型安全产品开发与运营</strong>：有产品就能解决落地问题，帮助企业解决实际问题，有不少人走这条道，去做威胁情报系统、漏洞扫描器、WAF、云安全产品等等；</li>
+<li><strong>转型业务安全</strong>：跟研究工作差异较大，因为业务安全的主要问题很多时候并非漏洞，而是跟业务产品相关的黑灰产对抗等等；</li>
+<li><strong>自由研究者</strong>：国外很多此类研究者，靠拿漏洞赏金过活，俗称“赏金猎人”，国内相对少一些，也有一些国内自由研究者后来又进企业做研究的，这里讲的几种转型都可以来回转换，有些人就干过。</li>
+<li><strong>创业</strong>：这里包括安全行业内的创业，也包括那些开淘宝店、奶茶店、服装生意、卖水果的……</li>
+</ol>
+<h3 id="14、个人终究干不过团队"><a href="#14、个人终究干不过团队" class="headerlink" title="14、个人终究干不过团队"></a>14、个人终究干不过团队</h3><p>有时想搞的研究太多了，但发现一个人根本搞不过来，需要多人协作才可能完成。但需要多人在研究领域上有交集，否则拉在一块也是各搞各的。</p>
+<p>前篇第7点讲到“进入研究者团队或社区，互相学习”，也是一大影响因素，互相学习也是一种提高效率和产出的方式。</p>
+<p>算了，不多说了！</p>
+<h3 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h3><p>这次真的结束了，没有续篇了。</p>
+<p>思考了很多，总结了很多，有些也是写了删，删了写。</p>
+<p>安全研究领域一直也没人写过这些，出来唠叨几句，也欢迎大家私信讨论。</p>
+<p>最后奉一首酒桌上的《苦行僧》结束本话题，听过这首歌很多个版本，包括原唱，但终究还是觉得视频里这位老哥唱得更具江湖气、更具情感、更具感染力……旁边一老哥听着听着都偷偷抹泪了！</p>
+<p>之所以点这首歌，是因为：<strong>每一个研究者都是独立自行的苦行僧！</strong></p>
+<video id="video" controls preload="none" poster="https://pic1.zhimg.com/v2-b1b3fa77c0d2ad60c2322b692b1941c8.jpg"><br>      <source id="mp4" src="https://vdn2.vzuu.com/LD/d9c173e2-2941-11e8-a516-0242ac112a1d.mp4?disable_local_cache=1&bu=com&expiration=1547286438&auth_key=1547286438-0-0-2b1341a2203264d9eebcdede98c1e6c5&f=mp4&v=bsy" type="video/mp4"><br></video>
+
+
+
+
+
+
+
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2019/01/12/安全研究者的自我修养（续）/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/随笔杂谈/">随笔杂谈</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/安全研究/">安全研究</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2019-01-06T08:43:31.000Z"><a href="/2019/01/06/安全研究者的自我修养/">2019-01-06</a></time>
       
       
@@ -936,88 +1039,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2018-10-14T01:48:40.000Z"><a href="/2018/10/14/honggfuzz5/">2018-10-14</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2018/10/14/honggfuzz5/">honggfuzz漏洞挖掘技术深究系列（5）—— Intel Processor Trace</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>对于闭源程序的反馈驱动Fuzzing，通常有3种方式：</p>
-<ul>
-<li><p>二进制插桩：使用Pin或DynamoRIO动态插桩监控代码覆盖率，比如winafl</p>
-</li>
-<li><p>虚拟化技术：使用Qemu或Boch等虚拟化技术实现应用层和内核层的代码覆盖率监控，比如afl、bochpwn</p>
-</li>
-<li><p>硬件级技术：使用Intel Processor Trace（PT）技术，比如honggfuzz</p>
-</li>
-</ul>
-<h4 id="Intel-PT"><a href="#Intel-PT" class="headerlink" title="Intel PT"></a>Intel PT</h4><p>Intel® Processor Trace (Intel® PT) 是在i5/i7 5000以上型号上加入的功能，由于它是硬件级的特性，相比Qemu或Boch，在性能上和代码工作量会占有一定优势。在Linux上可以通过perf来使用PT，可以先简单看是否支持PT：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">查看是否支持PT:</span><br><span class="line">ls /sys/devices/intel_pt/format</span><br><span class="line"></span><br><span class="line">追踪程序执行：</span><br><span class="line">perf record -e intel_pt// program</span><br></pre></td></tr></table></figure>
-<p>也可以使用开源工具<a href="https://github.com/andikleen/simple-pt" target="_blank" rel="external">simple-pt</a>中的ptfeature命令行工具来检测:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./ptfeature pt</span><br><span class="line">Supports PT</span><br></pre></td></tr></table></figure>
-<p>最新版GDB也支持pt功能了：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">gdb program</span><br><span class="line">start</span><br><span class="line">record btrace pt</span><br><span class="line">cont</span><br><span class="line"></span><br><span class="line">record instruction-history /m	# show instructions</span><br><span class="line">record function-history		# show functions executed</span><br></pre></td></tr></table></figure>
-<h4 id="honggfuzz-perf-event-open"><a href="#honggfuzz-perf-event-open" class="headerlink" title="honggfuzz perf_event_open"></a>honggfuzz perf_event_open</h4><p>在程序内通过<code>perf_event_open</code>（<a href="http://man7.org/linux/man-pages/man2/perf_event_open.2.html）函数可以使用PT实现BB基本块的覆盖率追踪，传递给指定进程pid来实现监控：" target="_blank" rel="external">http://man7.org/linux/man-pages/man2/perf_event_open.2.html）函数可以使用PT实现BB基本块的覆盖率追踪，传递给指定进程pid来实现监控：</a></p>
-<p><img src="http://riusksk.me/media/perf_event_open.png" alt=""></p>
-<p>将返回的文件描述符传递给mmap映射为可读写的用户内存空间，以便从中读取PT记录的追踪数据：</p>
-<p><img src="http://riusksk.me/media/mmapbuf.png" alt=""></p>
-<p>PT记录的追踪数据采用压缩的二进制格式输出，每秒每个CPU都会持续记录并输出，由于是硬件记录的，最早自然是出现在内核空间，为了使用它，就需要将其导出到用户空间，即通过前面mmap方法映射到用户可写的内存空间，然后再去定位数据解码。PT导出的追踪数据被存储在一个叫<code>AUX space</code>的内存区域，它相对<code>perfMmapBuf</code>的偏移记录在<code>perf_event_mmap_page-&gt;aux_offset</code>，大小为<code>perf_event_mmap_page-&gt;aux_size</code>，上面代码的第二步<code>mmap</code>就是去映射<code>AUX space</code>。</p>
-<p>接下来就是利用libpt来解码捕获到追踪数据，实现函数位于perf_ptAnalyzePkt中：</p>
-<p><img src="http://riusksk.me/media/ptAnalyzePkt.png" alt=""></p>
-<p>最后将执行到的BB基本块信息更新到feedback map，之后的实现步骤就跟本系列第1篇驱动反馈中所讲的一致。</p>
-<p>跑起来的效果如下图：</p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNbRwgy1fxr27bx6jnj30ks08245z.jpg" alt="image-20181201105755833"></p>
-<p>到这里，关于《honggfuzz漏洞挖掘技术深究系列》的文章先暂告一段落了，它就相当于是自己的学习笔记，也可以留作日后查询。</p>
-<p>本系列的其它文章如下：</p>
-<p><a href="https://mp.weixin.qq.com/s?__biz=MzU0MzgzNTU0Mw==&amp;mid=2247483746&amp;idx=1&amp;sn=9d0ff5e0bae65f9ca9dbea4cf74449c6&amp;chksm=fb04159acc739c8c36e0785e2ce9c3a202066c6cc39a9ce32fd0fc9dfeb348e860a82e29c9d6&amp;token=3421110&amp;lang=zh_CN#rd" target="_blank" rel="external">honggfuzz漏洞挖掘技术深究系列（1）——反馈驱动（Feedback-Driven）</a></p>
-<p><a href="https://mp.weixin.qq.com/s?__biz=MzU0MzgzNTU0Mw==&amp;mid=2247483780&amp;idx=1&amp;sn=8e634a1deb08006063156db60b1c1f77" target="_blank" rel="external">honggfuzz漏洞挖掘技术深究系列（2）—— Persistent Fuzzing</a></p>
-<p><a href="https://mp.weixin.qq.com/s?__biz=MzU0MzgzNTU0Mw==&amp;mid=2247483819&amp;idx=1&amp;sn=daed3baf16e1211d6d869183ba1680f4&amp;chksm=fb041553cc739c457d54494c99d1870488dfa76831fde40a351098b0fcfcdb9f716a473ba213&amp;token=3421110&amp;lang=zh_CN#rd" target="_blank" rel="external">honggfuzz漏洞挖掘技术深究系列（3）——Fuzz策略</a></p>
-<p><a href="https://mp.weixin.qq.com/s?__biz=MzU0MzgzNTU0Mw==&amp;mid=2247483828&amp;idx=1&amp;sn=e96241ce399781414db3ba556ce1f90d&amp;chksm=fb04154ccc739c5a12176eb7492e80abfd36e630193627ba140394e678e47ee2b0f1532516b1&amp;token=3421110&amp;lang=zh_CN#rd" target="_blank" rel="external">honggfuzz漏洞挖掘技术深究系列（4）—— 扩展Fuzzer</a></p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2018/10/14/honggfuzz5/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/honggfuzz/">honggfuzz</a>, <a href="/tags/fuzz/">fuzz</a>, <a href="/tags/漏洞挖掘/">漏洞挖掘</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -1039,6 +1060,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2019/09/07/漫谈网络安全应急指导思想/">漫谈网络安全应急要略</a>
+      </li>
     
       <li>
         <a href="/2019/08/18/安全研究的价值思考/">安全研究的价值思考</a>
@@ -1076,10 +1101,6 @@
         <a href="/2019/01/27/聊聊那些黑客小说/">聊聊那些黑客小说</a>
       </li>
     
-      <li>
-        <a href="/2019/01/12/安全研究者的自我修养（续）/">安全研究者的自我修养（续）</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -1089,7 +1110,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>55</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>56</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>26</small></li>
   
