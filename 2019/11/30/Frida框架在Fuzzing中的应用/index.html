@@ -3,16 +3,18 @@
 <head>
   <meta charset="utf-8" />
   
-  <title>Hacking Team | riusksk&#39;s blog</title>
+  <title>Frida框架在Fuzzing中的应用 | riusksk&#39;s blog</title>
   <meta name="author" content="riusksk" />
 
+  
+  <meta name="description" content="由于Frida（https://frida.re）动态插桩框架的跨平台、简单易用，现在已经被广泛应用于安全领域。相比`Xposed`而言，虽不能更底层地去Hook系统进程，但它可以免启动，应对App的hook完全够用，更关键的是，它完全可以用JavaScript来写代码，免去编译的烦恼，调试也方便。" />
   
 
   
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-  
+  <meta property="og:title" content="Frida框架在Fuzzing中的应用" />
   <meta property="og:site_name" content="riusksk&#39;s blog" />
 
   
@@ -70,85 +72,71 @@
 </nav>
 <div class="clearfix"></div></header>
   <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper">
-<h2 class="archive-title tag">Hacking Team</h2>
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-11-30T02:06:03.000Z"><a href="/2019/11/30/Frida框架在Fuzzing中的应用/">2019-11-30</a></time>
+      
+      
+  
+    <h1 class="title">Frida框架在Fuzzing中的应用</h1>
+  
 
+    </header>
+    <div class="entry">
+      
+        <p>由于<code>Frida</code>（<a href="https://frida.re）动态插桩框架的跨平台、简单易用，现在已经被广泛应用于安全领域。相比`Xposed`而言，虽不能更底层地去Hook系统进程，但它可以免启动，应对App的hook完全够用，更关键的是，它完全可以用JavaScript来写代码，免去编译的烦恼，调试也方便。" target="_blank" rel="external">https://frida.re）动态插桩框架的跨平台、简单易用，现在已经被广泛应用于安全领域。相比`Xposed`而言，虽不能更底层地去Hook系统进程，但它可以免启动，应对App的hook完全够用，更关键的是，它完全可以用JavaScript来写代码，免去编译的烦恼，调试也方便。</a></p>
+<p>之前在工作中，也就用<code>Frida</code>去Hook Android与iOS应用来做安全测试，效果挺好的，开发起来也挺高效的。本文主要围绕Fuzzing领域，来分析和记录最近一些使用<code>Frida</code>的Fuzzer。</p>
+<p>###定制型Fuzzer</p>
+<p>用<code>Frida</code>来Fuzzing APP的方法，首先推荐Project Zero大神写的<code>Adventures in Video Conferencing</code>系列博文，详细介绍了Hook WhatApps和iMessage的输入数据处理函数并进行Fuzzing的方法，同时也开源了Hook iMessage的工具：<a href="https://github.com/googleprojectzero/iOS-messaging-tools/tree/master/iMessage，提供dump和发送消息的功能，自己在额外构造变异数据去Fuzzing。" target="_blank" rel="external">https://github.com/googleprojectzero/iOS-messaging-tools/tree/master/iMessage，提供dump和发送消息的功能，自己在额外构造变异数据去Fuzzing。</a></p>
+<p>这种方式特别适用于拥有私有的定制协议或数据格式的APP Fuzzing，只是需要花时间去逆向分析程序的输入数据解析流程，找到关键的处理函数。</p>
+<p>###通用型Fuzzer</p>
+<p>最近又看到两款使用<code>Frida</code>的Fuzzer，出自同一人之手，用<code>Python</code>和<code>JS</code>写的，代码量不多：</p>
+<ol>
+<li>frida-js-afl-instr（<a href="https://github.com/andreafioraldi/frida-js-afl-instr）：打通`AFL++`与`Frida`实现内存Fuzzing的工具，仅限Linux平台" target="_blank" rel="external">https://github.com/andreafioraldi/frida-js-afl-instr）：打通`AFL++`与`Frida`实现内存Fuzzing的工具，仅限Linux平台</a></li>
+<li>frida-qbdi-fuzzer（<a href="https://github.com/andreafioraldi/frida-qbdi-fuzzer）：基于`Frida`与`QBDI`的Android" target="_blank" rel="external">https://github.com/andreafioraldi/frida-qbdi-fuzzer）：基于`Frida`与`QBDI`的Android</a> Fuzzer，借鉴AFL的代码覆盖引导思路，实现Android平台下闭源程序的覆盖引导Fuzzing。</li>
+</ol>
+<p>下面直接画时序图来看它的原理，就不贴源码分析了：</p>
+<p>####frida-js-afl-instr原理图<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    AFL -&gt;&gt; AFL : 设置环境变量，创建共享内存</span><br><span class="line">    AFL -&gt;&gt; frida_driver.py : 执行frida_driver.py</span><br><span class="line">    frida_driver.py -&gt;&gt; frida_driver.py : 设置FORKSRV_FD</span><br><span class="line">    frida_driver.py -&gt;&gt; frida_driver.py : 通过环境变量获取AFL设置的__AFL_SHM_ID</span><br><span class="line">    frida_driver.py -&gt;&gt; frida_script.js : 读取JS</span><br><span class="line">    frida_driver.py -&gt;&gt; frida_driver.py : 设置FORKSRV_FD+1为0x00000000，用于后续判断崩溃的标记</span><br><span class="line">    frida_driver.py -&gt;&gt; Target : 读取输入样本，启动目标程序，并将JS注入执行</span><br><span class="line">    frida_script.js -&gt;&gt; AFL : 写代码覆盖信息入共享内存：afl_area[cur_loc ^ prev_loc]++</span><br><span class="line">    opt: 发现新路径</span><br><span class="line">    	AFL -&gt;&gt; AFL : 保存为新的输入样本</span><br><span class="line">    end</span><br><span class="line">    opt: 发生崩溃</span><br><span class="line">    	target -&gt;&gt; frida_driver.py : 设置FORKSRV_FD+1=&apos;\x86\x00\x00\x00&apos;，相当于134：abort</span><br><span class="line">    	frida_driver.py -&gt;&gt; Target : 用Frida重启进程，令AFL以为发生abort崩溃</span><br><span class="line">    	AFL -&gt;&gt; AFL : 保存崩溃样本</span><br><span class="line">    end</span><br></pre></td></tr></table></figure></p>
+<h4 id="frida-qbdi-fuzzer原理图"><a href="#frida-qbdi-fuzzer原理图" class="headerlink" title="frida-qbdi-fuzzer原理图"></a>frida-qbdi-fuzzer原理图</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    fuzz.py -&gt;&gt; Frida JS : 读取JS</span><br><span class="line">    fuzz.py -&gt;&gt; Target : 指定Pid注入JS</span><br><span class="line">    Frida JS -&gt;&gt; Target : 获取目标函数地址，模拟AFL算法变异数据，进行循环调用</span><br><span class="line">    Frida JS -&gt;&gt; Frida JS : 记录代码覆盖信息：trace_bits[cur_loc ^ prev_loc]++</span><br><span class="line">    opt:发生新路径</span><br><span class="line">        Frida JS -&gt;&gt; Frida JS : 保存为新样本，其中检测代码用JS内嵌C代码实现</span><br><span class="line">    end</span><br><span class="line">    opt:发生崩溃</span><br><span class="line">        Frida JS -&gt;&gt; Frida JS : 输出样本数据</span><br><span class="line">    end</span><br><span class="line">    Frida JS -&gt;&gt; fuzz.py : 实时显示Fuzzing状态</span><br></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>用Frida来实现闭源程序的代码覆盖引导，代码量很少，以Python和JS就可以快速开发起来，但涉及到python等进程的启动，肯定没有纯C/C++的代码运行速度快，但对于Fuzzing，一般还是够用的，还是值得学习和使用的。</p>
 
-  <div class="archive">
+      
+    </div>
     
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2015-07-15T16:00:00.000Z"><a href="/2015/07/16/Hacking-Team-武器库研究（六）：Mac-OSX-Rootkit-技术分析/">2015-07-16</a></time>
-            
-              <h1 class="title"><a href="/2015/07/16/Hacking-Team-武器库研究（六）：Mac-OSX-Rootkit-技术分析/">Hacking Team 武器库研究（六）：Mac OSX Rootkit 技术分析</a></h1>
-            
-          </header>
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2019/11/30/Frida框架在Fuzzing中的应用/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
         </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2015-07-14T16:00:00.000Z"><a href="/2015/07/15/Hacking-Team-武器库研究（五）：Mac-OSX-64位-Shellcode-技术分析/">2015-07-15</a></time>
-            
-              <h1 class="title"><a href="/2015/07/15/Hacking-Team-武器库研究（五）：Mac-OSX-64位-Shellcode-技术分析/">Hacking Team 武器库研究（五）：Mac OSX 64位 Shellcode 技术分析</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2015-07-10T16:00:00.000Z"><a href="/2015/07/11/Hacking-Team-武器库研究（四）：Flash-New-0Day-opaqueBackground-UAF/">2015-07-11</a></time>
-            
-              <h1 class="title"><a href="/2015/07/11/Hacking-Team-武器库研究（四）：Flash-New-0Day-opaqueBackground-UAF/">Hacking Team 武器库研究（四）：Flash New 0Day (opaqueBackground UAF)</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2015-07-10T04:00:33.000Z"><a href="/2015/07/10/Hacking-Team-武器库研究（三）：core-android-audiocapture/">2015-07-10</a></time>
-            
-              <h1 class="title"><a href="/2015/07/10/Hacking-Team-武器库研究（三）：core-android-audiocapture/">Hacking Team 武器库研究（三）：core-android-audiocapture</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2015-07-10T03:00:33.000Z"><a href="/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/">2015-07-10</a></time>
-            
-              <h1 class="title"><a href="/2015/07/10/Hacking-Team-武器库研究（二）：CVE-2015-5119-Flash-0day/">Hacking Team 武器库研究（二）：CVE-2015-5119 Flash 0day</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2015-07-10T02:00:33.000Z"><a href="/2015/07/10/Hacking-Team-武器库研究（一）：CVE-2015-0349-Flash-ConvolutionFilter-UAF/">2015-07-10</a></time>
-            
-              <h1 class="title"><a href="/2015/07/10/Hacking-Team-武器库研究（一）：CVE-2015-0349-Flash-ConvolutionFilter-UAF/">Hacking Team 武器库研究（一）：CVE-2015-0349 Flash ConvolutionFilter UAF</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
   </div>
+
+        
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+</section>
+
+
+ -->
 </div></div>
     <aside id="sidebar" class="alignright">
   <div class="search">

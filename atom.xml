@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2019-11-18T10:03:26.000Z</updated>
+  <updated>2019-11-30T04:09:29.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,41 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Frida框架在Fuzzing中的应用</title>
+    <link href="http://riusksk.github.io/2019/11/30/Frida%E6%A1%86%E6%9E%B6%E5%9C%A8Fuzzing%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/"/>
+    <id>http://riusksk.github.io/2019/11/30/Frida框架在Fuzzing中的应用/</id>
+    <published>2019-11-30T02:06:03.000Z</published>
+    <updated>2019-11-30T04:09:29.000Z</updated>
+    
+    <content type="html">&lt;p&gt;由于&lt;code&gt;Frida&lt;/code&gt;（&lt;a href=&quot;https://frida.re）动态插桩框架的跨平台、简单易用，现在已经被广泛应用于安全领域。相比`Xposed`而言，虽不能更底层地去Hook系统进程，但它可以免启动，应对App的hook完全够用，更关键的是，它完全可以用JavaScript来写代码，免去编译的烦恼，调试也方便。&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://frida.re）动态插桩框架的跨平台、简单易用，现在已经被广泛应用于安全领域。相比`Xposed`而言，虽不能更底层地去Hook系统进程，但它可以免启动，应对App的hook完全够用，更关键的是，它完全可以用JavaScript来写代码，免去编译的烦恼，调试也方便。&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;之前在工作中，也就用&lt;code&gt;Frida&lt;/code&gt;去Hook Android与iOS应用来做安全测试，效果挺好的，开发起来也挺高效的。本文主要围绕Fuzzing领域，来分析和记录最近一些使用&lt;code&gt;Frida&lt;/code&gt;的Fuzzer。&lt;/p&gt;
+&lt;p&gt;###定制型Fuzzer&lt;/p&gt;
+&lt;p&gt;用&lt;code&gt;Frida&lt;/code&gt;来Fuzzing APP的方法，首先推荐Project Zero大神写的&lt;code&gt;Adventures in Video Conferencing&lt;/code&gt;系列博文，详细介绍了Hook WhatApps和iMessage的输入数据处理函数并进行Fuzzing的方法，同时也开源了Hook iMessage的工具：&lt;a href=&quot;https://github.com/googleprojectzero/iOS-messaging-tools/tree/master/iMessage，提供dump和发送消息的功能，自己在额外构造变异数据去Fuzzing。&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/googleprojectzero/iOS-messaging-tools/tree/master/iMessage，提供dump和发送消息的功能，自己在额外构造变异数据去Fuzzing。&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;这种方式特别适用于拥有私有的定制协议或数据格式的APP Fuzzing，只是需要花时间去逆向分析程序的输入数据解析流程，找到关键的处理函数。&lt;/p&gt;
+&lt;p&gt;###通用型Fuzzer&lt;/p&gt;
+&lt;p&gt;最近又看到两款使用&lt;code&gt;Frida&lt;/code&gt;的Fuzzer，出自同一人之手，用&lt;code&gt;Python&lt;/code&gt;和&lt;code&gt;JS&lt;/code&gt;写的，代码量不多：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;frida-js-afl-instr（&lt;a href=&quot;https://github.com/andreafioraldi/frida-js-afl-instr）：打通`AFL++`与`Frida`实现内存Fuzzing的工具，仅限Linux平台&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/andreafioraldi/frida-js-afl-instr）：打通`AFL++`与`Frida`实现内存Fuzzing的工具，仅限Linux平台&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;frida-qbdi-fuzzer（&lt;a href=&quot;https://github.com/andreafioraldi/frida-qbdi-fuzzer）：基于`Frida`与`QBDI`的Android&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/andreafioraldi/frida-qbdi-fuzzer）：基于`Frida`与`QBDI`的Android&lt;/a&gt; Fuzzer，借鉴AFL的代码覆盖引导思路，实现Android平台下闭源程序的覆盖引导Fuzzing。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;下面直接画时序图来看它的原理，就不贴源码分析了：&lt;/p&gt;
+&lt;p&gt;####frida-js-afl-instr原理图&lt;br&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;sequenceDiagram&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    AFL -&amp;gt;&amp;gt; AFL : 设置环境变量，创建共享内存&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    AFL -&amp;gt;&amp;gt; frida_driver.py : 执行frida_driver.py&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    frida_driver.py -&amp;gt;&amp;gt; frida_driver.py : 设置FORKSRV_FD&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    frida_driver.py -&amp;gt;&amp;gt; frida_driver.py : 通过环境变量获取AFL设置的__AFL_SHM_ID&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    frida_driver.py -&amp;gt;&amp;gt; frida_script.js : 读取JS&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    frida_driver.py -&amp;gt;&amp;gt; frida_driver.py : 设置FORKSRV_FD+1为0x00000000，用于后续判断崩溃的标记&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    frida_driver.py -&amp;gt;&amp;gt; Target : 读取输入样本，启动目标程序，并将JS注入执行&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    frida_script.js -&amp;gt;&amp;gt; AFL : 写代码覆盖信息入共享内存：afl_area[cur_loc ^ prev_loc]++&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    opt: 发现新路径&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    	AFL -&amp;gt;&amp;gt; AFL : 保存为新的输入样本&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    end&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    opt: 发生崩溃&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    	target -&amp;gt;&amp;gt; frida_driver.py : 设置FORKSRV_FD+1=&amp;apos;\x86\x00\x00\x00&amp;apos;，相当于134：abort&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    	frida_driver.py -&amp;gt;&amp;gt; Target : 用Frida重启进程，令AFL以为发生abort崩溃&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    	AFL -&amp;gt;&amp;gt; AFL : 保存崩溃样本&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    end&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;h4 id=&quot;frida-qbdi-fuzzer原理图&quot;&gt;&lt;a href=&quot;#frida-qbdi-fuzzer原理图&quot; class=&quot;headerlink&quot; title=&quot;frida-qbdi-fuzzer原理图&quot;&gt;&lt;/a&gt;frida-qbdi-fuzzer原理图&lt;/h4&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;sequenceDiagram&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    fuzz.py -&amp;gt;&amp;gt; Frida JS : 读取JS&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    fuzz.py -&amp;gt;&amp;gt; Target : 指定Pid注入JS&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    Frida JS -&amp;gt;&amp;gt; Target : 获取目标函数地址，模拟AFL算法变异数据，进行循环调用&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    Frida JS -&amp;gt;&amp;gt; Frida JS : 记录代码覆盖信息：trace_bits[cur_loc ^ prev_loc]++&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    opt:发生新路径&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        Frida JS -&amp;gt;&amp;gt; Frida JS : 保存为新样本，其中检测代码用JS内嵌C代码实现&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    end&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    opt:发生崩溃&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        Frida JS -&amp;gt;&amp;gt; Frida JS : 输出样本数据&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    end&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    Frida JS -&amp;gt;&amp;gt; fuzz.py : 实时显示Fuzzing状态&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h3 id=&quot;总结&quot;&gt;&lt;a href=&quot;#总结&quot; class=&quot;headerlink&quot; title=&quot;总结&quot;&gt;&lt;/a&gt;总结&lt;/h3&gt;&lt;p&gt;用Frida来实现闭源程序的代码覆盖引导，代码量很少，以Python和JS就可以快速开发起来，但涉及到python等进程的启动，肯定没有纯C/C++的代码运行速度快，但对于Fuzzing，一般还是够用的，还是值得学习和使用的。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;由于&lt;code&gt;Frida&lt;/code&gt;（&lt;a href=&quot;https://frida.re）动态插桩框架的跨平台、简单易用，现在已经被广泛应用于安全领域。相比`Xposed`而言，虽不能更底层地去Hook系统进程，但它可以免启动，应对App的hook完全够用，更关键的是，
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>Fuzzing平台建设的研究与设计</title>
@@ -602,7 +637,7 @@
 &lt;/ol&gt;
 &lt;p&gt;把两个虽然不同，但逻辑上却相等的事物进行对比。&lt;/p&gt;
 &lt;p&gt;比如拿橘子和苹果作比较。再比如说，医学院校经常拿小白鼠做实验，然后把在动物身上得到的实验结果当作参考，但是若因小白鼠身上实验某种药物时发生某种并发症，就认为人类在使用这种药物时也会出现同样的并发症，就是错误的。&lt;/p&gt;
-&lt;ol&gt;
+&lt;ol start=&quot;2&quot;&gt;
 &lt;li&gt;&lt;strong&gt;代表性假设漏洞：以偏概全&lt;/strong&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;不能拿特殊案例来代表整体，统计的样本要足够多才行，否则它就会弱化我们的论断。&lt;/p&gt;
@@ -611,17 +646,17 @@
 &lt;p&gt;最近，某大医院出生婴儿1000人， 某小医院出生婴儿50人， 问哪家医院生男婴的比例大于60%的可能性较大？&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;我们都知道生男生女的概率分别是50%，统计样本越多就越会接进这个数值，但如果你若去小医院，它的波动概率就很大，可能生男80%，也可以40%，所以小医院生男婴的比例就越有可能大于60%。&lt;/p&gt;
-&lt;ol&gt;
+&lt;ol start=&quot;3&quot;&gt;
 &lt;li&gt;&lt;strong&gt;“好证据”假设漏洞：对相关证据视而不见&lt;/strong&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;当我们不经验证就想当然地认为自己的证据有效时，就很容易犯此错误。那些比较客观、相关、精确、真实的证据有利于强化我们的论述；而主观、不具代表性、不精确的论据则只会弱化我们的论述。&lt;/p&gt;
 &lt;p&gt;比如，一个不愿意戒烟的人总是会看到吸烟有利的一面，而对那些支持戒烟的事实会视而不见。&lt;/p&gt;
-&lt;ol&gt;
+&lt;ol start=&quot;4&quot;&gt;
 &lt;li&gt;&lt;strong&gt;因果假设漏洞：混淆因果关系&lt;/strong&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;当我们错误地做出因果假设，或者在没有证据的情况下就认定一件事会导致另外一件事时，就会犯这种错误。&lt;/p&gt;
 &lt;p&gt;比如，每个活过百岁的人都喝过白开水，所以就认定经常喝白开水就能长命百岁，这显然是错误，它们不存在直接的因果关系。很多学术界的社会/生物健康调查相关的报导就经常出现这种错误。&lt;/p&gt;
-&lt;ol&gt;
+&lt;ol start=&quot;5&quot;&gt;
 &lt;li&gt;&lt;strong&gt;实施假设漏洞：在执行计划时没有提前考虑可能出现的瓶颈&lt;/strong&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;当我们没有预料到计划实施过程可能出一的瓶颈，或者盲目地相信自己的计划会轻而易举地得到落实时，我们就会犯这种错误。&lt;/p&gt;
@@ -865,10 +900,16 @@
 &lt;blockquote&gt;
 &lt;p&gt;　　“第一节操作系统原理、第二节系统及命令详解、第三节溢出漏洞原理、第四节web原理、第五节http协议、tcp/ip协议第六节sql注入原理、上传漏洞、XSS、CSRF……”                           &lt;/p&gt;
 &lt;p&gt;​                                                                          ——《别说我是黑客》&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
 &lt;p&gt;　　过了十多分钟，jsky的界面左侧刷出来许多asp文件和几个目录。右栏则是标注着绿色和红色叹号的几列英文。&lt;br&gt;　　看到扫描结果出来，杨风面带微笑进行下一步操作。他的运气不错，得到了xss与sqlinjection漏洞，这是网站暴露出来的跨站脚本漏洞和sql注入漏洞。&lt;br&gt;　　杨风转到育民高中主页，随手选取了一个注入地址，提交上引号。&lt;br&gt;　　返回错误。&lt;br&gt;　　接着提交and1=1语句。&lt;br&gt;　　返回正常。&lt;br&gt;　　继续提交and1=2语句。&lt;br&gt;　　返回错误。&lt;br&gt;　　杨风做这两步，主要是测试网站程序设计者是否在其中过滤了关键字，如果过滤就不能被注入。&lt;/p&gt;
 &lt;p&gt;​                                                                                ——《黑客记事本》&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
 &lt;p&gt;   ​        “尊敬的孙诚先生，请允许我对你和你的团队–塞伯坦工作室致以敬意。我们的检测人员已经验证了你所寄过来的数据，并证实了ios漏洞的存在，在对你们表示感谢的同时，Zerodium会按照约定，向你的团队支付共计五万四千美元的报酬，并希望你们能尽快将后续数据补完。在邮件中，你们提到找到了ios的两处极为隐秘的高危漏洞，Zerodium上下都对此非常感兴趣。希望能够尽快收到你的回复，报酬方面请不用担心，Zerodium是一个非常有信誉的平台！”&lt;/p&gt;
 &lt;p&gt;   ​                                                                      ——《从变形金刚开始》&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
 &lt;p&gt;   “我明白了，灵根这个电源，就相当于是有着固定编码的反编译器，每个灵根都有一个固定编码，就是所谓的灵根属性。灵根可以把跟自己编码一样的灵气团，进行逆向反编译，把编译好的灵气团分解成单纯由0和1构成的信息流，就是所谓的灵力！”&lt;/p&gt;
 &lt;p&gt;   ​                                                                       ——《程序员修真之路》&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1360,110 +1401,6 @@
     
       <category term="随笔杂谈" scheme="http://riusksk.github.io/categories/%E9%9A%8F%E7%AC%94%E6%9D%82%E8%B0%88/"/>
     
-    
-  </entry>
-  
-  <entry>
-    <title>读《态度》</title>
-    <link href="http://riusksk.github.io/2018/11/18/%E8%AF%BB%E3%80%8A%E6%80%81%E5%BA%A6%E3%80%8B/"/>
-    <id>http://riusksk.github.io/2018/11/18/读《态度》/</id>
-    <published>2018-11-18T09:47:02.000Z</published>
-    <updated>2018-11-18T12:00:51.000Z</updated>
-    
-    <content type="html">&lt;p&gt;&lt;img src=&quot;https://ws1.sinaimg.cn/large/006tNbRwgy1fxcenoinw2j307009nta1.jpg&quot; alt=&quot;image-20181118184524117&quot;&gt;&lt;/p&gt;
-&lt;p&gt;《态度》是吴军在今年新出的书籍，是他写给女儿的40封家书。第一次读吴军的书是《见识》，读完觉得不错，因此这次“双十一”买了好几本他写的书，包括《浪潮之颠》、《大学之路》。&lt;/p&gt;
-&lt;p&gt;在新书中，主要分6部分来讲，分别讲了一些做人做事的原则、对待金钱和人际关系的态度、还有学习和人生哲学的一些观点。&lt;/p&gt;
-&lt;h4 id=&quot;关于教育&quot;&gt;&lt;a href=&quot;#关于教育&quot; class=&quot;headerlink&quot; title=&quot;关于教育&quot;&gt;&lt;/a&gt;关于教育&lt;/h4&gt;&lt;p&gt;作者说”教育改变命运“，其实多数读书人应该都认同这一观点，他在书中讲述了3个观点：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;”教育改变命运“已成为全世界大部分国家的共识&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;欧洲很早就意识到教育对人一生的帮助，所以很早就开始兴办免费教育，让交不起学费的贫家子弟都可以到”官办“学校读书，牛顿就是靠这种免费的公立教育完成中学学业，进入剑桥大学的。很多来自中国农村的贫穷人家，为了摆脱贫穷，让自己子女接受良好的教育，通过一代人的努力摆脱贫穷，改变命运。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;衣食无忧的富家子弟也有必要接受教育&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;中国著名作家吴晓波，就是那个写了《腾讯传》的人，调查了早期在股市上发财的几十人，发现除了一两个之外，其他人的结局无一例外都很惨，有破产的，有坐牢的，有被仇家杀的，有正在被追杀的。这些人都有两个共同点：第一，敢于冒险；第二，受教育水平低，最高中学学历。因此，他们在有了钱之后，没有更高的理想和追求。&lt;/p&gt;
-&lt;p&gt;【PS】：在中国，尤其是农村，一些没接受过多少教育的暴发户，有时会对年轻人或读书人说：“读书没有用的，你读那么多书赚的还不是没我多”！如果此时你对他说：“让你的孩子退学吧！“，估计他就没话了。还有一些在外工作多年的人，包括腾讯人，有时过年同学聚会，发现一些曾经读书不好或者辍学的老同学现在混得相当不错，比自己好太多的时候，通常都会反问自己：“读那么多书真的有用吗“？这种情况都是”幸存者偏差“的认识而已（顺便给大家推荐另一本书《思考，快与慢》，里面就讲了很多这种思考或认识的陷阱）。记得，腾讯内部论坛就有人发过这样感慨。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;对退学创业的误解&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;互联网行业的退学创业代表主要有5人：比尔盖茨、乔布斯、佩奇、布林，以及扎克伯格。佩奇和布林是进入斯坦福读博士之前退学的，盖茨和扎克伯格情况类似，人家都是上过哈佛的，同样比绝大部分年轻人都出色，并接受过良好的教育，而且他们都是创业成功之后才退学的。乔布斯是因为不忍花父母的钱才没有读大学的，但至少是在斯坦福大学接受过教育的，如果他来自一个相对富有的家庭，或许会读完大学。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;####关于格局&lt;/p&gt;
-&lt;p&gt;决策时格局要大，做事时境界要高。用作者通俗一点的话来讲，就是要长远考虑，尽可能往最好的目标努力。&lt;/p&gt;
-&lt;p&gt;书中举例几个MIT和哈佛毕业生组成的创业团队，他们打算做高频交易（在股市中通过快速操作以赚取低买高卖时差价）的创业项目，作者认为他们都是非常聪明的人，但做事的格局不大，因为这赚不到大钱，属于小打小闹，而且这事仅是提高股市交易量，并无其它意义，对世界更不可能产生任何重大影响，而且这件事的公司已经很多了。&lt;/p&gt;
-&lt;p&gt;这种看似只赚不赔的高频交易公司为何做不到像Google、Apple那样赚更多钱呢？因为前者以改变世界为目的，后者以赚小钱、小富即安为目的。&lt;/p&gt;
-&lt;p&gt;很多亚裔家长一直在纠结孩子上名校是否有用？作者对此的观点是，如果格局提升不上去，上了也没有用，还达不到谷歌员工的平均水平。&lt;/p&gt;
-&lt;h4 id=&quot;关于贫穷&quot;&gt;&lt;a href=&quot;#关于贫穷&quot; class=&quot;headerlink&quot; title=&quot;关于贫穷&quot;&gt;&lt;/a&gt;关于贫穷&lt;/h4&gt;&lt;p&gt;一个生于富有家庭的孩子不怕别人说他穷的，而一个贫家子弟通常反而怕别人说他穷，看不起他。卖肾买iPhone的人，一定是贫家子弟，怕别人说他穷。于是，很多穷人最后还是选择与穷人，甚至比自己穷的人为伍，成绩差的孩子还是选择扎堆一块玩。久而久之，那些人就无法摆脱原属阶层了。&lt;/p&gt;
-&lt;p&gt;大家常说：”物以类聚，人以群分“，因为这样对人来说，交际成本是最低的，也是最舒适的方式。一般人都不太愿意跳出自己的舒适区，去尝试更有难度且有助提升自我的挑战。&lt;/p&gt;
-&lt;p&gt;不管贫穷与否，如果事情做不好，那么你所处的地位可能与贫穷无异。通常情况下，人的心理能否接受自己不如别人，在可能会被别人嘲笑的情况下，是否还能努力往前走，直到改变自己的状态，这就是一种考验，与走出贫困差不多。&lt;/p&gt;
-&lt;p&gt;其实多数人都知道，要多向学习好的、能力强的人为伍，这些道理小学老师都经常说。但有时要去向比自己牛逼的人学习请教，也是需要一点勇气，以及改变自我的努力和决心。&lt;/p&gt;
-&lt;h4 id=&quot;关于投资&quot;&gt;&lt;a href=&quot;#关于投资&quot; class=&quot;headerlink&quot; title=&quot;关于投资&quot;&gt;&lt;/a&gt;关于投资&lt;/h4&gt;&lt;p&gt;作者在书中挺推荐买标准普尔500指数，还让他女儿拿1/3的钱直接购买标普500指数ETF，每过两三个月就继续定投，不管涨跌。说实话，我也没关注这指数，今天赶紧加个关注先。&lt;/p&gt;
-&lt;p&gt;作者对投资给出了4条建议：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;永远不要觉得自己能够打败市场&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;我觉得下面这张图已经足够说明一切了，最近在微信和朋友圈上传得挺火的。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://ws1.sinaimg.cn/large/006tNbRwgy1fxcfh8tjvlj307z0cz77v.jpg&quot; alt=&quot;image-20181118191352193&quot;&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;对市场要有信心&lt;/strong&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;作者说，股市有涨有跌，但要相信股市在较长的时间里是往上走的。&lt;/p&gt;
-&lt;p&gt;我曾经对腾讯700也是迷之自信，但你看看现在，这一年都跌成啥样了，当然如果你说再等个一两年，那应该还是涨的，看谁命长了。还好作者后面补了个第3点。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;虽然股市在下跌后总会涨回来，但是单一股票未必。&lt;/strong&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;在2000年股价到达顶点的英特尔和思科，今天的股价不足当年的1/4，而且可能永远没有机会回到当时的峰值了。也就是说，投资单一的股票，即使遇到明星公司，也未必能长期赚钱。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;时间是你的朋友，而时机不是。&lt;/strong&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;投资要有耐心，不要急于求成。聪明的投资人永远在股市上投资，而不是试图投机挑选最低点和最高点。因此，走出坏运气的关键是耐心，让时间成为我们的朋友。&lt;/p&gt;
-&lt;p&gt;除以上建议之外，作者还给出了3条禁忌：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;不要进行过于冒险，会导致来顶之灾的投资&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;比如做空股票和使用杠杆投资，你们再回头看看“格雷厄姆的微笑”吧！&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;不要进行自己不懂的投资&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;拿自己的短处和别人的长处比，胜算微乎其微。同时，你看不懂的投资里面常常有很多陷阱。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;不要被那些所谓的失去了的投机机会乱了方寸&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;经常有人说：”如果我当初买了比特币，今天能赚100倍“。这种话是没有意义的，如同中彩票一般，是运气，遇不上，也不必在意，因为人生的机会还有很多。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h4 id=&quot;关于友情&quot;&gt;&lt;a href=&quot;#关于友情&quot; class=&quot;headerlink&quot; title=&quot;关于友情&quot;&gt;&lt;/a&gt;关于友情&lt;/h4&gt;&lt;p&gt;作者在书中讲到一个在腾讯的经历，大家感受下，其它就不啰嗦了：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://ws2.sinaimg.cn/large/006tNbRwgy1fxcfyq7yg6j312k0u04go.jpg&quot; alt=&quot;IMG_6440&quot;&gt;&lt;/p&gt;
-&lt;h4 id=&quot;关于交际&quot;&gt;&lt;a href=&quot;#关于交际&quot; class=&quot;headerlink&quot; title=&quot;关于交际&quot;&gt;&lt;/a&gt;关于交际&lt;/h4&gt;&lt;p&gt;与我们接触的人当中，可以分为4种：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;与自己关系好，能力强；&lt;/li&gt;
-&lt;li&gt;与自己关系好，能力有限；&lt;/li&gt;
-&lt;li&gt;并非自己朋友，但能力强；&lt;/li&gt;
-&lt;li&gt;与自己关系不好，能力不强。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;第1种好办，第4种交集不多，可以忽略，所以为人处世方面，我们需要比较留意的第2和第3种人。&lt;/p&gt;
-&lt;p&gt;对于这些人，我们必须理性对待，避免依据个人喜好来判断人和事：符合自己喜好的人，无论他们做什么都觉得好；不符合自己喜好的人，无论他们做什么都要挑毛病。&lt;/p&gt;
-&lt;p&gt;比如特朗普，很多人讨厌他，其实我也讨厌他，然后就有很多人对他做的任何事都持反对意见，无论对错，这就有点失去理想了。&lt;/p&gt;
-&lt;p&gt;在社会上，个人生活和事业有时是需要他人的支持和帮助，需要我们能够团结大多数人，把事情做好。&lt;/p&gt;
-&lt;h4 id=&quot;关于拒绝&quot;&gt;&lt;a href=&quot;#关于拒绝&quot; class=&quot;headerlink&quot; title=&quot;关于拒绝&quot;&gt;&lt;/a&gt;关于拒绝&lt;/h4&gt;&lt;p&gt;作者举例说曾有朋友找他帮忙，就是帮个孩子联系谷歌或者腾讯的实习机会，但看了孩子材料之后就直接回绝了。那朋友也表示理解，就没有再提此事。&lt;/p&gt;
-&lt;p&gt;这种事太常见了，尤其是在腾讯这类公司，很多人会找过来帮忙找个工作之类，现在基本每次回家都有人找我。以前有人让我帮忙投简历，我一般都直接帮投了，即使有些简历或者学历问题，基本都拿不到面试机会的，我也帮忙投了，所以在公司那个”伯乐“平台上，结果全是拒绝的。后来，我学聪明了，不再当”老好人“。一些简历有问题，有明显水平不行的，我都委婉地回绝掉。一方面，投了也是白投，另一方面HR又不傻，我老帮人投这类简历，别人还会觉得我看人的水平太次太有问题了。&lt;/p&gt;
-&lt;p&gt;对于别人请帮忙的事，作者总结出4点，按不同情况采取不同的方法处理：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;能力不及，不能帮上忙，直接在第一时间委婉拒绝。&lt;/li&gt;
-&lt;li&gt;能帮上忙，但是自己代价太大，不想帮的，就不要勉强自己，但也要及早通知对方。&lt;/li&gt;
-&lt;li&gt;不论多困难都愿意帮，而且极有可能办成，这时就答应对方，然后全力去做。&lt;/li&gt;
-&lt;li&gt;虽然愿意帮，但有可能帮上，也可能帮不上，这时要将实际情况说明，千万不要轻易许诺。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h4 id=&quot;结语&quot;&gt;&lt;a href=&quot;#结语&quot; class=&quot;headerlink&quot; title=&quot;结语&quot;&gt;&lt;/a&gt;结语&lt;/h4&gt;&lt;p&gt;这书整体上我觉得还不错，虽然有些是对中学生或大学生说的道理，很多事情自己经历过也都明白，但也有一些适合不同年龄段的人学习的知识点，所以还是推荐阅读。&lt;/p&gt;
-&lt;p&gt;喜欢吴军写的书，并非崇拜对方，而他写的书确实很好，也很用心。在这种浮躁的社会，出书也不容易，写好书更不容易，自己出过书的人应该更有体会。&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;&lt;img src=&quot;https://ws1.sinaimg.cn/large/006tNbRwgy1fxcenoinw2j307009nta1.jpg&quot; alt=&quot;image-20181118184524117&quot;&gt;&lt;/p&gt;
-&lt;p&gt;《态度》是吴军在今年新出的书籍，是他写给女儿
-    
-    </summary>
-    
-      <category term="随笔杂谈" scheme="http://riusksk.github.io/categories/%E9%9A%8F%E7%AC%94%E6%9D%82%E8%B0%88/"/>
-    
-    
-      <category term="读书笔记" scheme="http://riusksk.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
