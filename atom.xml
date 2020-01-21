@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2020-01-21T02:22:00.000Z</updated>
+  <updated>2020-01-21T02:31:16.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://riusksk.github.io/2020/01/21/Fuzzing%E5%B9%B3%E5%8F%B0%E5%BB%BA%E8%AE%BE%E7%9A%84%E7%A0%94%E7%A9%B6%E4%B8%8E%E8%AE%BE%E8%AE%A1-paper/"/>
     <id>http://riusksk.github.io/2020/01/21/Fuzzing平台建设的研究与设计-paper/</id>
     <published>2020-01-21T02:19:37.000Z</published>
-    <updated>2020-01-21T02:22:00.000Z</updated>
+    <updated>2020-01-21T02:31:16.000Z</updated>
     
     <content type="html">&lt;h3 id=&quot;引言&quot;&gt;&lt;a href=&quot;#引言&quot; class=&quot;headerlink&quot; title=&quot;引言&quot;&gt;&lt;/a&gt;引言&lt;/h3&gt;&lt;p&gt;近年来，无论是工业界，还是学术界，Fuzzing技术的应用都非常广泛。每年的BlackHat、OffensiveCon、CCC等工业界顶会，以及学术界四大顶会（ S&amp;amp;P、CCS、Security、NDSS ），经常可以见到Fuzzing相关议题。Google Project Zero也公布其近5年的漏洞挖掘方式占比，其中Fuzzing占比37.2%，手工占比54.2%，其它占比8.6%，这对于高产的P0来说，37.2%的占比已经意味着不少漏洞了。按Project Zero官方公布的bug列表来看，当前共有1975个漏洞公开（包括一些无效、未修复的，这里仅作粗略估算），按37.2%来算，大约有735个漏洞是通过Fuzzing挖掘到的，着实不少的数量，况且大多是高质量漏洞。所以说，Fuzzing依然是当前安全界所热衷的漏洞挖掘方式。&lt;/p&gt;
 &lt;p&gt;本文主要探讨下企业内部关于Fuzzing平台建设的一些想法，个人主要是想表达一个观点：&lt;strong&gt;协同Fuzzing&lt;/strong&gt;，即整合企业内部各工种（开发、测试、安全、运维等等）的力量，将Fuzzing合入CI构建中，通过DevSecOps协同模式来完成产品的Fuzzing工作，以便将漏洞消除在上线前阶段。&lt;/p&gt;
@@ -79,7 +79,7 @@
       <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
     
     
-      <category term="fuzzing" scheme="http://riusksk.github.io/tags/fuzzing/"/>
+      <category term="Fuzzing" scheme="http://riusksk.github.io/tags/Fuzzing/"/>
     
   </entry>
   
@@ -88,7 +88,7 @@
     <link href="http://riusksk.github.io/2019/11/30/Frida%E6%A1%86%E6%9E%B6%E5%9C%A8Fuzzing%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/"/>
     <id>http://riusksk.github.io/2019/11/30/Frida框架在Fuzzing中的应用/</id>
     <published>2019-11-30T02:06:03.000Z</published>
-    <updated>2019-11-30T04:24:12.000Z</updated>
+    <updated>2020-01-21T02:31:23.000Z</updated>
     
     <content type="html">&lt;p&gt;由于&lt;code&gt;Frida&lt;/code&gt;（&lt;a href=&quot;https://frida.re）动态插桩框架的跨平台、简单易用，现在已经被广泛应用于安全领域。相比`Xposed`而言，虽不能更底层地去Hook系统进程，但它可以免启动，应对App的hook完全够用，更关键的是，它完全可以用JavaScript来写代码，免去编译的烦恼，调试也方便。&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://frida.re）动态插桩框架的跨平台、简单易用，现在已经被广泛应用于安全领域。相比`Xposed`而言，虽不能更底层地去Hook系统进程，但它可以免启动，应对App的hook完全够用，更关键的是，它完全可以用JavaScript来写代码，免去编译的烦恼，调试也方便。&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;之前在工作中，也就用&lt;code&gt;Frida&lt;/code&gt;去Hook Android与iOS应用来做安全测试，效果挺好的，开发起来也挺高效的。本文主要围绕Fuzzing领域，来分析和记录最近一些使用&lt;code&gt;Frida&lt;/code&gt;的Fuzzer。&lt;/p&gt;
@@ -117,6 +117,8 @@
       <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
     
     
+      <category term="Fuzzing" scheme="http://riusksk.github.io/tags/Fuzzing/"/>
+    
   </entry>
   
   <entry>
@@ -124,12 +126,12 @@
     <link href="http://riusksk.github.io/2019/11/18/Fuzzing%E5%B9%B3%E5%8F%B0%E5%BB%BA%E8%AE%BE%E7%9A%84%E7%A0%94%E7%A9%B6%E4%B8%8E%E8%AE%BE%E8%AE%A1/"/>
     <id>http://riusksk.github.io/2019/11/18/Fuzzing平台建设的研究与设计/</id>
     <published>2019-11-18T10:01:55.000Z</published>
-    <updated>2020-01-20T03:49:05.000Z</updated>
+    <updated>2020-01-21T02:31:10.000Z</updated>
     
     <content type="html">
 
 	&lt;div class=&quot;row&quot;&gt;
-	  &lt;iframe src=&quot;http://nagland.github.io/viewer/web/viewer.html?val=http://riusksk.me/media/Fuzzing%E5%B9%B3%E5%8F%B0%E5%BB%BA%E8%AE%BE%E7%9A%84%E7%A0%94%E7%A9%B6%E4%B8%8E%E8%AE%BE%E8%AE%A1.pdf&quot; style=&quot;width:100%; height:550px&quot;&gt;&lt;/iframe&gt;
+	  &lt;iframe src=&quot;http://nagland.github.io/viewer/web/viewer.html?val=http://riusksk.me/media/Fuzzing.pdf&quot; style=&quot;width:100%; height:550px&quot;&gt;&lt;/iframe&gt;
 	&lt;/div&gt;
 
 
@@ -141,12 +143,14 @@
       
 
 	&lt;div class=&quot;row&quot;&gt;
-	  &lt;iframe src=&quot;http://nagland.github.io/viewer/web/viewer.html?val=http://riusksk.me/media/Fuzzing%E5%B9%B3%E5%8F%B0%E
+	  &lt;iframe src=&quot;http://nagland.github.io/viewer/web/viewer.html?val=http://riusksk.me/media/Fuzzing.pdf&quot; style=&quot;width:1
     
     </summary>
     
       <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
     
+    
+      <category term="Fuzzing" scheme="http://riusksk.github.io/tags/Fuzzing/"/>
     
   </entry>
   
