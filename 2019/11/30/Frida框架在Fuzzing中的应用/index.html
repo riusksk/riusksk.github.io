@@ -7,7 +7,8 @@
   <meta name="author" content="riusksk" />
 
   
-  <meta name="description" content="由于Frida（https://frida.re）动态插桩框架的跨平台、简单易用，现在已经被广泛应用于安全领域。相比`Xposed`而言，虽不能更底层地去Hook系统进程，但它可以免启动，应对App的hook完全够用，更关键的是，它完全可以用JavaScript来写代码，免去编译的烦恼，调试也方便。" />
+  <meta name="description" content="由于Frida（https://frida.re ）动态插桩框架的跨平台、简单易用，现在已经被广泛应用于安全领域。相比Xposed而言，虽不能更底层地去Hook系统进程，但它可以免启动，应对App的hook完全够用，更关键的是，它完全可以用JavaScript来写代码，免去编译的烦恼，调试也方便。
+" />
   
 
   
@@ -88,20 +89,17 @@
     </header>
     <div class="entry">
       
-        <p>由于<code>Frida</code>（<a href="https://frida.re）动态插桩框架的跨平台、简单易用，现在已经被广泛应用于安全领域。相比`Xposed`而言，虽不能更底层地去Hook系统进程，但它可以免启动，应对App的hook完全够用，更关键的是，它完全可以用JavaScript来写代码，免去编译的烦恼，调试也方便。" target="_blank" rel="external">https://frida.re）动态插桩框架的跨平台、简单易用，现在已经被广泛应用于安全领域。相比`Xposed`而言，虽不能更底层地去Hook系统进程，但它可以免启动，应对App的hook完全够用，更关键的是，它完全可以用JavaScript来写代码，免去编译的烦恼，调试也方便。</a></p>
+        <p>由于<code>Frida</code>（<a href="https://frida.re" target="_blank" rel="external">https://frida.re</a> ）动态插桩框架的跨平台、简单易用，现在已经被广泛应用于安全领域。相比<code>Xposed</code>而言，虽不能更底层地去Hook系统进程，但它可以免启动，应对App的hook完全够用，更关键的是，它完全可以用JavaScript来写代码，免去编译的烦恼，调试也方便。</p>
 <p>之前在工作中，也就用<code>Frida</code>去Hook Android与iOS应用来做安全测试，效果挺好的，开发起来也挺高效的。本文主要围绕Fuzzing领域，来分析和记录最近一些使用<code>Frida</code>的Fuzzer。</p>
-<p>###定制型Fuzzer</p>
-<p>用<code>Frida</code>来Fuzzing APP的方法，首先推荐Project Zero大神写的<code>Adventures in Video Conferencing</code>系列博文，详细介绍了Hook WhatApps和iMessage的输入数据处理函数并进行Fuzzing的方法，同时也开源了Hook iMessage的工具：<a href="https://github.com/googleprojectzero/iOS-messaging-tools/tree/master/iMessage，提供dump和发送消息的功能，自己在额外构造变异数据去Fuzzing。" target="_blank" rel="external">https://github.com/googleprojectzero/iOS-messaging-tools/tree/master/iMessage，提供dump和发送消息的功能，自己在额外构造变异数据去Fuzzing。</a></p>
+<h3 id="定制型Fuzzer"><a href="#定制型Fuzzer" class="headerlink" title="定制型Fuzzer"></a>定制型Fuzzer</h3><p>用<code>Frida</code>来Fuzzing APP的方法，首先推荐Project Zero大神写的<code>Adventures in Video Conferencing</code>系列博文，详细介绍了Hook WhatApps和iMessage的输入数据处理函数并进行Fuzzing的方法，同时也开源了Hook iMessage的工具：<a href="https://github.com/googleprojectzero/iOS-messaging-tools/tree/master/iMessage" target="_blank" rel="external">https://github.com/googleprojectzero/iOS-messaging-tools/tree/master/iMessage</a> ，提供dump和发送消息的功能，自己在额外构造变异数据去Fuzzing。</p>
 <p>这种方式特别适用于拥有私有的定制协议或数据格式的APP Fuzzing，只是需要花时间去逆向分析程序的输入数据解析流程，找到关键的处理函数。</p>
-<p>###通用型Fuzzer</p>
-<p>最近又看到两款使用<code>Frida</code>的Fuzzer，出自同一人之手，用<code>Python</code>和<code>JS</code>写的，代码量不多：</p>
+<h3 id="通用型Fuzzer"><a href="#通用型Fuzzer" class="headerlink" title="通用型Fuzzer"></a>通用型Fuzzer</h3><p>最近又看到两款使用<code>Frida</code>的Fuzzer，出自同一人之手，用<code>Python</code>和<code>JS</code>写的，代码量不多：</p>
 <ol>
-<li>frida-js-afl-instr（<a href="https://github.com/andreafioraldi/frida-js-afl-instr）：打通`AFL++`与`Frida`实现内存Fuzzing的工具，仅限Linux平台" target="_blank" rel="external">https://github.com/andreafioraldi/frida-js-afl-instr）：打通`AFL++`与`Frida`实现内存Fuzzing的工具，仅限Linux平台</a></li>
-<li>frida-qbdi-fuzzer（<a href="https://github.com/andreafioraldi/frida-qbdi-fuzzer）：基于`Frida`与`QBDI`的Android" target="_blank" rel="external">https://github.com/andreafioraldi/frida-qbdi-fuzzer）：基于`Frida`与`QBDI`的Android</a> Fuzzer，借鉴AFL的代码覆盖引导思路，实现Android平台下闭源程序的覆盖引导Fuzzing。</li>
+<li>frida-js-afl-instr（<a href="https://github.com/andreafioraldi/frida-js-afl-instr" target="_blank" rel="external">https://github.com/andreafioraldi/frida-js-afl-instr</a> ）：打通<code>AFL++</code>与<code>Frida</code>实现内存Fuzzing的工具，仅限Linux平台</li>
+<li>frida-qbdi-fuzzer（<a href="https://github.com/andreafioraldi/frida-qbdi-fuzzer" target="_blank" rel="external">https://github.com/andreafioraldi/frida-qbdi-fuzzer</a> ）：基于<code>Frida</code>与<code>QBDI</code>的Android Fuzzer，借鉴AFL的代码覆盖引导思路，实现Android平台下闭源程序的覆盖引导Fuzzing。</li>
 </ol>
 <p>下面直接画时序图来看它的原理，就不贴源码分析了：</p>
-<p>####frida-js-afl-instr原理图</p>
-<p><img src="http://riusksk.me/media/image-20191130121915743.png" alt="image-20191130121915743"></p>
+<h4 id="frida-js-afl-instr原理图"><a href="#frida-js-afl-instr原理图" class="headerlink" title="frida-js-afl-instr原理图"></a>frida-js-afl-instr原理图</h4><p><img src="http://riusksk.me/media/image-20191130121915743.png" alt="image-20191130121915743"></p>
 <h4 id="frida-qbdi-fuzzer原理图"><a href="#frida-qbdi-fuzzer原理图" class="headerlink" title="frida-qbdi-fuzzer原理图"></a>frida-qbdi-fuzzer原理图</h4><p><img src="http://riusksk.me/media/image-20191130122032208.png" alt="image-20191130122032208"></p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>用Frida来实现闭源程序的代码覆盖引导，代码量很少，以Python和JS就可以快速开发起来，但涉及到python等进程的启动，肯定没有纯C/C++的代码运行速度快，但对于Fuzzing，一般还是够用的，还是值得学习和使用的。</p>
 

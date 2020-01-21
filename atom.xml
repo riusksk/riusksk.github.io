@@ -88,29 +88,26 @@
     <link href="http://riusksk.github.io/2019/11/30/Frida%E6%A1%86%E6%9E%B6%E5%9C%A8Fuzzing%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/"/>
     <id>http://riusksk.github.io/2019/11/30/Frida框架在Fuzzing中的应用/</id>
     <published>2019-11-30T02:06:03.000Z</published>
-    <updated>2020-01-21T02:31:23.000Z</updated>
+    <updated>2020-01-21T02:32:58.000Z</updated>
     
-    <content type="html">&lt;p&gt;由于&lt;code&gt;Frida&lt;/code&gt;（&lt;a href=&quot;https://frida.re）动态插桩框架的跨平台、简单易用，现在已经被广泛应用于安全领域。相比`Xposed`而言，虽不能更底层地去Hook系统进程，但它可以免启动，应对App的hook完全够用，更关键的是，它完全可以用JavaScript来写代码，免去编译的烦恼，调试也方便。&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://frida.re）动态插桩框架的跨平台、简单易用，现在已经被广泛应用于安全领域。相比`Xposed`而言，虽不能更底层地去Hook系统进程，但它可以免启动，应对App的hook完全够用，更关键的是，它完全可以用JavaScript来写代码，免去编译的烦恼，调试也方便。&lt;/a&gt;&lt;/p&gt;
+    <content type="html">&lt;p&gt;由于&lt;code&gt;Frida&lt;/code&gt;（&lt;a href=&quot;https://frida.re&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://frida.re&lt;/a&gt; ）动态插桩框架的跨平台、简单易用，现在已经被广泛应用于安全领域。相比&lt;code&gt;Xposed&lt;/code&gt;而言，虽不能更底层地去Hook系统进程，但它可以免启动，应对App的hook完全够用，更关键的是，它完全可以用JavaScript来写代码，免去编译的烦恼，调试也方便。&lt;/p&gt;
 &lt;p&gt;之前在工作中，也就用&lt;code&gt;Frida&lt;/code&gt;去Hook Android与iOS应用来做安全测试，效果挺好的，开发起来也挺高效的。本文主要围绕Fuzzing领域，来分析和记录最近一些使用&lt;code&gt;Frida&lt;/code&gt;的Fuzzer。&lt;/p&gt;
-&lt;p&gt;###定制型Fuzzer&lt;/p&gt;
-&lt;p&gt;用&lt;code&gt;Frida&lt;/code&gt;来Fuzzing APP的方法，首先推荐Project Zero大神写的&lt;code&gt;Adventures in Video Conferencing&lt;/code&gt;系列博文，详细介绍了Hook WhatApps和iMessage的输入数据处理函数并进行Fuzzing的方法，同时也开源了Hook iMessage的工具：&lt;a href=&quot;https://github.com/googleprojectzero/iOS-messaging-tools/tree/master/iMessage，提供dump和发送消息的功能，自己在额外构造变异数据去Fuzzing。&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/googleprojectzero/iOS-messaging-tools/tree/master/iMessage，提供dump和发送消息的功能，自己在额外构造变异数据去Fuzzing。&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&quot;定制型Fuzzer&quot;&gt;&lt;a href=&quot;#定制型Fuzzer&quot; class=&quot;headerlink&quot; title=&quot;定制型Fuzzer&quot;&gt;&lt;/a&gt;定制型Fuzzer&lt;/h3&gt;&lt;p&gt;用&lt;code&gt;Frida&lt;/code&gt;来Fuzzing APP的方法，首先推荐Project Zero大神写的&lt;code&gt;Adventures in Video Conferencing&lt;/code&gt;系列博文，详细介绍了Hook WhatApps和iMessage的输入数据处理函数并进行Fuzzing的方法，同时也开源了Hook iMessage的工具：&lt;a href=&quot;https://github.com/googleprojectzero/iOS-messaging-tools/tree/master/iMessage&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/googleprojectzero/iOS-messaging-tools/tree/master/iMessage&lt;/a&gt; ，提供dump和发送消息的功能，自己在额外构造变异数据去Fuzzing。&lt;/p&gt;
 &lt;p&gt;这种方式特别适用于拥有私有的定制协议或数据格式的APP Fuzzing，只是需要花时间去逆向分析程序的输入数据解析流程，找到关键的处理函数。&lt;/p&gt;
-&lt;p&gt;###通用型Fuzzer&lt;/p&gt;
-&lt;p&gt;最近又看到两款使用&lt;code&gt;Frida&lt;/code&gt;的Fuzzer，出自同一人之手，用&lt;code&gt;Python&lt;/code&gt;和&lt;code&gt;JS&lt;/code&gt;写的，代码量不多：&lt;/p&gt;
+&lt;h3 id=&quot;通用型Fuzzer&quot;&gt;&lt;a href=&quot;#通用型Fuzzer&quot; class=&quot;headerlink&quot; title=&quot;通用型Fuzzer&quot;&gt;&lt;/a&gt;通用型Fuzzer&lt;/h3&gt;&lt;p&gt;最近又看到两款使用&lt;code&gt;Frida&lt;/code&gt;的Fuzzer，出自同一人之手，用&lt;code&gt;Python&lt;/code&gt;和&lt;code&gt;JS&lt;/code&gt;写的，代码量不多：&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;frida-js-afl-instr（&lt;a href=&quot;https://github.com/andreafioraldi/frida-js-afl-instr）：打通`AFL++`与`Frida`实现内存Fuzzing的工具，仅限Linux平台&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/andreafioraldi/frida-js-afl-instr）：打通`AFL++`与`Frida`实现内存Fuzzing的工具，仅限Linux平台&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;frida-qbdi-fuzzer（&lt;a href=&quot;https://github.com/andreafioraldi/frida-qbdi-fuzzer）：基于`Frida`与`QBDI`的Android&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/andreafioraldi/frida-qbdi-fuzzer）：基于`Frida`与`QBDI`的Android&lt;/a&gt; Fuzzer，借鉴AFL的代码覆盖引导思路，实现Android平台下闭源程序的覆盖引导Fuzzing。&lt;/li&gt;
+&lt;li&gt;frida-js-afl-instr（&lt;a href=&quot;https://github.com/andreafioraldi/frida-js-afl-instr&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/andreafioraldi/frida-js-afl-instr&lt;/a&gt; ）：打通&lt;code&gt;AFL++&lt;/code&gt;与&lt;code&gt;Frida&lt;/code&gt;实现内存Fuzzing的工具，仅限Linux平台&lt;/li&gt;
+&lt;li&gt;frida-qbdi-fuzzer（&lt;a href=&quot;https://github.com/andreafioraldi/frida-qbdi-fuzzer&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/andreafioraldi/frida-qbdi-fuzzer&lt;/a&gt; ）：基于&lt;code&gt;Frida&lt;/code&gt;与&lt;code&gt;QBDI&lt;/code&gt;的Android Fuzzer，借鉴AFL的代码覆盖引导思路，实现Android平台下闭源程序的覆盖引导Fuzzing。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;下面直接画时序图来看它的原理，就不贴源码分析了：&lt;/p&gt;
-&lt;p&gt;####frida-js-afl-instr原理图&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/image-20191130121915743.png&quot; alt=&quot;image-20191130121915743&quot;&gt;&lt;/p&gt;
+&lt;h4 id=&quot;frida-js-afl-instr原理图&quot;&gt;&lt;a href=&quot;#frida-js-afl-instr原理图&quot; class=&quot;headerlink&quot; title=&quot;frida-js-afl-instr原理图&quot;&gt;&lt;/a&gt;frida-js-afl-instr原理图&lt;/h4&gt;&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/image-20191130121915743.png&quot; alt=&quot;image-20191130121915743&quot;&gt;&lt;/p&gt;
 &lt;h4 id=&quot;frida-qbdi-fuzzer原理图&quot;&gt;&lt;a href=&quot;#frida-qbdi-fuzzer原理图&quot; class=&quot;headerlink&quot; title=&quot;frida-qbdi-fuzzer原理图&quot;&gt;&lt;/a&gt;frida-qbdi-fuzzer原理图&lt;/h4&gt;&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/image-20191130122032208.png&quot; alt=&quot;image-20191130122032208&quot;&gt;&lt;/p&gt;
 &lt;h3 id=&quot;总结&quot;&gt;&lt;a href=&quot;#总结&quot; class=&quot;headerlink&quot; title=&quot;总结&quot;&gt;&lt;/a&gt;总结&lt;/h3&gt;&lt;p&gt;用Frida来实现闭源程序的代码覆盖引导，代码量很少，以Python和JS就可以快速开发起来，但涉及到python等进程的启动，肯定没有纯C/C++的代码运行速度快，但对于Fuzzing，一般还是够用的，还是值得学习和使用的。&lt;/p&gt;
 </content>
     
     <summary type="html">
     
-      &lt;p&gt;由于&lt;code&gt;Frida&lt;/code&gt;（&lt;a href=&quot;https://frida.re）动态插桩框架的跨平台、简单易用，现在已经被广泛应用于安全领域。相比`Xposed`而言，虽不能更底层地去Hook系统进程，但它可以免启动，应对App的hook完全够用，更关键的是，
+      &lt;p&gt;由于&lt;code&gt;Frida&lt;/code&gt;（&lt;a href=&quot;https://frida.re&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://frida.re&lt;/a&gt; ）动态插桩框架的跨平台、简单易用，现在已经被广泛应用于安全领域。相比&lt;co
     
     </summary>
     
