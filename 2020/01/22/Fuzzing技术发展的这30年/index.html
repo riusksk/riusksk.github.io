@@ -1,0 +1,276 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8" />
+  
+  <title>从研究者的视角看Fuzzing技术发展30年 | riusksk&#39;s blog</title>
+  <meta name="author" content="riusksk" />
+
+  
+  <meta name="description" content="源起1988年，在威斯康星大学Barton Miller教授的计算机实验课上（http://pages.cs.wisc.edu/~bart/fuzz/CS736-Projects-f1988.pdf ），首次提出Fuzz生成器(Fuzz Generator)的概念，用于测试Unix程序的健壮性，即用" />
+  
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <meta property="og:title" content="从研究者的视角看Fuzzing技术发展30年" />
+  <meta property="og:site_name" content="riusksk&#39;s blog" />
+
+  
+  
+
+  
+    <meta property="og:image" content="undefined" />
+  
+
+  
+  <link href="/css/images/favicon.ico" rel="icon" />
+  
+
+  <link rel="alternate" href="/atom.xml" title="riusksk&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78773323-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+
+  <!-- baidu webmaster push -->
+  <script src='//push.zhanzhang.baidu.com/push.js'></script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">riusksk&#39;s blog</a></h1>
+  <h2><a href="/">攀蟾折桂摄寰宇，摘星揽月御乾坤。踏云踩雾骋宵壤，驱风逐日闯天地。 ------泉哥</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/atom.xml">RSS订阅</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2020-01-22T08:16:48.000Z"><a href="/2020/01/22/Fuzzing技术发展的这30年/">2020-01-22</a></time>
+      
+      
+  
+    <h1 class="title">从研究者的视角看Fuzzing技术发展30年</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h3 id="源起"><a href="#源起" class="headerlink" title="源起"></a>源起</h3><p>1988年，在威斯康星大学Barton Miller教授的计算机实验课上（<em><a href="http://pages.cs.wisc.edu/~bart/fuzz/CS736-Projects-f1988.pdf" target="_blank" rel="external">http://pages.cs.wisc.edu/~bart/fuzz/CS736-Projects-f1988.pdf</a></em> ），首次提出<code>Fuzz生成器</code>(Fuzz Generator)的概念，用于测试Unix程序的健壮性，即用随机数据来测试程序直至崩溃。因此，Barton Miller教授也被多数人尊称为”模糊测试之父”。但是，当时更多是为了验证代码质量和程序的稳定性，而非专门用于挖掘安全漏洞，真正用于软件安全漏洞挖掘的开端要从下面两件事说起。</p>
+<h3 id="从学术界到工业界的证明"><a href="#从学术界到工业界的证明" class="headerlink" title="从学术界到工业界的证明"></a>从学术界到工业界的证明</h3><p>2001年，芬兰奥卢大学公布<code>PROTOS</code>测试集项目的研究成果（<em><a href="https://rd.springer.com/content/pdf/10.1007%2F978-0-387-35413-2_16.pdf" target="_blank" rel="external">https://rd.springer.com/content/pdf/10.1007%2F978-0-387-35413-2_16.pdf</a></em> ），首次将Fuzzing技术应用在网络协议的安全测试当中，他们针对不同的网络协议构造出不同的测试用例集，这些在其官网（<em><a href="https://www.ee.oulu.fi/research/ouspg/Protos" target="_blank" rel="external">https://www.ee.oulu.fi/research/ouspg/Protos</a></em> ）上依然可以下载到。2002年，<code>PROTOS</code>逐渐成熟，Microsoft开始为该项目提供资金支持。于是，2003年项目组成立了Codenomicon公司，开始将Fuzzing技术应用于商业产品，也确实发现了不少安全问题。因此，PROTOS项目可以说是Fuzzing技术发展历程中的一次重要里程碑。可能大家对Codenomicon公司不太了解，但说到”心脏滴血”漏洞，应该无人不知无人不晓。没错，它就是Codenomicon公司发现的。</p>
+<p>2002年，在BlackHat USA黑客大会上，来自<code>Immunity</code>安全公司（PS：还有人记得<code>Immunity Debugger</code>吗？）的Dave Aitel发表议题<em>“An Introduction to SPIKE, the Fuzzer Creation Kit”</em>，至此著名的Fuzzer工具<code>SPIKE</code>公布了，它是基于块模板定义的网络协议测试工具，优点是支持定义可变长度数据块的能力，除生成随机数据外，它还提供一些现成的边界值生成，以提供触发崩溃的概率。<code>SPIKE</code>的诞生，使得广大用户能够依据自身需求定制网络协议Fuzzer，这对Fuzzing技术的普及起到巨大的推动作用。早些年，笔者也曾写过一篇<code>SPIKE</code>的教程<em>“基于SPIKE的网络协议Fuzzing技术(<a href="http://riusksk.me/2011/12/30/spike-fuzz/)&quot;" target="_blank" rel="external">http://riusksk.me/2011/12/30/spike-fuzz/)&quot;</a></em>，但现在其实基本不用了。</p>
+<p>从<code>PROTOS</code>到<code>SPIKE</code>的诞生，代表着学术界与工业界对Fuzzing技术在商业与安全实战领域的应用提供了有力的证明。</p>
+<h3 id="文件Fuzzing技术的兴起"><a href="#文件Fuzzing技术的兴起" class="headerlink" title="文件Fuzzing技术的兴起"></a>文件Fuzzing技术的兴起</h3><p>2004年，<code>Peach</code>模糊测试框架的发布，标志着文件Fuzzing时代的到来。最初<code>Peach</code>是用<code>Python</code>开发的，后来在2007年被收购后改用<code>C#</code>重写，并分为社区版和付费版。<code>Peach</code>支持文件格式、网络协议、ActivieX控件等多种形式，通过编写pit文件(xml格式)来定义数据格式，每次开始写的时候其实挺费劲的，后来有人提供自动将010editor格式解析器（仿C语言的bt文件）转换为pit，在一定程度上可以缓解劳动力。笔者第一次通过文件Fuzzing挖到漏洞也是借助<code>Peach</code>实现的。</p>
+<p>直至今日，<code>Peach</code>依然还有人在用，更有人将<code>Peach</code>与<code>AFL</code>打通，在<code>Github</code>上发布<code>aflsmart</code>的开源项目。</p>
+<p>文件Fuzzing应该是当前Fuzzing应用中最为普遍的形式，即使是网络协议等其它目标的Fuzzing，也是可以转换为文件Fuzzing的。比如<code>OpenSSL</code>网络协议Fuzzing，通过源码打Log的方式先收集网络数据为本地文件，再调用其API写个hareness用AFL或libfuzzer进行本地测试，就顺利地将网络协议Fuzzing转换为文件Fuzzing。</p>
+<h3 id="语法模板Fuzzing：打开攻击浏览器的大门"><a href="#语法模板Fuzzing：打开攻击浏览器的大门" class="headerlink" title="语法模板Fuzzing：打开攻击浏览器的大门"></a>语法模板Fuzzing：打开攻击浏览器的大门</h3><p>2008年，Mozilla安全团队发布了<code>jsfunfuzz</code>和<code>DOMfuzz</code>，基于JS语法模板来生成测试用例，以挖掘浏览器漏洞，后来两款工具合称<code>funfuzz</code>( <em><a href="https://github.com/MozillaSecurity/funfuzz" target="_blank" rel="external">https://github.com/MozillaSecurity/funfuzz</a></em> )，以开源的形式对外公开。这款工具在当时确实挖到了不少浏览器的漏洞，但其语法模板的可扩展性并不友好，只能在其代码上作修改，这点不如<code>dharma</code>( <em><a href="https://github.com/MozillaSecurity/dharma" target="_blank" rel="external">https://github.com/MozillaSecurity/dharma</a></em> )，以及后来Project Zero发布的<code>Domato</code>( <em><a href="https://github.com/googleprojectzero/domato" target="_blank" rel="external">https://github.com/googleprojectzero/domato</a></em> )。这种基于语法模板的Fuzzing方式，挖完一波后，就要求保持模板的更新才能持续产出，同时要理解测试目标在JS代码上的触发逻辑，比如<code>JIT</code>可通过for循环来触发代码优化，<code>Dom UAF</code>可通过创建<code>Dom</code>元素，并调用相关元素的方法来触发删除和引用，以探测是否存在<code>UAF</code>的可能。整体上依赖于对语法和目标原理的理解，才能构造出好的语法模板。</p>
+<p>在<code>funfuzz</code>之后，业界也出现了好多款优秀的JS语法Fuzzing工具，比如<code>grinder</code>、<code>nduja</code>、<code>crossfuzz</code>等等。当年PC流行时代，用<code>grinder</code>来Fuzzing Windows IE浏览器的人应该比较多。</p>
+<p>浏览器一直是网络攻击中最受关注和最常用的入口，过去如是，现今依然。因为系统自带，且用户使用率高，又是远程访问的最佳途径。渲染引擎和JS引擎一直是浏览器主要攻击面，主要以html、js、vbs作为解析语言，因此对这些语言的语法Fuzzing就自然而然的产生了。除此之外，如今<code>WebSQL</code>也开始备受关注，比如Chrome上的<code>sqlite</code>模块，SQL语法的fuzzing也随之而来。</p>
+<p>除了浏览器，pdf的JS和flash的as语法解析，也一度作为攻击Adobe Reader和Adobe Flash的入口。</p>
+<h3 id="符号执行：学术与工业之争"><a href="#符号执行：学术与工业之争" class="headerlink" title="符号执行：学术与工业之争"></a>符号执行：学术与工业之争</h3><p>2008年，基于<code>LLVM</code>的符号执行引擎<code>KLEE</code>发布后，引领了一波程序分析新姿势的潮流。后来，符号执行被应用于Fuzzing中，经常被用来打CTF比赛，用来找key、解混淆、fuzzing等用途。比如，将<code>AFL</code>与<code>angr</code>结合的<code>driller</code>（<em><a href="https://github.com/shellphish/driller" target="_blank" rel="external">https://github.com/shellphish/driller</a></em> )，还被用在了CGC(Cyber Grand Challenge)自动网络攻防竞赛上，但这种比赛都是特定场景下的比赛，不能完全代表真实的软件世界；还有，将AFL与KLEE结合的<code>kleefl</code>（<em><a href="https://github.com/julieeen/kleefl" target="_blank" rel="external">https://github.com/julieeen/kleefl</a></em> ），这款工具知道的人应该不多。</p>
+<p>符号执行在学术界中应用得比较多，工业界相对少一些，这是现状。将符号执行应用在Fuzzing中，通过约束求解新路径的条件值，以增加代码覆盖率，可以一定程度上弥补暴力变异的不足。符号执行主要的挑战在于路径爆炸问题，约束求解能力的局限性，以及性能消耗问题，比如内存和时间消耗过大。符号执行与约束求解对于小型应用比较有效果，也常被用于CTF比赛，在CTF中使用最广的当属<code>angr</code>框架。但是，基于当前的业界情况，符号执行仍然比较难以应用于大型软件中。符号执行在Fuzzing中的应用并没有真正带来新的技术浪潮，真正的技术浪潮始于代码覆盖引导技术的引入。</p>
+<h3 id="代码覆盖引导技术：Fuzzing技术的分水岭"><a href="#代码覆盖引导技术：Fuzzing技术的分水岭" class="headerlink" title="代码覆盖引导技术：Fuzzing技术的分水岭"></a>代码覆盖引导技术：Fuzzing技术的分水岭</h3><p>2013年底，<code>afl-fuzz</code>（ <em><a href="http://lcamtuf.coredump.cx/afl/" target="_blank" rel="external">http://lcamtuf.coredump.cx/afl/</a></em> ）发布了，首次采用源码编译插桩和QEMU模式来实现代码覆盖引导Fuzzing的方式，这绝对是Fuzzing技术发展历程中最重要的一次里程碑，也是技术分水岭，它开启了Fuzzing技术的新篇章。刚发布的时候，afl并没有那么火，主要是在2014和2015年期间，被很多人使用后挖到不少主流开源软件的0day，并在Twitter上宣传，使得更多人关注到并使用，这证明了代码覆盖引导技术在Fuzzing实战中的价值。</p>
+<p>随后，基于afl二次开发的fuzzer如雨后春笋般涌现出来，比如winafl、libfuzzer、AFLFast、Vuzzer等等，而且针对各种语言的版本出相继出现，比如go、python、js、ruby等等。一些已知名的Fuzzer也迅速跟进，比如<code>syzkaller</code>内核Fuzzer，它原本是基于API调用模板的，后来也引入了代码覆盖引导能力。同时，业界都在试图将其移植到各种平台上（比如windows、android、IOT平台等等），并实现支持闭源程序的代码覆盖引导能力，这一直是近几年来Fuzzing技术研究的热点方向，比如动静态插桩、虚拟机模拟执行、硬件特性等等。无论是工业界大会(BlackHat、OffensiveCon、CCC等等)，还是学术界四大顶会，关于Fuzzing的议题也越来越多，相信这种趋势会持续下去。</p>
+<h3 id="系统函数调用模板Fuzzing一度成为攻击内核的常用手段"><a href="#系统函数调用模板Fuzzing一度成为攻击内核的常用手段" class="headerlink" title="系统函数调用模板Fuzzing一度成为攻击内核的常用手段"></a>系统函数调用模板Fuzzing一度成为攻击内核的常用手段</h3><p>2015年Google开源了<code>syzkaller</code>，一款用于Fuzzing Linux内核的工具，漏洞产出特别高。现在依然很多人用它来挖各系统平台的内核漏洞，包括Android、macOS、Windows等主流系统平台。<code>syzkaller</code>通过定义系统函数调用模板来实现，在模板中定义系统调用函数参数类型，并解决函数调用的顺序依赖和值依赖问题。Project Zero官方博客就曾写过一篇利用<code>syzkaller</code> fuzz <code>socket</code>挖掘Linux内核漏洞的文章，叫<em>“Exploiting the Linux kernel via packet sockets(syzkaller usage)”</em> ( <em><a href="https://googleprojectzero.blogspot.com/2017/05/exploiting-linux-kernel-via-packet.html" target="_blank" rel="external">https://googleprojectzero.blogspot.com/2017/05/exploiting-linux-kernel-via-packet.html</a></em> )，详细讲述了如何编写模板，以及<code>syzkaller</code>的使用方式。</p>
+<p>Windows平台也常被通过构建GUI API调用模板来Fuzzing系统内核，macOS平台内核Fuzzing就常拿IOKit函数开刀，都是基于这种系统函数调用模板的Fuzzing方式实现的。</p>
+<p>2016年Google提出”结构感知型Fuzzing”(<a href="https://github.com/google/fuzzing/blob/master/docs/structure-aware-fuzzing.md" target="_blank" rel="external">Structure-Aware Fuzzing </a>)，并基于<code>libfuzzer</code>与<code>protobuf</code>实现了<code>libprotobuf-mutator</code>(<em><a href="https://github.com/google/libprotobuf-mutator" target="_blank" rel="external">https://github.com/google/libprotobuf-mutator</a></em>)，其实现思路与<code>syskaller</code>相似，它弥补了<code>peach</code>的无覆盖引导的问题，也弥补了<code>afl</code>和<code>libfuzzer</code>对于复杂输入类型的低效变异问题。正如前面提到的，也有人将<code>afl</code>与<code>peach</code>整合成<code>aflsmart</code>，以此实现类似功能。现在Project Zero也用<code>libprotobuf-mutator</code>来fuzzing iOS内核，详见<em>“SockPuppet: A Walkthrough of a Kernel Exploit for iOS 12.4”</em>(<em><a href="https://googleprojectzero.blogspot.com/2019/12/sockpuppet-walkthrough-of-kernel.html" target="_blank" rel="external">https://googleprojectzero.blogspot.com/2019/12/sockpuppet-walkthrough-of-kernel.html</a></em>)。</p>
+<p>结构感知型Fuzzing并不是什么新技术，跟Peach的实现思路是一样的，只是对输入数据类型作模板定义，以提高变异的准确率。只是当前大家更倾向于将结构感知与覆盖引导等多种技术优势整合一块，基于系统函数模板用于Fuzzing系统内核，相信这种方式未来仍会被经常使用。</p>
+<h3 id="助力开源生态安全建设"><a href="#助力开源生态安全建设" class="headerlink" title="助力开源生态安全建设"></a>助力开源生态安全建设</h3><p>在工业界中，最知名的Fuzzing平台当属Google的<code>clusterfuzz</code>（ <em><a href="https://github.com/google/clusterfuzz" target="_blank" rel="external">https://github.com/google/clusterfuzz</a></em> ），运行在25000+台机器上，发现过16000+个Chrome bug，11000+开源项目bug，这个平台整合了<code>OSS-Fuzz</code>(<em><a href="https://github.com/google/oss-fuzz" target="_blank" rel="external">https://github.com/google/oss-fuzz</a></em> )，既支持libfuzzer和AFL的代码覆盖引导Fuzzing，也支持黑盒Fuzzing。<code>OSS-Fuzz</code>和<code>clusterfuzz</code>分别在2016年和2019年开源对外，业界同行可以协同开发，对于提交fuzzer后挖到新漏洞的，Google会美刀奖励提交者，对于主流开源项目的<code>0Day</code>，Google也是有奖励机制的。同时，Google开发了<code>ASan</code>、<code>MSan</code>、<code>TSan</code>、<code>UBSan</code>、<code>LSan</code>等多种编译时插桩工具用来帮助检测漏洞，有些漏洞只在开启相关Sanitizer之后才会触发异常，跟在Windows下开启页堆的方式类似，可以帮助更有效地发现崩溃场景，在发现和分析漏洞上提供帮助。</p>
+<p>Google对开源生态安全建设的贡献，是各大互联网公司不能比的。他们的贡献不仅帮助提高各大主流开源项目的安全性，也降低了Fuzzing的技术成本，在资金和技术上对开源生态安全的建设提供了大力支持。</p>
+<h3 id="语法树变异成为语法解析引擎漏洞挖掘的新方向"><a href="#语法树变异成为语法解析引擎漏洞挖掘的新方向" class="headerlink" title="语法树变异成为语法解析引擎漏洞挖掘的新方向"></a>语法树变异成为语法解析引擎漏洞挖掘的新方向</h3><p>2012年，USENIX安全顶会上发布一篇论文<em>“Fuzzing with code fragments”</em>，研究者开发了一款叫<code>LangFuzz</code>的工具，他们从firefox、webkit、chromium等开源的浏览器项目以及网络上去收集js测试样本，然后用ANTLR其进行AST语法树分析，再将样本拆分成非终止语法的代码片断，放入代码池中，最后再基于代码池的代码片断对输入样本作交叉变异，主要取同类型的代码片断作替换或插入，再运行生成的变异样本进行测试。</p>
+<p>基于<code>LangFuzz</code>的思路，后面又有人开源了<code>IFuzzer</code>，并发表相关论文公开，在<code>LangFuzz</code>的基础上增加遗传算法，对输入样本进行评估，筛选出优秀的个体进行组装以产生新样本。不过这个工具并没有那么完善，也未见到比较好的实际漏洞产出。</p>
+<p>2018年，Project Zero的Samuel Groß发布一款叫<code>fuzzilli</code>的JS语法Fuzzer工具，它整合了语法变异、模板生成、覆盖引导等多种技术，使用自定义中间语言用于语法变异，再将变异后的中间语言转换成JS代码。<code>fuzzilli</code>在3大主流JS引擎的测试中，战果颇丰，发现了不少漏洞，也因此被业界同行拿去作二次开发，又发现了其它新的漏洞。</p>
+<p>2019年，有2篇学术论文发布，他们都引用了论文<em>“Fuzzing with code fragments”</em>中的思想，它们分别是”<em>CodeAlchemist: Semantics-Aware Code Generation to Find Vulnerabilities in JavaScript Engines</em>“和”<em>Superion: Grammar-Aware Greybox Fuzzing</em>“，<code>CodeAlchemist</code>将输入样本进行语法树分析和数据流分析，为拆分出来的代码片段设置前置和后置的约束条件，前置条件代表一些引用的变量需要先定义，后置条件代表代码片段的输出结果，通过两者来解决一些未定义变量引用的问题。<code>Superion</code>是将语法树变异规则置入AFL中实现的，借助AFL筛选变异后的输入样本，而且支持多种语言，也是采用ANTLR作语法树分析，其在语法扩展上比较友好。两款工具均在最新JS解析引擎上发现过若干0day漏洞，并且均已在Github上开源。</p>
+<p>除了传统的模板Fuzzing，语法变异(无论是AST，还是自定义中间语言)也是一项值得探索的方向。</p>
+<h3 id="人工智能在Fuzzing中的应用仍亟待探索"><a href="#人工智能在Fuzzing中的应用仍亟待探索" class="headerlink" title="人工智能在Fuzzing中的应用仍亟待探索"></a>人工智能在Fuzzing中的应用仍亟待探索</h3><p>2018年是人工智能元年，很多领域都在探索AI的应用，漏洞挖掘领域亦然。之前笔者阅读过一些AI应用在Fuzzing中的相关议题，主要集中在测试样本生成的训练上，利用已知漏洞的样本或正常样本作训练，然后重新生成测试样本进行测试。可惜从效果上来看，是一种高投入低产出的事情，有些还不如直接暴力变异来得高效高产。但这也不是说，AI没有价值，只是它在这方面的发展时间较短，很多东西仍亟待探索，还有待时间的年轮来证明。</p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2020/01/22/Fuzzing技术发展的这30年/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Fuzzing/">Fuzzing</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+</section>
+
+
+ -->
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:riusksk.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2020/01/22/Fuzzing技术发展的这30年/">从研究者的视角看Fuzzing技术发展30年</a>
+      </li>
+    
+      <li>
+        <a href="/2020/01/21/Fuzzing平台建设的研究与设计-paper/">Fuzzing平台建设的研究与设计(paper)</a>
+      </li>
+    
+      <li>
+        <a href="/2019/11/30/Frida框架在Fuzzing中的应用/">Frida框架在Fuzzing中的应用</a>
+      </li>
+    
+      <li>
+        <a href="/2019/11/18/Fuzzing平台建设的研究与设计/">Fuzzing平台建设的研究与设计</a>
+      </li>
+    
+      <li>
+        <a href="/2019/11/02/Jandroid：半自动化Android应用逻辑漏洞挖掘/">Android应用逻辑漏洞半自动化挖掘思路</a>
+      </li>
+    
+      <li>
+        <a href="/2019/09/07/漫谈网络安全应急指导思想/">漫谈网络安全应急要略</a>
+      </li>
+    
+      <li>
+        <a href="/2019/08/18/安全研究的价值思考/">安全研究的价值思考</a>
+      </li>
+    
+      <li>
+        <a href="/2019/07/14/一些值得学习的Fuzzer开源项目/">一些值得学习的Fuzzer开源项目</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/29/Infiltrate2019议题学习/">Infiltrate2019议题学习</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/11/2019年哪些安全大会的议题值得学习/">2019年哪些安全大会的议题值得学习</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/技术分享/">技术分享</a><small>61</small></li>
+  
+    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>26</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/Bochspwn/" style="font-size: 10px;">Bochspwn</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzer/" style="font-size: 10px;">Fuzzer</a> <a href="/tags/Fuzzing/" style="font-size: 18.33px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 13.33px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 16.67px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/winafl/" style="font-size: 10px;">winafl</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全大会/" style="font-size: 10px;">安全大会</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/安全研究/" style="font-size: 11.67px;">安全研究</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 13.33px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/逻辑/" style="font-size: 10px;">逻辑</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  <p>
+  
+  &copy; 2020 riusksk
+  
+  All rights reserved.</p>
+  <p>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+  & Hosted by <a href="http://github.com" target="_blank">GitHub</a>
+  <!--<span id="busuanzi_container_site_pv" >
+    ，本站总访问量<span id="busuanzi_value_site_pv" ></span>次
+  </span>
+  -->
+  </p>
+</div>
+<div class="clearfix"></div>
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+</footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+<div id='bg'></div>
+</body>
+</html>

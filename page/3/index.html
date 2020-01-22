@@ -77,6 +77,87 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2018-12-01T03:08:09.000Z"><a href="/2018/12/01/bochspwn1/">2018-12-01</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2018/12/01/bochspwn1/">Bochspwn漏洞挖掘技术深究(1)：Double Fetches 检测</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>虽然现在技术文章很少人看，大家都喜欢聊安全八卦，但技术文章输出是一种很好的学习方式。更重要的是，专业的文章是给专业的人看的，并非为了取悦所有人。</p>
+<p>对于应用程序的代码插桩，有现成的Pin和DynamoRIO插桩框架，在Fuzzing中可以用来实现代码覆盖率的反馈驱动，这已经被应用到winafl，效果很好。除了挖洞，在逆向工程领域应用也很广泛。</p>
+<p>上面都是针对应用层的，内核层的，上面的Pin和DynamoRIO就派不上用场了，对于这种系统内核级的指令插桩，有时就会采用虚拟化技术为实现，比如通过Qemu或Bochs虚拟机。</p>
+<p>ProjectZero的j00ru大神就用bochs的插桩API为实现针对内核double fetches的监测，项目称为bochspwn，后来又采用污点追踪方式检测未初始化漏洞导致的内核信息泄露，叫bochspwn-reloaded。</p>
+<p>Bochs Instrument API 文档参考：<a href="http://bochs.sourceforge.net/cgi-bin/lxr/source/instrument/instrumentation.txt" target="_blank" rel="external">http://bochs.sourceforge.net/cgi-bin/lxr/source/instrument/instrumentation.txt</a> ，在编译bochs时指定插桩代码目录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure [...] --enable-instrumentation=&quot;instrument/myinstrument&quot;</span><br></pre></td></tr></table></figure>
+<p>下面是bochspwn中用到的API：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Bochs初始化CPU对象时的回调函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_initialize</span><span class="params">(<span class="keyword">unsigned</span> cpu)</span></span>;	</span><br><span class="line"><span class="comment">// Bochs析构CPU对象时的回调函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_exit</span><span class="params">(<span class="keyword">unsigned</span> cpu)</span></span>;	</span><br><span class="line"><span class="comment">// Bochs访问线性内存时的回调函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_lin_access</span><span class="params">(<span class="keyword">unsigned</span> cpu, bx_address lin, bx_address phy,<span class="keyword">unsigned</span> len, <span class="keyword">unsigned</span> memtype, <span class="keyword">unsigned</span> rw)</span></span>;	</span><br><span class="line"><span class="comment">// Bochs执行指令前的回调函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_before_execution</span><span class="params">(<span class="keyword">unsigned</span> cpu, bxInstruction_c *i)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>bx_instr_initialize用来加载配置信息，针对不同的系统环境设置不同的数据结构偏移地址，用来提供需要的进程/线程等重要信息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">[general]</span><br><span class="line">trace_log_path      = memlog.bin</span><br><span class="line">modules_list_path   = modules.bin</span><br><span class="line"></span><br><span class="line">os                  = windows</span><br><span class="line">bitness             = 32</span><br><span class="line">version             = win10_32</span><br><span class="line"></span><br><span class="line">min_read_size       = 1</span><br><span class="line">max_read_size       = 16</span><br><span class="line">min_write_size      = 1</span><br><span class="line">max_write_size      = 16</span><br><span class="line"></span><br><span class="line">callstack_length    = 48</span><br><span class="line">write_as_text       = 0</span><br><span class="line"></span><br><span class="line">symbolize           = 0</span><br><span class="line">symbol_path         = &lt;symbols path&gt;</span><br><span class="line"></span><br><span class="line">[win7_32]</span><br><span class="line">kprcb               = 0x120</span><br><span class="line">current_thread      = 0x04</span><br><span class="line">tcb                 = 0x0</span><br><span class="line">process             = 0x150</span><br><span class="line">client_id           = 0x22c</span><br><span class="line">process_id          = 0</span><br><span class="line">thread_id           = 4</span><br><span class="line">create_time         = 0x200</span><br><span class="line">image_filename      = 0x16c</span><br><span class="line">kdversionblock      = 0x34</span><br><span class="line">psloadedmodulelist  = 0x18</span><br><span class="line">loadorder_flink     = 0x0</span><br><span class="line">basedllname         = 0x2c</span><br><span class="line">baseaddress         = 0x18</span><br><span class="line">sizeofimage         = 0x20</span><br><span class="line">us_len              = 0x0</span><br><span class="line">us_buffer           = 0x4</span><br><span class="line">teb_cid             = 0x20</span><br><span class="line">irql                = 0x24</span><br><span class="line">previous_mode       = 0x13a</span><br><span class="line">exception_list      = 0x0</span><br><span class="line">next_exception      = 0x0</span><br><span class="line">try_level           = 0xc</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<p>Bochspwn的核心功能实现就在于<code>bx_instr_lin_access</code>与<code>bx_instr_before_execution</code>两个函数。先看下<code>bx_instr_before_execution</code>的实现逻辑：</p>
+<ol>
+<li>忽略实模式real mode</li>
+<li>忽略无关的系统调用中断指令，仅允许<code>int 0x2e</code>与 <code>int 0x80</code></li>
+<li>获取当前进程/线程ID相关的信息，当发现漏洞时方便重现</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_before_execution</span><span class="params">(<span class="keyword">unsigned</span> cpu, bxInstruction_c *i)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> client_id thread;</span><br><span class="line">  BX_CPU_C *pcpu = BX_CPU(cpu);</span><br><span class="line">  <span class="keyword">unsigned</span> opcode;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// We're not interested in instructions executed in real mode.</span></span><br><span class="line">  <span class="keyword">if</span> (!pcpu-&gt;protected_mode() &amp;&amp; !pcpu-&gt;long64_mode()) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// If the system needs an additional invokement from here, call it now.</span></span><br><span class="line">  <span class="keyword">if</span> (globals::has_instr_before_execution_handler) &#123;</span><br><span class="line">    invoke_system_handler(BX_OS_EVENT_INSTR_BEFORE_EXECUTION, pcpu, i);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Any system-call invoking instruction is interesting - this</span></span><br><span class="line">  <span class="comment">// is mostly due to 64-bit Linux which allows various ways</span></span><br><span class="line">  <span class="comment">// to be used for system-call invocation.</span></span><br><span class="line">  <span class="comment">// Note: We're not checking for int1, int3 nor into instructions.</span></span><br><span class="line">  opcode = i-&gt;getIaOpcode();</span><br><span class="line">  <span class="keyword">if</span> (opcode != BX_IA_SYSCALL &amp;&amp; opcode != BX_IA_SYSENTER &amp;&amp; opcode != BX_IA_INT_Ib) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// The only two allowed interrupts are int 0x2e and int 0x80, which are legacy</span></span><br><span class="line">  <span class="comment">// ways to invoke system calls on Windows and linux, respectively.</span></span><br><span class="line">  <span class="keyword">if</span> (opcode == BX_IA_INT_Ib &amp;&amp; i-&gt;Ib() != <span class="number">0x2e</span> &amp;&amp; i-&gt;Ib() != <span class="number">0x80</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Obtain information about the current process/thread IDs.</span></span><br><span class="line">  <span class="keyword">if</span> (!invoke_system_handler(BX_OS_EVENT_FILL_CID, pcpu, &amp;thread)) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Process information about a new syscall depending on the current mode.</span></span><br><span class="line">  <span class="keyword">if</span> (!events::event_new_syscall(pcpu, &amp;thread)) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再看下<code>bx_instr_lin_access</code>实现逻辑：</p>
+<ol>
+<li>忽略仅读写指令</li>
+<li>检测CPU类型（32位或64位）</li>
+<li>判断当前指令地址pc是否为内核地址，判断访问的线性内存地址是否为用户层地址</li>
+<li>检测读取的内存长度是否处于0~16字节之间，长度大小范围在config.txt中配置，仅处理此范围内的指令操作</li>
+<li>通过上述条件之后，就代表可能存在内核漏洞，然后反汇编指令，然后填充日志记录信息</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bx_instr_lin_access</span><span class="params">(<span class="keyword">unsigned</span> cpu, bx_address lin, bx_address phy,</span></span></span><br><span class="line"><span class="function"><span class="params">                         <span class="keyword">unsigned</span> len, <span class="keyword">unsigned</span> memtype, <span class="keyword">unsigned</span> rw)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  BX_CPU_C *pcpu = BX_CPU(cpu);</span><br><span class="line">  <span class="comment">// Not going to use physical memory address.</span></span><br><span class="line">  (<span class="keyword">void</span>)phy;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Read-write instructions are currently not interesting.</span></span><br><span class="line">  <span class="keyword">if</span> (rw == BX_RW)</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Is the CPU in protected or long mode?</span></span><br><span class="line">  <span class="keyword">unsigned</span> mode = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Note: DO NOT change order of these ifs. long64_mode must be called</span></span><br><span class="line">  <span class="comment">// before protected_mode, since it will also return "true" on protected_mode</span></span><br><span class="line">  <span class="comment">// query (well, long mode is technically protected mode).</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (pcpu-&gt;long64_mode()) &#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> BX_SUPPORT_X86_64</span></span><br><span class="line">    mode = <span class="number">64</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span>  <span class="comment">// BX_SUPPORT_X86_64</span></span></span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (pcpu-&gt;protected_mode()) &#123;</span><br><span class="line">    <span class="comment">// This is either protected 32-bit mode or 32-bit compat. long mode.</span></span><br><span class="line">    mode = <span class="number">32</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// Nothing interesting.</span></span><br><span class="line">    <span class="comment">// TODO(gynvael): Well actually there is the smm_mode(), which</span></span><br><span class="line">    <span class="comment">// might be a little interesting, even if it's just the bochs BIOS</span></span><br><span class="line">    <span class="comment">// SMM code.</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Is pc in kernel memory area?</span></span><br><span class="line">  <span class="comment">// Is lin in user memory area?</span></span><br><span class="line">  bx_address pc = pcpu-&gt;prev_rip;</span><br><span class="line">  <span class="keyword">if</span> (!invoke_system_handler(BX_OS_EVENT_CHECK_KERNEL_ADDR, &amp;pc, <span class="literal">NULL</span>) ||</span><br><span class="line">      !invoke_system_handler(BX_OS_EVENT_CHECK_USER_ADDR, &amp;lin, <span class="literal">NULL</span>)) &#123;</span><br><span class="line">    <span class="keyword">return</span>; <span class="comment">/* pc not in ring-0 or lin not in ring-3 */</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Check if the access meets specified operand length criteria.</span></span><br><span class="line">  <span class="keyword">if</span> (rw == BX_READ) &#123;</span><br><span class="line">    <span class="keyword">if</span> (len &lt; globals::config.min_read_size || len &gt; globals::config.max_read_size) &#123;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (len &lt; globals::config.min_write_size || len &gt; globals::config.max_write_size) &#123;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Save basic information about the access.</span></span><br><span class="line">  log_data_st::mem_access_type access_type;</span><br><span class="line">  <span class="keyword">switch</span> (rw) &#123;</span><br><span class="line">    <span class="keyword">case</span> BX_READ:</span><br><span class="line">      access_type = log_data_st::MEM_READ;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> BX_WRITE:</span><br><span class="line">      access_type = log_data_st::MEM_WRITE;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> BX_EXECUTE:</span><br><span class="line">      access_type = log_data_st::MEM_EXEC;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> BX_RW:</span><br><span class="line">      access_type = log_data_st::MEM_RW;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">default</span>: <span class="built_in">abort</span>();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Disassemble current instruction.</span></span><br><span class="line">  <span class="keyword">static</span> Bit8u ibuf[<span class="number">32</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">char</span> pc_disasm[<span class="number">64</span>];</span><br><span class="line">  <span class="keyword">if</span> (read_lin_mem(pcpu, pc, <span class="keyword">sizeof</span>(ibuf), ibuf)) &#123;</span><br><span class="line">    disassembler bx_disassemble;</span><br><span class="line">    bx_disassemble.disasm(mode == <span class="number">32</span>, mode == <span class="number">64</span>, <span class="number">0</span>, pc, ibuf, pc_disasm);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// With basic information filled in, process the access further.</span></span><br><span class="line">  process_mem_access(pcpu, lin, len, pc, access_type, pc_disasm);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>信息记录方式都是通过invoke_system_handler函数去处理自定义系统事件，目前主要支持4种操作系统（windows\linux\freebsd\openbsd），macOS还没搞过，原作者是说想继续实现macOS，这个值得尝试开发下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">tag_kSystemEventHandlers</span> &#123;</span></span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">char</span> *system;</span><br><span class="line">  s_event_handler_func handlers[BX_OS_EVENT_MAX];</span><br><span class="line">&#125; kSystemEventHandlers[] = &#123;</span><br><span class="line">  &#123;<span class="string">"windows"</span>,</span><br><span class="line">   &#123;(s_event_handler_func)windows::init,</span><br><span class="line">    (s_event_handler_func)windows::check_kernel_addr,</span><br><span class="line">    (s_event_handler_func)windows::check_user_addr,</span><br><span class="line">    (s_event_handler_func)windows::fill_cid,	<span class="comment">// 获取线程环境块TEB，读取进程/线程ID</span></span><br><span class="line">    (s_event_handler_func)windows::fill_info,	<span class="comment">// 基于config.txt中配置的进线程结构offset去读取进线程信息，包括进程文件名、创建时间、栈回溯等信息</span></span><br><span class="line">    (s_event_handler_func)<span class="literal">NULL</span>&#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;<span class="string">"linux"</span>,</span><br><span class="line">   &#123;(s_event_handler_func)linux::init,</span><br><span class="line">    (s_event_handler_func)linux::check_kernel_addr,</span><br><span class="line">    (s_event_handler_func)linux::check_user_addr,</span><br><span class="line">    (s_event_handler_func)linux::fill_cid,</span><br><span class="line">    (s_event_handler_func)linux::fill_info,</span><br><span class="line">    (s_event_handler_func)<span class="literal">NULL</span>&#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;<span class="string">"freebsd"</span>,</span><br><span class="line">   &#123;(s_event_handler_func)freebsd::init,</span><br><span class="line">    (s_event_handler_func)freebsd::check_kernel_addr,</span><br><span class="line">    (s_event_handler_func)freebsd::check_user_addr,</span><br><span class="line">    (s_event_handler_func)freebsd::fill_cid,</span><br><span class="line">    (s_event_handler_func)freebsd::fill_info,</span><br><span class="line">    (s_event_handler_func)freebsd::instr_before_execution&#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;<span class="string">"openbsd"</span>,</span><br><span class="line">   &#123;(s_event_handler_func)openbsd::init,</span><br><span class="line">    (s_event_handler_func)openbsd::check_kernel_addr,</span><br><span class="line">    (s_event_handler_func)openbsd::check_user_addr,</span><br><span class="line">    (s_event_handler_func)openbsd::fill_cid,</span><br><span class="line">    (s_event_handler_func)openbsd::fill_info,</span><br><span class="line">    (s_event_handler_func)openbsd::instr_before_execution&#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;<span class="literal">NULL</span>, &#123;<span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>&#125;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>最后就是输出记录的信息，比如作者发现的CVE-2018-0894漏洞信息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">------------------------------ found uninit-copy of address fffff8a000a63010</span><br><span class="line"></span><br><span class="line">[pid/tid: 000001a0/000001a4] &#123;     wininit.exe&#125;</span><br><span class="line">       COPY of fffff8a000a63010 ---&gt; 1afab8 (64 bytes), pc = fffff80002698600</span><br><span class="line">       [                             mov r11, rcx ]</span><br><span class="line">Allocation origin: 0xfffff80002a11101</span><br><span class="line">                   (ntoskrnl.exe!IopQueryNameInternal+00000071)</span><br><span class="line">--- Shadow memory:</span><br><span class="line">00000000: 00 00 00 00 ff ff ff ff 00 00 00 00 00 00 00 00 ................</span><br><span class="line">00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................</span><br><span class="line">00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................</span><br><span class="line">00000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................</span><br><span class="line">--- Actual memory:</span><br><span class="line">00000000: 2e 00 30 00 aa aa aa aa 20 30 a6 00 a0 f8 ff ff ..0..... 0......</span><br><span class="line">00000010: 5c 00 44 00 65 00 76 00 69 00 63 00 65 00 5c 00 \.D.e.v.i.c.e.\.</span><br><span class="line">00000020: 48 00 61 00 72 00 64 00 64 00 69 00 73 00 6b 00 H.a.r.d.d.i.s.k.</span><br><span class="line">00000030: 56 00 6f 00 6c 00 75 00 6d 00 65 00 32 00 00 00 V.o.l.u.m.e.2...</span><br><span class="line">--- Stack trace:</span><br><span class="line"> #0  0xfffff80002698600 (ntoskrnl.exe!memmove+00000000)</span><br><span class="line"> #1  0xfffff80002a11319 (ntoskrnl.exe!IopQueryNameInternal+00000289)</span><br><span class="line"> #2  0xfffff800028d4426 (ntoskrnl.exe!IopQueryName+00000026)</span><br><span class="line"> #3  0xfffff800028e8fa8 (ntoskrnl.exe!ObpQueryNameString+000000b0)</span><br><span class="line"> #4  0xfffff8000291313b (ntoskrnl.exe!NtQueryVirtualMemory+000005fb)</span><br><span class="line"> #5  0xfffff800026b9283 (ntoskrnl.exe!KiSystemServiceCopyEnd+00000013)</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2018/12/01/bochspwn1/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/bochspwn/">bochspwn</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2018-11-24T02:09:41.000Z"><a href="/2018/11/24/杀软之殇/">2018-11-24</a></time>
       
       
@@ -907,97 +988,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2018-08-11T03:12:45.000Z"><a href="/2018/08/11/从攻防角度谈黑客与程序员/">2018-08-11</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2018/08/11/从攻防角度谈黑客与程序员/">从攻防角度谈黑客与程序员</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <blockquote>
-<p>常言道：“未知攻，焉知防”，然，“知攻未必知防”！</p>
-</blockquote>
-<p><img src="https://riusksk.me/media/hacker.jpg" alt=""></p>
-<p><strong>01 — 黑客的敌人是程序员</strong></p>
-<p>黑客所要攻破的任何一款产品，无论是网站、软件还是IoT硬件产品，这些都是由程序员开发的，所以他们要攻破的其实是程序员的安全思维缺陷。</p>
-<p>所以说，黑客的敌人是程序员。但如果黑客本身就是程序员呢？</p>
-<p><strong>02 — 会开发的黑客：知己知彼，百战不殆</strong></p>
-<p>有时某些大厂的漏洞致谢公告放出后，可能会出现连续几个月，某类漏洞突然暴增。因为程序员也常常会出现习惯性错误，比如习惯用memcpy危险函数，且不校验size，那么有一必有二，有可能顺藤摸瓜找到一堆此类漏洞。</p>
-<p>上面这种情况就是黑客从程序员的角度入手，去寻找突破口。</p>
-<p>在之前的工作中，也遇到过一些不懂安全的程序员，在转入安全漏洞挖掘领域后，能够快速上手，挖到不少Android等大厂产品的漏洞。这也利益于此前的开发基础，具备开发能力的程序员比只懂安全的技术人员更容易在安全道路上走得更远更深。</p>
-<p><strong>黑客是否需要精通开发？</strong>这是个老生常谈的问题了。</p>
-<p>如果你去看一些黑客大牛或漏洞挖掘高手写的代码，你会发现有时他们写得也跟我们一样烂。</p>
-<p>但也不是说搞安全就不需要学编程开发了，而是必学课程。只是，很多情况下，黑客具备的是基础开发能力，而非开发产品的能力，两者还是有区别的。但其实也不是绝对，我说的只是一种普遍情况。</p>
-<p><strong>对于安全从业人员，掌握基础开发能力是必备的，而是否具备产品开发能力成了一道分水岭。即，产品开发能力是加分项，而非必备项。</strong></p>
-<p><strong>03 — 懂安全的程序员：无存在感</strong></p>
-<center><img src="https://riusksk.me/media/god.jpg" alt=""></center>
-
-<p>先来看一幅漫画，估计这是许多安全开发同学的心声：防御住了，用户无感知；未防御住，用户就开始骂娘了，或者受公司处罚。</p>
-<p>程序员开发的产品出安全事故，肯定会受到处罚。大家常调侃道：CSO就是用来背锅的，多少有些道理。</p>
-<p>但如果懂安全的程序员开发出具有高安全性的产品，对用户，甚至对领导而言，都可能是无感知，跟不存在一般。</p>
-<p>常说赏罚分明，但上述普遍情况明显是不对等、不完善的赏罚机制。所以现在也有一些公司慢慢地增设“开发之星”、“质量之星”之类的奖励机制，也算是对此的一种弥补措施。</p>
-<p><strong>04 — 攻防不对等：攻击的是短板，防御的是体系</strong></p>
-<p>黑客攻击时，只需要找到系统的一处短板，就有可能攻破系统。</p>
-<p>业务防御时，则需要构建全面的防御体系，比黑客掌握更加全面的攻击点和防御策略，而非单一的技术点或者功能模块。</p>
-<p>因此，防御比攻击更难，两者是不对等的。</p>
-<p>有些大厂，比如微软就设有“纵深防御”奖励机制。纵深防御，通俗地讲，就是层层防御，一层防御失效后，仍有备用的其它防御策略生效。</p>
-<p>比如电影《侠盗联盟》中，去城堡偷项链的场景：</p>
-<p>翻过城墙后 =》还有保安 =》绕过保安后还有监控 =》绕过监控后还有防盗门 =》 进门后还有看门狗 =》最后还有指纹验证</p>
-<center><img src="https://riusksk.me/media/v2-838f8dccd10d662cbdd11f0972181b8f_hd.jpg" alt=""></center>
-
-<p><strong>05 — 知攻未必知防</strong></p>
-<p>常言道：“未知攻，焉知防”，对此我一直深信不疑。</p>
-<p>但这是必要不充分条件，因为现在互联网越来越方便，工具化、教程化的资源网上遍地都是，很多脚本小子随手就可以拿来入侵网站，但让他们提供防御方案，基本都要歇菜。</p>
-<p>之前面试过几个做渗透测试的同学，当问某个WEB漏洞的防御时，对方直接说，他只做攻击，不做防御，不懂这些。</p>
-<p>对于企业而言，让你做攻击测试的目的，还是为了提前作防御，如果只知攻，不懂防，又有多大价值呢？</p>
-<p><strong>06 — 结语</strong></p>
-<p>对于不懂产品开发的黑客，以及不懂安全的程序员，我们均表示理解；对于即懂安全又懂开发的同学，我们则爱之、惜之。但无论你是黑客（白帽子：无任何违法乱纪行为），还是程序员，如对【微信支付安全】感兴趣，均可私信本账号，共讨职业发展大计，承诺每条有效私信必回，欢迎搭讪。</p>
-<center><img src="http://riusksk.me/media/gzh.png" alt=""></center>
-
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2018/08/11/从攻防角度谈黑客与程序员/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/随笔杂谈/">随笔杂谈</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/攻防/">攻防</a>, <a href="/tags/黑客/">黑客</a>, <a href="/tags/程序员/">程序员</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -1019,6 +1009,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/01/22/Fuzzing技术发展的这30年/">从研究者的视角看Fuzzing技术发展30年</a>
+      </li>
     
       <li>
         <a href="/2020/01/21/Fuzzing平台建设的研究与设计-paper/">Fuzzing平台建设的研究与设计(paper)</a>
@@ -1056,10 +1050,6 @@
         <a href="/2019/05/11/2019年哪些安全大会的议题值得学习/">2019年哪些安全大会的议题值得学习</a>
       </li>
     
-      <li>
-        <a href="/2019/05/03/读《一本小小的蓝色逻辑书》/">读《一本小小的蓝色逻辑书》：识别常见的逻辑漏洞</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -1069,7 +1059,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>60</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>61</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>26</small></li>
   
@@ -1081,7 +1071,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/Bochspwn/" style="font-size: 10px;">Bochspwn</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzer/" style="font-size: 10px;">Fuzzer</a> <a href="/tags/Fuzzing/" style="font-size: 16.67px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 13.33px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 16.67px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/winafl/" style="font-size: 10px;">winafl</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全大会/" style="font-size: 10px;">安全大会</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/安全研究/" style="font-size: 11.67px;">安全研究</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 13.33px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/逻辑/" style="font-size: 10px;">逻辑</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/Bochspwn/" style="font-size: 10px;">Bochspwn</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzer/" style="font-size: 10px;">Fuzzer</a> <a href="/tags/Fuzzing/" style="font-size: 18.33px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 13.33px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 16.67px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/winafl/" style="font-size: 10px;">winafl</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全大会/" style="font-size: 10px;">安全大会</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/安全研究/" style="font-size: 11.67px;">安全研究</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 13.33px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/逻辑/" style="font-size: 10px;">逻辑</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
   </div>
 </div>
 

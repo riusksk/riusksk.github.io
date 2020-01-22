@@ -77,6 +77,84 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2020-01-22T08:16:48.000Z"><a href="/2020/01/22/Fuzzing技术发展的这30年/">2020-01-22</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2020/01/22/Fuzzing技术发展的这30年/">从研究者的视角看Fuzzing技术发展30年</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h3 id="源起"><a href="#源起" class="headerlink" title="源起"></a>源起</h3><p>1988年，在威斯康星大学Barton Miller教授的计算机实验课上（<em><a href="http://pages.cs.wisc.edu/~bart/fuzz/CS736-Projects-f1988.pdf" target="_blank" rel="external">http://pages.cs.wisc.edu/~bart/fuzz/CS736-Projects-f1988.pdf</a></em> ），首次提出<code>Fuzz生成器</code>(Fuzz Generator)的概念，用于测试Unix程序的健壮性，即用随机数据来测试程序直至崩溃。因此，Barton Miller教授也被多数人尊称为”模糊测试之父”。但是，当时更多是为了验证代码质量和程序的稳定性，而非专门用于挖掘安全漏洞，真正用于软件安全漏洞挖掘的开端要从下面两件事说起。</p>
+<h3 id="从学术界到工业界的证明"><a href="#从学术界到工业界的证明" class="headerlink" title="从学术界到工业界的证明"></a>从学术界到工业界的证明</h3><p>2001年，芬兰奥卢大学公布<code>PROTOS</code>测试集项目的研究成果（<em><a href="https://rd.springer.com/content/pdf/10.1007%2F978-0-387-35413-2_16.pdf" target="_blank" rel="external">https://rd.springer.com/content/pdf/10.1007%2F978-0-387-35413-2_16.pdf</a></em> ），首次将Fuzzing技术应用在网络协议的安全测试当中，他们针对不同的网络协议构造出不同的测试用例集，这些在其官网（<em><a href="https://www.ee.oulu.fi/research/ouspg/Protos" target="_blank" rel="external">https://www.ee.oulu.fi/research/ouspg/Protos</a></em> ）上依然可以下载到。2002年，<code>PROTOS</code>逐渐成熟，Microsoft开始为该项目提供资金支持。于是，2003年项目组成立了Codenomicon公司，开始将Fuzzing技术应用于商业产品，也确实发现了不少安全问题。因此，PROTOS项目可以说是Fuzzing技术发展历程中的一次重要里程碑。可能大家对Codenomicon公司不太了解，但说到”心脏滴血”漏洞，应该无人不知无人不晓。没错，它就是Codenomicon公司发现的。</p>
+<p>2002年，在BlackHat USA黑客大会上，来自<code>Immunity</code>安全公司（PS：还有人记得<code>Immunity Debugger</code>吗？）的Dave Aitel发表议题<em>“An Introduction to SPIKE, the Fuzzer Creation Kit”</em>，至此著名的Fuzzer工具<code>SPIKE</code>公布了，它是基于块模板定义的网络协议测试工具，优点是支持定义可变长度数据块的能力，除生成随机数据外，它还提供一些现成的边界值生成，以提供触发崩溃的概率。<code>SPIKE</code>的诞生，使得广大用户能够依据自身需求定制网络协议Fuzzer，这对Fuzzing技术的普及起到巨大的推动作用。早些年，笔者也曾写过一篇<code>SPIKE</code>的教程<em>“基于SPIKE的网络协议Fuzzing技术(<a href="http://riusksk.me/2011/12/30/spike-fuzz/)&quot;" target="_blank" rel="external">http://riusksk.me/2011/12/30/spike-fuzz/)&quot;</a></em>，但现在其实基本不用了。</p>
+<p>从<code>PROTOS</code>到<code>SPIKE</code>的诞生，代表着学术界与工业界对Fuzzing技术在商业与安全实战领域的应用提供了有力的证明。</p>
+<h3 id="文件Fuzzing技术的兴起"><a href="#文件Fuzzing技术的兴起" class="headerlink" title="文件Fuzzing技术的兴起"></a>文件Fuzzing技术的兴起</h3><p>2004年，<code>Peach</code>模糊测试框架的发布，标志着文件Fuzzing时代的到来。最初<code>Peach</code>是用<code>Python</code>开发的，后来在2007年被收购后改用<code>C#</code>重写，并分为社区版和付费版。<code>Peach</code>支持文件格式、网络协议、ActivieX控件等多种形式，通过编写pit文件(xml格式)来定义数据格式，每次开始写的时候其实挺费劲的，后来有人提供自动将010editor格式解析器（仿C语言的bt文件）转换为pit，在一定程度上可以缓解劳动力。笔者第一次通过文件Fuzzing挖到漏洞也是借助<code>Peach</code>实现的。</p>
+<p>直至今日，<code>Peach</code>依然还有人在用，更有人将<code>Peach</code>与<code>AFL</code>打通，在<code>Github</code>上发布<code>aflsmart</code>的开源项目。</p>
+<p>文件Fuzzing应该是当前Fuzzing应用中最为普遍的形式，即使是网络协议等其它目标的Fuzzing，也是可以转换为文件Fuzzing的。比如<code>OpenSSL</code>网络协议Fuzzing，通过源码打Log的方式先收集网络数据为本地文件，再调用其API写个hareness用AFL或libfuzzer进行本地测试，就顺利地将网络协议Fuzzing转换为文件Fuzzing。</p>
+<h3 id="语法模板Fuzzing：打开攻击浏览器的大门"><a href="#语法模板Fuzzing：打开攻击浏览器的大门" class="headerlink" title="语法模板Fuzzing：打开攻击浏览器的大门"></a>语法模板Fuzzing：打开攻击浏览器的大门</h3><p>2008年，Mozilla安全团队发布了<code>jsfunfuzz</code>和<code>DOMfuzz</code>，基于JS语法模板来生成测试用例，以挖掘浏览器漏洞，后来两款工具合称<code>funfuzz</code>( <em><a href="https://github.com/MozillaSecurity/funfuzz" target="_blank" rel="external">https://github.com/MozillaSecurity/funfuzz</a></em> )，以开源的形式对外公开。这款工具在当时确实挖到了不少浏览器的漏洞，但其语法模板的可扩展性并不友好，只能在其代码上作修改，这点不如<code>dharma</code>( <em><a href="https://github.com/MozillaSecurity/dharma" target="_blank" rel="external">https://github.com/MozillaSecurity/dharma</a></em> )，以及后来Project Zero发布的<code>Domato</code>( <em><a href="https://github.com/googleprojectzero/domato" target="_blank" rel="external">https://github.com/googleprojectzero/domato</a></em> )。这种基于语法模板的Fuzzing方式，挖完一波后，就要求保持模板的更新才能持续产出，同时要理解测试目标在JS代码上的触发逻辑，比如<code>JIT</code>可通过for循环来触发代码优化，<code>Dom UAF</code>可通过创建<code>Dom</code>元素，并调用相关元素的方法来触发删除和引用，以探测是否存在<code>UAF</code>的可能。整体上依赖于对语法和目标原理的理解，才能构造出好的语法模板。</p>
+<p>在<code>funfuzz</code>之后，业界也出现了好多款优秀的JS语法Fuzzing工具，比如<code>grinder</code>、<code>nduja</code>、<code>crossfuzz</code>等等。当年PC流行时代，用<code>grinder</code>来Fuzzing Windows IE浏览器的人应该比较多。</p>
+<p>浏览器一直是网络攻击中最受关注和最常用的入口，过去如是，现今依然。因为系统自带，且用户使用率高，又是远程访问的最佳途径。渲染引擎和JS引擎一直是浏览器主要攻击面，主要以html、js、vbs作为解析语言，因此对这些语言的语法Fuzzing就自然而然的产生了。除此之外，如今<code>WebSQL</code>也开始备受关注，比如Chrome上的<code>sqlite</code>模块，SQL语法的fuzzing也随之而来。</p>
+<p>除了浏览器，pdf的JS和flash的as语法解析，也一度作为攻击Adobe Reader和Adobe Flash的入口。</p>
+<h3 id="符号执行：学术与工业之争"><a href="#符号执行：学术与工业之争" class="headerlink" title="符号执行：学术与工业之争"></a>符号执行：学术与工业之争</h3><p>2008年，基于<code>LLVM</code>的符号执行引擎<code>KLEE</code>发布后，引领了一波程序分析新姿势的潮流。后来，符号执行被应用于Fuzzing中，经常被用来打CTF比赛，用来找key、解混淆、fuzzing等用途。比如，将<code>AFL</code>与<code>angr</code>结合的<code>driller</code>（<em><a href="https://github.com/shellphish/driller" target="_blank" rel="external">https://github.com/shellphish/driller</a></em> )，还被用在了CGC(Cyber Grand Challenge)自动网络攻防竞赛上，但这种比赛都是特定场景下的比赛，不能完全代表真实的软件世界；还有，将AFL与KLEE结合的<code>kleefl</code>（<em><a href="https://github.com/julieeen/kleefl" target="_blank" rel="external">https://github.com/julieeen/kleefl</a></em> ），这款工具知道的人应该不多。</p>
+<p>符号执行在学术界中应用得比较多，工业界相对少一些，这是现状。将符号执行应用在Fuzzing中，通过约束求解新路径的条件值，以增加代码覆盖率，可以一定程度上弥补暴力变异的不足。符号执行主要的挑战在于路径爆炸问题，约束求解能力的局限性，以及性能消耗问题，比如内存和时间消耗过大。符号执行与约束求解对于小型应用比较有效果，也常被用于CTF比赛，在CTF中使用最广的当属<code>angr</code>框架。但是，基于当前的业界情况，符号执行仍然比较难以应用于大型软件中。符号执行在Fuzzing中的应用并没有真正带来新的技术浪潮，真正的技术浪潮始于代码覆盖引导技术的引入。</p>
+<h3 id="代码覆盖引导技术：Fuzzing技术的分水岭"><a href="#代码覆盖引导技术：Fuzzing技术的分水岭" class="headerlink" title="代码覆盖引导技术：Fuzzing技术的分水岭"></a>代码覆盖引导技术：Fuzzing技术的分水岭</h3><p>2013年底，<code>afl-fuzz</code>（ <em><a href="http://lcamtuf.coredump.cx/afl/" target="_blank" rel="external">http://lcamtuf.coredump.cx/afl/</a></em> ）发布了，首次采用源码编译插桩和QEMU模式来实现代码覆盖引导Fuzzing的方式，这绝对是Fuzzing技术发展历程中最重要的一次里程碑，也是技术分水岭，它开启了Fuzzing技术的新篇章。刚发布的时候，afl并没有那么火，主要是在2014和2015年期间，被很多人使用后挖到不少主流开源软件的0day，并在Twitter上宣传，使得更多人关注到并使用，这证明了代码覆盖引导技术在Fuzzing实战中的价值。</p>
+<p>随后，基于afl二次开发的fuzzer如雨后春笋般涌现出来，比如winafl、libfuzzer、AFLFast、Vuzzer等等，而且针对各种语言的版本出相继出现，比如go、python、js、ruby等等。一些已知名的Fuzzer也迅速跟进，比如<code>syzkaller</code>内核Fuzzer，它原本是基于API调用模板的，后来也引入了代码覆盖引导能力。同时，业界都在试图将其移植到各种平台上（比如windows、android、IOT平台等等），并实现支持闭源程序的代码覆盖引导能力，这一直是近几年来Fuzzing技术研究的热点方向，比如动静态插桩、虚拟机模拟执行、硬件特性等等。无论是工业界大会(BlackHat、OffensiveCon、CCC等等)，还是学术界四大顶会，关于Fuzzing的议题也越来越多，相信这种趋势会持续下去。</p>
+<h3 id="系统函数调用模板Fuzzing一度成为攻击内核的常用手段"><a href="#系统函数调用模板Fuzzing一度成为攻击内核的常用手段" class="headerlink" title="系统函数调用模板Fuzzing一度成为攻击内核的常用手段"></a>系统函数调用模板Fuzzing一度成为攻击内核的常用手段</h3><p>2015年Google开源了<code>syzkaller</code>，一款用于Fuzzing Linux内核的工具，漏洞产出特别高。现在依然很多人用它来挖各系统平台的内核漏洞，包括Android、macOS、Windows等主流系统平台。<code>syzkaller</code>通过定义系统函数调用模板来实现，在模板中定义系统调用函数参数类型，并解决函数调用的顺序依赖和值依赖问题。Project Zero官方博客就曾写过一篇利用<code>syzkaller</code> fuzz <code>socket</code>挖掘Linux内核漏洞的文章，叫<em>“Exploiting the Linux kernel via packet sockets(syzkaller usage)”</em> ( <em><a href="https://googleprojectzero.blogspot.com/2017/05/exploiting-linux-kernel-via-packet.html" target="_blank" rel="external">https://googleprojectzero.blogspot.com/2017/05/exploiting-linux-kernel-via-packet.html</a></em> )，详细讲述了如何编写模板，以及<code>syzkaller</code>的使用方式。</p>
+<p>Windows平台也常被通过构建GUI API调用模板来Fuzzing系统内核，macOS平台内核Fuzzing就常拿IOKit函数开刀，都是基于这种系统函数调用模板的Fuzzing方式实现的。</p>
+<p>2016年Google提出”结构感知型Fuzzing”(<a href="https://github.com/google/fuzzing/blob/master/docs/structure-aware-fuzzing.md" target="_blank" rel="external">Structure-Aware Fuzzing </a>)，并基于<code>libfuzzer</code>与<code>protobuf</code>实现了<code>libprotobuf-mutator</code>(<em><a href="https://github.com/google/libprotobuf-mutator" target="_blank" rel="external">https://github.com/google/libprotobuf-mutator</a></em>)，其实现思路与<code>syskaller</code>相似，它弥补了<code>peach</code>的无覆盖引导的问题，也弥补了<code>afl</code>和<code>libfuzzer</code>对于复杂输入类型的低效变异问题。正如前面提到的，也有人将<code>afl</code>与<code>peach</code>整合成<code>aflsmart</code>，以此实现类似功能。现在Project Zero也用<code>libprotobuf-mutator</code>来fuzzing iOS内核，详见<em>“SockPuppet: A Walkthrough of a Kernel Exploit for iOS 12.4”</em>(<em><a href="https://googleprojectzero.blogspot.com/2019/12/sockpuppet-walkthrough-of-kernel.html" target="_blank" rel="external">https://googleprojectzero.blogspot.com/2019/12/sockpuppet-walkthrough-of-kernel.html</a></em>)。</p>
+<p>结构感知型Fuzzing并不是什么新技术，跟Peach的实现思路是一样的，只是对输入数据类型作模板定义，以提高变异的准确率。只是当前大家更倾向于将结构感知与覆盖引导等多种技术优势整合一块，基于系统函数模板用于Fuzzing系统内核，相信这种方式未来仍会被经常使用。</p>
+<h3 id="助力开源生态安全建设"><a href="#助力开源生态安全建设" class="headerlink" title="助力开源生态安全建设"></a>助力开源生态安全建设</h3><p>在工业界中，最知名的Fuzzing平台当属Google的<code>clusterfuzz</code>（ <em><a href="https://github.com/google/clusterfuzz" target="_blank" rel="external">https://github.com/google/clusterfuzz</a></em> ），运行在25000+台机器上，发现过16000+个Chrome bug，11000+开源项目bug，这个平台整合了<code>OSS-Fuzz</code>(<em><a href="https://github.com/google/oss-fuzz" target="_blank" rel="external">https://github.com/google/oss-fuzz</a></em> )，既支持libfuzzer和AFL的代码覆盖引导Fuzzing，也支持黑盒Fuzzing。<code>OSS-Fuzz</code>和<code>clusterfuzz</code>分别在2016年和2019年开源对外，业界同行可以协同开发，对于提交fuzzer后挖到新漏洞的，Google会美刀奖励提交者，对于主流开源项目的<code>0Day</code>，Google也是有奖励机制的。同时，Google开发了<code>ASan</code>、<code>MSan</code>、<code>TSan</code>、<code>UBSan</code>、<code>LSan</code>等多种编译时插桩工具用来帮助检测漏洞，有些漏洞只在开启相关Sanitizer之后才会触发异常，跟在Windows下开启页堆的方式类似，可以帮助更有效地发现崩溃场景，在发现和分析漏洞上提供帮助。</p>
+<p>Google对开源生态安全建设的贡献，是各大互联网公司不能比的。他们的贡献不仅帮助提高各大主流开源项目的安全性，也降低了Fuzzing的技术成本，在资金和技术上对开源生态安全的建设提供了大力支持。</p>
+<h3 id="语法树变异成为语法解析引擎漏洞挖掘的新方向"><a href="#语法树变异成为语法解析引擎漏洞挖掘的新方向" class="headerlink" title="语法树变异成为语法解析引擎漏洞挖掘的新方向"></a>语法树变异成为语法解析引擎漏洞挖掘的新方向</h3><p>2012年，USENIX安全顶会上发布一篇论文<em>“Fuzzing with code fragments”</em>，研究者开发了一款叫<code>LangFuzz</code>的工具，他们从firefox、webkit、chromium等开源的浏览器项目以及网络上去收集js测试样本，然后用ANTLR其进行AST语法树分析，再将样本拆分成非终止语法的代码片断，放入代码池中，最后再基于代码池的代码片断对输入样本作交叉变异，主要取同类型的代码片断作替换或插入，再运行生成的变异样本进行测试。</p>
+<p>基于<code>LangFuzz</code>的思路，后面又有人开源了<code>IFuzzer</code>，并发表相关论文公开，在<code>LangFuzz</code>的基础上增加遗传算法，对输入样本进行评估，筛选出优秀的个体进行组装以产生新样本。不过这个工具并没有那么完善，也未见到比较好的实际漏洞产出。</p>
+<p>2018年，Project Zero的Samuel Groß发布一款叫<code>fuzzilli</code>的JS语法Fuzzer工具，它整合了语法变异、模板生成、覆盖引导等多种技术，使用自定义中间语言用于语法变异，再将变异后的中间语言转换成JS代码。<code>fuzzilli</code>在3大主流JS引擎的测试中，战果颇丰，发现了不少漏洞，也因此被业界同行拿去作二次开发，又发现了其它新的漏洞。</p>
+<p>2019年，有2篇学术论文发布，他们都引用了论文<em>“Fuzzing with code fragments”</em>中的思想，它们分别是”<em>CodeAlchemist: Semantics-Aware Code Generation to Find Vulnerabilities in JavaScript Engines</em>“和”<em>Superion: Grammar-Aware Greybox Fuzzing</em>“，<code>CodeAlchemist</code>将输入样本进行语法树分析和数据流分析，为拆分出来的代码片段设置前置和后置的约束条件，前置条件代表一些引用的变量需要先定义，后置条件代表代码片段的输出结果，通过两者来解决一些未定义变量引用的问题。<code>Superion</code>是将语法树变异规则置入AFL中实现的，借助AFL筛选变异后的输入样本，而且支持多种语言，也是采用ANTLR作语法树分析，其在语法扩展上比较友好。两款工具均在最新JS解析引擎上发现过若干0day漏洞，并且均已在Github上开源。</p>
+<p>除了传统的模板Fuzzing，语法变异(无论是AST，还是自定义中间语言)也是一项值得探索的方向。</p>
+<h3 id="人工智能在Fuzzing中的应用仍亟待探索"><a href="#人工智能在Fuzzing中的应用仍亟待探索" class="headerlink" title="人工智能在Fuzzing中的应用仍亟待探索"></a>人工智能在Fuzzing中的应用仍亟待探索</h3><p>2018年是人工智能元年，很多领域都在探索AI的应用，漏洞挖掘领域亦然。之前笔者阅读过一些AI应用在Fuzzing中的相关议题，主要集中在测试样本生成的训练上，利用已知漏洞的样本或正常样本作训练，然后重新生成测试样本进行测试。可惜从效果上来看，是一种高投入低产出的事情，有些还不如直接暴力变异来得高效高产。但这也不是说，AI没有价值，只是它在这方面的发展时间较短，很多东西仍亟待探索，还有待时间的年轮来证明。</p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2020/01/22/Fuzzing技术发展的这30年/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Fuzzing/">Fuzzing</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2020-01-21T02:19:37.000Z"><a href="/2020/01/21/Fuzzing平台建设的研究与设计-paper/">2020-01-21</a></time>
       
       
@@ -912,169 +990,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2019-05-03T01:46:24.000Z"><a href="/2019/05/03/读《一本小小的蓝色逻辑书》/">2019-05-03</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2019/05/03/读《一本小小的蓝色逻辑书》/">读《一本小小的蓝色逻辑书》：识别常见的逻辑漏洞</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>最近读了一本书叫《一本小小的蓝色逻辑书》，算是逻辑推理入门书籍，觉得不错，推荐给大家。</p>
-<p>这本书在微信读书上可以找到，大概需要4个多小时的阅读时间。</p>
-<p><img src="http://riusksk.me/media/006tNc79gy1g2nwae2o1hj30ku0engpd.jpg" alt="img"></p>
-<h3 id="什么是逻辑推理"><a href="#什么是逻辑推理" class="headerlink" title="什么是逻辑推理"></a>什么是逻辑推理</h3><p>在生活、学习与工作中，我们总是要运用到逻辑推理能力，甚至我们自己也经常挂在嘴边，但若问什么是逻辑推理呢，估计没多少人能说清。</p>
-<blockquote>
-<p>所谓”逻辑推理”，在广义上被定义为”我们评估信息的过程”。要想做出正确的决定，我们首先要占有充分的信息，而要想占有充分的信息，就必须提出正确的问题。所以那些擅长逻辑推理的人，往往也比较善于提出问题，搜集相关信息，用”正确的”方式对这些信息进行评估。最重要提，他们可以在不受他人干扰的情况下独立完成这一过程。</p>
-</blockquote>
-<p>在我记忆中，整个学生时代，几乎没有过这门课程，大部分的逻辑推理能力都是基于以往的中学数学课程训练，比如真假命题、逆命题、证明题等等，本书中也有讲到这些。</p>
-<p>也许我们的日常数学真的只需要加减乘除的运算，但以前的数学课程培养出来的逻辑思维，却可以运用一生。</p>
-<h3 id="推翻前提找答案"><a href="#推翻前提找答案" class="headerlink" title="推翻前提找答案"></a>推翻前提找答案</h3><p>这里说的”推翻前提找答案”，其实是想说”<strong>水平思考法</strong>“，一种摆脱前提设想而进行创意思考的方式，不走寻常路，换个角度看待问题，而不是接受他人提出的前提条件。我们多数人一般都是使用“<strong>垂直思考法</strong>”，却沿着原定的逻辑路线思考下去，就是我们俗语常说的“<strong>直脑筋</strong>”，多少略带有点贬义。</p>
-<p>下面是两种思考方法的对比表：</p>
-<p><img src="http://riusksk.me/media/006tNc79gy1g2nws25a6hj30ps0eswht.jpg" alt="image-20190503101519293"></p>
-<p>可能还是太抽象了，因此作者讲了一个故事：</p>
-<blockquote>
-<p>许多年前，一个倒霉的商人欠了别人一大笔钱。由于没钱还债，商人很可能会被债主投进大牢。</p>
-<p>债主是个脾气又坏又丑的糟老头，但他却看上了商人年轻貌美的女儿。于是他告诉商人：”我有个办法，不仅可以把你的债务一笔勾销，还能让你的女儿免于因为你入狱而流落街头。”</p>
-<p>具体办法是：债主把一黑一白的小石头放进空袋子，让商人女儿摸一块。如果摸到白石头，则她父亲的债一笔勾销，她也无须嫁给债主；如果摸到的是黑石头，债务仍然可以一笔勾销，但她必须嫁给债主。如果她不答应这个游戏，那么她父亲会被立刻投进监狱。</p>
-<p>商人父女别无选择，只好答应。</p>
-<p>于是三人来到债主花园内铺满鹅卵石的小路上，债主俯身捡两块黑石头扔进袋子里，他自以为神不知鬼不觉，却不知这一切都被商人女儿看在眼里。</p>
-</blockquote>
-<p>如果是个”直脑筋”的人，可能就想到下面两种做法：</p>
-<ol>
-<li>当场揭穿糟老头的阴谋，然后商人进监狱；</li>
-<li>女儿认命，抽到黑石头，嫁给糟老头，债务一笔勾销。</li>
-</ol>
-<p>最后的结局是这样：</p>
-<blockquote>
-<p>商人的女儿摸出一块石头，但故意把它掉到地上，跟一堆鹅卵石混到一起。然后一边假装寻找石头，一边若有所思地说道，”但没关系，只要看看袋子里的那块石头是什么颜色，就可以判断我刚才摸出的那块石头是什么颜色了。”</p>
-<p>债主一时愣住了，不知道该说什么，只好让那个女孩拿出袋子里的石头，结果可想而知。</p>
-</blockquote>
-<p>这就是水平思考法，我们可以回顾下这个故事，若要想免债的话，其中的”前提条件”是：</p>
-<p><strong>前提条件</strong>：从袋子中摸出白石头。</p>
-<p>现在通过改变该前提条件来思考，比如这样：</p>
-<ol>
-<li>从袋子中摸出<strong><code>黑</code></strong>石头：现场改变规则，摸出黑石头可免债。</li>
-<li>摸出石头后，<strong>根据剩下的石头颜色来判断是否摸到的是白石头</strong>，正如故事中所做的。</li>
-</ol>
-<p>日常生活中，阻碍我们进行创意思考的是，不假思索的程序性反应，就是不费脑子的事情，比如商店购物、开车等等，但有时遇到一些新情况，这些程序性反应就不灵了，这时就需要启动非程序性反应。</p>
-<p>书中还给了一道训练”水平思考法”的题目，大家可以先试着做下，一开始我也没做出来（答案见文末附录）：</p>
-<blockquote>
-<p>用最多4条直线(笔尖不离纸)把下面的9个点连接起来。</p>
-<p><img src="http://riusksk.me/media/006tNc79gy1g2nxsccj6aj30ck096t8z.jpg" alt="image-20190503105014426"></p>
-</blockquote>
-<p>还有另一道题，是当年面试微信支付时被问到的类似题目，但微信的更难一点（拿3个桶倒出想要的重量），答案亦见文末附录：</p>
-<blockquote>
-<p>马戏团老板派小丑去附近河边打水给大象喝。因为想在里面加入一种特殊健康浓缩剂。所以需要整整7加仑水，不能多，也不能少。他给了小丑两个水桶，一个5加仑，一个3加仑，让小丑去打整整7加仑水。请问小丑该怎么办？</p>
-</blockquote>
-<h3 id="效用概率做决策"><a href="#效用概率做决策" class="headerlink" title="效用概率做决策"></a>效用概率做决策</h3><p>如果大家经常逛知乎的话，会发现很多人在问：</p>
-<blockquote>
-<ol>
-<li>做安全需不需要考研？</li>
-<li>选择什么样的学校和专业好就业？</li>
-<li>选择什么样的职业更适合自己？</li>
-<li>其它…….</li>
-</ol>
-</blockquote>
-<p>相信很多人做决策的时候，多会先分析出各项选择的优缺点再打分对比，选择出最佳方案，这叫<strong>利弊分析法</strong>。</p>
-<p>有时，我们又会先列出在意的点，根据重要程度作个加权值，然后给个选择打分，根据分数高低来排序选择，这叫<strong>加权排序法</strong>。</p>
-<p>还有决策法、矩阵分析法、概率树等等多种决策分析方法，在我们在决策时，能够给我们提供很大的帮助。</p>
-<p>不过我在这里，重点是想介绍下<strong>效用分析法</strong>，即分析某个结果对我们的价值，通常跟概率一块使用。</p>
-<p>打个比方，一名大四学生在规划自己的人生。摆在他面前的有三种选择：</p>
-<ol>
-<li>成为旅行作家；</li>
-<li>加入外交部；</li>
-<li>成为公司销售人员。</li>
-</ol>
-<p>这里肯定不能只从金钱回报来考虑这个问题，因为这名学生真正看重的并不是赚多少钱，而是自己从事这份工作时的内心感受。</p>
-<p>若是以前，我可能会列出收入、职业前景、兴趣、工作环境等多个维度来考虑。但是某些场景下，我们常常忽略实现这一结果的概率，比如我想当皇帝，这种不是靠努力就能实现的。</p>
-<p>因此这里最好的办法就是去计算每份职业的期望值（Expected Value, 简称EV）。EV计算公式：</p>
-<blockquote>
-<p>EV = 效用(某种结果带给我们的心理满足度) x 出现这种结果的概率</p>
-</blockquote>
-<p>根据上述公式，我们得到：</p>
-<p><img src="http://riusksk.me/media/006tNc79gy1g2nzxuyujbj30lj088jsm.jpg" alt="image-20190503120444342"></p>
-<p>这里每种结果存在实现概率，是因为该结果要求一定的技能，而这名学生此时并不完全具备这些技能。</p>
-<p>根据上面的分析，该学生选择加入外部部的期望值最高，所以理性地说，他应该选择这份工作。</p>
-<h3 id="五大常见推理漏洞"><a href="#五大常见推理漏洞" class="headerlink" title="五大常见推理漏洞"></a>五大常见推理漏洞</h3><p>通常说的推理漏洞，大多是指那些跟我们所做假设相关的漏洞。书中列举出五大常见推理漏洞：</p>
-<ol>
-<li><strong>比较和类比假设漏洞：偷换概念</strong></li>
-</ol>
-<p>把两个虽然不同，但逻辑上却相等的事物进行对比。</p>
-<p>比如拿橘子和苹果作比较。再比如说，医学院校经常拿小白鼠做实验，然后把在动物身上得到的实验结果当作参考，但是若因小白鼠身上实验某种药物时发生某种并发症，就认为人类在使用这种药物时也会出现同样的并发症，就是错误的。</p>
-<ol start="2">
-<li><strong>代表性假设漏洞：以偏概全</strong></li>
-</ol>
-<p>不能拿特殊案例来代表整体，统计的样本要足够多才行，否则它就会弱化我们的论断。</p>
-<p>比如《思考，快与慢》中曾举过一个例子：</p>
-<blockquote>
-<p>最近，某大医院出生婴儿1000人， 某小医院出生婴儿50人， 问哪家医院生男婴的比例大于60%的可能性较大？</p>
-</blockquote>
-<p>我们都知道生男生女的概率分别是50%，统计样本越多就越会接进这个数值，但如果你若去小医院，它的波动概率就很大，可能生男80%，也可以40%，所以小医院生男婴的比例就越有可能大于60%。</p>
-<ol start="3">
-<li><strong>“好证据”假设漏洞：对相关证据视而不见</strong></li>
-</ol>
-<p>当我们不经验证就想当然地认为自己的证据有效时，就很容易犯此错误。那些比较客观、相关、精确、真实的证据有利于强化我们的论述；而主观、不具代表性、不精确的论据则只会弱化我们的论述。</p>
-<p>比如，一个不愿意戒烟的人总是会看到吸烟有利的一面，而对那些支持戒烟的事实会视而不见。</p>
-<ol start="4">
-<li><strong>因果假设漏洞：混淆因果关系</strong></li>
-</ol>
-<p>当我们错误地做出因果假设，或者在没有证据的情况下就认定一件事会导致另外一件事时，就会犯这种错误。</p>
-<p>比如，每个活过百岁的人都喝过白开水，所以就认定经常喝白开水就能长命百岁，这显然是错误，它们不存在直接的因果关系。很多学术界的社会/生物健康调查相关的报导就经常出现这种错误。</p>
-<ol start="5">
-<li><strong>实施假设漏洞：在执行计划时没有提前考虑可能出现的瓶颈</strong></li>
-</ol>
-<p>当我们没有预料到计划实施过程可能出一的瓶颈，或者盲目地相信自己的计划会轻而易举地得到落实时，我们就会犯这种错误。</p>
-<p>比如，几年前，西方某旅行杂志曾登过一篇文章说：”因为如今搭乘飞机很方便，而且人们手头余钱也越来越多，所以很快大家都会去非洲看狮子了。”</p>
-<p>这显然就是错误的，去不去非洲看狮子，并非单纯考虑金钱和交通就行，比如先问问你有没有年假再说吧！</p>
-<h3 id="识别常见的逻辑漏洞"><a href="#识别常见的逻辑漏洞" class="headerlink" title="识别常见的逻辑漏洞"></a>识别常见的逻辑漏洞</h3><p>根据书中列举的常见逻辑漏洞，我画了张思维导图：</p>
-<p><img src="https://riusksk.me/media/常见逻辑漏洞识别.svg" alt="常见逻辑漏洞识别"></p>
-<h3 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h3><p>1、9点连线的答案：多数人会受限于前提条件：只能在9个点内形成的长方形之内画线，如果能够摆脱该前提条件，那么答案就会有很多种：</p>
-<p><img src="http://riusksk.me/media/006tNc79gy1g2nyan53h1j30440a73yu.jpg" alt="image-20190503110749773"><img src="http://riusksk.me/media/006tNc79gy1g2nz31v5o9j30900akwfd.jpg" alt="image-20190503113506286"><img src="http://riusksk.me/media/006tNc79gy1g2nz1dfjtvj30af071t93.jpg" alt="image-20190503113329718"></p>
-<p>2、水桶题目的答案：先倒满5加仑的水桶，再把它倒进3加仑水桶，把3加仑水桶里的水倒掉，把5加仑水桶里剩下的2加仑水倒进3加仑水桶里，重新装满5加仑水桶（5加仑 + 2加仑 = 7加仓）。</p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2019/05/03/读《一本小小的蓝色逻辑书》/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/随笔杂谈/">随笔杂谈</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/逻辑/">逻辑</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -1096,6 +1011,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/01/22/Fuzzing技术发展的这30年/">从研究者的视角看Fuzzing技术发展30年</a>
+      </li>
     
       <li>
         <a href="/2020/01/21/Fuzzing平台建设的研究与设计-paper/">Fuzzing平台建设的研究与设计(paper)</a>
@@ -1133,10 +1052,6 @@
         <a href="/2019/05/11/2019年哪些安全大会的议题值得学习/">2019年哪些安全大会的议题值得学习</a>
       </li>
     
-      <li>
-        <a href="/2019/05/03/读《一本小小的蓝色逻辑书》/">读《一本小小的蓝色逻辑书》：识别常见的逻辑漏洞</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -1146,7 +1061,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>60</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>61</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>26</small></li>
   
@@ -1158,7 +1073,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/Bochspwn/" style="font-size: 10px;">Bochspwn</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzer/" style="font-size: 10px;">Fuzzer</a> <a href="/tags/Fuzzing/" style="font-size: 16.67px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 13.33px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 16.67px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/winafl/" style="font-size: 10px;">winafl</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全大会/" style="font-size: 10px;">安全大会</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/安全研究/" style="font-size: 11.67px;">安全研究</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 13.33px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/逻辑/" style="font-size: 10px;">逻辑</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/Bochspwn/" style="font-size: 10px;">Bochspwn</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzer/" style="font-size: 10px;">Fuzzer</a> <a href="/tags/Fuzzing/" style="font-size: 18.33px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 13.33px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 16.67px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/winafl/" style="font-size: 10px;">winafl</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全大会/" style="font-size: 10px;">安全大会</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/安全研究/" style="font-size: 11.67px;">安全研究</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 13.33px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/逻辑/" style="font-size: 10px;">逻辑</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
   </div>
 </div>
 
