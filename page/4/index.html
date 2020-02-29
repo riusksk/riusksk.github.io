@@ -77,6 +77,97 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2018-08-22T12:21:28.000Z"><a href="/2018/08/22/honggfuzz漏洞挖掘技术2/">2018-08-22</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2018/08/22/honggfuzz漏洞挖掘技术2/">honggfuzz漏洞挖掘技术深究系列（2）—— Persistent Fuzzing</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>上篇<a href="https://mp.weixin.qq.com/s?__biz=MzU0MzgzNTU0Mw==&amp;mid=2247483746&amp;idx=1&amp;sn=9d0ff5e0bae65f9ca9dbea4cf74449c6" target="_blank" rel="external">《honggfuzz漏洞挖掘技术深究系列（1）——反馈驱动（Feedback-Driven）》</a>讲到基于软件的代码覆盖率驱动fuzzing的方式，除了软件还有硬件方式，即基于Intel BTS (Branch Trace Store) 或Intel PT (Processor Tracing) 去计算代码覆盖率，同时要求Linux内核&gt;=4.2，这种方式的最大好处是完全由硬件支配，无所谓软件是闭源还是开源。由于硬件环境受限，我也一直未使用过，有此条件的同学可以试下。</p>
+<p>本篇主要讲下持久型fuzzing（Persistent Fuzzing），即fuzzing API，这种方式会更精准和高效的。</p>
+<p>先看使用方法：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ cat test.c</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;inttypes.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;testlib.h&gt;   </span></span></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">LLVMFuzzerTestOneInput</span><span class="params">(<span class="keyword">uint8_t</span> **buf, <span class="keyword">size_t</span> *len)</span></span>;</span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">LLVMFuzzerTestOneInput</span><span class="params">(<span class="keyword">uint8_t</span> *buf, <span class="keyword">size_t</span> len)</span> </span>&#123;</span><br><span class="line">  _FuncFromFuzzedLib_(buf, len);  <span class="comment">// 目标函数</span></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line">$ clang<span class="number">-4.0</span> -fsanitize-coverage=trace-pc,indirect-calls,trace-cmp fuzzedlib.c -o fuzzedlib.o</span><br><span class="line">$ clang<span class="number">-4.0</span> test.c fuzzedlib.o honggfuzz/libhfuzz/libhfuzz.a -o test</span><br><span class="line">$ honggfuzz -z -P -f INPUT.corpus -- ./test</span><br></pre></td></tr></table></figure>
+<p>这里用到几个编译选项：</p>
+<ul>
+<li><strong>trace-pc</strong>：追踪执行过的基本块BB，在每个edge中插入__saitizer_cov_trace_pc()函数，可定义该函数作为相应的回调处理</li>
+<li><strong>indirect-calls</strong>：在每个间接调用中添加PC追踪，与前面的trace-pc或trace-pc-guard联合使用，回调函数：__sanitizer_cov_trace_pc_indir</li>
+<li><strong>trace-cmp</strong>：追踪每个比较指令和swith语句</li>
+</ul>
+<p>以trace-pc为例，测试代码如下：</p>
+<center><img src="http://riusksk.me/media/trace_pc1.png" alt=""></center><br>用trace_pc编译：<br><center><img src="http://riusksk.me/media/trace_pc2.png" alt=""></center>
+
+<p>可以看到自定义的函数被执行，输出执行过的不同pc地址，其它编译选项的用法同上。<br>下面是honggfuzz对各个回调函数的定义情况：</p>
+<center><img src="http://riusksk.me/media/instrument.png" alt=""></center>
+
+<p>然后就是记录代码覆盖率情况并进行统计，跟驱动反馈的方式一样了。</p>
+<p>再回头看使用示例中的<code>LLVMFuzzerTestOneInput</code>函数,honggfuzz是如何处理它的呢？</p>
+<center><img src="http://riusksk.me/media/persistent.png" alt=""></center>
+
+<p>通过for无限循环调用目标函数进行Fuzzing，其中参数buf，即样本文件内容，len是数据长度。</p>
+<p>最后根据发现的新路径，将相应的样本作为新样本继续fuzzing。</p>
+<center><img src="http://riusksk.me/media/fuzz_back.png" alt=""></center>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2018/08/22/honggfuzz漏洞挖掘技术2/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/honggfuzz/">honggfuzz</a>, <a href="/tags/漏洞挖掘/">漏洞挖掘</a>, <a href="/tags/fuzzing/">fuzzing</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2018-08-11T03:12:45.000Z"><a href="/2018/08/11/从攻防角度谈黑客与程序员/">2018-08-11</a></time>
       
       
@@ -814,59 +905,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2018-03-22T10:27:15.000Z"><a href="/2018/03/22/2018年信息安全从业者书单推荐/">2018-03-22</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2018/03/22/2018年信息安全从业者书单推荐/">2018年信息安全从业者书单推荐</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>知乎上经常有人推荐一些程序员书单，也比较全面，但系统化的安全书单很少，虽然在一些安全新媒体上也有人推荐过一些，但上面不是广告就是有啥新书就推荐啥，甚至让人怀疑作者是不是搞技术的，可能大多没看过自己推荐的书。因此自己结合自己10多年来读过一些觉得比较好的书或业界公认的名著，整理出此份信息安全书单，仅供参考。<br>后续更新可关注GitHub：<a href="https://github.com/riusksk/secbook" target="_blank" rel="external">https://github.com/riusksk/secbook</a></p>
-<p><img src="http://riusksk.me/media/secbook.jpg" alt=""></p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2018/03/22/2018年信息安全从业者书单推荐/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/随笔杂谈/">随笔杂谈</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/书籍/">书籍</a>, <a href="/tags/信息安全/">信息安全</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -888,6 +926,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/02/29/用AFL快速通关超级玛丽/">用afl玩超级玛丽：通过Fuzzing探索程序空间状态以发现更多执行路径</a>
+      </li>
     
       <li>
         <a href="/2020/01/22/Fuzzing技术发展的这30年/">从研究者的视角看Fuzzing技术发展30年</a>
@@ -925,10 +967,6 @@
         <a href="/2019/06/29/Infiltrate2019议题学习/">Infiltrate2019议题学习</a>
       </li>
     
-      <li>
-        <a href="/2019/05/11/2019年哪些安全大会的议题值得学习/">2019年哪些安全大会的议题值得学习</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -938,7 +976,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>61</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>62</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>26</small></li>
   
@@ -950,7 +988,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/Bochspwn/" style="font-size: 10px;">Bochspwn</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzer/" style="font-size: 10px;">Fuzzer</a> <a href="/tags/Fuzzing/" style="font-size: 18.33px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 13.33px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 16.67px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/winafl/" style="font-size: 10px;">winafl</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全大会/" style="font-size: 10px;">安全大会</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/安全研究/" style="font-size: 11.67px;">安全研究</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 13.33px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/逻辑/" style="font-size: 10px;">逻辑</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    <a href="/tags/0day/" style="font-size: 11.43px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 15.71px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 12.86px;">BlackHat</a> <a href="/tags/Bochspwn/" style="font-size: 10px;">Bochspwn</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.43px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 14.29px;">Flash</a> <a href="/tags/Fuzzer/" style="font-size: 10px;">Fuzzer</a> <a href="/tags/Fuzzing/" style="font-size: 18.57px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 17.14px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 12.86px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.43px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.43px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/afl/" style="font-size: 10px;">afl</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 12.86px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.43px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 15.71px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.43px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.43px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/winafl/" style="font-size: 10px;">winafl</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全大会/" style="font-size: 10px;">安全大会</a> <a href="/tags/安全审计/" style="font-size: 11.43px;">安全审计</a> <a href="/tags/安全研究/" style="font-size: 11.43px;">安全研究</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.43px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 12.86px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 12.86px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.43px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/逻辑/" style="font-size: 10px;">逻辑</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
   </div>
 </div>
 

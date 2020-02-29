@@ -1,0 +1,267 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8" />
+  
+  <title>用afl玩超级玛丽：通过Fuzzing探索程序空间状态以发现更多执行路径 | riusksk&#39;s blog</title>
+  <meta name="author" content="riusksk" />
+
+  
+  <meta name="description" content="今年S&amp;amp;P顶会上有一篇研究论文“IJON: Exploring Deep State Spaces via Fuzzing”，他们通过改造AFL来探测程序的空间状态，以发现更多程序行为，并拿游戏”超级玛丽”来作演示：
+
+当前最流行的Fuzzing技术就是基于覆盖率的方法，Edge Cover" />
+  
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <meta property="og:title" content="用afl玩超级玛丽：通过Fuzzing探索程序空间状态以发现更多执行路径" />
+  <meta property="og:site_name" content="riusksk&#39;s blog" />
+
+  
+  
+
+  
+    <meta property="og:image" content="undefined" />
+  
+
+  
+  <link href="/css/images/favicon.ico" rel="icon" />
+  
+
+  <link rel="alternate" href="/atom.xml" title="riusksk&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78773323-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+
+  <!-- baidu webmaster push -->
+  <script src='//push.zhanzhang.baidu.com/push.js'></script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">riusksk&#39;s blog</a></h1>
+  <h2><a href="/">攀蟾折桂摄寰宇，摘星揽月御乾坤。踏云踩雾骋宵壤，驱风逐日闯天地。 ------泉哥</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/atom.xml">RSS订阅</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2020-02-29T06:47:24.000Z"><a href="/2020/02/29/用AFL快速通关超级玛丽/">2020-02-29</a></time>
+      
+      
+  
+    <h1 class="title">用afl玩超级玛丽：通过Fuzzing探索程序空间状态以发现更多执行路径</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>今年S&amp;P顶会上有一篇研究论文<em>“IJON: Exploring Deep State Spaces via Fuzzing”</em>，他们通过改造AFL来探测程序的空间状态，以发现更多程序行为，并拿游戏”超级玛丽”来作演示：</p>
+<p><img src="http://riusksk.me/media/Feb-29-2020 14-19-47.gif" alt=""></p>
+<p>当前最流行的Fuzzing技术就是基于覆盖率的方法，Edge Coverage应该是当前最有效的覆盖率统计方法，比BasicBlock方式多记录调用边界，而afl对覆盖率的探测很多是暴力猜解的，一些afl家族工具也对其进行扩展，比如切割多字节指令为单字节作数据比较，提取cmp指令的一些常量操作值作变异。但是，这种方法对于一些特定的代码结构，若不去探测程序状态空间的中间点，就很难触发新的覆盖路径。</p>
+<h4 id="何为程序状态空间？"><a href="#何为程序状态空间？" class="headerlink" title="何为程序状态空间？"></a>何为程序状态空间？</h4><p>状态空间代表程序所有可能状态的集合，状态代表内存和寄存器的一种配置，以及系统提供的状态(比如文件描述符、类似原语)。状态空间比代码覆盖统计空间更大，若改造AFL就需要实现对状态空间的支持，以优化测试用例达到状态的多样性。</p>
+<h4 id="论文主要贡献"><a href="#论文主要贡献" class="headerlink" title="论文主要贡献"></a>论文主要贡献</h4><ol>
+<li>分析当前主流Fuzzer的反馈机制，并实现如何用它们表示状态空间；</li>
+<li>扩展当前主流的覆盖反馈Fuzzer的能力，允许分析人员通过程序状态空间解决当前业界方法无法解决的路径约束问题；</li>
+<li>展示了可信平台模块(TPM)、复杂格式解析器、超级马里奥游戏、迷宫和散列映射实现的软件仿真器的状态空间，演示其是如何被Fuzzer有效探索到的。顺便，解决掉一些CGC挑战集合中的难题（CGC专门为机器人自动打CTF而设计的题目，与真实软件场景还是有差异的），也发现了一些真实软件的漏洞（其实就是一个偏门的dmg2img工具而已）。</li>
+</ol>
+<h4 id="主要设计原理"><a href="#主要设计原理" class="headerlink" title="主要设计原理"></a>主要设计原理</h4><p>作者设计了一套源码注释原语，其实就是给源码加个一两行补丁代码，用来干预Fuzzer的反馈功能。在可交互的Fuzzing会话中，分析人员可以人工介入去分析一直无法触达的执行路径，然后为其增加补丁代码解决路径探索障碍的问题。</p>
+<p>afl-gcc或afl-clang本身就是对gcc/clang编译器的封装，添加一些编译选项，以及代码插桩的功能，作者为其编写了个链接库，以实现前面所说的注释原语，包括一些自定义函数和宏等，通过它能够访问AFL用于存储覆盖信息的位图（其实是个哈希表），直接添加和设置条目上去，将状态值直接反馈给Fuzzer。同时，也允许相同的edge coverage存储到不同的覆盖位图中，因为不同的状态值可能触发的是同一处edge coverage，这代表它能够实现更细粒度的反馈，为此它还提供扩展用于存储覆盖位置的共享内存区域。对于状态空间爆炸的问题，也会提供”爬山算法”（hill-climbing）作出优化选择。</p>
+<p>作者对超级玛丽作了修改，使所有的键盘命令都可以从标准输入中读取，并且马里奥只能不停地向右跑，只要停下来就死掉，这个设计主要是为节省时间。</p>
+<p>作者还用改造后的Ijon与AFL作对比，运行12小时的AFL看其能打到哪一关，而使用注释原语的Ijon只几分钟就通过了大部分的关卡，有些确实过不了。下图是超级玛丽打喷火怪兽那关，线条是Fuzzer发现的所有执行路径，对比还是比较明显的，AFL暴力探测的密集度比较明显，更关键还是没通关，至少从作者统计图上看是如此的。</p>
+<p><img src="http://riusksk.me/media/image-20200229151836427.png" alt="image-20200229151836427"></p>
+<p>论文链接：<a href="https://www.syssec.ruhr-uni-bochum.de/media/emma/veroeffentlichungen/2020/02/27/IJON-Oakland20.pdf" target="_blank" rel="external">https://www.syssec.ruhr-uni-bochum.de/media/emma/veroeffentlichungen/2020/02/27/IJON-Oakland20.pdf</a></p>
+<p><img src="http://riusksk.me/media/WX20200229-165739.png" alt="WX20200229-165739"></p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2020/02/29/用AFL快速通关超级玛丽/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Fuzzing/">Fuzzing</a>, <a href="/tags/afl/">afl</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+</section>
+
+
+ -->
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:riusksk.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2020/02/29/用AFL快速通关超级玛丽/">用afl玩超级玛丽：通过Fuzzing探索程序空间状态以发现更多执行路径</a>
+      </li>
+    
+      <li>
+        <a href="/2020/01/22/Fuzzing技术发展的这30年/">从研究者的视角看Fuzzing技术发展30年</a>
+      </li>
+    
+      <li>
+        <a href="/2020/01/21/Fuzzing平台建设的研究与设计-paper/">Fuzzing平台建设的研究与设计(paper)</a>
+      </li>
+    
+      <li>
+        <a href="/2019/11/30/Frida框架在Fuzzing中的应用/">Frida框架在Fuzzing中的应用</a>
+      </li>
+    
+      <li>
+        <a href="/2019/11/18/Fuzzing平台建设的研究与设计/">Fuzzing平台建设的研究与设计</a>
+      </li>
+    
+      <li>
+        <a href="/2019/11/02/Jandroid：半自动化Android应用逻辑漏洞挖掘/">Android应用逻辑漏洞半自动化挖掘思路</a>
+      </li>
+    
+      <li>
+        <a href="/2019/09/07/漫谈网络安全应急指导思想/">漫谈网络安全应急要略</a>
+      </li>
+    
+      <li>
+        <a href="/2019/08/18/安全研究的价值思考/">安全研究的价值思考</a>
+      </li>
+    
+      <li>
+        <a href="/2019/07/14/一些值得学习的Fuzzer开源项目/">一些值得学习的Fuzzer开源项目</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/29/Infiltrate2019议题学习/">Infiltrate2019议题学习</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/技术分享/">技术分享</a><small>62</small></li>
+  
+    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>26</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/0day/" style="font-size: 11.43px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 15.71px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 12.86px;">BlackHat</a> <a href="/tags/Bochspwn/" style="font-size: 10px;">Bochspwn</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.43px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 14.29px;">Flash</a> <a href="/tags/Fuzzer/" style="font-size: 10px;">Fuzzer</a> <a href="/tags/Fuzzing/" style="font-size: 18.57px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 17.14px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 12.86px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.43px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.43px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/afl/" style="font-size: 10px;">afl</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 12.86px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.43px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 15.71px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.43px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.43px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/winafl/" style="font-size: 10px;">winafl</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全大会/" style="font-size: 10px;">安全大会</a> <a href="/tags/安全审计/" style="font-size: 11.43px;">安全审计</a> <a href="/tags/安全研究/" style="font-size: 11.43px;">安全研究</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.43px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 12.86px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 12.86px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.43px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/逻辑/" style="font-size: 10px;">逻辑</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  <p>
+  
+  &copy; 2020 riusksk
+  
+  All rights reserved.</p>
+  <p>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+  & Hosted by <a href="http://github.com" target="_blank">GitHub</a>
+  <!--<span id="busuanzi_container_site_pv" >
+    ，本站总访问量<span id="busuanzi_value_site_pv" ></span>次
+  </span>
+  -->
+  </p>
+</div>
+<div class="clearfix"></div>
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+</footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+<div id='bg'></div>
+</body>
+</html>

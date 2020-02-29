@@ -77,6 +77,73 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2020-02-29T06:47:24.000Z"><a href="/2020/02/29/用AFL快速通关超级玛丽/">2020-02-29</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2020/02/29/用AFL快速通关超级玛丽/">用afl玩超级玛丽：通过Fuzzing探索程序空间状态以发现更多执行路径</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>今年S&amp;P顶会上有一篇研究论文<em>“IJON: Exploring Deep State Spaces via Fuzzing”</em>，他们通过改造AFL来探测程序的空间状态，以发现更多程序行为，并拿游戏”超级玛丽”来作演示：</p>
+<p><img src="http://riusksk.me/media/Feb-29-2020 14-19-47.gif" alt=""></p>
+<p>当前最流行的Fuzzing技术就是基于覆盖率的方法，Edge Coverage应该是当前最有效的覆盖率统计方法，比BasicBlock方式多记录调用边界，而afl对覆盖率的探测很多是暴力猜解的，一些afl家族工具也对其进行扩展，比如切割多字节指令为单字节作数据比较，提取cmp指令的一些常量操作值作变异。但是，这种方法对于一些特定的代码结构，若不去探测程序状态空间的中间点，就很难触发新的覆盖路径。</p>
+<h4 id="何为程序状态空间？"><a href="#何为程序状态空间？" class="headerlink" title="何为程序状态空间？"></a>何为程序状态空间？</h4><p>状态空间代表程序所有可能状态的集合，状态代表内存和寄存器的一种配置，以及系统提供的状态(比如文件描述符、类似原语)。状态空间比代码覆盖统计空间更大，若改造AFL就需要实现对状态空间的支持，以优化测试用例达到状态的多样性。</p>
+<h4 id="论文主要贡献"><a href="#论文主要贡献" class="headerlink" title="论文主要贡献"></a>论文主要贡献</h4><ol>
+<li>分析当前主流Fuzzer的反馈机制，并实现如何用它们表示状态空间；</li>
+<li>扩展当前主流的覆盖反馈Fuzzer的能力，允许分析人员通过程序状态空间解决当前业界方法无法解决的路径约束问题；</li>
+<li>展示了可信平台模块(TPM)、复杂格式解析器、超级马里奥游戏、迷宫和散列映射实现的软件仿真器的状态空间，演示其是如何被Fuzzer有效探索到的。顺便，解决掉一些CGC挑战集合中的难题（CGC专门为机器人自动打CTF而设计的题目，与真实软件场景还是有差异的），也发现了一些真实软件的漏洞（其实就是一个偏门的dmg2img工具而已）。</li>
+</ol>
+<h4 id="主要设计原理"><a href="#主要设计原理" class="headerlink" title="主要设计原理"></a>主要设计原理</h4><p>作者设计了一套源码注释原语，其实就是给源码加个一两行补丁代码，用来干预Fuzzer的反馈功能。在可交互的Fuzzing会话中，分析人员可以人工介入去分析一直无法触达的执行路径，然后为其增加补丁代码解决路径探索障碍的问题。</p>
+<p>afl-gcc或afl-clang本身就是对gcc/clang编译器的封装，添加一些编译选项，以及代码插桩的功能，作者为其编写了个链接库，以实现前面所说的注释原语，包括一些自定义函数和宏等，通过它能够访问AFL用于存储覆盖信息的位图（其实是个哈希表），直接添加和设置条目上去，将状态值直接反馈给Fuzzer。同时，也允许相同的edge coverage存储到不同的覆盖位图中，因为不同的状态值可能触发的是同一处edge coverage，这代表它能够实现更细粒度的反馈，为此它还提供扩展用于存储覆盖位置的共享内存区域。对于状态空间爆炸的问题，也会提供”爬山算法”（hill-climbing）作出优化选择。</p>
+<p>作者对超级玛丽作了修改，使所有的键盘命令都可以从标准输入中读取，并且马里奥只能不停地向右跑，只要停下来就死掉，这个设计主要是为节省时间。</p>
+<p>作者还用改造后的Ijon与AFL作对比，运行12小时的AFL看其能打到哪一关，而使用注释原语的Ijon只几分钟就通过了大部分的关卡，有些确实过不了。下图是超级玛丽打喷火怪兽那关，线条是Fuzzer发现的所有执行路径，对比还是比较明显的，AFL暴力探测的密集度比较明显，更关键还是没通关，至少从作者统计图上看是如此的。</p>
+<p><img src="http://riusksk.me/media/image-20200229151836427.png" alt="image-20200229151836427"></p>
+<p>论文链接：<a href="https://www.syssec.ruhr-uni-bochum.de/media/emma/veroeffentlichungen/2020/02/27/IJON-Oakland20.pdf" target="_blank" rel="external">https://www.syssec.ruhr-uni-bochum.de/media/emma/veroeffentlichungen/2020/02/27/IJON-Oakland20.pdf</a></p>
+<p><img src="http://riusksk.me/media/WX20200229-165739.png" alt="WX20200229-165739"></p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2020/02/29/用AFL快速通关超级玛丽/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Fuzzing/">Fuzzing</a>, <a href="/tags/afl/">afl</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2020-01-22T08:16:48.000Z"><a href="/2020/01/22/Fuzzing技术发展的这30年/">2020-01-22</a></time>
       
       
@@ -865,131 +932,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2019-05-11T02:19:22.000Z"><a href="/2019/05/11/2019年哪些安全大会的议题值得学习/">2019-05-11</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2019/05/11/2019年哪些安全大会的议题值得学习/">2019年哪些安全大会的议题值得学习</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>“2019年哪些安全大会值得参加？”或者这更符合多数人心中的标题，但为何不这么写呢？</p>
-<p>因为有些拥有好议题的大会一般都会公开PPT，尤其是国外会议，来回参会成本比较高，如果有现成的PPT供学习，自然不用每次都参加。当然，也有因作者拒绝公开的议题，这种只能现场听了。</p>
-<p>评价安全大会的好坏，是多方面的，绝不是单纯的议题质量这一维度。但这里我主要想从技术者的角度来看评价，所以后面你发现很多知名大会未在此列，请不要惊讶。</p>
-<p>即使是同一举办方，也无法保证每年的议题质量呈上升状态，有些会议也开始没落了，所以这里以2019年为时间点来点评。</p>
-<p>下面来聊聊2019年哪些安全大会的议题值得学习，有些已经举办过，有些尚未开始。</p>
-<h2 id="推荐的安全会议"><a href="#推荐的安全会议" class="headerlink" title="推荐的安全会议"></a>推荐的安全会议</h2><h3 id="1、BlackHat"><a href="#1、BlackHat" class="headerlink" title="1、BlackHat"></a>1、BlackHat</h3><p><img src="http://riusksk.me/media/image-20190511125059375.png" alt="image-20190511125059375"></p>
-<p><strong>官网</strong>：<a href="https://www.blackhat.com" target="_blank" rel="external">https://www.blackhat.com</a></p>
-<p>如果你不知道BlackHat，说明你不在安全圈混。</p>
-<p>USA是主会场，议题质量和数量也是最高的，议题类型覆盖面也很广，除此之外还有欧洲和亚洲等分会场，质量相对次一些。</p>
-<p>这次BlackHat USA的议题也陆续公开了：<a href="https://www.blackhat.com/us-19/briefings/schedule/index.html" target="_blank" rel="external">https://www.blackhat.com/us-19/briefings/schedule/index.html</a></p>
-<p>早几年的议题水平参差不齐，很水的也有，打广告也有。最近几年反而议题质量提高，不少华人面孔出现，为了PR效果而竞争，促进大家都拿出干货来分享，这也是其有利的一面。</p>
-<p>每年都有几千个议题投稿，竞争很大，但这很好地促进议题质量的提高。</p>
-<p>每年会后，官方都会放出PPT与视频，非常开放地分享知识。</p>
-<p>所以，首推BlackHat，自然无疑。</p>
-<p>但如果你以为接下我会写Defcon，那我会告诉你：No！</p>
-<h3 id="2、OffensiveCon"><a href="#2、OffensiveCon" class="headerlink" title="2、OffensiveCon"></a>2、OffensiveCon</h3><p><img src="http://riusksk.me/media/Logo_Offensivecon_by_BFS_1.jpg" alt="offensivecon"></p>
-<p><strong>官网</strong>：<a href="https://www.offensivecon.org/" target="_blank" rel="external">https://www.offensivecon.org/</a></p>
-<p>我之前还专门写了篇文章<a href="http://riusksk.me/2019/02/22/今年的OffensiveCon大会议题不错/" target="_blank" rel="external">《今年的OffensiveCon大会议题质量不错》</a>介绍2019年大会中一些不错的议题。</p>
-<p>虽然OffensiveCon是从2018年才开始举办的，但议题质量一直保持不错，演讲者中包括Project Zero、Google syzkaller作者、Pwn2Own与Hack2Win获奖者等等。</p>
-<p>会后，一般是由演讲者选择是否公开ppt，多数人是在Twitter上公开的，官网上我没找到资源（<a href="https://github.com/riusksk/SecConArchive/tree/master/OffensiveCon2019），所以之前收集的ppt都是从twitter上扒下来的。" target="_blank" rel="external">https://github.com/riusksk/SecConArchive/tree/master/OffensiveCon2019），所以之前收集的ppt都是从twitter上扒下来的。</a></p>
-<h3 id="3、HITB-Hack-In-The-Box"><a href="#3、HITB-Hack-In-The-Box" class="headerlink" title="3、HITB (Hack In The Box)"></a>3、HITB (Hack In The Box)</h3><p><img src="http://riusksk.me/media/image-20190511133408850.png" alt="image-20190511133408850"></p>
-<p>官网：<a href="https://conference.hitb.org/" target="_blank" rel="external">https://conference.hitb.org/</a></p>
-<p>这几天HITB刚在荷兰阿姆斯特丹举办完，议题PPT也一并公开(<a href="https://conference.hitb.org/hitbsecconf2019ams/materials/)。" target="_blank" rel="external">https://conference.hitb.org/hitbsecconf2019ams/materials/)。</a></p>
-<p>如果要说国内外安全会议中，哪个公开PPT最快的，一定是HITB，他们一般是现场演讲完，就直接扔官网下载。然后过一段时间，也同样发布演讲视频。</p>
-<p>他们有时会同时搞两个演讲会场，一个是收费的主会场，议题质量高一些，一个是免费的，叫CommSec，用来提携新人，议题质量相对比较次，每个议题分享时间也比较短，最多半小时。</p>
-<p>之前去新加坡参加过一次HITB，人数不多，场地也不大，但可以感受到与国内安全会议的区别：更注重技术交流，而非搞关系。</p>
-<p>2018年开始，HITB也开始与京东合作，在北京举办分会场，没去过，不作评价，但国际会议本土化，总会产生一些差异的。</p>
-<h3 id="4、InfiltrateCon"><a href="#4、InfiltrateCon" class="headerlink" title="4、InfiltrateCon"></a>4、InfiltrateCon</h3><p><img src="http://riusksk.me/media/image-20190511134410680.png" alt="image-20190511134410680"></p>
-<p>官网：<a href="https://infiltratecon.com/" target="_blank" rel="external">https://infiltratecon.com</a></p>
-<p>从2011年开始举办的，已经走过8个年头。</p>
-<p>看了今年的议题，还是有干货的，但只有4个议题ppt在twitter上公开。</p>
-<p>以前，会后都会在官网上公开PPT和视频，但目前官方还没公开。</p>
-<p>今年的议题涉及Chrome RCE、iOS与Android提权、Pwn TEE、浏览器JS Fuzzing等等，只能坐等官方公开PPT了。</p>
-<h3 id="5、Chaos-Communication-Congress-C3"><a href="#5、Chaos-Communication-Congress-C3" class="headerlink" title="5、Chaos Communication Congress(C3)"></a>5、Chaos Communication Congress(C3)</h3><p><img src="http://riusksk.me/media/image-20190511141920353.png" alt="image-20190511141920353"></p>
-<p>官网：<a href="https://www.ccc.de/" target="_blank" rel="external">https://www.ccc.de/</a></p>
-<p>德国混淆黑客大会，常叫C3会议，常在C3前面加上第几届，比如今年第35届，所以叫35C3，历史非常悠久。</p>
-<p>以前大多是聚焦在无线电安全，所以一些什么2G\3G\4G短信、电话窃听经常出自该会议。熟悉无线电安全的同学，应该都听过。2018年也有一些不错的软件安全相关的议题，这些在之前写的文章<a href="http://riusksk.me/2018/12/30/%E6%8E%A8%E8%8D%90%E4%BB%8A%E5%B9%B4C3%E9%BB%91%E5%AE%A2%E5%A4%A7%E4%BC%9A%E4%B8%8A%E7%9A%84%E5%87%A0%E4%B8%AA%E8%AE%AE%E9%A2%98/" target="_blank" rel="external">《推荐今年C3黑客大会上的几个议题》</a>介绍过了。</p>
-<p>除了大会议题，不得不提下他们的CTF，非常具有实战价值，比如2018年的题目，直接拿pwn2own漏洞当比赛，从safari代码执行到提权，还有VisualBox沙盒逃逸题目，需要利用到0Dday，出题者是ProjectZero的人，早就将其卖给ZDI，刷了不少VBox漏洞。这些CTF题目在网上都有相应的WriteUp可供学习。</p>
-<p>这些议题只有演讲视频公开，没有PPT，官方会放在<a href="https://media/ccc.de，可在线或下载观看。" target="_blank" rel="external">https://media/ccc.de，可在线或下载观看。</a></p>
-<p>都是在每年的12月份举办，2019的还有半年呢……</p>
-<h3 id="6、CanSecWest"><a href="#6、CanSecWest" class="headerlink" title="6、CanSecWest"></a>6、CanSecWest</h3><p><img src="http://riusksk.me/media/image-20190511143022033.png" alt="image-20190511143022033"></p>
-<p>官网：<a href="https://cansecwest.com/" target="_blank" rel="external">https://cansecwest.com</a></p>
-<p>CanSecWest都是与Pwn2Own一块出现的，以前议题PPT都是放在<a href="https://www.slideshare.net/上分享，但从2018年开始又不搞了。" target="_blank" rel="external">https://www.slideshare.net/上分享，但从2018年开始又不搞了。</a></p>
-<p>每年议题不多，但质量还是可以的，不过感觉这两年的质量略有下降。</p>
-<p>今年3月的议题也没看到有下载，也是混Twitter找ppt的，只看了《<strong>vs com.apple.security.sandbox</strong>》这个议题，今年我感兴趣的议题没几个，大家根据自己喜好选择吧。</p>
-<p>如果你各个议题PPT，也欢迎分享下。</p>
-<h3 id="7、MOSEC-移动安全技术峰会"><a href="#7、MOSEC-移动安全技术峰会" class="headerlink" title="7、MOSEC 移动安全技术峰会"></a>7、MOSEC 移动安全技术峰会</h3><p><img src="http://riusksk.me/media/image-20190511145201148.png" alt="image-20190511145201148"></p>
-<p>官网：<a href="http://mosec.org" target="_blank" rel="external">http://mosec.org</a></p>
-<p>MOSEC是从2015年开始举办的，由盘古与韩国POC联合举办，聚集移动安全领域，包括Android、iOS、IoT以及无线电等领域。虽然起步晚，但议题干货满满的，应该是目前国内最好的安全会议了。</p>
-<p>今年的议题也已经陆续公开了，包括iOS越狱、Android提权、LTE、基带、卫星系统等等。</p>
-<p>官网是不公开大会的议题PPT，由演讲者选择，所以想学习的同学，可能还是得去参会。</p>
-<p>从2015年第一届我就开始参加，本月底还会去。去年参会，早上出酒店一辆车都打不到，又不在地铁口，最后骑了1个多小时的单车到会场，不容易啊……</p>
-<h3 id="8、POC"><a href="#8、POC" class="headerlink" title="8、POC"></a>8、POC</h3><p><img src="http://riusksk.me/media/poclogo.png" alt="img"></p>
-<p>官网：<a href="http://powerofcommunity.net/" target="_blank" rel="external">http://powerofcommunity.net/</a></p>
-<p>POC(PowerOfCommunity)起始于2006年，在韩国举办的。单从议题质量看，确实不错，大多漏洞研究领域的前沿技术，但它经常是”二手货”，也就是在其它安全会议讲过后，但去韩国观光旅游顺便讲下。</p>
-<p>还有个意思的现象就是，每年的议题超过一半是中国人讲的。</p>
-<p>所以，你推荐也对，你不推荐也没错。</p>
-<p>不过，有个好处就是，POC议题PPT都是提供下载的。有时在其它会议找不到PPT时，到POC官网翻下，偶有小惊喜。</p>
-<p>另外还有个会议叫ZeroNights，同一举办方，更多是面向老外的。</p>
-<h2 id="那些未提及的知名大会"><a href="#那些未提及的知名大会" class="headerlink" title="那些未提及的知名大会"></a>那些未提及的知名大会</h2><h3 id="1、Defcon"><a href="#1、Defcon" class="headerlink" title="1、Defcon"></a>1、Defcon</h3><p>很多时候，Defcon议题都是BlackHat挑剩的，有的人也会直接议题双投。上面的议题质量更是参差不齐，相对BlackHat要求更低，更开放。我很少看Defcon议题，偶而网上有人发才看。</p>
-<h3 id="2、RSA"><a href="#2、RSA" class="headerlink" title="2、RSA"></a>2、RSA</h3><p>RSA是一个充满商业气息的大会，如果你看过官网的PPT，就会发现里面充满诸多广告，有的议题可能就几页图片，所以从技术角度来看，是没有多少学习的价值。</p>
-<p>但是，RSA有时也反应出的安全的风向标，虽有炒作的成分，但显然PR得甚是成功。比如当年的APT、数据可视化、威胁情报等等</p>
-<p>RSA的创新沙盒是一项不错的活动，很多创业公司把他们研发的新产品拿出来比赛，从中可以反映出一些行业发展的方向。</p>
-<p>所以，RSA比较适合管理者、创业者以及产品运营者。</p>
-<h3 id="3、XCon"><a href="#3、XCon" class="headerlink" title="3、XCon"></a>3、XCon</h3><p>以前国内安全会议很少，基本唯XCon为首。以前参加都是为了跟圈内朋友相聚聊天，有时场外比场内还热闹。</p>
-<p>但这几年开始，XCon逐渐没落了。如果你参加过XCon2018，相信会有很大的体会，会场已经没几个人，有时在场人数可能达到个位数，找个同行聊天都难，且门票还是国内同类会议最贵的。</p>
-<h3 id="4、KCon"><a href="#4、KCon" class="headerlink" title="4、KCon"></a>4、KCon</h3><p>KCon应该算是国内比较有自己特色的会议，2018年的议题质量也还可以，中场休息的摇滚音乐很赞，场地与音效很好。</p>
-<p>之前几届的议题质量忽上忽下，2019年的议题还没出来，大家可以关注下先。</p>
-<p>若是在2018年，我还是会给个推荐的。</p>
-<h3 id="5、BlueHat"><a href="#5、BlueHat" class="headerlink" title="5、BlueHat"></a>5、BlueHat</h3><p>以前微软的闭门邀请制会议，从今年开始在上海举办国内版，议题列表已经放出，感觉质量一般。但跟MOSEC时间联着，可以考虑一并参加下。</p>
-<h3 id="6、RECON"><a href="#6、RECON" class="headerlink" title="6、RECON"></a>6、RECON</h3><p>因为多数议题自己不感兴趣，它比较偏向于逆向工程，以及系统底层、硬件、固件等方向，对此方向感兴趣的话，依然可以看看。</p>
-<h3 id="7、Syscan-Syscan360"><a href="#7、Syscan-Syscan360" class="headerlink" title="7、Syscan/Syscan360"></a>7、Syscan/Syscan360</h3><p>官网已经打不开了，聊啥……</p>
-<h2 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h2><p>评价一个会议的好坏真是很容易，但要举办一个好的会议却是不容易，影响的因素特别多，且非一人之力可以搞定。</p>
-<p>无论最终质量如何，对于为行业提供沟通交流平台的一些会议，还是值得点赞的。</p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2019/05/11/2019年哪些安全大会的议题值得学习/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/随笔杂谈/">随笔杂谈</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/安全大会/">安全大会</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -1011,6 +953,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/02/29/用AFL快速通关超级玛丽/">用afl玩超级玛丽：通过Fuzzing探索程序空间状态以发现更多执行路径</a>
+      </li>
     
       <li>
         <a href="/2020/01/22/Fuzzing技术发展的这30年/">从研究者的视角看Fuzzing技术发展30年</a>
@@ -1048,10 +994,6 @@
         <a href="/2019/06/29/Infiltrate2019议题学习/">Infiltrate2019议题学习</a>
       </li>
     
-      <li>
-        <a href="/2019/05/11/2019年哪些安全大会的议题值得学习/">2019年哪些安全大会的议题值得学习</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -1061,7 +1003,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>61</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>62</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>26</small></li>
   
@@ -1073,7 +1015,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/0day/" style="font-size: 11.67px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 13.33px;">BlackHat</a> <a href="/tags/Bochspwn/" style="font-size: 10px;">Bochspwn</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.67px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 15px;">Flash</a> <a href="/tags/Fuzzer/" style="font-size: 10px;">Fuzzer</a> <a href="/tags/Fuzzing/" style="font-size: 18.33px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 18.33px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 13.33px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.67px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.67px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 13.33px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.67px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 16.67px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.67px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.67px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/winafl/" style="font-size: 10px;">winafl</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全大会/" style="font-size: 10px;">安全大会</a> <a href="/tags/安全审计/" style="font-size: 11.67px;">安全审计</a> <a href="/tags/安全研究/" style="font-size: 11.67px;">安全研究</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.67px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 13.33px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 13.33px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.67px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/逻辑/" style="font-size: 10px;">逻辑</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    <a href="/tags/0day/" style="font-size: 11.43px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 15.71px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 12.86px;">BlackHat</a> <a href="/tags/Bochspwn/" style="font-size: 10px;">Bochspwn</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.43px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 14.29px;">Flash</a> <a href="/tags/Fuzzer/" style="font-size: 10px;">Fuzzer</a> <a href="/tags/Fuzzing/" style="font-size: 18.57px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 17.14px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 12.86px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.43px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.43px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/afl/" style="font-size: 10px;">afl</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 12.86px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.43px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 15.71px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.43px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.43px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/winafl/" style="font-size: 10px;">winafl</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全大会/" style="font-size: 10px;">安全大会</a> <a href="/tags/安全审计/" style="font-size: 11.43px;">安全审计</a> <a href="/tags/安全研究/" style="font-size: 11.43px;">安全研究</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.43px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 12.86px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 12.86px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.43px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/逻辑/" style="font-size: 10px;">逻辑</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
   </div>
 </div>
 
