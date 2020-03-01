@@ -77,6 +77,96 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2020-03-01T10:48:50.000Z"><a href="/2020/03/01/持续Fuzzing在DevSecOps中的应用/">2020-03-01</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2020/03/01/持续Fuzzing在DevSecOps中的应用/">持续Fuzzing在DevSecOps中的应用</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>长期以来，一直有个疑问：</p>
+<p><strong>Fuzzing为何一直未被引入DevSecOps中？</strong></p>
+<p>刚好本周有两件事引起我的关注：</p>
+<ol>
+<li>Google发布<strong><a href="https://google.github.io/oss-fuzz/getting-started/continuous-integration/" target="_blank" rel="external">CIFuzz</a></strong>以支持Github项目实现CI构建过程中的持续Fuzzing（Continuous Fuzzing）</li>
+<li>RSA创新沙盒比赛中ForAllSecure公司的参赛产品<strong><a href="https://forallsecure.com/solutions/devsecops/" target="_blank" rel="external">Mayhem</a></strong>——下一代Fuzzing解决方案</li>
+</ol>
+<p>这两件事其实是往着同一目标前进的，就是将Fuzzing引入到CI持续集成中，直观的表现就是，<strong>当往代码仓库提交代码后，可被自动编译并完成Fuzzing，最后输出结果以进入下一开发环节。</strong></p>
+<p>这跟我去年11月在”天府杯”上分享的<a href="http://riusksk.me/2019/11/18/Fuzzing%E5%B9%B3%E5%8F%B0%E5%BB%BA%E8%AE%BE%E7%9A%84%E7%A0%94%E7%A9%B6%E4%B8%8E%E8%AE%BE%E8%AE%A1/" target="_blank" rel="external">《Fuzzing平台建设的研究与设计》</a>中的思路是类似的，当时国内外还没任何公开的产品，这次CIFuzz与Mayhem的出现，终于填补了这个空白。</p>
+<h3 id="先聊聊CIFuzz的实现原理"><a href="#先聊聊CIFuzz的实现原理" class="headerlink" title="先聊聊CIFuzz的实现原理"></a>先聊聊CIFuzz的实现原理</h3><p>使用CIFuzz有2个要求：</p>
+<p>1、只允许GitHub上的项目使用；</p>
+<p>2、项目必须整合OSS-Fuzz</p>
+<p>它主要利用GitHub Actions来实现下载、编译和运行oss-fuzz中的Fuzzer，若要fuzzing自己的项目，就得自己把先fuzzer提交到oss-fuzz。整个过程在docker中的ubuntu中运行，整个过程用workflow来定义这些操作行为:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">name: CIFuzz</span><br><span class="line">on: [pull_request]</span><br><span class="line">jobs:</span><br><span class="line"> Fuzzing:</span><br><span class="line">   runs-on: ubuntu-latest</span><br><span class="line">   steps:</span><br><span class="line">   - name: Build Fuzzers</span><br><span class="line">     uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@master</span><br><span class="line">     with:</span><br><span class="line">       oss-fuzz-project-name: &apos;example&apos;</span><br><span class="line">       dry-run: false</span><br><span class="line">   - name: Run Fuzzers</span><br><span class="line">     uses: google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@master</span><br><span class="line">     with:</span><br><span class="line">       oss-fuzz-project-name: &apos;example&apos;</span><br><span class="line">       fuzz-seconds: 600</span><br><span class="line">       dry-run: false</span><br><span class="line">   - name: Upload Crash</span><br><span class="line">     uses: actions/upload-artifact@v1</span><br><span class="line">     if: failure()</span><br><span class="line">     with:</span><br><span class="line">       name: artifacts</span><br><span class="line">       path: ./out/artifacts</span><br></pre></td></tr></table></figure>
+<p>所说GitHub 为每个 workflow 提供独享 1 核虚拟 CPU, 3.75GB 内存 和 100GB 的磁盘空间，提供相当慷慨的计算资源。对于想将Fuzzing引入CI中的DevSecOps建设，确实挺耗计算资源的。还有另一种方法，就是由开发本地提交代码时，自动完成Fuzzing后再提交，利用的是开发者本地的计算资源，对于Fuzzing平台建设是最节约成本的。</p>
+<p>当发现崩溃后，会在前端输出崩溃的栈回溯和测试用例等关键信息：</p>
+<p><img src="http://riusksk.me/media/artifacts.png" alt="artifacts"></p>
+<p>在腾讯内部，我们一般称workflow为流水线，在产品体验上这功能绝对秒杀GitHub，就是我之前贴着这张图：</p>
+<p><img src="http://riusksk.me/media/1578971205508.png" alt="img"></p>
+<h3 id="再来看看Mayhem"><a href="#再来看看Mayhem" class="headerlink" title="再来看看Mayhem"></a>再来看看Mayhem</h3><p>对于Mayhem的信息是有限的，只有官网提供的相关文档。先来看下Mayhem的工作原理，大体流程跟上面一致的：</p>
+<p><img src="http://riusksk.me/media/image-20200301195430422.png" alt="image-20200301195430422"></p>
+<p>它将符号执行与覆盖引导技术结合用于Fuzzing测试，但符号执行整体上是偏于理论，且难以用于大项目，因为它容易出现路径爆炸问题。虽然他们用来打过CGC机器人CTF比赛，但其赛题都是定制的，并不能完全代表真实的软件世界，这点还需要时间来考验。</p>
+<p><img src="http://riusksk.me/media/image-20200301195624394.png" alt="image-20200301195624394"></p>
+<p>Mayhem提供有比较友好的前端界面，在功能上要比CIFuzz更加完善和自动化，体现出一个完整商业产品的特点：</p>
+<p><img src="http://riusksk.me/media/console.jpg" alt="img"></p>
+<p><img src="http://riusksk.me/media/image-20200301200249609.png" alt="image-20200301200249609"></p>
+<p>发现崩溃后，也能够提供更加详细的崩溃信息，包括重现方法、样本下载、崩溃指令和地址等等：</p>
+<p><img src="http://riusksk.me/media/test-case.jpg" alt="img"></p>
+<p><img src="http://riusksk.me/media/crashinfo.jpg" alt="img"></p>
+<h3 id="Continuous-Fuzzing实现上的常见问题"><a href="#Continuous-Fuzzing实现上的常见问题" class="headerlink" title="Continuous Fuzzing实现上的常见问题"></a>Continuous Fuzzing实现上的常见问题</h3><p>个人对持续Fuzzing建设的一些思考总结，列举一些常见问题和解决方案，欢迎私信探讨。</p>
+<p><strong>1、如何设置Fuzzing时长，既能保证测试的有效性，又能保证CI流程的流畅，避免产品发布受阻？</strong></p>
+<p>以往Fuzzing跑个几天是很常规的姿势，最长的我也跑过几个月的，但这在CI中显然是不合适的，必须为此设置时长限制，Google CIFuzz是默认10分钟，但个人觉得太短了，最好是几小时，但这要结合业务场景来定，有些产品一天构建N次，这得浪费不少计算资源。如果资源有限的话，最好每天一款产品只能Fuzzing一次。</p>
+<p><strong>2、如何编写Fuzzer保证测试的有效性？</strong></p>
+<p>CIFuzz是自己提供Fuzzer，需要开发者基于libfuzzer编写的fuzzer；而Mayhem没有明说，但按一般都得开发者或者安全人员来开发。这个问题之前我也在《Fuzzing平台建设研究与设计》中说过，可以培训开发用libfuzzer来写fuzzer，也可以直接写单元测试程序，以及安全人员作定制化的fuzzer。</p>
+<p><strong>3、如何保证Fuzzing执行时的服务器安全？</strong></p>
+<p>使用者提交自己的代码并编译执行，如果不作隔离，肯定就后门无数，沦为大家的肉鸡。使用docker作隔离的容器是已经很成熟的方案了，不仅fuzz，其它一些DevSecOps建设中的其它安全测试方案同样适用，比如CI中的代码审计，我们也是用docker来做的。</p>
+<p><strong>4、如何提供测试样本？</strong></p>
+<p>CIFuzz是自己在oss-fuzz中指定好的样本，Mayhem是明说，但估计也是需要用户提供。在之前的文章，有讲过我的实现思路：以后缀名来区分文件格式，自动爬虫收集，根据输入数据的格式自动提供，对于特殊的输入数据，需要自己另外去收集，比如hook收集等等。本质上，无非就是开发者提供测试数据，或者平台建设者提供各种常见格式的测试样本。</p>
+<p><strong>如果你对DevSecOps建设、漏洞挖掘感兴趣，欢迎私信。</strong></p>
+<p><strong>终端安全工程师（深圳）</strong></p>
+<p>岗位职责:<br>1.安全评估：对公司内的移动终端产品进行安全评估，并提供自动化检测规则，探索与实践DevSecOps<br>2.代码审计：开发自动化的代码审计系统<br>3.应急响应。对外部报告的终端漏洞进行响应，分析漏洞，排查影响范围，并提供检测与防御方案；<br>4.业界追踪。保持关注业界最新安全动态、新安全技术及发展趋势，促进安全技术的提升；<br>5.沉淀培训：形成技术知识的沉淀和分享，开展公司内交流和培训工作。</p>
+<p>岗位要求:<br>1.本科及以上学历；<br>2.2年以上的安全工作经验；<br>3.熟悉常见的终端安全风险的危害、原理及其防御方案；<br>4.熟悉x86和ARM汇编，熟练使用IDA、GDB等逆向分析与调试工具<br>5.熟悉主流语言的代码安全审计技术，具备⼈工审计与自动化审计系统开发能⼒<br>6.熟悉DevSecOps并且有参与过其中一些安全过程的技术和经验；<br>7.熟悉移动终端应⽤隐私合规检测技术<br>7.至少熟悉C/C++、Python、Java其中的⼀门语⾔，能够独立开发漏洞检测工具<br>8.具备较强的学习能力、动手能力、沟通能力、团队合作意识及综合分析能力；</p>
+<p>具备优秀安全基础能力或某一领域深度安全能力并对安全有浓厚兴趣者优先；<br>有终端自动化审计系统开发经验者优先；<br>有代码审计系统开发经验者优先；<br>有知名软件的CVE漏洞发现与利用成果的优先。</p>
+<p><img src="http://riusksk.me/media/WX20200229-165739.png" alt="WX20200229-165739"></p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2020/03/01/持续Fuzzing在DevSecOps中的应用/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2020-02-29T06:47:24.000Z"><a href="/2020/02/29/用AFL快速通关超级玛丽/">2020-02-29</a></time>
       
       
@@ -839,99 +929,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2019-06-29T02:26:18.000Z"><a href="/2019/06/29/Infiltrate2019议题学习/">2019-06-29</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2019/06/29/Infiltrate2019议题学习/">Infiltrate2019议题学习</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>Infiltrate2019安全大会是在5月初举办的，会议资料收集后放在电脑上1个多月了，连续几个周末都有事，一直没来得及学习，今天刚好学习下，有些议题其实跟MOSEC上有重复。</p>
-<p>重点聊几个个人感兴趣的议题，并最后附上10个议题ppt资料下载。</p>
-<h3 id="2PAC-2Furious-Envisioning-an-iOS"><a href="#2PAC-2Furious-Envisioning-an-iOS" class="headerlink" title="2PAC 2Furious Envisioning an iOS"></a>2PAC 2Furious Envisioning an iOS</h3><p>科恩出品，分两部分：PAC绕过与基带研究，刚好在MOSEC上project zero的人讲了5种PAC绕过方法，议题名叫”A study in PAC”，涵盖了其中的方法，而基带研究部分也作为独立议题在MOSEC上分享过，介绍 基带攻击方法、逆向分析固件的方法。</p>
-<p>之前在MOSEC上，我对5种PAC绕过方法作了学习笔记，直接上图：</p>
-<p><img src="http://riusksk.me/media/006tNc79gy1g4htu5v9uwj30kt0bu117.jpg" alt="image-20190629104044528"></p>
-<p><img src="http://riusksk.me/media/006tNc79gy1g4htugqt77j30l60azk14.jpg" alt="image-20190629104108330"></p>
-<p><img src="http://riusksk.me/media/006tNc79gy1g4htvdapshj30ln0bjqdc.jpg" alt="image-20190629104158997"></p>
-<p><img src="http://riusksk.me/media/006tNc79gy1g4htvmwxq5j30lb0bvtic.jpg" alt="image-20190629104215919"></p>
-<p><img src="http://riusksk.me/media/006tNc79gy1g4htw8f19bj30l20bv47u.jpg" alt="image-20190629104249591"></p>
-<h3 id="EL3-Tour-Get-The-Ultimate-Privilege-of-Android-Phone"><a href="#EL3-Tour-Get-The-Ultimate-Privilege-of-Android-Phone" class="headerlink" title="EL3 Tour - Get The Ultimate Privilege of Android Phone"></a>EL3 Tour - Get The Ultimate Privilege of Android Phone</h3><p>盘古出品，拿华为P20开刀，应该是手工逆向分析TEE相关代码，挖到一个代码执行漏洞攻击EL3的过程。</p>
-<p><img src="http://riusksk.me/media/006tNc79gy1g4htzfth2jj30ki08ytfb.jpg" alt="image-20190629104554838"></p>
-<p>通过VBAR_EL+0x400的异常处理例程来定位SMC处理例程：</p>
-<p><img src="http://riusksk.me/media/006tNc79gy1g4hu1jvypuj30eo08ctdm.jpg" alt="image-20190629104757284"></p>
-<p>漏洞代码：</p>
-<p><img src="http://riusksk.me/media/006tNc79gy1g4hu25urjvj30l10930y7.jpg" alt="image-20190629104832507"></p>
-<p>对方的漏洞利用思路：</p>
-<ol>
-<li><p>通过漏洞实现任意内存读写</p>
-</li>
-<li><p>布署 Shellcode 于地址 0x209F8000（EL1下可访问，属于共享内存）</p>
-</li>
-<li><p>篡改 Page Descriptior : 0x209F8627 =&gt; 0x209F8783（可执行）</p>
-</li>
-<li><p>TLBI ALLEL3：清除TLB缓存，保持数据一致，使页表修改可被CPU感知到</p>
-</li>
-<li><p>调用 0x209F8000，触发shellcode执行</p>
-</li>
-</ol>
-<p>最后演示如何利用该漏洞绕过华为手机的人脸验证，包括篡改人脸匹配分值、活体检测结果。</p>
-<h3 id="Adventures-in-Video-Conferencing"><a href="#Adventures-in-Video-Conferencing" class="headerlink" title="Adventures in Video Conferencing"></a>Adventures in Video Conferencing</h3><p>Project Zero以前在其博客上分享过，看博文会更清晰一些，详见：</p>
-<p><a href="https://googleprojectzero.blogspot.com/2018/12/adventures-in-video-conferencing-part-1.html" target="_blank" rel="external">Adventures in Video Conferencing Part 1: The Wild World of WebRTC</a></p>
-<p><a href="https://googleprojectzero.blogspot.com/2018/12/adventures-in-video-conferencing-part-2.html" target="_blank" rel="external">Adventures in Video Conferencing Part 2: Fun with FaceTime</a></p>
-<p><a href="https://googleprojectzero.blogspot.com/2018/12/adventures-in-video-conferencing-part-3.html" target="_blank" rel="external">Adventures in Video Conferencing Part 3: The Even Wilder World of WhatsApp</a></p>
-<p><a href="https://googleprojectzero.blogspot.com/2018/12/adventures-in-video-conferencing-part-4.html" target="_blank" rel="external">Adventures in Video Conferencing Part 4: What Didn’t Work Out with WhatsApp</a></p>
-<p><a href="https://googleprojectzero.blogspot.com/2018/12/adventures-in-video-conferencing-part-5.html" target="_blank" rel="external">Adventures in Video Conferencing Part 5: Where Do We Go from Here?</a></p>
-<p>Natalie Silvanovich 作为PZ的头牌女黑客，在此议题的厉害之处就是用了几行fuzz代码挖了包括浏览器、FaceTime、WhatsApp在内的主流应用10多个CVE远程漏洞。就是下面这段代码：</p>
-<p><img src="http://riusksk.me//media/006tNc79gy1g4huf2vvhfj30c80df3zm.jpg" alt="image-20190629110057733"></p>
-<p>通过分析视频交互过程，找到外部数据传递的关键点，开源的改代码插入fuzz，闭源的写Hook去实现fuzz，相关的工具也已在GitHub上开源：<a href="https://github.com/googleprojectzero/Street-Party。之前看到国内也有人顺势搞到几个FaceTime的漏洞。" target="_blank" rel="external">https://github.com/googleprojectzero/Street-Party。之前看到国内也有人顺势搞到几个FaceTime的漏洞。</a></p>
-<h3 id="TEE-Exploitation-Exploiting-Trusted-Apps-on-Samsung’s-TEE"><a href="#TEE-Exploitation-Exploiting-Trusted-Apps-on-Samsung’s-TEE" class="headerlink" title="TEE Exploitation: Exploiting Trusted Apps on Samsung’s TEE"></a>TEE Exploitation: Exploiting Trusted Apps on Samsung’s TEE</h3><p>Blue Frost Security出品，举了几个三星漏洞的例子：</p>
-<ol>
-<li>TA的栈溢出案例：由于只有NX(没有栈保护和ASLR)，所以直接上ROP搞定的</li>
-<li>共享内存Double Fectch漏洞：TA在验证和使用命令数据的时间窗口内，可能被篡改数据，实现任意读写</li>
-</ol>
-<p><img src="http://riusksk.me//media/006tNc79gy1g4huyzbl81j30id0dh0tr.jpg" alt="image-20190629112004922"></p>
-<p>由于缺乏一些常见的内存保护机制（仅有NX），在TA利用上反而更加容易。TA攻破后，对于厂商最大的影响可能是DRM版权与支付密钥等问题；而对于用户而言，主要是用户数据的窃取问题。</p>
-<h3 id="资料打包下载"><a href="#资料打包下载" class="headerlink" title="资料打包下载"></a>资料打包下载</h3><p>下载链接：<a href="https://github.com/riusksk/SecConArchive/tree/master/Infiltrate2019" target="_blank" rel="external">https://github.com/riusksk/SecConArchive/tree/master/Infiltrate2019</a></p>
-<p><img src="http://riusksk.me//media/006tNc79gy1g4hvqqcgb5j30co05y759.jpg" alt="image-20190629114646339"></p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2019/06/29/Infiltrate2019议题学习/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -953,6 +950,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/03/01/持续Fuzzing在DevSecOps中的应用/">持续Fuzzing在DevSecOps中的应用</a>
+      </li>
     
       <li>
         <a href="/2020/02/29/用AFL快速通关超级玛丽/">用afl玩超级玛丽：通过Fuzzing探索程序空间状态以发现更多执行路径</a>
@@ -990,10 +991,6 @@
         <a href="/2019/07/14/一些值得学习的Fuzzer开源项目/">一些值得学习的Fuzzer开源项目</a>
       </li>
     
-      <li>
-        <a href="/2019/06/29/Infiltrate2019议题学习/">Infiltrate2019议题学习</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -1003,7 +1000,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>62</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>63</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>26</small></li>
   

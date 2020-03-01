@@ -77,6 +77,99 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2019-06-29T02:26:18.000Z"><a href="/2019/06/29/Infiltrate2019议题学习/">2019-06-29</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2019/06/29/Infiltrate2019议题学习/">Infiltrate2019议题学习</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Infiltrate2019安全大会是在5月初举办的，会议资料收集后放在电脑上1个多月了，连续几个周末都有事，一直没来得及学习，今天刚好学习下，有些议题其实跟MOSEC上有重复。</p>
+<p>重点聊几个个人感兴趣的议题，并最后附上10个议题ppt资料下载。</p>
+<h3 id="2PAC-2Furious-Envisioning-an-iOS"><a href="#2PAC-2Furious-Envisioning-an-iOS" class="headerlink" title="2PAC 2Furious Envisioning an iOS"></a>2PAC 2Furious Envisioning an iOS</h3><p>科恩出品，分两部分：PAC绕过与基带研究，刚好在MOSEC上project zero的人讲了5种PAC绕过方法，议题名叫”A study in PAC”，涵盖了其中的方法，而基带研究部分也作为独立议题在MOSEC上分享过，介绍 基带攻击方法、逆向分析固件的方法。</p>
+<p>之前在MOSEC上，我对5种PAC绕过方法作了学习笔记，直接上图：</p>
+<p><img src="http://riusksk.me/media/006tNc79gy1g4htu5v9uwj30kt0bu117.jpg" alt="image-20190629104044528"></p>
+<p><img src="http://riusksk.me/media/006tNc79gy1g4htugqt77j30l60azk14.jpg" alt="image-20190629104108330"></p>
+<p><img src="http://riusksk.me/media/006tNc79gy1g4htvdapshj30ln0bjqdc.jpg" alt="image-20190629104158997"></p>
+<p><img src="http://riusksk.me/media/006tNc79gy1g4htvmwxq5j30lb0bvtic.jpg" alt="image-20190629104215919"></p>
+<p><img src="http://riusksk.me/media/006tNc79gy1g4htw8f19bj30l20bv47u.jpg" alt="image-20190629104249591"></p>
+<h3 id="EL3-Tour-Get-The-Ultimate-Privilege-of-Android-Phone"><a href="#EL3-Tour-Get-The-Ultimate-Privilege-of-Android-Phone" class="headerlink" title="EL3 Tour - Get The Ultimate Privilege of Android Phone"></a>EL3 Tour - Get The Ultimate Privilege of Android Phone</h3><p>盘古出品，拿华为P20开刀，应该是手工逆向分析TEE相关代码，挖到一个代码执行漏洞攻击EL3的过程。</p>
+<p><img src="http://riusksk.me/media/006tNc79gy1g4htzfth2jj30ki08ytfb.jpg" alt="image-20190629104554838"></p>
+<p>通过VBAR_EL+0x400的异常处理例程来定位SMC处理例程：</p>
+<p><img src="http://riusksk.me/media/006tNc79gy1g4hu1jvypuj30eo08ctdm.jpg" alt="image-20190629104757284"></p>
+<p>漏洞代码：</p>
+<p><img src="http://riusksk.me/media/006tNc79gy1g4hu25urjvj30l10930y7.jpg" alt="image-20190629104832507"></p>
+<p>对方的漏洞利用思路：</p>
+<ol>
+<li><p>通过漏洞实现任意内存读写</p>
+</li>
+<li><p>布署 Shellcode 于地址 0x209F8000（EL1下可访问，属于共享内存）</p>
+</li>
+<li><p>篡改 Page Descriptior : 0x209F8627 =&gt; 0x209F8783（可执行）</p>
+</li>
+<li><p>TLBI ALLEL3：清除TLB缓存，保持数据一致，使页表修改可被CPU感知到</p>
+</li>
+<li><p>调用 0x209F8000，触发shellcode执行</p>
+</li>
+</ol>
+<p>最后演示如何利用该漏洞绕过华为手机的人脸验证，包括篡改人脸匹配分值、活体检测结果。</p>
+<h3 id="Adventures-in-Video-Conferencing"><a href="#Adventures-in-Video-Conferencing" class="headerlink" title="Adventures in Video Conferencing"></a>Adventures in Video Conferencing</h3><p>Project Zero以前在其博客上分享过，看博文会更清晰一些，详见：</p>
+<p><a href="https://googleprojectzero.blogspot.com/2018/12/adventures-in-video-conferencing-part-1.html" target="_blank" rel="external">Adventures in Video Conferencing Part 1: The Wild World of WebRTC</a></p>
+<p><a href="https://googleprojectzero.blogspot.com/2018/12/adventures-in-video-conferencing-part-2.html" target="_blank" rel="external">Adventures in Video Conferencing Part 2: Fun with FaceTime</a></p>
+<p><a href="https://googleprojectzero.blogspot.com/2018/12/adventures-in-video-conferencing-part-3.html" target="_blank" rel="external">Adventures in Video Conferencing Part 3: The Even Wilder World of WhatsApp</a></p>
+<p><a href="https://googleprojectzero.blogspot.com/2018/12/adventures-in-video-conferencing-part-4.html" target="_blank" rel="external">Adventures in Video Conferencing Part 4: What Didn’t Work Out with WhatsApp</a></p>
+<p><a href="https://googleprojectzero.blogspot.com/2018/12/adventures-in-video-conferencing-part-5.html" target="_blank" rel="external">Adventures in Video Conferencing Part 5: Where Do We Go from Here?</a></p>
+<p>Natalie Silvanovich 作为PZ的头牌女黑客，在此议题的厉害之处就是用了几行fuzz代码挖了包括浏览器、FaceTime、WhatsApp在内的主流应用10多个CVE远程漏洞。就是下面这段代码：</p>
+<p><img src="http://riusksk.me//media/006tNc79gy1g4huf2vvhfj30c80df3zm.jpg" alt="image-20190629110057733"></p>
+<p>通过分析视频交互过程，找到外部数据传递的关键点，开源的改代码插入fuzz，闭源的写Hook去实现fuzz，相关的工具也已在GitHub上开源：<a href="https://github.com/googleprojectzero/Street-Party。之前看到国内也有人顺势搞到几个FaceTime的漏洞。" target="_blank" rel="external">https://github.com/googleprojectzero/Street-Party。之前看到国内也有人顺势搞到几个FaceTime的漏洞。</a></p>
+<h3 id="TEE-Exploitation-Exploiting-Trusted-Apps-on-Samsung’s-TEE"><a href="#TEE-Exploitation-Exploiting-Trusted-Apps-on-Samsung’s-TEE" class="headerlink" title="TEE Exploitation: Exploiting Trusted Apps on Samsung’s TEE"></a>TEE Exploitation: Exploiting Trusted Apps on Samsung’s TEE</h3><p>Blue Frost Security出品，举了几个三星漏洞的例子：</p>
+<ol>
+<li>TA的栈溢出案例：由于只有NX(没有栈保护和ASLR)，所以直接上ROP搞定的</li>
+<li>共享内存Double Fectch漏洞：TA在验证和使用命令数据的时间窗口内，可能被篡改数据，实现任意读写</li>
+</ol>
+<p><img src="http://riusksk.me//media/006tNc79gy1g4huyzbl81j30id0dh0tr.jpg" alt="image-20190629112004922"></p>
+<p>由于缺乏一些常见的内存保护机制（仅有NX），在TA利用上反而更加容易。TA攻破后，对于厂商最大的影响可能是DRM版权与支付密钥等问题；而对于用户而言，主要是用户数据的窃取问题。</p>
+<h3 id="资料打包下载"><a href="#资料打包下载" class="headerlink" title="资料打包下载"></a>资料打包下载</h3><p>下载链接：<a href="https://github.com/riusksk/SecConArchive/tree/master/Infiltrate2019" target="_blank" rel="external">https://github.com/riusksk/SecConArchive/tree/master/Infiltrate2019</a></p>
+<p><img src="http://riusksk.me//media/006tNc79gy1g4hvqqcgb5j30co05y759.jpg" alt="image-20190629114646339"></p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2019/06/29/Infiltrate2019议题学习/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2019-05-11T02:19:22.000Z"><a href="/2019/05/11/2019年哪些安全大会的议题值得学习/">2019-05-11</a></time>
       
       
@@ -1021,120 +1114,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2018-12-28T12:17:12.000Z"><a href="/2018/12/28/2018年读过的书/">2018-12-28</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2018/12/28/2018年读过的书/">2018年读过的书</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>从2018年开始一直坚持每月读2本书以上，庆幸自己坚持下来了，共读了38本书，也希望明年能够继续坚持。</p>
-<p>有些是实体书，有些是在微信读书上看的电子版，在手机app上看书确实会高效很多，今年有一半的书是在微信读书上看的，非常适合空闲时间阅读，以及像坐地铁、等地铁这种零碎的时间。</p>
-<p>下面是我今年读过的书单，分别都打个分数，8分及以上的代表推荐，6分以下的别看：</p>
-<ol>
-<li>《人性的弱点》（6分）</li>
-<li>《代码整洁之道》（8分）</li>
-<li>《如何阅读一本书》（8分）</li>
-<li>《两晋南北朝那些事》（7分）</li>
-<li>《软技能：代码之外的生存指南》（8分）</li>
-<li>《秋叶：如何高效读懂一本书》（6分）</li>
-<li>《横向领导力》（7分）</li>
-<li>《程序员成长课》（8分）</li>
-<li>《英语写作手册》（8分）</li>
-<li>《爆款文案》（7分）</li>
-<li>《运营之光》（8分）</li>
-<li>《威胁建模》（7分）</li>
-<li>《程序员的英语》（7分）</li>
-<li>《冰鉴全鉴》（2分）</li>
-<li>《内向者沟通圣经》（4分）</li>
-<li>《灰度决策》（4分）</li>
-<li>《启功行书技法》（8分）</li>
-<li>《见识》（9分）</li>
-<li>《半小时漫画中国史1、2》（7分）</li>
-<li>《Web安全之机器学习入门》（6分）</li>
-<li>《秦崩》（8分）</li>
-<li>《启功给你讲书法》（8分）</li>
-<li>《思考，快与慢》（10分）</li>
-<li>《三国志》（8分）</li>
-<li>《季羡林谈写作》（6分）</li>
-<li>《Android应用安全防护与逆向分析》（7分）</li>
-<li>《精进：如何成为一个很厉害的人》（8分）</li>
-<li>《非暴力沟通》（9分）</li>
-<li>《系统架构设计》（7分）</li>
-<li>《人人都是产品经理》（8分）</li>
-<li>《漏洞》（7分）</li>
-<li>《风格感觉：21世纪写作指南》（8分）</li>
-<li>《态度》（8分）</li>
-<li>《高效阅读》（5分）</li>
-<li>《写给大家看的设计书》（10分）</li>
-<li>《硅谷钢铁侠：埃隆·马斯克的冒险人生》（8分）</li>
-<li>《八卦医学史2》（6分）</li>
-<li>《从0到1：开启商业与未来的秘密》（7分）</li>
-</ol>
-<p> 所以8分以上的推荐书籍有：</p>
-<p><strong>《代码整洁之道》（8分）</strong></p>
-<p><strong>《如何阅读一本书》（8分）</strong></p>
-<p><strong>《软技能：代码之外的生存指南》（8分）</strong></p>
-<p><strong>《程序员成长课》（8分）</strong></p>
-<p><strong>《英语写作手册》（8分）</strong></p>
-<p><strong>《运营之光》（8分）</strong></p>
-<p><strong>《启功行书技法》（8分）</strong></p>
-<p><strong>《见识》（9分）</strong></p>
-<p><strong>《秦崩》（8分）</strong></p>
-<p><strong>《启功给你讲书法》（8分）</strong></p>
-<p><strong>《思考，快与慢》（10分）</strong></p>
-<p><strong>《三国志》（8分）</strong></p>
-<p><strong>《精进：如何成为一个很厉害的人》（8分）</strong></p>
-<p><strong>《非暴力沟通》（9分）</strong></p>
-<p><strong>《人人都是产品经理》（8分）</strong></p>
-<p><strong>《风格感觉：21世纪写作指南》（8分）</strong></p>
-<p><strong>《态度》（8分）</strong></p>
-<p><strong>《写给大家看的设计书》（10分）</strong></p>
-<p><strong>《硅谷钢铁侠：埃隆·马斯克的冒险人生》（8分）</strong></p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2018/12/28/2018年读过的书/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/随笔杂谈/">随笔杂谈</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/书籍/">书籍</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -1156,6 +1135,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/03/01/持续Fuzzing在DevSecOps中的应用/">持续Fuzzing在DevSecOps中的应用</a>
+      </li>
     
       <li>
         <a href="/2020/02/29/用AFL快速通关超级玛丽/">用afl玩超级玛丽：通过Fuzzing探索程序空间状态以发现更多执行路径</a>
@@ -1193,10 +1176,6 @@
         <a href="/2019/07/14/一些值得学习的Fuzzer开源项目/">一些值得学习的Fuzzer开源项目</a>
       </li>
     
-      <li>
-        <a href="/2019/06/29/Infiltrate2019议题学习/">Infiltrate2019议题学习</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -1206,7 +1185,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>62</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>63</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>26</small></li>
   
