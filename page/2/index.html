@@ -77,6 +77,85 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2019-11-02T01:22:25.000Z"><a href="/2019/11/02/Jandroid：半自动化Android应用逻辑漏洞挖掘/">2019-11-02</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2019/11/02/Jandroid：半自动化Android应用逻辑漏洞挖掘/">Android应用逻辑漏洞半自动化挖掘思路</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>大清早起来就看到F-Secure LABS团队（以前叫MWR，就是那支用13个逻辑漏洞攻击chrome的团队，是pwn2own专业户）发了一篇文章“Automating Pwn2Own with Jandroid” (<a href="https://labs.f-secure.com/blog/automating-pwn2own-with-jandroid/" target="_blank" rel="external">https://labs.f-secure.com/blog/automating-pwn2own-with-jandroid/</a> )，讲述如何利用Jandroid实现Android应用逻辑漏洞的半自动化挖掘思路。</p>
+<p>专注逻辑漏洞有一些好处，尤其是打比赛用途的，撞洞率较低，且利用稳定，一般都不用搞什么内存布局控制的，MWR尤其擅长此类漏洞的挖掘，之前就在pwn2own上攻击破过华为手机和chrome浏览器。</p>
+<p>文中介绍了Jandroid (<a href="https://github.com/FSecureLABS/Jandroid" target="_blank" rel="external">https://github.com/FSecureLABS/Jandroid</a> )这款开源工具，要求python 3.4以上版本运行，支持<code>apk</code>/<code>dex</code>/<code>system.img</code>/<code>ext4</code>文件解析。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">python3 src/jandroid.py -h                                            </span><br><span class="line"></span><br><span class="line">----------------------------</span><br><span class="line">           JANDROID</span><br><span class="line">----------------------------</span><br><span class="line"></span><br><span class="line">usage: jandroid.py [-h] [-f FOLDER] [-p [&#123;android&#125;]] [-e [&#123;device,ext4,img&#125;]]</span><br><span class="line">                   [-g [&#123;neo4j,visjs,both&#125;]]</span><br><span class="line"></span><br><span class="line">A tool for performing pattern matching against applications.</span><br><span class="line"></span><br><span class="line">optional arguments:</span><br><span class="line">  -h, --help            show this help message and exit</span><br><span class="line">  -f FOLDER, --folder FOLDER</span><br><span class="line">                        app分析目录，所以支持应用的批量分析</span><br><span class="line">  -p [&#123;android&#125;], --platform [&#123;android&#125;]</span><br><span class="line">                        支持的平台，目前仅支持android平台</span><br><span class="line">  -e [&#123;device,ext4,img&#125;], --extract [&#123;device,ext4,img&#125;]</span><br><span class="line">                        支持从连接设备、ext4、system.img中提取应用</span><br><span class="line">  -g [&#123;neo4j,visjs,both&#125;], --graph [&#123;neo4j,visjs,both&#125;]</span><br><span class="line">                        支持检测结果的图表显示</span><br></pre></td></tr></table></figure>
+<p>它通过定义json模板来标记污点传播路径，比如拥有<code>android.intent.category.BROWSABLE</code>浏览器打开权限的Activity，再查找<code>Landroid/webkit/WebView;-&gt;addJavascriptInterface</code>看是否存在JavaScript接口，以判断是否可能存在远程攻击的条件，但这种只能是半自动化辅助，还需要人工逆向确认。</p>
+<p>模板示例：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"METADATA"</span>: &#123;</span><br><span class="line">        <span class="attr">"NAME"</span>: <span class="string">"JSbridgeBrowsable"</span></span><br><span class="line">    &#125;,    </span><br><span class="line">    <span class="attr">"MANIFESTPARAMS"</span>: &#123;</span><br><span class="line">        <span class="attr">"BASEPATH"</span>: <span class="string">"manifest-&gt;application-&gt;activity OR manifest-&gt;application-&gt;activity-alias"</span>,</span><br><span class="line">        <span class="attr">"SEARCHPATH"</span>: &#123;</span><br><span class="line">            <span class="attr">"intent-filter"</span>: &#123;</span><br><span class="line">                <span class="attr">"action"</span>: &#123;</span><br><span class="line">                    <span class="attr">"LOOKFOR"</span>: &#123;</span><br><span class="line">                        <span class="attr">"TAGVALUEMATCH"</span>: <span class="string">"&lt;NAMESPACE&gt;:name=android.intent.action.VIEW"</span></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="attr">"category"</span>: &#123;</span><br><span class="line">                    <span class="attr">"LOOKFOR"</span>: &#123;</span><br><span class="line">                        <span class="attr">"TAGVALUEMATCH"</span>: <span class="string">"&lt;NAMESPACE&gt;:name=android.intent.category.BROWSABLE"</span></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="attr">"data"</span>: &#123;</span><br><span class="line">                    <span class="attr">"RETURN"</span>: [<span class="string">"&lt;NAMESPACE&gt;:host AS @host"</span>, <span class="string">"&lt;NAMESPACE&gt;:scheme AS @scheme"</span>]</span><br><span class="line">                &#125;                </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">"RETURN"</span>: [<span class="string">"&lt;smali&gt;:&lt;NAMESPACE&gt;:name AS @activity_name"</span>]</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"CODEPARAMS"</span>: &#123;</span><br><span class="line">        <span class="attr">"SEARCH"</span>: &#123;</span><br><span class="line">            <span class="attr">"SEARCHFORCALLTOMETHOD"</span>: &#123;</span><br><span class="line">                <span class="attr">"METHOD"</span>: <span class="string">"Landroid/webkit/WebView;-&gt;addJavascriptInterface"</span>,</span><br><span class="line">                <span class="attr">"RETURN"</span>: <span class="string">"&lt;class&gt; AS @web_view"</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">"TRACE"</span>: &#123;</span><br><span class="line">            <span class="attr">"TRACEFROM"</span>: <span class="string">"&lt;method&gt;:@web_view[]-&gt;loadUrl(Ljava/lang/String;)V"</span>,</span><br><span class="line">            <span class="attr">"TRACETO"</span>: <span class="string">"&lt;class&gt;:@activity_name"</span>,</span><br><span class="line">            <span class="attr">"TRACELENGTHMAX"</span>: <span class="number">10</span>,</span><br><span class="line">            <span class="attr">"RETURN"</span>: <span class="string">"&lt;tracepath&gt; AS @tracepath_browsablejsbridge"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"GRAPH"</span>: <span class="string">"@tracepath_browsablejsbridge WITH &lt;method&gt;:&lt;desc&gt;:&lt;class&gt; AS attribute=nodename"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>各字段含义看示例就好了，这里不作详解。读者也可参考F-Secure发的文章，里面有详解。</p>
+<p>总结起来，模板支持：</p>
+<ol>
+<li>AndroidManifest.xml的匹配搜索</li>
+<li>smali代码的匹配搜索</li>
+<li>传播路径的图表显示，以及显示的文件格式定义</li>
+<li>函数调用参数追踪</li>
+<li>函数调用的起点与终点定义、追踪以及追踪深度</li>
+</ol>
+<p>我直接找个apk分析运行，会出错提示以下错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Traceback (most recent call last):</span><br><span class="line">  File &quot;src/jandroid.py&quot;, line 408, in &lt;module&gt;</span><br><span class="line">    inst_jandroid.fn_main()</span><br><span class="line">  File &quot;src/jandroid.py&quot;, line 227, in fn_main</span><br><span class="line">    self.pull_source</span><br><span class="line">  File &quot;/Volumes/Macintosh/Users/riusksk/Android-Security/工具/Jandroid/src/plugins/android/main.py&quot;, line 51, in fn_start_plugin_analysis</span><br><span class="line">    app_pull_src</span><br><span class="line">  File &quot;/Volumes/Macintosh/Users/riusksk/Android-Security/工具/Jandroid/src/plugins/android/requirements_checker.py&quot;, line 53, in fn_perform_initial_checks</span><br><span class="line">    raise JandroidException(</span><br><span class="line">NameError: name &apos;JandroidException&apos; is not defined</span><br></pre></td></tr></table></figure>
+<p>直接在<code>Jandroid/src/plugins/android/requirements_checker.py</code>开头加以下代码即可解决：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> common <span class="keyword">import</span> JandroidException</span><br></pre></td></tr></table></figure>
+<p>运行效果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">python3 src/jandroid.py -f ./apps -g visjs</span><br><span class="line"></span><br><span class="line">----------------------------</span><br><span class="line">           JANDROID</span><br><span class="line">----------------------------</span><br><span class="line"></span><br><span class="line">INFO     Creating template object.</span><br><span class="line">INFO     1 potential template(s) found.</span><br><span class="line">DEBUG    Parsing /Volumes/Macintosh/Users/riusksk/Android-Security/工具/Jandroid/templates/android/sample_basic_browsable_jsbridge.template</span><br><span class="line">INFO     Initiating Android analysis.</span><br><span class="line">INFO     Performing basic checks. Please wait.</span><br><span class="line">INFO     Basic checks complete.</span><br><span class="line">INFO     Beginning analysis...</span><br><span class="line">DEBUG    1 app(s) to analyse, using 2 thread(s).</span><br><span class="line">DEBUG    Created worker process 0</span><br><span class="line">DEBUG    Created worker process 1</span><br><span class="line">DEBUG    AnalyzeAPK</span><br><span class="line">DEBUG    Analysing without session</span><br><span class="line">INFO     Analysing ctrip.android.view_8.13.0_1248.apk in worker thread 0.</span><br><span class="line">DEBUG    AXML contains a RESOURCE MAP</span><br><span class="line">DEBUG    Start of Namespace mapping: prefix 47: &apos;android&apos; --&gt; uri 48: &apos;http://schemas.android.com/apk/res/android&apos;</span><br><span class="line">DEBUG    START_TAG: manifest (line=2)</span><br><span class="line">DEBUG    found an attribute: &#123;http://schemas.android.com/apk/res/android&#125;versionCode=&apos;b&apos;1248&apos;&apos;</span><br><span class="line">DEBUG    found an attribute: &#123;http://schemas.android.com/apk/res/android&#125;versionName=&apos;b&apos;8.13.0&apos;&apos;</span><br><span class="line">DEBUG    found an attribute: </span><br><span class="line">......</span><br><span class="line">DEBUG    Settings basic blocks childs</span><br><span class="line">DEBUG    Creating exceptions</span><br><span class="line">DEBUG    Parsing instructions</span><br><span class="line">DEBUG    Parsing exceptions</span><br><span class="line">DEBUG    Creating basic blocks in Landroid/support/constraint/solver/LinearSystem;-&gt;createRowDimensionPercent(Landroid/support/constraint/solver/LinearSystem; Landroid/support/constraint/solver/SolverVariable; Landroid/support/constraint/solver/SolverVariable; Landroid/support/constraint/solver/SolverVariable; F Z)Landroid/support/constraint/solver/ArrayRow; [access_flags=public static] @ 0x199210</span><br><span class="line">......</span><br><span class="line">DEBUG    Looking for subclasses of Lctrip/business/map/SimpleOverseaMapActivity;</span><br><span class="line">DEBUG    ctrip.android.view_8.13.0_1248.apk took 349 seconds to analyse.</span><br><span class="line">DEBUG    Finished analysing ctrip.android.view_8.13.0_1248.apk with output &#123;&apos;bug_obj&apos;: &#123;&apos;JSbridgeBrowsable&apos;: False&#125;, &apos;graph_list&apos;: []&#125;.</span><br><span class="line">INFO     Finished analysing apps.</span><br><span class="line">INFO     Creating custom graph.</span><br><span class="line">INFO     Custom graph can be found at /Volumes/Macintosh/Users/riusksk/Android-Security/工具/Jandroid/output/graph/jandroid.html</span><br><span class="line">INFO     All done.</span><br></pre></td></tr></table></figure>
+<p>输出结果会在上面jandroid.html中显示，但由于我这里没有检测到满足JSbridgeBrowsable条件的代码，因此html里面的图是空的。如果有满足条件的代码，会得到类似如下的图：</p>
+<p><img src="http://riusksk.me/media/visjs3.png" alt="visjs3"></p>
+<p>Jandroid还提供有GUI操作界面，包括模板创建功能，所以使用也很方便，运行以下命令即可打开：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 gui/jandroid_gui.py</span><br></pre></td></tr></table></figure>
+<p><img src="http://riusksk.me/media/image-20191102103606311.png" alt="image-20191102103606311"></p>
+<p>比如追踪DexClassLoader.loadClass加载外部dex文件的情况：</p>
+<p><img src="http://riusksk.me/media/image-20191102104919972.png" alt="image-20191102104919972"></p>
+<p>再举个实例，下图是MWR当初分析三星时，一个Unzip目录穿越漏洞的函数传播路径图，漏洞被用于Mobile Pwn2Own 2017：</p>
+<p><img src="http://riusksk.me/media/image-20191102104533888.png" alt="image-20191102104533888"></p>
+<p>所以，Jandroid还是非常适合用来挖掘逻辑漏洞的辅助工具，核心思想依然是污点追踪的思路，操作简单，可视化效果也很好。基于模板的定制化，增加了其运用的灵活性，尤其对于复杂的业务逻辑设计，很适合作定制化地批量检测，但依然需要人工分析确认，并非完全自动化的。</p>
+<p><img src="http://riusksk.me/media/gzh.png" alt=""></p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2019/11/02/Jandroid：半自动化Android应用逻辑漏洞挖掘/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2019-09-07T02:04:32.000Z"><a href="/2019/09/07/漫谈网络安全应急指导思想/">2019-09-07</a></time>
       
       
@@ -1051,88 +1130,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2019-01-27T02:24:03.000Z"><a href="/2019/01/27/聊聊那些黑客小说/">2019-01-27</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2019/01/27/聊聊那些黑客小说/">聊聊那些黑客小说</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <blockquote>
-<p>系统宕，<br>资料泄，<br>挂马黑站何时了？<br>安全知多少！<br>告警昨夜又响起，<br>往事不堪回首月明中。<br>漏洞应犹在，<br>只是域名改。<br>问君能有几多愁？<br>恰似行行代码错误留。</p>
-</blockquote>
-<h3 id="黑客小说：培养对信息安全的兴趣"><a href="#黑客小说：培养对信息安全的兴趣" class="headerlink" title="黑客小说：培养对信息安全的兴趣"></a>黑客小说：培养对信息安全的兴趣</h3><p>之前在《漏洞战争》的前言里面有提到，鄙人初入象牙塔之时，曾看过多本黑客小说，包括《黑客传说》、《地狱黑客》（后改名为《禁区之门》，参考凯文·米特尼克事迹写的，后来又出了第2部，但好像没写完）、《指间的黑客》等等，后来也因此对安全产生兴趣，入了这行道。</p>
-<p>但，道归道，兴趣归兴趣！</p>
-<p>因为曾有多少人，来了兴趣多年，却未曾自学过。</p>
-<p>“我对安全很感兴趣，求师傅教教我！”这种老套路的提问，大家见得还少吗？</p>
-<p>正如许多人宁愿被动受苦，也不愿主动吃苦学习一样，这个问题在知乎上也曾被热烈讨论过。被动受苦大多不用多动脑，久而久之，身体也会慢慢地适应，也就逐渐被生活、被制度所驯化。</p>
-<p>不过，此处想说的重点是，黑客小说可以培养人们对信息安全的兴趣，而学习的过程本身就是孤独单调的，如有兴趣相伴，则更易独行久远！</p>
-<h3 id="行业人写小说：有始无终，多半夭折"><a href="#行业人写小说：有始无终，多半夭折" class="headerlink" title="行业人写小说：有始无终，多半夭折"></a>行业人写小说：有始无终，多半夭折</h3><p>安全圈里面其实也有一些人写过黑客小说，不乏某些知名人士，但基本上都是开了个头，却没多久就夭折收场。反正，我是没见过有人写完出版的。</p>
-<p>于是，我上Google搜索了下起点网，通过一些安全专业名词进行搜索，找到几部相关小说：</p>
-<blockquote>
-<p>　　“第一节操作系统原理、第二节系统及命令详解、第三节溢出漏洞原理、第四节web原理、第五节http协议、tcp/ip协议第六节sql注入原理、上传漏洞、XSS、CSRF……”                           </p>
-<p>​                                                                          ——《别说我是黑客》</p>
-</blockquote>
-<blockquote>
-<p>　　过了十多分钟，jsky的界面左侧刷出来许多asp文件和几个目录。右栏则是标注着绿色和红色叹号的几列英文。<br>　　看到扫描结果出来，杨风面带微笑进行下一步操作。他的运气不错，得到了xss与sqlinjection漏洞，这是网站暴露出来的跨站脚本漏洞和sql注入漏洞。<br>　　杨风转到育民高中主页，随手选取了一个注入地址，提交上引号。<br>　　返回错误。<br>　　接着提交and1=1语句。<br>　　返回正常。<br>　　继续提交and1=2语句。<br>　　返回错误。<br>　　杨风做这两步，主要是测试网站程序设计者是否在其中过滤了关键字，如果过滤就不能被注入。</p>
-<p>​                                                                                ——《黑客记事本》</p>
-</blockquote>
-<blockquote>
-<p>   ​        “尊敬的孙诚先生，请允许我对你和你的团队–塞伯坦工作室致以敬意。我们的检测人员已经验证了你所寄过来的数据，并证实了ios漏洞的存在，在对你们表示感谢的同时，Zerodium会按照约定，向你的团队支付共计五万四千美元的报酬，并希望你们能尽快将后续数据补完。在邮件中，你们提到找到了ios的两处极为隐秘的高危漏洞，Zerodium上下都对此非常感兴趣。希望能够尽快收到你的回复，报酬方面请不用担心，Zerodium是一个非常有信誉的平台！”</p>
-<p>   ​                                                                      ——《从变形金刚开始》</p>
-</blockquote>
-<blockquote>
-<p>   “我明白了，灵根这个电源，就相当于是有着固定编码的反编译器，每个灵根都有一个固定编码，就是所谓的灵根属性。灵根可以把跟自己编码一样的灵气团，进行逆向反编译，把编译好的灵气团分解成单纯由0和1构成的信息流，就是所谓的灵力！”</p>
-<p>   ​                                                                       ——《程序员修真之路》</p>
-</blockquote>
-<p>从教你用jsky黑站（PS：为啥不推荐wvs呢），到黑客穿越、程序员修仙等，各种奇思妙想，在网络小说领域也算是另类的存在。</p>
-<p>但是从这些专业名词看，作者即使不是安全圈的，至少也是IT技术行业的，对一些常见的安全事件、技术名词都比较了解。</p>
-<p>文学与IT技术本身就是两个不同的领域，要同时兼顾就有一定难度。如果算程序员里面写的小说，比较火的，应该是那本《疯狂的程序员》吧！</p>
-<h3 id="懵懂之美：似懂非懂才是最大的乐趣"><a href="#懵懂之美：似懂非懂才是最大的乐趣" class="headerlink" title="懵懂之美：似懂非懂才是最大的乐趣"></a>懵懂之美：似懂非懂才是最大的乐趣</h3><p>我已经很久没看黑客小说，尤其是入了行之后，就更不看了。</p>
-<p>如果要推荐的话，还是开头提到的那3本小说：《黑客传说》、《禁区之门》、《指间的黑客》，不过那是我大学时的口味了，现在重新看也不一定就如当初那般喜欢。</p>
-<p>因为当你对安全行业熟悉后，再去看这些小说的时候，可能就容易较真，少了些许乐趣。</p>
-<p>我当初看上面的小说的时候，其实也还没入门安全，所以看得特别起劲。</p>
-<p>所以，如果要看这类小说，就把那些行业知识都抛诸脑后，享受那当初的懵懂之美，才是读小说的乐趣所在。</p>
-<h3 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h3><p>也许是性格使然，在文字世界里，鄙人老喜欢委婉地批判人和事（俗称：骂人）。不过文学世界里，一千个读者就有一千个哈姆雷特，应该支持下这种多元文化。不然就像娱乐圈里，谁演孙悟空，都要被六小龄童骂一般，少了胸怀，甚至阻碍了行业发展。</p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2019/01/27/聊聊那些黑客小说/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/随笔杂谈/">随笔杂谈</a>
-  </div>
-
-        
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -1164,6 +1161,10 @@
       </li>
     
       <li>
+        <a href="/2020/05/30/谈谈追踪前沿学术研究的技巧/">谈谈追踪前沿学术研究的技巧</a>
+      </li>
+    
+      <li>
         <a href="/2020/04/11/关于Adobe-PDF-0day的故事/">关于Adobe PDF 0day的故事</a>
       </li>
     
@@ -1191,10 +1192,6 @@
         <a href="/2019/11/18/Fuzzing平台建设的研究与设计/">Fuzzing平台建设的研究与设计</a>
       </li>
     
-      <li>
-        <a href="/2019/11/02/Jandroid：半自动化Android应用逻辑漏洞挖掘/">Android应用逻辑漏洞半自动化挖掘思路</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -1204,7 +1201,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>66</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>67</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>26</small></li>
   

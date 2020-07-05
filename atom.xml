@@ -251,6 +251,44 @@
   </entry>
   
   <entry>
+    <title>谈谈追踪前沿学术研究的技巧</title>
+    <link href="http://riusksk.github.io/2020/05/30/%E8%B0%88%E8%B0%88%E8%BF%BD%E8%B8%AA%E5%89%8D%E6%B2%BF%E5%AD%A6%E6%9C%AF%E7%A0%94%E7%A9%B6%E7%9A%84%E6%8A%80%E5%B7%A7/"/>
+    <id>http://riusksk.github.io/2020/05/30/谈谈追踪前沿学术研究的技巧/</id>
+    <published>2020-05-30T05:55:39.000Z</published>
+    <updated>2020-07-05T05:57:03.000Z</updated>
+    
+    <content type="html">&lt;p&gt;以前找论文都只知道上中国知网CNKI，很多是中文，且论文质量一般，更重要的还是收费。所以，我离开学校后，有时下载论文，都是找别人帮忙。&lt;/p&gt;
+&lt;p&gt;最近一年刷Twitter，经常发现一些漏洞研究论文都是在一个叫arXiv的网站提供免费下载，而且经常是会议开始前很早就公开了。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://pic4.zhimg.com/80/v2-4f89ba92856d2079f97eb865d710c767_720w.jpg&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+&lt;p&gt;这里介绍下&lt;a href=&quot;https://link.zhihu.com/?target=http%3A//arXiv.org&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://arXiv.org&lt;/a&gt;这个学术论文搜索引擎。&lt;/p&gt;
+&lt;p&gt;arXiv（读音如英语的 archive ）是一个收集物理学、数学、计算机科学与生物学论文预印本的网站。arXiv 原先是由物理学家保罗·金斯巴格在1991年建立的网站，本意在收集物理学的论文预印本，随后括及天文、数学等其它领域。金斯巴格因为这个网站获得了2002年的麦克阿瑟奖。 arXiv 原先挂在洛斯阿拉莫斯国家，现在挂在康奈尔大学下面。&lt;/p&gt;
+&lt;p&gt;为了防止自己的想法在论文被收录前被他人剽窃，作者会将预稿上传到arvix作为预收录，以证明论文的原创性。&lt;/p&gt;
+&lt;p&gt;所以上面的论文经常比投稿大会更早放出，而且免费下载。英语通常是学术论文的第一语言，牛逼的学术论文也基本是英语写的，这点上国外的学术检索引擎就占据了一定优势，很多在CNDI是检索不到的，况且免费论文也不适合让你拿来收费。&lt;/p&gt;
+&lt;p&gt;如果本文只是介绍arXiv让你搜索论文，那就没意思了。&lt;/p&gt;
+&lt;p&gt;下面介绍如何通过web feed免费订阅最新论文的方法。&lt;br&gt;我平时是用Inoreader订阅RSS，但arXiv并没有提供RSS。刚好最近Inoreader出了新功能叫Web Feed，通过定时爬取特定页面来实现RSS订阅的类似效果。&lt;/p&gt;
+&lt;p&gt;这里我以论文标题含fuzz的关键词来检索计算机科学论文，如果不检索标题，可能会出现非漏洞研究论文，所以推荐检索标题会更准确一些。同时，注意开启按最新时间排序。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://pic2.zhimg.com/80/v2-25d577c96102ede54fc53090d8a160bd_720w.jpg&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+&lt;p&gt;将搜索完生成的链接输入Inoreader搜索：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://pic1.zhimg.com/80/v2-e437ce28cd05e3c73ce163d7bbd7707c_720w.jpg&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://pic1.zhimg.com/80/v2-40eaf62c6a85b25bc2d3cabf59ae26ec_720w.jpg&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+&lt;p&gt;订阅效果：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://pic3.zhimg.com/80/v2-1ff7fea1bfde6b7e3090bb4354ede006_720w.jpg&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+&lt;p&gt;以后就可以及时获取最新论文的下载。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;以前找论文都只知道上中国知网CNKI，很多是中文，且论文质量一般，更重要的还是收费。所以，我离开学校后，有时下载论文，都是找别人帮忙。&lt;/p&gt;
+&lt;p&gt;最近一年刷Twitter，经常发现一些漏洞研究论文都是在一个叫arXiv的网站提供免费下载，而且经常是会议开始前很早就公开了
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+  </entry>
+  
+  <entry>
     <title>关于Adobe PDF 0day的故事</title>
     <link href="http://riusksk.github.io/2020/04/11/%E5%85%B3%E4%BA%8EAdobe-PDF-0day%E7%9A%84%E6%95%85%E4%BA%8B/"/>
     <id>http://riusksk.github.io/2020/04/11/关于Adobe-PDF-0day的故事/</id>
@@ -1373,64 +1411,6 @@
     
     
       <category term="winafl" scheme="http://riusksk.github.io/tags/winafl/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>聊聊那些黑客小说</title>
-    <link href="http://riusksk.github.io/2019/01/27/%E8%81%8A%E8%81%8A%E9%82%A3%E4%BA%9B%E9%BB%91%E5%AE%A2%E5%B0%8F%E8%AF%B4/"/>
-    <id>http://riusksk.github.io/2019/01/27/聊聊那些黑客小说/</id>
-    <published>2019-01-27T02:24:03.000Z</published>
-    <updated>2019-01-27T06:18:10.000Z</updated>
-    
-    <content type="html">&lt;blockquote&gt;
-&lt;p&gt;系统宕，&lt;br&gt;资料泄，&lt;br&gt;挂马黑站何时了？&lt;br&gt;安全知多少！&lt;br&gt;告警昨夜又响起，&lt;br&gt;往事不堪回首月明中。&lt;br&gt;漏洞应犹在，&lt;br&gt;只是域名改。&lt;br&gt;问君能有几多愁？&lt;br&gt;恰似行行代码错误留。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h3 id=&quot;黑客小说：培养对信息安全的兴趣&quot;&gt;&lt;a href=&quot;#黑客小说：培养对信息安全的兴趣&quot; class=&quot;headerlink&quot; title=&quot;黑客小说：培养对信息安全的兴趣&quot;&gt;&lt;/a&gt;黑客小说：培养对信息安全的兴趣&lt;/h3&gt;&lt;p&gt;之前在《漏洞战争》的前言里面有提到，鄙人初入象牙塔之时，曾看过多本黑客小说，包括《黑客传说》、《地狱黑客》（后改名为《禁区之门》，参考凯文·米特尼克事迹写的，后来又出了第2部，但好像没写完）、《指间的黑客》等等，后来也因此对安全产生兴趣，入了这行道。&lt;/p&gt;
-&lt;p&gt;但，道归道，兴趣归兴趣！&lt;/p&gt;
-&lt;p&gt;因为曾有多少人，来了兴趣多年，却未曾自学过。&lt;/p&gt;
-&lt;p&gt;“我对安全很感兴趣，求师傅教教我！”这种老套路的提问，大家见得还少吗？&lt;/p&gt;
-&lt;p&gt;正如许多人宁愿被动受苦，也不愿主动吃苦学习一样，这个问题在知乎上也曾被热烈讨论过。被动受苦大多不用多动脑，久而久之，身体也会慢慢地适应，也就逐渐被生活、被制度所驯化。&lt;/p&gt;
-&lt;p&gt;不过，此处想说的重点是，黑客小说可以培养人们对信息安全的兴趣，而学习的过程本身就是孤独单调的，如有兴趣相伴，则更易独行久远！&lt;/p&gt;
-&lt;h3 id=&quot;行业人写小说：有始无终，多半夭折&quot;&gt;&lt;a href=&quot;#行业人写小说：有始无终，多半夭折&quot; class=&quot;headerlink&quot; title=&quot;行业人写小说：有始无终，多半夭折&quot;&gt;&lt;/a&gt;行业人写小说：有始无终，多半夭折&lt;/h3&gt;&lt;p&gt;安全圈里面其实也有一些人写过黑客小说，不乏某些知名人士，但基本上都是开了个头，却没多久就夭折收场。反正，我是没见过有人写完出版的。&lt;/p&gt;
-&lt;p&gt;于是，我上Google搜索了下起点网，通过一些安全专业名词进行搜索，找到几部相关小说：&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;　　“第一节操作系统原理、第二节系统及命令详解、第三节溢出漏洞原理、第四节web原理、第五节http协议、tcp/ip协议第六节sql注入原理、上传漏洞、XSS、CSRF……”                           &lt;/p&gt;
-&lt;p&gt;​                                                                          ——《别说我是黑客》&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;blockquote&gt;
-&lt;p&gt;　　过了十多分钟，jsky的界面左侧刷出来许多asp文件和几个目录。右栏则是标注着绿色和红色叹号的几列英文。&lt;br&gt;　　看到扫描结果出来，杨风面带微笑进行下一步操作。他的运气不错，得到了xss与sqlinjection漏洞，这是网站暴露出来的跨站脚本漏洞和sql注入漏洞。&lt;br&gt;　　杨风转到育民高中主页，随手选取了一个注入地址，提交上引号。&lt;br&gt;　　返回错误。&lt;br&gt;　　接着提交and1=1语句。&lt;br&gt;　　返回正常。&lt;br&gt;　　继续提交and1=2语句。&lt;br&gt;　　返回错误。&lt;br&gt;　　杨风做这两步，主要是测试网站程序设计者是否在其中过滤了关键字，如果过滤就不能被注入。&lt;/p&gt;
-&lt;p&gt;​                                                                                ——《黑客记事本》&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;blockquote&gt;
-&lt;p&gt;   ​        “尊敬的孙诚先生，请允许我对你和你的团队–塞伯坦工作室致以敬意。我们的检测人员已经验证了你所寄过来的数据，并证实了ios漏洞的存在，在对你们表示感谢的同时，Zerodium会按照约定，向你的团队支付共计五万四千美元的报酬，并希望你们能尽快将后续数据补完。在邮件中，你们提到找到了ios的两处极为隐秘的高危漏洞，Zerodium上下都对此非常感兴趣。希望能够尽快收到你的回复，报酬方面请不用担心，Zerodium是一个非常有信誉的平台！”&lt;/p&gt;
-&lt;p&gt;   ​                                                                      ——《从变形金刚开始》&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;blockquote&gt;
-&lt;p&gt;   “我明白了，灵根这个电源，就相当于是有着固定编码的反编译器，每个灵根都有一个固定编码，就是所谓的灵根属性。灵根可以把跟自己编码一样的灵气团，进行逆向反编译，把编译好的灵气团分解成单纯由0和1构成的信息流，就是所谓的灵力！”&lt;/p&gt;
-&lt;p&gt;   ​                                                                       ——《程序员修真之路》&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;从教你用jsky黑站（PS：为啥不推荐wvs呢），到黑客穿越、程序员修仙等，各种奇思妙想，在网络小说领域也算是另类的存在。&lt;/p&gt;
-&lt;p&gt;但是从这些专业名词看，作者即使不是安全圈的，至少也是IT技术行业的，对一些常见的安全事件、技术名词都比较了解。&lt;/p&gt;
-&lt;p&gt;文学与IT技术本身就是两个不同的领域，要同时兼顾就有一定难度。如果算程序员里面写的小说，比较火的，应该是那本《疯狂的程序员》吧！&lt;/p&gt;
-&lt;h3 id=&quot;懵懂之美：似懂非懂才是最大的乐趣&quot;&gt;&lt;a href=&quot;#懵懂之美：似懂非懂才是最大的乐趣&quot; class=&quot;headerlink&quot; title=&quot;懵懂之美：似懂非懂才是最大的乐趣&quot;&gt;&lt;/a&gt;懵懂之美：似懂非懂才是最大的乐趣&lt;/h3&gt;&lt;p&gt;我已经很久没看黑客小说，尤其是入了行之后，就更不看了。&lt;/p&gt;
-&lt;p&gt;如果要推荐的话，还是开头提到的那3本小说：《黑客传说》、《禁区之门》、《指间的黑客》，不过那是我大学时的口味了，现在重新看也不一定就如当初那般喜欢。&lt;/p&gt;
-&lt;p&gt;因为当你对安全行业熟悉后，再去看这些小说的时候，可能就容易较真，少了些许乐趣。&lt;/p&gt;
-&lt;p&gt;我当初看上面的小说的时候，其实也还没入门安全，所以看得特别起劲。&lt;/p&gt;
-&lt;p&gt;所以，如果要看这类小说，就把那些行业知识都抛诸脑后，享受那当初的懵懂之美，才是读小说的乐趣所在。&lt;/p&gt;
-&lt;h3 id=&quot;后话&quot;&gt;&lt;a href=&quot;#后话&quot; class=&quot;headerlink&quot; title=&quot;后话&quot;&gt;&lt;/a&gt;后话&lt;/h3&gt;&lt;p&gt;也许是性格使然，在文字世界里，鄙人老喜欢委婉地批判人和事（俗称：骂人）。不过文学世界里，一千个读者就有一千个哈姆雷特，应该支持下这种多元文化。不然就像娱乐圈里，谁演孙悟空，都要被六小龄童骂一般，少了胸怀，甚至阻碍了行业发展。&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;系统宕，&lt;br&gt;资料泄，&lt;br&gt;挂马黑站何时了？&lt;br&gt;安全知多少！&lt;br&gt;告警昨夜又响起，&lt;br&gt;往事不堪回首月明中。&lt;br&gt;漏洞应犹在，&lt;br&gt;只是域名改。&lt;br&gt;问君能有几多愁？&lt;br&gt;恰似行行代码错误留。&lt;/p&gt;
-&lt;/blockquote&gt;
-    
-    </summary>
-    
-      <category term="随笔杂谈" scheme="http://riusksk.github.io/categories/%E9%9A%8F%E7%AC%94%E6%9D%82%E8%B0%88/"/>
-    
     
   </entry>
   
