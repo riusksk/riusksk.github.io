@@ -77,6 +77,107 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2018-12-30T11:06:31.000Z"><a href="/2018/12/30/推荐今年C3黑客大会上的几个议题/">2018-12-30</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2018/12/30/推荐今年C3黑客大会上的几个议题/">推荐今年C3黑客大会上的几个议题</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>最近几天在德国举办的 The 35th Chaos Communication Congress (35C3) 黑客大会，在Twitter上传得火热，在国内却无人问津。</p>
+<p>从这可以看出同为微博的安全圈氛围是完全不同的，新浪微博还是偏娱乐些的，而且国外的圈子自然比天朝的要大得多，很多国家的人在上面交流。</p>
+<p>所以，我现在经常混Twitter，当作获取安全资讯的途径，新浪微博就真的当作看新闻的了……</p>
+<h3 id="德国C3混沌黑客大会"><a href="#德国C3混沌黑客大会" class="headerlink" title="德国C3混沌黑客大会"></a>德国C3混沌黑客大会</h3><p>Chaos Communication Congress（C3）大会是每年在德国举办的黑客大会，直译过来就是”混沌通信大会“，圈内通常叫”C3“，今年是第35届，所以叫35c3，今年还有CTF比赛，一些打过pwn2own的人出了一些浏览器实际漏洞的题目，也蛮具有实战价值的。</p>
+<p>每年这大会都会以演讲视频的方式分享出各个议题，以前大多是聚焦在无线电安全，所以一些什么2G\3G\4G短信、电话窃听经常出自该会议。今年也有一些不错的软件安全相关的议题，下面推荐几个鄙人自认为不错的几个议题。</p>
+<h3 id="From-Zero-to-Zero-Day"><a href="#From-Zero-to-Zero-Day" class="headerlink" title="From Zero to Zero Day"></a>From Zero to Zero Day</h3><p><img src="https://ws3.sinaimg.cn/large/006tNbRwgy1fyp0431o6oj30ju0hxtft.jpg" alt="image-20181230193447667"></p>
+<p>大会上有个议题叫 “From Zero to Zero Day”，演讲者是位高中生，讲述他自己如何在一年之内，从无任何安全基础到挖掘到第一枚Edge浏览器远程执行代码漏洞的经历。</p>
+<p>总结来讲就是：</p>
+<p>1、学习编程语言（C/C++、asm等等）</p>
+<p>2、学习操作系统原理</p>
+<p>3、学习常见二进制漏洞原理</p>
+<p>4、打打CTF，写写write-up</p>
+<p>5、学习并实践去分析真实的漏洞案例，就是直接看代码，调代码</p>
+<p>6、不断重复上述练习</p>
+<p>我直接帖几张关键截图，也推荐大家去听听（视频链接：<a href="https://media.ccc.de/v/35c3-9657-from_zero_to_zero_day）：" target="_blank" rel="external">https://media.ccc.de/v/35c3-9657-from_zero_to_zero_day）：</a></p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNbRwgy1fyozsxuptzj30hz0aatcu.jpg" alt="image-20181230192405638"></p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNbRwgy1fyozt7f18tj30jf0avwjw.jpg" alt="image-20181230192425929"></p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNbRwgy1fyozqdnwdwj30k30axgoz.jpg" alt="image-20181230192131880"></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNbRwgy1fyozs2o8i2j30k70awtb3.jpg" alt="image-20181230192320182"></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNbRwgy1fyozrme322j30k50atadg.jpg" alt="image-20181230192254473"></p>
+<h3 id="Attack-Chrome-IPC"><a href="#Attack-Chrome-IPC" class="headerlink" title="Attack Chrome IPC"></a>Attack Chrome IPC</h3><p><img src="/Users/riusksk/Library/Application Support/typora-user-images/image-20181230193950157.png" alt="image-20181230193950157"></p>
+<p>这个议题之前作者在韩国PoC大会上讲过，并在网上公布过pdf（<a href="https://data.hackinn.com/ppt/2018韩国POC安全大会/ned.pdf），主要讲他之前在Hack2Win" target="_blank" rel="external">https://data.hackinn.com/ppt/2018韩国POC安全大会/ned.pdf），主要讲他之前在Hack2Win</a> bevx黑客大赛上用于黑掉Chrome浏览器的IPC漏洞，此次C3大会的演讲视频参见：<a href="https://media.ccc.de/v/35c3-9579-attacking_chrome_ipc" target="_blank" rel="external">https://media.ccc.de/v/35c3-9579-attacking_chrome_ipc</a></p>
+<p>这议题里面讲了作者一些研究二进制漏洞的一些学习和研究的方法，比如做代码审计、打CTF，也介绍了他这几年的安全研究历程，比国内流行晒crash+CVE的方式更接地气。</p>
+<p>最后介绍如何使用 libfuzzer+libprotobuf-mutator去fuzz chrome IPC，并开源fuzzer代码合并到chroium项目中。</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNbRwgy1fyp0grvcxuj30wk0g3aej.jpg" alt="image-20181230194648886"></p>
+<h3 id="Jailbreaking-iOS-From-past-to-present"><a href="#Jailbreaking-iOS-From-past-to-present" class="headerlink" title="Jailbreaking iOS From past to present"></a>Jailbreaking iOS From past to present</h3><p><img src="https://ws2.sinaimg.cn/large/006tNbRwly1fyp4tb6ppej30lb0c04cb.jpg" alt="image-20181230202552499"></p>
+<p>讲iOS越狱发展史的，可以学习到iOS上各种安全机制的原理以及绕过方法，画了不少原理图，通俗易懂不少。对于想了解整个iOS越狱技术发展历程的同学，这确实是份不错的资料。</p>
+<p>作者这次也在推持上放出了pdf和视频：</p>
+<p>pdf: <a href="https://api.tihmstar.net/35c3slides.pdf" target="_blank" rel="external">https://api.tihmstar.net/35c3slides.pdf</a></p>
+<p>video: <a href="https://media.ccc.de/v/35c3-9618-jailbreaking_ios" target="_blank" rel="external">https://media.ccc.de/v/35c3-9618-jailbreaking_ios</a></p>
+<p>整个议题主要围绕以下几点展开：</p>
+<ul>
+<li>越狱类型（非完美越狱、完美越狱……）</li>
+<li>Exploit mitigations (ASLR, iBoot-level AES, KPP, KTRR, PAC) </li>
+<li>Kernel patches (h3lix) </li>
+<li>Kppless jailbreaks</li>
+<li>越狱的未来趋势</li>
+</ul>
+<h1 id="The-Layman’s-Guide-to-Zero-Day-Engineering"><a href="#The-Layman’s-Guide-to-Zero-Day-Engineering" class="headerlink" title="The Layman’s Guide to Zero-Day Engineering"></a>The Layman’s Guide to Zero-Day Engineering</h1><p><img src="https://ws1.sinaimg.cn/large/006tNbRwly1fyp2wxxr28j30yw0ihgr0.jpg" alt="image-20181230211151217"></p>
+<p>Ret2公司分享如何寻找webkit攻击面并fuzz的方法，是基于MozillaSecurity的dharma语法生成框架写的js fuzzer，以及如何借助IDA+<a href="https://github.com/gaasedelen/lighthouse" target="_blank" rel="external">Lighthouse</a>开源插件（正是Ret2团队开发的，曾获得过IDA插件比赛的二等奖）来分析代码覆盖率问题。</p>
+<p>除此之外，也介绍如何利用frida去hook mach_msg，用来fuzz WindowServer，最后用WindowServer的漏洞来实现root提权。</p>
+<p>他们在其博客（<a href="https://blog.ret2.io）上也分享过不少漏洞研究方面的干货，这次分享的内容也大部分就是来自博客上的一些文章。" target="_blank" rel="external">https://blog.ret2.io）上也分享过不少漏洞研究方面的干货，这次分享的内容也大部分就是来自博客上的一些文章。</a></p>
+<p>里面还提到长亭的real world ctf比赛了。</p>
+<p>这里有张比较有意思的图，发出来给大伙看下：</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNbRwly1fyp3j3xqdgj30z00jn4qp.jpg" alt="image-20181230213304029"></p>
+<p>视频链接：<a href="https://media.ccc.de/v/35c3-9979-the_layman_s_guide_to_zero-day_engineering" target="_blank" rel="external">https://media.ccc.de/v/35c3-9979-the_layman_s_guide_to_zero-day_engineering</a></p>
+<h3 id="Modern-Windows-Userspace-Exploitation"><a href="#Modern-Windows-Userspace-Exploitation" class="headerlink" title="Modern Windows Userspace Exploitation"></a>Modern Windows Userspace Exploitation</h3><p><img src="https://ws3.sinaimg.cn/large/006tNbRwly1fyp3yvr0eaj30tl0i815k.jpg" alt="image-20181230214817405"></p>
+<p>视频链接：<a href="https://media.ccc.de/v/35c3-9660-modern_windows_userspace_exploitation" target="_blank" rel="external">https://media.ccc.de/v/35c3-9660-modern_windows_userspace_exploitation</a></p>
+<p>微软MSRC的人过来分享下windows平台下的一些二进制漏洞利用方法，包括ROP绕过DEP、信息泄露绕过ASLR、绕过CFG、ACG、CIG等等，并现场给了一些演示，不过看起来像是一些CTF赛题，演示的相关代码已放在作者的github上：<a href="https://github.com/saaramar" target="_blank" rel="external">https://github.com/saaramar</a></p>
+<p>都是一些利用系统漏洞防御技术的原理与绕过技术的总结，连各种漏洞缓解机制绕过的微软奖励都给大家标注上了，其实有点类似上面Jailbreaking iOS议题的Windows版本。</p>
+<p>最后来张Exploit Mitigations清单：</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNbRwly1fyp4b42qn5j30rs0hvdir.jpg" alt="image-20181230215938958"></p>
+<h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>后面官方可能还会继续更新演讲视频，可以关注官方twitter（@c3voc_releases）获取消息。</p>
+<p>另外，对于英语不好的同学，不妨下个”腾讯翻译“同声翻译试下，虽然中文翻译没那么准确，但看看显示的英文单词也能知道个大意：</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNbRwly1fyp0n9b99lj31400u0b29.jpg" alt="image-20181230195201468"></p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2018/12/30/推荐今年C3黑客大会上的几个议题/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2018-12-28T12:17:12.000Z"><a href="/2018/12/28/2018年读过的书/">2018-12-28</a></time>
       
       
@@ -896,147 +997,11 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2018-09-16T03:54:16.000Z"><a href="/2018/09/16/honggfuzz3/">2018-09-16</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2018/09/16/honggfuzz3/">honggfuzz漏洞挖掘技术深究系列（3）——Fuzz策略</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p> honggfuzz在对输入文件进行变异前，会先创建个临时文件名（honggfuzz+pid+time），然后将输入数据变异后写入临时文件。</p>
-<p> fuzz策略的实现主要集中在mangle.c中，在循环的fuzzloop函数中，会根据用户的选择的fuzz方式来调用动态fuzz或者静态fuzz的方法，但最后都是调用mangle_mangleContent来变异文件数据：</p>
-<p> <img src="http://riusksk.me/media/v2-3bdc1da036608cc745ef0cb89c2313ea_hd.png" alt=""></p>
-<p> 跟进mangle_mangleContent函数：</p>
-<p> <img src="http://riusksk.me/media/v2-529248182e9e09517288c6cbc0f4152d_hd.jpg" alt=""></p>
-<p> 重点就在于后半部分，它会随机选择变异函数进行处理，更改的字节数也是随机的，根据用户指定的mutation变异率来定，即允许变异文件大小的百分比，变异函数列表如下：</p>
- <center><img src="http://riusksk.me/media/v2-9450da60b2082522f7aa9dff7757a921_hd.png" alt=""></center>
-
-<p> 这些函数都是在mangle_init中初始化，各函数之间也会相互调用：</p>
-<p> <img src="http://riusksk.me/media/v2-025eaad0cd3d34fb828240b30469bede_hd.png" alt=""></p>
-<p> 把这些函数过一遍就是honggfuzz中所有的文件变异规则了，如果想实现自己的fuzzer，这些规则来扣出来用Python实现一遍，顺便把afl的规则也扣过来就更完美了，下面是我之前写office fuzzer时的半成品代码，最后偷懒直接用radamas去实现变异了：</p>
-<p> <img src="http://riusksk.me/media/v2-a0d2b4262c74f02388926e1829e70a37_hd.png" alt=""></p>
-<p> 再回到刚才的变异函数列表，我们一个个走读源码。</p>
-<p> 1、mangle_Resize函数：</p>
-<p> 用空格填充随机位置</p>
-<p> <img src="http://riusksk.me/media/v2-51e43d8f246b8fcb2408bc0c8700baa2_hd.png" alt=""></p>
-<p> <img src="http://riusksk.me/media/v2-8875c992f90668d4a2be2817ee32acc8_hd.png" alt=""></p>
-<p> 2、mangle_Byte函数：</p>
-<p> 向随机位置写随机的uint8类型的数据</p>
-<p> <img src="http://riusksk.me/media/v2-b857966a5c005b1e95f80512382933d6_hd.png" alt=""></p>
-<p> 3、mangle_Bit函数：</p>
-<p> 取随机位置的数值做位翻转</p>
-<p> <img src="http://riusksk.me/media/v2-179d9066a2fd1fc2653f335ce5a41f72_hd.png" alt=""></p>
-<p> 4、mangle_Bytes函数：</p>
-<p> 在随机位置覆盖写2~4字节数据</p>
-<p> <img src="http://riusksk.me/media/v2-4857e9d3d3fb2722bb4705cff49d9bc9_hd.png" alt=""></p>
-<p> 5、mangle_Magic函数：</p>
-<p> 取各种边界值进行覆写，这些边界值部分跟AFL还不一样，我在自己的fuzzer里面把它们作了整合。由于边幅所限，我省略了不少边界值：</p>
-<p> <img src="http://riusksk.me/media/v2-8b34894b9c1fe0833e95dc6d426ff8fb_hd.png" alt=""></p>
-<p> 6、mangle_IncByte函数：</p>
-<p> 取随机位置的数据加1</p>
-<p> <img src="http://riusksk.me/media/v2-ea765d0bf263d6aed9cdaf94a1065631_hd.png" alt=""></p>
-<p> 7、mangle_DecByte函数：</p>
-<p> 取随机位置的数据减1</p>
-<p> <img src="http://riusksk.me/media/v2-bc2bf5117cb1495783b2d5501623e602_hd.png" alt=""></p>
-<p> 8、mangle_NegByte函数：</p>
-<p> 取随机位置的数据取反</p>
-<p> <img src="http://riusksk.me/media/v2-4ef170d3cbb5915de395b7f7aa304079_hd.png" alt=""></p>
-<p> 9、mangle_AddSub函数：</p>
-<p> 取随机位置的1、2、4或8字节的数据长度作加减操作，操作数取 rand(0~8192)-4096</p>
-<p> <img src="http://riusksk.me/media/v2-66a0ed1564725c2dbdf05439e6e26295_hd.png" alt=""></p>
-<p> 10、mangle_Dictionary函数：</p>
-<p> 变异目录名，也是随机取文件夹名称进行变异，如果有多个目录，那被变异的目录数也是随机的</p>
-<p> <img src="http://riusksk.me/media/v2-d5aaeb860ab0f32d1283e2d987e456ad_hd.png" alt=""></p>
-<p> 11、mangle_DictionaryInsert函数：</p>
-<p> 在目录的随机位置中插入随机数据</p>
-<p> <img src="http://riusksk.me/media/v2-0fa9250d8e778ca02841b66fc08a00ce_hd.png" alt=""></p>
-<p> 12、mangle_MemMove函数：</p>
-<p> 取随机位置的数据拷贝随机长度的数据，里面就是调用memmove函数实现的</p>
-<p> <img src="http://riusksk.me/media/v2-eabb7cafe2e6042ef8bd2e18d526b9df_hd.png" alt=""></p>
-<p> 13、mangle_MemSet函数：</p>
-<p> 取随机位置、随机大小，用UINT8_MAX数值填充</p>
-<p> <img src="http://riusksk.me/media/v2-82430bbef8b74651aea3a1bdeca9b2dc_hd.png" alt=""></p>
-<p> 14、mangle_Random函数：</p>
-<p> 取随机位置、随机大小的缓冲区，用随机数填充</p>
-<p> <img src="http://riusksk.me/media/v2-51e9a2621714c7a6d88dc68c4a859979_hd.png" alt=""></p>
-<p> 15、mangle_CloneByte函数：</p>
-<p> 取两处随机位置的作数据交换</p>
-<p> <img src="http://riusksk.me/media/v2-cac0e8c50be64a1174f9b7a6cc924a5e_hd.png" alt=""></p>
-<p> 16、mangle_Expand函数：</p>
-<p> 文件末尾扩展随机长度的空间，用空格填充，然后在随机位置，取前面的随机长度作数据拷贝</p>
-<p> <img src="http://riusksk.me/media/v2-0e199dd7f82c223a928ead2b7a6cdd04_hd.png" alt=""></p>
-<p> <img src="http://riusksk.me/media/v2-bb4820b762220d720d78928d34e923e1_hd.png" alt=""></p>
-<p> 17、mangle_Shrink函数：</p>
-<p> 删除随机长度的文件内容</p>
-<p> <img src="http://riusksk.me/media/v2-010ccb9f2dd19bd450b655cb9f9c7209_hd.png" alt=""></p>
-<p> 18、mangle_InsertRnd函数：</p>
-<p> 在文件的随机位置插入随机长度的数据</p>
-<p> <img src="http://riusksk.me/media/v2-325836aaf17585d5a02265ae000b72fc_hd.png" alt=""></p>
-<p> 19、mangle_ASCIIVal函数：</p>
-<p> 在随机位置覆盖32字节的随机数</p>
-<p> <img src="http://riusksk.me/media/v2-0385d1c51fda364543b22c77067b28ac_hd.png" alt=""></p>
-<p> 总结</p>
-<p> 在Fuzzing过程中，很多变异规则是共用的，可以参考一些主源的开源软件，比如afl\peach\honggfuzz\libfuzzer，提取规则作整合，然后写个自己的fuzzing框架，在后面作针对的fuzzer时，可以直接套用。</p>
-<p> 从上面的fuzz策略可以总结出常规的变异规则：</p>
-<ul>
-<li>随机数据替换</li>
-<li>数据值增减</li>
-<li>已知边界值替换</li>
-<li>插入随机数据</li>
-<li>删减文件内容</li>
-<li>目录变异</li>
-<li>数据拷贝覆盖</li>
-<li>……</li>
-</ul>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2018/09/16/honggfuzz3/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/honggfuzz/">honggfuzz</a>, <a href="/tags/fuzz/">fuzz</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/page/2/">&laquo; 上一页</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/4/">下一页 &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/2/">&laquo; 上一页</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/4/">下一页 &raquo;</a>
   </nav>
 
 </nav>
@@ -1053,6 +1018,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/06/28/信息安全从业者书单推荐（2020-6-28更新）/">信息安全从业者书单推荐（2020.6.28更新）</a>
+      </li>
     
       <li>
         <a href="/2020/03/01/持续Fuzzing在DevSecOps中的应用/">持续Fuzzing在DevSecOps中的应用</a>
@@ -1090,10 +1059,6 @@
         <a href="/2019/08/18/安全研究的价值思考/">安全研究的价值思考</a>
       </li>
     
-      <li>
-        <a href="/2019/07/14/一些值得学习的Fuzzer开源项目/">一些值得学习的Fuzzer开源项目</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -1103,7 +1068,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>63</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>64</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>26</small></li>
   

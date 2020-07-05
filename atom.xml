@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2020-03-01T13:05:35.000Z</updated>
+  <updated>2020-07-05T04:09:43.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,172 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>信息安全从业者书单推荐（2020.6.28更新）</title>
+    <link href="http://riusksk.github.io/2020/06/28/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E4%BB%8E%E4%B8%9A%E8%80%85%E4%B9%A6%E5%8D%95%E6%8E%A8%E8%8D%90%EF%BC%882020-6-28%E6%9B%B4%E6%96%B0%EF%BC%89/"/>
+    <id>http://riusksk.github.io/2020/06/28/信息安全从业者书单推荐（2020-6-28更新）/</id>
+    <published>2020-06-28T05:07:01.000Z</published>
+    <updated>2020-07-05T04:09:43.000Z</updated>
+    
+    <content type="html">&lt;p&gt;近来也读过不少书，推荐几本个人觉得不错的：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;《Vue.js项目开发实战》张帆&lt;/li&gt;
+&lt;li&gt;《我的第一本算法书》【日】宫崎修一；石田保辉，入门书籍，无代码进行图解&lt;/li&gt;
+&lt;li&gt;《算法图解：像小说一样有趣的算法入门书》【美】Aditya Bhargava&lt;/li&gt;
+&lt;li&gt;《编译与反编译技术实战》庞建民&lt;/li&gt;
+&lt;li&gt;《重构：改善既有代码的设计》【美】Martin Fowler&lt;/li&gt;
+&lt;li&gt;《Docker技术入门与实战》杨保华；戴王剑；曹亚仑&lt;/li&gt;
+&lt;li&gt;《一本小小的蓝色逻辑书》【加】布兰登•罗伊尔&lt;/li&gt;
+&lt;li&gt;《精进：如何成为一个很厉害的人》采铜&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;最近也买了极客时间上的几门课程，有几门我觉得不错的，虽然没有实体书出版，但课程依然还是按照书籍写作方式来写，比较系统化，有兴趣的也可以看看：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;《左耳听风》&lt;/li&gt;
+&lt;li&gt;《软件工程之美》&lt;/li&gt;
+&lt;li&gt;《项目管理实战20讲》&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;不过有一门课是不推荐的，就是《程序员进阶攻略》，后来作者也出了实体书，但总觉得作者对武侠小说过着迷，课程写得有点过于武侠风，技术与武侠关联得过于牵强。&lt;/p&gt;
+&lt;p&gt;书单均是个人看过或者业界认可的经典书籍，跟网上罗列的安全书单不同，并非把网店上的各安全书籍都罗列上的。如果你有何好书推荐可在&lt;code&gt;Issues（https://github.com/riusksk/secbook/issues）&lt;/code&gt;上提交，或者提交合并，待我看过之后，如果觉得可以就会在此处更新，这里也会不定期更新书单。&lt;/p&gt;
+&lt;p&gt;文末附完整的思维导图，欢迎收藏。&lt;/p&gt;
+&lt;h1 id=&quot;计算机及系统原理&quot;&gt;&lt;a href=&quot;#计算机及系统原理&quot; class=&quot;headerlink&quot; title=&quot;计算机及系统原理&quot;&gt;&lt;/a&gt;计算机及系统原理&lt;/h1&gt;&lt;p&gt;· 《编码：隐匿在计算机软硬件背后的语言》 【美】Charles Petzold&lt;/p&gt;
+&lt;p&gt;· 《深入理解计算机系统》【美】Randal E.Bryant&lt;/p&gt;
+&lt;p&gt;· 《深入理解Windows操作系统》【美】Russinovich,M.E.；Solomon,D.A.&lt;/p&gt;
+&lt;p&gt;· 《Linux内核设计与实现》【美】Robert Love&lt;/p&gt;
+&lt;p&gt;· 《深入理解Android内核设计思想》林学森&lt;/p&gt;
+&lt;p&gt;· 《Android系统源代码情景分析》罗升阳&lt;/p&gt;
+&lt;p&gt;· 《深入理解Mac OS X &amp;amp; iOS操作系统》【美】Jonathan Levin&lt;/p&gt;
+&lt;p&gt;· 《深入理解Linux内核》 【美】DanielP.Bovet&lt;/p&gt;
+&lt;p&gt;· 《代码揭秘：从C/C++的角度探秘计算机系统》左飞&lt;/p&gt;
+&lt;p&gt;· 《Android Dalvik虚拟机结构及机制剖析（第1、2卷）》吴艳霞；张国印&lt;/p&gt;
+&lt;p&gt;· 《Android Internals::Power User’s View》【美】Jonathan Levin，中译本《最强Android书：架构大剖析》&lt;/p&gt;
+&lt;h1 id=&quot;编程开发&quot;&gt;&lt;a href=&quot;#编程开发&quot; class=&quot;headerlink&quot; title=&quot;编程开发&quot;&gt;&lt;/a&gt;编程开发&lt;/h1&gt;&lt;h2 id=&quot;系统平台&quot;&gt;&lt;a href=&quot;#系统平台&quot; class=&quot;headerlink&quot; title=&quot;系统平台&quot;&gt;&lt;/a&gt;系统平台&lt;/h2&gt;&lt;h3 id=&quot;Windows&quot;&gt;&lt;a href=&quot;#Windows&quot; class=&quot;headerlink&quot; title=&quot;Windows&quot;&gt;&lt;/a&gt;Windows&lt;/h3&gt;&lt;p&gt;· 《Windows程序设计》【美】Charles Petzold&lt;/p&gt;
+&lt;p&gt;· 《Windows核心编程》【美】Jeffrey Richter&lt;/p&gt;
+&lt;p&gt;· 《Windows环境下32位汇编语言程序设计》罗云彬&lt;/p&gt;
+&lt;p&gt;· 《Windows驱动开发技术详解》张帆&lt;/p&gt;
+&lt;h3 id=&quot;Linux-Unix&quot;&gt;&lt;a href=&quot;#Linux-Unix&quot; class=&quot;headerlink&quot; title=&quot;Linux/Unix&quot;&gt;&lt;/a&gt;Linux/Unix&lt;/h3&gt;&lt;p&gt;· 《UNIX环境高级编程》【美】W.Richard Stevens；Stephen A.Rago&lt;/p&gt;
+&lt;p&gt;· 《Linux程序设计》【美】Neil Matthew；Richard Stones&lt;/p&gt;
+&lt;p&gt;· 《Linux设备驱动程序》【美】Jonathan Corbet；Alessandro Rubini；Gerg Kroah-Hartman&lt;/p&gt;
+&lt;h3 id=&quot;macOS-iOS&quot;&gt;&lt;a href=&quot;#macOS-iOS&quot; class=&quot;headerlink&quot; title=&quot;macOS/iOS&quot;&gt;&lt;/a&gt;macOS/iOS&lt;/h3&gt;&lt;p&gt;· 《iOS编程》【美】Christian Keur；Aaron Hillegass&lt;/p&gt;
+&lt;p&gt;· 《OS X与iOS内核编程）【澳】Halvorsen,O.H.；Clarke,D&lt;/p&gt;
+&lt;h3 id=&quot;Android&quot;&gt;&lt;a href=&quot;#Android&quot; class=&quot;headerlink&quot; title=&quot;Android&quot;&gt;&lt;/a&gt;Android&lt;/h3&gt;&lt;p&gt;· 《第一行代码——Android》郭霖&lt;/p&gt;
+&lt;p&gt;· 《Android编程权威指南》【美】Brian Hardy；BillPhillips&lt;/p&gt;
+&lt;h2 id=&quot;编程语言&quot;&gt;&lt;a href=&quot;#编程语言&quot; class=&quot;headerlink&quot; title=&quot;编程语言&quot;&gt;&lt;/a&gt;编程语言&lt;/h2&gt;&lt;h3 id=&quot;C&quot;&gt;&lt;a href=&quot;#C&quot; class=&quot;headerlink&quot; title=&quot;C&quot;&gt;&lt;/a&gt;C&lt;/h3&gt;&lt;p&gt;· 《C语言程序设计》【美】Brian W.Kernighan；Dennis M.Ritchie&lt;/p&gt;
+&lt;p&gt;· 《C Primer Plus》【美】Stephen Prata，入门书籍&lt;/p&gt;
+&lt;p&gt;· 《C和指针》【美】Kenneth A.Reek&lt;/p&gt;
+&lt;p&gt;· 《C陷阱与缺陷》【美】Andrew Koenig&lt;/p&gt;
+&lt;p&gt;· 《C专家编程》【美】Peter van der Linden&lt;/p&gt;
+&lt;h3 id=&quot;C-1&quot;&gt;&lt;a href=&quot;#C-1&quot; class=&quot;headerlink&quot; title=&quot;C++&quot;&gt;&lt;/a&gt;C++&lt;/h3&gt;&lt;p&gt;· 《C++ Primer Plus》【美】Stephen Prata，入门书籍&lt;/p&gt;
+&lt;p&gt;· 《C++ Primer》【美】Stanley B.Lippman；Josée Lajoie；Barbara E.Moo，进阶书籍&lt;/p&gt;
+&lt;h3 id=&quot;ASM&quot;&gt;&lt;a href=&quot;#ASM&quot; class=&quot;headerlink&quot; title=&quot;ASM&quot;&gt;&lt;/a&gt;ASM&lt;/h3&gt;&lt;p&gt;· 《Intel汇编语言程序设计》【美】Kip Irvine&lt;/p&gt;
+&lt;p&gt;· 《Intel开发手册》&lt;/p&gt;
+&lt;p&gt;· 《汇编语言（第3版）》王爽&lt;/p&gt;
+&lt;p&gt;· 《x86汇编语言：从实模式到保护模式》李忠&lt;/p&gt;
+&lt;h3 id=&quot;Java&quot;&gt;&lt;a href=&quot;#Java&quot; class=&quot;headerlink&quot; title=&quot;Java&quot;&gt;&lt;/a&gt;Java&lt;/h3&gt;&lt;p&gt;· 《Java核心技术》【美】Cay S.Horstmann；Gary Cornell，入门书籍&lt;/p&gt;
+&lt;p&gt;· 《Java 编程思想》【美】Bruce eckel，进阶书籍&lt;/p&gt;
+&lt;h3 id=&quot;JavaScript&quot;&gt;&lt;a href=&quot;#JavaScript&quot; class=&quot;headerlink&quot; title=&quot;JavaScript&quot;&gt;&lt;/a&gt;JavaScript&lt;/h3&gt;&lt;p&gt;· 《JavaScript DOM编程艺术》【美】Jeremy Keith；【加】Jeffrey Sambells&lt;/p&gt;
+&lt;p&gt;· 《JavaScript高级程序设计》【美】Zakas.Bicholas C.&lt;/p&gt;
+&lt;p&gt;· 《Vue.js项目开发实战》张帆&lt;/p&gt;
+&lt;h3 id=&quot;Python&quot;&gt;&lt;a href=&quot;#Python&quot; class=&quot;headerlink&quot; title=&quot;Python&quot;&gt;&lt;/a&gt;Python&lt;/h3&gt;&lt;p&gt;· 《Python核心编程（第2版）》【美】Wesley J·Chun&lt;/p&gt;
+&lt;h3 id=&quot;Shell&quot;&gt;&lt;a href=&quot;#Shell&quot; class=&quot;headerlink&quot; title=&quot;Shell&quot;&gt;&lt;/a&gt;Shell&lt;/h3&gt;&lt;p&gt;· 《Linux Shell脚本攻略》【印】Sarath Lakshman&lt;/p&gt;
+&lt;h2 id=&quot;调试技术&quot;&gt;&lt;a href=&quot;#调试技术&quot; class=&quot;headerlink&quot; title=&quot;调试技术&quot;&gt;&lt;/a&gt;调试技术&lt;/h2&gt;&lt;p&gt;· 《软件调试》张银奎&lt;/p&gt;
+&lt;p&gt;· 《Debug Hacks》【日】吉冈弘隆；大和一洋；大岩尚宏；安部东洋；吉田俊辅&lt;/p&gt;
+&lt;p&gt;· 《格蠹汇编：软件调试案例锦集》张银奎&lt;/p&gt;
+&lt;h2 id=&quot;数据结构与算法&quot;&gt;&lt;a href=&quot;#数据结构与算法&quot; class=&quot;headerlink&quot; title=&quot;数据结构与算法&quot;&gt;&lt;/a&gt;数据结构与算法&lt;/h2&gt;&lt;p&gt;· 《数据结构与算法分析——C语言描述》【美】Mark Allen Weiss&lt;/p&gt;
+&lt;p&gt;· 《算法导论》【美】Thomas H.Cormen；Chales E.Leiserson；Ronald l.Rivest&lt;/p&gt;
+&lt;p&gt;· 《我的第一本算法书》【日】宫崎修一；石田保辉，入门书籍，无代码进行图解&lt;/p&gt;
+&lt;p&gt;· 《算法图解：像小说一样有趣的算法入门书》【美】Aditya Bhargava&lt;/p&gt;
+&lt;h2 id=&quot;编译原理&quot;&gt;&lt;a href=&quot;#编译原理&quot; class=&quot;headerlink&quot; title=&quot;编译原理&quot;&gt;&lt;/a&gt;编译原理&lt;/h2&gt;&lt;p&gt;· 《编译系统透视：图解编译原理》新设计团队，入门书籍&lt;/p&gt;
+&lt;p&gt;· 《编译原理》（龙书）【美】Alfered V.Aho；Monica S.Lam；Ravi Sehi；Jeffrey D.Ullmam&lt;/p&gt;
+&lt;p&gt;· 《编译与反编译技术实战》庞建民&lt;/p&gt;
+&lt;h2 id=&quot;其他&quot;&gt;&lt;a href=&quot;#其他&quot; class=&quot;headerlink&quot; title=&quot;其他&quot;&gt;&lt;/a&gt;其他&lt;/h2&gt;&lt;p&gt;· 《编程高手箴言》梁肇新&lt;/p&gt;
+&lt;p&gt;· 《代码整洁之道》【美】Robert C.Martin&lt;/p&gt;
+&lt;p&gt;· 《代码大全》【美】Steve McConnell&lt;/p&gt;
+&lt;p&gt;· 《重构：改善既有代码的设计》【美】Martin Fowler&lt;/p&gt;
+&lt;h1 id=&quot;网络技术&quot;&gt;&lt;a href=&quot;#网络技术&quot; class=&quot;headerlink&quot; title=&quot;网络技术&quot;&gt;&lt;/a&gt;网络技术&lt;/h1&gt;&lt;p&gt;· 《TCP/IP详解（卷1：协议）》【美】Kevin R.fall；W.Richard Stevens&lt;/p&gt;
+&lt;p&gt;· 《Wireshark数据包分析实战》【美】Chris Sanders&lt;/p&gt;
+&lt;h1 id=&quot;安全技术&quot;&gt;&lt;a href=&quot;#安全技术&quot; class=&quot;headerlink&quot; title=&quot;安全技术&quot;&gt;&lt;/a&gt;安全技术&lt;/h1&gt;&lt;h2 id=&quot;安全开发&quot;&gt;&lt;a href=&quot;#安全开发&quot; class=&quot;headerlink&quot; title=&quot;安全开发&quot;&gt;&lt;/a&gt;安全开发&lt;/h2&gt;&lt;p&gt;· 《天书夜读：从汇编语言到Windows内核编程》谭文；邵坚磊&lt;/p&gt;
+&lt;p&gt;· 《Rootkit：系统灰色地带的潜伏者》【美】Bill Blunden&lt;/p&gt;
+&lt;p&gt;· 《Rootkits——Windows内核的安全防护》【美】Gerg Hoglund；James Butler&lt;/p&gt;
+&lt;p&gt;· 《BSD ROOTKIT设计——内核黑客指引书》【美】Joseph Kong&lt;/p&gt;
+&lt;p&gt;· 《寒江独钓：Windows内核安全编程》谭文；杨潇；邵坚磊&lt;/p&gt;
+&lt;h2 id=&quot;逆向工程&quot;&gt;&lt;a href=&quot;#逆向工程&quot; class=&quot;headerlink&quot; title=&quot;逆向工程&quot;&gt;&lt;/a&gt;逆向工程&lt;/h2&gt;&lt;p&gt;· 《加密与解密》段钢&lt;/p&gt;
+&lt;p&gt;· 《恶意软件分析诀窍与工具箱——对抗“流氓”软件的技术与利器》【美】Michael Hale Ligh；Steven Adair&lt;/p&gt;
+&lt;p&gt;· 《C++反汇编与逆向分析技术揭秘》钱林松；赵海旭&lt;/p&gt;
+&lt;p&gt;· 《IDA权威指南》【美】Chris Eagle&lt;/p&gt;
+&lt;p&gt;· 《逆向工程权威指南》【乌克兰】Dennis Yurichev，多平台入门大全&lt;/p&gt;
+&lt;p&gt;· 《Android软件安全与逆向分析》丰生强&lt;/p&gt;
+&lt;p&gt;· 《macOS软件安全与逆向分析》丰生强&lt;/p&gt;
+&lt;p&gt;· 《iOS应用逆向工程（第2版）》沙梓社；吴航&lt;/p&gt;
+&lt;h2 id=&quot;Web安全&quot;&gt;&lt;a href=&quot;#Web安全&quot; class=&quot;headerlink&quot; title=&quot;Web安全&quot;&gt;&lt;/a&gt;Web安全&lt;/h2&gt;&lt;p&gt;· 《黑客攻防技术宝典：Web实战篇》【美】Marcus Pinto，Dafydd Stuttard&lt;/p&gt;
+&lt;p&gt;· 《白帽子讲Web安全》吴翰清&lt;/p&gt;
+&lt;p&gt;· 《Web安全测试》【美】Paco Hope；Ben Waltber&lt;/p&gt;
+&lt;p&gt;· 《Web前端黑客技术揭秘》钟晨鸣；徐少培&lt;/p&gt;
+&lt;p&gt;· 《精通脚本黑客》曾云好&lt;/p&gt;
+&lt;h2 id=&quot;软件-系统安全&quot;&gt;&lt;a href=&quot;#软件-系统安全&quot; class=&quot;headerlink&quot; title=&quot;软件/系统安全&quot;&gt;&lt;/a&gt;软件/系统安全&lt;/h2&gt;&lt;p&gt;· 《0day安全：软件漏洞分析技术（第2版）》王清，入门书籍&lt;/p&gt;
+&lt;p&gt;· 《漏洞战争：软件漏洞分析精要》林桠泉，进阶书籍&lt;/p&gt;
+&lt;p&gt;· 《捉虫日记》【德】Tobias Klein，进阶书籍&lt;/p&gt;
+&lt;p&gt;· 《黑客防线2009缓冲区溢出攻击与防范专辑》&lt;/p&gt;
+&lt;p&gt;· 《内核漏洞的利用与防范》【美】Enrico Perla；Massimiliano Oldani&lt;/p&gt;
+&lt;p&gt;· 《Fuzzing for Software Security Testing and Quality Assurance（第2版）》【美】Charlie Miller，博文视点翻译中&lt;/p&gt;
+&lt;p&gt;· 《iOS Hackers’s Handbook》【美】Charlie Miller，不推荐中文版&lt;/p&gt;
+&lt;p&gt;· 《The Mac Hacker’s Handbook》【美】Charlie Miller&lt;/p&gt;
+&lt;p&gt;· 《Android安全攻防权威指南》【美】Joshua J.Drake；【西】Pau Oliva Fora；【美】Collin Mulliner&lt;/p&gt;
+&lt;p&gt;· 《The Art of Softwar Security Assessment:Identifying and Preventing Software Vulnerabilities》【美】Mark Dowd&lt;/p&gt;
+&lt;p&gt;· 《Android Security Cookbook》【美】Keith Makan; Scott Alexander-Bown，中译本《Android安全攻防实战》&lt;/p&gt;
+&lt;p&gt;· 《模糊测试-强制性安全漏洞挖掘》【美】Michael Mutton&lt;/p&gt;
+&lt;p&gt;· 《Exploit编写系列教程》【美】Corelan Team&lt;/p&gt;
+&lt;p&gt;· 《MacOS and iOS Internals,Volume Ⅲ: Security &amp;amp; Insecurity》【美】Jonathan Levin，博文视点翻译中&lt;/p&gt;
+&lt;p&gt;· 《灰帽黑客：正义黑客的道德规范、渗透测试、攻击方法和漏洞分析技术》【美】Allen Harper；Shon harris&lt;/p&gt;
+&lt;p&gt;· 《威胁建模：设计和交付更安全的软件》【美】Adam Shostack&lt;/p&gt;
+&lt;h2 id=&quot;无线电安全&quot;&gt;&lt;a href=&quot;#无线电安全&quot; class=&quot;headerlink&quot; title=&quot;无线电安全&quot;&gt;&lt;/a&gt;无线电安全&lt;/h2&gt;&lt;p&gt;· 《无线电安全攻防大揭秘》杨卿；黄琳&lt;/p&gt;
+&lt;h2 id=&quot;硬件安全&quot;&gt;&lt;a href=&quot;#硬件安全&quot; class=&quot;headerlink&quot; title=&quot;硬件安全&quot;&gt;&lt;/a&gt;硬件安全&lt;/h2&gt;&lt;p&gt;· 《硬件安全攻防大揭秘》简云定，杨卿&lt;/p&gt;
+&lt;h2 id=&quot;汽车安全&quot;&gt;&lt;a href=&quot;#汽车安全&quot; class=&quot;headerlink&quot; title=&quot;汽车安全&quot;&gt;&lt;/a&gt;汽车安全&lt;/h2&gt;&lt;p&gt;· 《智能汽车安全攻防大揭秘》李均；杨卿&lt;/p&gt;
+&lt;p&gt;· 《汽车黑客大曝光》【美】Craig Smith&lt;/p&gt;
+&lt;h1 id=&quot;产品&quot;&gt;&lt;a href=&quot;#产品&quot; class=&quot;headerlink&quot; title=&quot;产品&quot;&gt;&lt;/a&gt;产品&lt;/h1&gt;&lt;p&gt;· 《人人都是产品经理》苏杰&lt;/p&gt;
+&lt;h1 id=&quot;运营&quot;&gt;&lt;a href=&quot;#运营&quot; class=&quot;headerlink&quot; title=&quot;运营&quot;&gt;&lt;/a&gt;运营&lt;/h1&gt;&lt;p&gt;· 《运营之光2.0：我的互联网运营方法论与自白》黄有璨&lt;/p&gt;
+&lt;h1 id=&quot;设计&quot;&gt;&lt;a href=&quot;#设计&quot; class=&quot;headerlink&quot; title=&quot;设计&quot;&gt;&lt;/a&gt;设计&lt;/h1&gt;&lt;p&gt;· 《写给大家看的设计书》【美】Robin Williams&lt;/p&gt;
+&lt;p&gt;· 《听故事，学PPT设计》杨雪&lt;/p&gt;
+&lt;h1 id=&quot;运维&quot;&gt;&lt;a href=&quot;#运维&quot; class=&quot;headerlink&quot; title=&quot;运维&quot;&gt;&lt;/a&gt;运维&lt;/h1&gt;&lt;p&gt;· 《Docker技术入门与实战》杨保华；戴王剑；曹亚仑&lt;/p&gt;
+&lt;p&gt;· 《鸟哥的Linux私房菜》鸟哥&lt;/p&gt;
+&lt;h1 id=&quot;软技能&quot;&gt;&lt;a href=&quot;#软技能&quot; class=&quot;headerlink&quot; title=&quot;软技能&quot;&gt;&lt;/a&gt;软技能&lt;/h1&gt;&lt;p&gt;· 《软技能：代码之外的生存指南》【美】John Sonmez&lt;/p&gt;
+&lt;p&gt;· 《程序员健康指南》【美】JoeKutner&lt;/p&gt;
+&lt;p&gt;· 《影响力》【美】Robert B.Cialdini&lt;/p&gt;
+&lt;p&gt;· 《穷爸爸富爸爸》【美】Robert Toru Kiyosaki&lt;/p&gt;
+&lt;p&gt;· 《横向领导力》【美】Roger Fisher；Alan Sharpe&lt;/p&gt;
+&lt;p&gt;· 《职业情商》张新越&lt;/p&gt;
+&lt;p&gt;· 《程序员的成长课》安晓辉；周鹏&lt;/p&gt;
+&lt;p&gt;· 《高效演讲：斯坦福最受欢迎的沟通课》【美】Peter Meyers；Shann Nix&lt;/p&gt;
+&lt;p&gt;· 《程序员的英语》【韩】朴栽浒；李海永&lt;/p&gt;
+&lt;p&gt;· 《思考，快与慢》【美】丹尼尔·卡尼曼&lt;/p&gt;
+&lt;p&gt;· 《少有人走的路》【美】斯科特·派克&lt;/p&gt;
+&lt;p&gt;· 《异类：不一样的成功启示录》【加】 马尔科姆·格拉德威尔&lt;/p&gt;
+&lt;p&gt;· 《见识》吴军&lt;/p&gt;
+&lt;p&gt;· 《英语写作手册：风格的要素》【美】William Strunk&lt;/p&gt;
+&lt;p&gt;· 《非暴力沟通》【美】马歇尔·卢森堡&lt;/p&gt;
+&lt;p&gt;· 《风格感觉：21世纪写作指南》【美】史蒂芬·平克&lt;/p&gt;
+&lt;p&gt;· 《浪潮之巅》（上下册）吴军&lt;/p&gt;
+&lt;p&gt;· 《一本小小的蓝色逻辑书》【加】布兰登·罗伊尔&lt;/p&gt;
+&lt;p&gt;· 《精进：如何成为一个很厉害的人》采铜&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;附思维导图：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/secbook.png&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/wzdad.png&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;近来也读过不少书，推荐几本个人觉得不错的：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;《Vue.js项目开发实战》张帆&lt;/li&gt;
+&lt;li&gt;《我的第一本算法书》【日】宫崎修一；石田保辉，入门书籍，无代码进行图解&lt;/li&gt;
+&lt;li&gt;《算法图解：像小说一样有趣的算法入门书》【美】Aditya B
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>持续Fuzzing在DevSecOps中的应用</title>
@@ -1309,82 +1475,6 @@
     
     
       <category term="安全研究" scheme="http://riusksk.github.io/tags/%E5%AE%89%E5%85%A8%E7%A0%94%E7%A9%B6/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>推荐今年C3黑客大会上的几个议题</title>
-    <link href="http://riusksk.github.io/2018/12/30/%E6%8E%A8%E8%8D%90%E4%BB%8A%E5%B9%B4C3%E9%BB%91%E5%AE%A2%E5%A4%A7%E4%BC%9A%E4%B8%8A%E7%9A%84%E5%87%A0%E4%B8%AA%E8%AE%AE%E9%A2%98/"/>
-    <id>http://riusksk.github.io/2018/12/30/推荐今年C3黑客大会上的几个议题/</id>
-    <published>2018-12-30T11:06:31.000Z</published>
-    <updated>2018-12-30T14:18:00.000Z</updated>
-    
-    <content type="html">&lt;p&gt;最近几天在德国举办的 The 35th Chaos Communication Congress (35C3) 黑客大会，在Twitter上传得火热，在国内却无人问津。&lt;/p&gt;
-&lt;p&gt;从这可以看出同为微博的安全圈氛围是完全不同的，新浪微博还是偏娱乐些的，而且国外的圈子自然比天朝的要大得多，很多国家的人在上面交流。&lt;/p&gt;
-&lt;p&gt;所以，我现在经常混Twitter，当作获取安全资讯的途径，新浪微博就真的当作看新闻的了……&lt;/p&gt;
-&lt;h3 id=&quot;德国C3混沌黑客大会&quot;&gt;&lt;a href=&quot;#德国C3混沌黑客大会&quot; class=&quot;headerlink&quot; title=&quot;德国C3混沌黑客大会&quot;&gt;&lt;/a&gt;德国C3混沌黑客大会&lt;/h3&gt;&lt;p&gt;Chaos Communication Congress（C3）大会是每年在德国举办的黑客大会，直译过来就是”混沌通信大会“，圈内通常叫”C3“，今年是第35届，所以叫35c3，今年还有CTF比赛，一些打过pwn2own的人出了一些浏览器实际漏洞的题目，也蛮具有实战价值的。&lt;/p&gt;
-&lt;p&gt;每年这大会都会以演讲视频的方式分享出各个议题，以前大多是聚焦在无线电安全，所以一些什么2G\3G\4G短信、电话窃听经常出自该会议。今年也有一些不错的软件安全相关的议题，下面推荐几个鄙人自认为不错的几个议题。&lt;/p&gt;
-&lt;h3 id=&quot;From-Zero-to-Zero-Day&quot;&gt;&lt;a href=&quot;#From-Zero-to-Zero-Day&quot; class=&quot;headerlink&quot; title=&quot;From Zero to Zero Day&quot;&gt;&lt;/a&gt;From Zero to Zero Day&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;https://ws3.sinaimg.cn/large/006tNbRwgy1fyp0431o6oj30ju0hxtft.jpg&quot; alt=&quot;image-20181230193447667&quot;&gt;&lt;/p&gt;
-&lt;p&gt;大会上有个议题叫 “From Zero to Zero Day”，演讲者是位高中生，讲述他自己如何在一年之内，从无任何安全基础到挖掘到第一枚Edge浏览器远程执行代码漏洞的经历。&lt;/p&gt;
-&lt;p&gt;总结来讲就是：&lt;/p&gt;
-&lt;p&gt;1、学习编程语言（C/C++、asm等等）&lt;/p&gt;
-&lt;p&gt;2、学习操作系统原理&lt;/p&gt;
-&lt;p&gt;3、学习常见二进制漏洞原理&lt;/p&gt;
-&lt;p&gt;4、打打CTF，写写write-up&lt;/p&gt;
-&lt;p&gt;5、学习并实践去分析真实的漏洞案例，就是直接看代码，调代码&lt;/p&gt;
-&lt;p&gt;6、不断重复上述练习&lt;/p&gt;
-&lt;p&gt;我直接帖几张关键截图，也推荐大家去听听（视频链接：&lt;a href=&quot;https://media.ccc.de/v/35c3-9657-from_zero_to_zero_day）：&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://media.ccc.de/v/35c3-9657-from_zero_to_zero_day）：&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://ws3.sinaimg.cn/large/006tNbRwgy1fyozsxuptzj30hz0aatcu.jpg&quot; alt=&quot;image-20181230192405638&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://ws3.sinaimg.cn/large/006tNbRwgy1fyozt7f18tj30jf0avwjw.jpg&quot; alt=&quot;image-20181230192425929&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://ws1.sinaimg.cn/large/006tNbRwgy1fyozqdnwdwj30k30axgoz.jpg&quot; alt=&quot;image-20181230192131880&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://ws2.sinaimg.cn/large/006tNbRwgy1fyozs2o8i2j30k70awtb3.jpg&quot; alt=&quot;image-20181230192320182&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://ws2.sinaimg.cn/large/006tNbRwgy1fyozrme322j30k50atadg.jpg&quot; alt=&quot;image-20181230192254473&quot;&gt;&lt;/p&gt;
-&lt;h3 id=&quot;Attack-Chrome-IPC&quot;&gt;&lt;a href=&quot;#Attack-Chrome-IPC&quot; class=&quot;headerlink&quot; title=&quot;Attack Chrome IPC&quot;&gt;&lt;/a&gt;Attack Chrome IPC&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/Users/riusksk/Library/Application Support/typora-user-images/image-20181230193950157.png&quot; alt=&quot;image-20181230193950157&quot;&gt;&lt;/p&gt;
-&lt;p&gt;这个议题之前作者在韩国PoC大会上讲过，并在网上公布过pdf（&lt;a href=&quot;https://data.hackinn.com/ppt/2018韩国POC安全大会/ned.pdf），主要讲他之前在Hack2Win&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://data.hackinn.com/ppt/2018韩国POC安全大会/ned.pdf），主要讲他之前在Hack2Win&lt;/a&gt; bevx黑客大赛上用于黑掉Chrome浏览器的IPC漏洞，此次C3大会的演讲视频参见：&lt;a href=&quot;https://media.ccc.de/v/35c3-9579-attacking_chrome_ipc&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://media.ccc.de/v/35c3-9579-attacking_chrome_ipc&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;这议题里面讲了作者一些研究二进制漏洞的一些学习和研究的方法，比如做代码审计、打CTF，也介绍了他这几年的安全研究历程，比国内流行晒crash+CVE的方式更接地气。&lt;/p&gt;
-&lt;p&gt;最后介绍如何使用 libfuzzer+libprotobuf-mutator去fuzz chrome IPC，并开源fuzzer代码合并到chroium项目中。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://ws3.sinaimg.cn/large/006tNbRwgy1fyp0grvcxuj30wk0g3aej.jpg&quot; alt=&quot;image-20181230194648886&quot;&gt;&lt;/p&gt;
-&lt;h3 id=&quot;Jailbreaking-iOS-From-past-to-present&quot;&gt;&lt;a href=&quot;#Jailbreaking-iOS-From-past-to-present&quot; class=&quot;headerlink&quot; title=&quot;Jailbreaking iOS From past to present&quot;&gt;&lt;/a&gt;Jailbreaking iOS From past to present&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;https://ws2.sinaimg.cn/large/006tNbRwly1fyp4tb6ppej30lb0c04cb.jpg&quot; alt=&quot;image-20181230202552499&quot;&gt;&lt;/p&gt;
-&lt;p&gt;讲iOS越狱发展史的，可以学习到iOS上各种安全机制的原理以及绕过方法，画了不少原理图，通俗易懂不少。对于想了解整个iOS越狱技术发展历程的同学，这确实是份不错的资料。&lt;/p&gt;
-&lt;p&gt;作者这次也在推持上放出了pdf和视频：&lt;/p&gt;
-&lt;p&gt;pdf: &lt;a href=&quot;https://api.tihmstar.net/35c3slides.pdf&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://api.tihmstar.net/35c3slides.pdf&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;video: &lt;a href=&quot;https://media.ccc.de/v/35c3-9618-jailbreaking_ios&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://media.ccc.de/v/35c3-9618-jailbreaking_ios&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;整个议题主要围绕以下几点展开：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;越狱类型（非完美越狱、完美越狱……）&lt;/li&gt;
-&lt;li&gt;Exploit mitigations (ASLR, iBoot-level AES, KPP, KTRR, PAC) &lt;/li&gt;
-&lt;li&gt;Kernel patches (h3lix) &lt;/li&gt;
-&lt;li&gt;Kppless jailbreaks&lt;/li&gt;
-&lt;li&gt;越狱的未来趋势&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h1 id=&quot;The-Layman’s-Guide-to-Zero-Day-Engineering&quot;&gt;&lt;a href=&quot;#The-Layman’s-Guide-to-Zero-Day-Engineering&quot; class=&quot;headerlink&quot; title=&quot;The Layman’s Guide to Zero-Day Engineering&quot;&gt;&lt;/a&gt;The Layman’s Guide to Zero-Day Engineering&lt;/h1&gt;&lt;p&gt;&lt;img src=&quot;https://ws1.sinaimg.cn/large/006tNbRwly1fyp2wxxr28j30yw0ihgr0.jpg&quot; alt=&quot;image-20181230211151217&quot;&gt;&lt;/p&gt;
-&lt;p&gt;Ret2公司分享如何寻找webkit攻击面并fuzz的方法，是基于MozillaSecurity的dharma语法生成框架写的js fuzzer，以及如何借助IDA+&lt;a href=&quot;https://github.com/gaasedelen/lighthouse&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Lighthouse&lt;/a&gt;开源插件（正是Ret2团队开发的，曾获得过IDA插件比赛的二等奖）来分析代码覆盖率问题。&lt;/p&gt;
-&lt;p&gt;除此之外，也介绍如何利用frida去hook mach_msg，用来fuzz WindowServer，最后用WindowServer的漏洞来实现root提权。&lt;/p&gt;
-&lt;p&gt;他们在其博客（&lt;a href=&quot;https://blog.ret2.io）上也分享过不少漏洞研究方面的干货，这次分享的内容也大部分就是来自博客上的一些文章。&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://blog.ret2.io）上也分享过不少漏洞研究方面的干货，这次分享的内容也大部分就是来自博客上的一些文章。&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;里面还提到长亭的real world ctf比赛了。&lt;/p&gt;
-&lt;p&gt;这里有张比较有意思的图，发出来给大伙看下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://ws1.sinaimg.cn/large/006tNbRwly1fyp3j3xqdgj30z00jn4qp.jpg&quot; alt=&quot;image-20181230213304029&quot;&gt;&lt;/p&gt;
-&lt;p&gt;视频链接：&lt;a href=&quot;https://media.ccc.de/v/35c3-9979-the_layman_s_guide_to_zero-day_engineering&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://media.ccc.de/v/35c3-9979-the_layman_s_guide_to_zero-day_engineering&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id=&quot;Modern-Windows-Userspace-Exploitation&quot;&gt;&lt;a href=&quot;#Modern-Windows-Userspace-Exploitation&quot; class=&quot;headerlink&quot; title=&quot;Modern Windows Userspace Exploitation&quot;&gt;&lt;/a&gt;Modern Windows Userspace Exploitation&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;https://ws3.sinaimg.cn/large/006tNbRwly1fyp3yvr0eaj30tl0i815k.jpg&quot; alt=&quot;image-20181230214817405&quot;&gt;&lt;/p&gt;
-&lt;p&gt;视频链接：&lt;a href=&quot;https://media.ccc.de/v/35c3-9660-modern_windows_userspace_exploitation&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://media.ccc.de/v/35c3-9660-modern_windows_userspace_exploitation&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;微软MSRC的人过来分享下windows平台下的一些二进制漏洞利用方法，包括ROP绕过DEP、信息泄露绕过ASLR、绕过CFG、ACG、CIG等等，并现场给了一些演示，不过看起来像是一些CTF赛题，演示的相关代码已放在作者的github上：&lt;a href=&quot;https://github.com/saaramar&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/saaramar&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;都是一些利用系统漏洞防御技术的原理与绕过技术的总结，连各种漏洞缓解机制绕过的微软奖励都给大家标注上了，其实有点类似上面Jailbreaking iOS议题的Windows版本。&lt;/p&gt;
-&lt;p&gt;最后来张Exploit Mitigations清单：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://ws2.sinaimg.cn/large/006tNbRwly1fyp4b42qn5j30rs0hvdir.jpg&quot; alt=&quot;image-20181230215938958&quot;&gt;&lt;/p&gt;
-&lt;h3 id=&quot;结语&quot;&gt;&lt;a href=&quot;#结语&quot; class=&quot;headerlink&quot; title=&quot;结语&quot;&gt;&lt;/a&gt;结语&lt;/h3&gt;&lt;p&gt;后面官方可能还会继续更新演讲视频，可以关注官方twitter（@c3voc_releases）获取消息。&lt;/p&gt;
-&lt;p&gt;另外，对于英语不好的同学，不妨下个”腾讯翻译“同声翻译试下，虽然中文翻译没那么准确，但看看显示的英文单词也能知道个大意：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://ws4.sinaimg.cn/large/006tNbRwly1fyp0n9b99lj31400u0b29.jpg&quot; alt=&quot;image-20181230195201468&quot;&gt;&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;最近几天在德国举办的 The 35th Chaos Communication Congress (35C3) 黑客大会，在Twitter上传得火热，在国内却无人问津。&lt;/p&gt;
-&lt;p&gt;从这可以看出同为微博的安全圈氛围是完全不同的，新浪微博还是偏娱乐些的，而且国外的圈子自然比
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
     
   </entry>
   
