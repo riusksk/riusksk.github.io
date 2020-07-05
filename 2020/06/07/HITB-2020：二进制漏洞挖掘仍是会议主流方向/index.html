@@ -1,0 +1,293 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8" />
+  
+  <title>HITB 2020：二进制漏洞挖掘仍是会议主流方向 | riusksk&#39;s blog</title>
+  <meta name="author" content="riusksk" />
+
+  
+  <meta name="description" content="本周Hack In The Box官方已经将大会演讲视频上传到YouTube，之前在官网有提供部分议题的pdf下载，但有些未提供的议题，这次也公开了视频，可以看到议题ppt内容。
+今年的议题更多集中在二进制漏洞挖掘上，占比43%，而这些议题涉及（Windows、macOS、IoT、工控等等），其它议" />
+  
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <meta property="og:title" content="HITB 2020：二进制漏洞挖掘仍是会议主流方向" />
+  <meta property="og:site_name" content="riusksk&#39;s blog" />
+
+  
+  
+
+  
+    <meta property="og:image" content="undefined" />
+  
+
+  
+  <link href="/css/images/favicon.ico" rel="icon" />
+  
+
+  <link rel="alternate" href="/atom.xml" title="riusksk&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78773323-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+
+  <!-- baidu webmaster push -->
+  <script src='//push.zhanzhang.baidu.com/push.js'></script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">riusksk&#39;s blog</a></h1>
+  <h2><a href="/">攀蟾折桂摄寰宇，摘星揽月御乾坤。踏云踩雾骋宵壤，驱风逐日闯天地。 ------泉哥</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/atom.xml">RSS订阅</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2020-06-07T04:44:41.000Z"><a href="/2020/06/07/HITB-2020：二进制漏洞挖掘仍是会议主流方向/">2020-06-07</a></time>
+      
+      
+  
+    <h1 class="title">HITB 2020：二进制漏洞挖掘仍是会议主流方向</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>本周Hack In The Box官方已经将大会演讲视频上传到YouTube，之前在官网有提供部分议题的pdf下载，但有些未提供的议题，这次也公开了视频，可以看到议题ppt内容。</p>
+<p>今年的议题更多集中在二进制漏洞挖掘上，占比<strong>43%</strong>，而这些议题涉及（Windows、macOS、IoT、工控等等），其它议题方向包括恶意软件、二进制分析工具、容器安全、漏洞奖励计划等等，可以看出当前工业界的一些研究议题，还是比较喜欢二进制漏洞挖掘这个方向，这次一个Web相关议题都没有。</p>
+<p><strong>精彩议题推荐</strong></p>
+<p><strong>1、60 CVEs in 60 Days</strong></p>
+<p><img src="http://riusksk.me/media/1.28.26.png" alt="img"></p>
+<p>主要分享Windows平台下高权限进程的Symlink攻击（高权限进程在操作文件时，未作严格的权限校验，导致攻击利用符号链接到一些受保护的目录文件，比如C盘的系统DLL文件，后面系统或应用去自动加载时，实现代码执行并提权），这种攻击方式最早是由Project Zero大牛James Forshaw公布的，当时还开源了个利用测试工具(<a href="https://github.com/googleprojectzero/symboliclink-testing-tools" target="_blank" rel="external">https://github.com/googleprojectzero/symboliclink-testing-tools</a>)  ，指定目录参数来测试，但它还算不上完整的漏洞挖掘工具。</p>
+<p>漏洞原理较为简单，关键在于如何批量自动化挖掘，为此作者实现了一款叫 <strong>Ichanea</strong> 的自动化漏洞挖掘工具。</p>
+<p><img src="http://riusksk.me/media/1.29.54.png" alt="1.29.54"></p>
+<p>原理：通过过滤驱动捕获文件操作相关的IRP包，然后获取归属进程的相关信息，包括路径、进线程token等等，然后判断是否为高权限进程，若是就拿Token去检测文件的访问权限，如果可以就发消息给高权限的服务进程，创建/RCP/Control的加载点及符号链接进行DLL劫持测试，从而将监控、发现和利用集成一体。</p>
+<p>最后在26家厂商（包括微软、Intel、Adobe、华为等等）产品中，挖到上百个漏洞，其中已有60个CVE致谢，产量颇丰。</p>
+<p><strong>2、Pwning Adobe Reader Multiple Times with Malformed Strings</strong></p>
+<p><img src="http://riusksk.me/media/屏幕快照 2020-07-05 下午1.30.18.png" alt="屏幕快照 2020-07-05 下午1.30.18"></p>
+<p>腾讯玄武实验室出品，分享Adobe Reader在处理字符串时的安全问题。通过PDF JS来构造恶意字符串去触发，JS上的漏洞也更便于写exploit。虽然Adobe用了一些自定义的字符串安全处理函数，但其使用不当导致仍会造成漏洞。主要有两方面原因：</p>
+<p>1、传错参数，比如拷贝字符时max_bytes参数误传0x7FFFFFFF，可能造成溢出；</p>
+<p>2、字符串类型检测不当，比如误将ASNI当作Unicode字符串处理，千万类型混淆漏洞。</p>
+<p>感觉这个攻击面还是有点偏门，找到一块新大陆，刷起漏洞来应该很爽，但估计也就一波过，可能没剩下啥了。</p>
+<p><strong>3、Exploiting directory permissions on macOS</strong></p>
+<p><img src="http://riusksk.me/media/屏幕快照 2020-07-05 下午1.30.30.png" alt="屏幕快照 2020-07-05 下午1.30.30"></p>
+<p>有点类似前面Windows Symlink攻击提权的思路，介绍了macOS下系统对文件及目录的权限管控方式，用fs_usage去监控进程的文件操作行为，从而找出一些可能被用于提权的目录/文件。利用的正是文件与目录高低权限的差异化，借助软硬链实现对受保护文件的越权操作。有些只能写，但内容不可控，或者只能删除，也有可被用于root提权的漏洞。最后作者也简单地介绍一些文件操作方面的安全建议，比如对于安装器，若是/tmp就生成随机名目录，其它的要控制好权限，比如就root权限，其它则收回，安装前清理目录，删除移动文件时避免支持链接方式等等。</p>
+<p><strong>4、Documents of Doom – Infecting Macos Via Office Macros</strong></p>
+<p><img src="http://riusksk.me/media/屏幕快照 2020-07-05 下午1.31.01.png" alt="屏幕快照 2020-07-05 下午1.31.01"></p>
+<p><img src="http://riusksk.me/media/sdafsdfa.png" alt="img"></p>
+<p>以前Office宏病毒在Windows还是流行过一段时间的，其实macOS上也有，作者就列举了2017、2018、2019年的三次真实的宏攻击案例，也介绍了olevba之类的分析工具。</p>
+<p>除此之外，还介绍了一些mac版Office沙盒逃逸的漏洞，用户打开doc后，可以无提示无交互的实现代码执行。作者自己也挖过一个沙盒逃逸漏洞，正是利用Python这条漏网之鱼，于用它将app添加版系统的自启动项，实现非沙盒下的执行权限。</p>
+<p><strong>5、Fuzzing File System Implementations to Uncover Security Bugs</strong></p>
+<p><img src="http://riusksk.me/media/屏幕快照 2020-07-05 下午1.31.56.png" alt="屏幕快照 2020-07-05 下午1.31.56"></p>
+<p>PPT上写的关键信息不多，但重要的是作者把工具开源了，针对BSD文件系统（支持FFS、UFS、EXT、ZFS文件系统格式）进行Fuzzing，工具地址：<a href="https://github.com/0xricksanchez/fisy-fuzz" target="_blank" rel="external">https://github.com/0xricksanchez/fisy-fuzz</a>  。所以重点可以看下该工具，支持Ubuntu，要求KVM、QEMU和libvirt，采用的是暴力Fuzzing 文件系统，直接用到了radamsa，自己也作了全局的随机变异，然后尝试加载，若加载成功就调用syscall执行一些文件操作，看是否崩溃，最后再借助虚拟机快照还原运行环境。</p>
+<p><img src="http://riusksk.me/media/aaaaaa.png" alt="屏幕快照 2020-07-05 下午1.32.14"></p>
+<p><strong>完整议题列表</strong></p>
+<ol>
+<li>60 CVEs in 60 Days</li>
+<li>The State of ICS Security: then and Now</li>
+<li>Pwning Adobe Reader Multiple Times with Malformed Strings</li>
+<li>Open the Gates – the (In)Security of Cloudless Smart Door Systems</li>
+<li>Hiding in Plain Sight: Analyzing Recent Evolutions in Malware Loaders</li>
+<li>Building Next-gen Security Analysis Tools with Qiling Framework</li>
+<li>Exploiting Directory Permissions on macOS</li>
+<li>Documents of Doom – Infecting Macos Via Office Macros</li>
+<li>From Man-in-the-Middle to Privesc and Rce: Exploiting the Netlogon Protocol</li>
+<li>The Dna of Hidden Cobra – a Look at a Nation State’s Cyber Offensive Programs</li>
+<li>Prisoner Number 6</li>
+<li>Fuzzing File System Implementations to Uncover Security Bugs</li>
+<li>Breaking and Securing Cloud Platforms</li>
+<li>Army of Undead: Tailored Firmware Emulation</li>
+<li>Bugrank: a Community Bug Bounty Platform</li>
+<li>Virtual Lab: Bare-metal Reverse Engineering &amp; Hardware Hacking</li>
+</ol>
+<p>议题ppt及视频地址参见：<a href="https://conference.hitb.org/lockdown-livestream/" target="_blank" rel="external">https://conference.hitb.org/lockdown-livestream/</a></p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2020/06/07/HITB-2020：二进制漏洞挖掘仍是会议主流方向/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+</section>
+
+
+ -->
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:riusksk.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2020/06/28/信息安全从业者书单推荐（2020-6-28更新）/">信息安全从业者书单推荐（2020.6.28更新）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/06/07/HITB-2020：二进制漏洞挖掘仍是会议主流方向/">HITB 2020：二进制漏洞挖掘仍是会议主流方向</a>
+      </li>
+    
+      <li>
+        <a href="/2020/03/01/持续Fuzzing在DevSecOps中的应用/">持续Fuzzing在DevSecOps中的应用</a>
+      </li>
+    
+      <li>
+        <a href="/2020/02/29/用AFL快速通关超级玛丽/">用afl玩超级玛丽：通过Fuzzing探索程序空间状态以发现更多执行路径</a>
+      </li>
+    
+      <li>
+        <a href="/2020/01/22/Fuzzing技术发展的这30年/">从研究者的视角看Fuzzing技术发展30年</a>
+      </li>
+    
+      <li>
+        <a href="/2020/01/21/Fuzzing平台建设的研究与设计-paper/">Fuzzing平台建设的研究与设计(paper)</a>
+      </li>
+    
+      <li>
+        <a href="/2019/11/30/Frida框架在Fuzzing中的应用/">Frida框架在Fuzzing中的应用</a>
+      </li>
+    
+      <li>
+        <a href="/2019/11/18/Fuzzing平台建设的研究与设计/">Fuzzing平台建设的研究与设计</a>
+      </li>
+    
+      <li>
+        <a href="/2019/11/02/Jandroid：半自动化Android应用逻辑漏洞挖掘/">Android应用逻辑漏洞半自动化挖掘思路</a>
+      </li>
+    
+      <li>
+        <a href="/2019/09/07/漫谈网络安全应急指导思想/">漫谈网络安全应急要略</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/技术分享/">技术分享</a><small>65</small></li>
+  
+    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>26</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/0day/" style="font-size: 11.43px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 15.71px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 12.86px;">BlackHat</a> <a href="/tags/Bochspwn/" style="font-size: 10px;">Bochspwn</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.43px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 14.29px;">Flash</a> <a href="/tags/Fuzzer/" style="font-size: 10px;">Fuzzer</a> <a href="/tags/Fuzzing/" style="font-size: 18.57px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 17.14px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 12.86px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.43px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.43px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/afl/" style="font-size: 10px;">afl</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 12.86px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.43px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 15.71px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.43px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.43px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/winafl/" style="font-size: 10px;">winafl</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全大会/" style="font-size: 10px;">安全大会</a> <a href="/tags/安全审计/" style="font-size: 11.43px;">安全审计</a> <a href="/tags/安全研究/" style="font-size: 11.43px;">安全研究</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.43px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 12.86px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 12.86px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.43px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/逻辑/" style="font-size: 10px;">逻辑</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  <p>
+  
+  &copy; 2020 riusksk
+  
+  All rights reserved.</p>
+  <p>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+  & Hosted by <a href="http://github.com" target="_blank">GitHub</a>
+  <!--<span id="busuanzi_container_site_pv" >
+    ，本站总访问量<span id="busuanzi_value_site_pv" ></span>次
+  </span>
+  -->
+  </p>
+</div>
+<div class="clearfix"></div>
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+</footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+<div id='bg'></div>
+</body>
+</html>

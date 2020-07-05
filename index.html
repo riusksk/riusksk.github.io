@@ -265,6 +265,100 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2020-06-07T04:44:41.000Z"><a href="/2020/06/07/HITB-2020：二进制漏洞挖掘仍是会议主流方向/">2020-06-07</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2020/06/07/HITB-2020：二进制漏洞挖掘仍是会议主流方向/">HITB 2020：二进制漏洞挖掘仍是会议主流方向</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>本周Hack In The Box官方已经将大会演讲视频上传到YouTube，之前在官网有提供部分议题的pdf下载，但有些未提供的议题，这次也公开了视频，可以看到议题ppt内容。</p>
+<p>今年的议题更多集中在二进制漏洞挖掘上，占比<strong>43%</strong>，而这些议题涉及（Windows、macOS、IoT、工控等等），其它议题方向包括恶意软件、二进制分析工具、容器安全、漏洞奖励计划等等，可以看出当前工业界的一些研究议题，还是比较喜欢二进制漏洞挖掘这个方向，这次一个Web相关议题都没有。</p>
+<p><strong>精彩议题推荐</strong></p>
+<p><strong>1、60 CVEs in 60 Days</strong></p>
+<p><img src="http://riusksk.me/media/1.28.26.png" alt="img"></p>
+<p>主要分享Windows平台下高权限进程的Symlink攻击（高权限进程在操作文件时，未作严格的权限校验，导致攻击利用符号链接到一些受保护的目录文件，比如C盘的系统DLL文件，后面系统或应用去自动加载时，实现代码执行并提权），这种攻击方式最早是由Project Zero大牛James Forshaw公布的，当时还开源了个利用测试工具(<a href="https://github.com/googleprojectzero/symboliclink-testing-tools" target="_blank" rel="external">https://github.com/googleprojectzero/symboliclink-testing-tools</a>)  ，指定目录参数来测试，但它还算不上完整的漏洞挖掘工具。</p>
+<p>漏洞原理较为简单，关键在于如何批量自动化挖掘，为此作者实现了一款叫 <strong>Ichanea</strong> 的自动化漏洞挖掘工具。</p>
+<p><img src="http://riusksk.me/media/1.29.54.png" alt="1.29.54"></p>
+<p>原理：通过过滤驱动捕获文件操作相关的IRP包，然后获取归属进程的相关信息，包括路径、进线程token等等，然后判断是否为高权限进程，若是就拿Token去检测文件的访问权限，如果可以就发消息给高权限的服务进程，创建/RCP/Control的加载点及符号链接进行DLL劫持测试，从而将监控、发现和利用集成一体。</p>
+<p>最后在26家厂商（包括微软、Intel、Adobe、华为等等）产品中，挖到上百个漏洞，其中已有60个CVE致谢，产量颇丰。</p>
+<p><strong>2、Pwning Adobe Reader Multiple Times with Malformed Strings</strong></p>
+<p><img src="http://riusksk.me/media/屏幕快照 2020-07-05 下午1.30.18.png" alt="屏幕快照 2020-07-05 下午1.30.18"></p>
+<p>腾讯玄武实验室出品，分享Adobe Reader在处理字符串时的安全问题。通过PDF JS来构造恶意字符串去触发，JS上的漏洞也更便于写exploit。虽然Adobe用了一些自定义的字符串安全处理函数，但其使用不当导致仍会造成漏洞。主要有两方面原因：</p>
+<p>1、传错参数，比如拷贝字符时max_bytes参数误传0x7FFFFFFF，可能造成溢出；</p>
+<p>2、字符串类型检测不当，比如误将ASNI当作Unicode字符串处理，千万类型混淆漏洞。</p>
+<p>感觉这个攻击面还是有点偏门，找到一块新大陆，刷起漏洞来应该很爽，但估计也就一波过，可能没剩下啥了。</p>
+<p><strong>3、Exploiting directory permissions on macOS</strong></p>
+<p><img src="http://riusksk.me/media/屏幕快照 2020-07-05 下午1.30.30.png" alt="屏幕快照 2020-07-05 下午1.30.30"></p>
+<p>有点类似前面Windows Symlink攻击提权的思路，介绍了macOS下系统对文件及目录的权限管控方式，用fs_usage去监控进程的文件操作行为，从而找出一些可能被用于提权的目录/文件。利用的正是文件与目录高低权限的差异化，借助软硬链实现对受保护文件的越权操作。有些只能写，但内容不可控，或者只能删除，也有可被用于root提权的漏洞。最后作者也简单地介绍一些文件操作方面的安全建议，比如对于安装器，若是/tmp就生成随机名目录，其它的要控制好权限，比如就root权限，其它则收回，安装前清理目录，删除移动文件时避免支持链接方式等等。</p>
+<p><strong>4、Documents of Doom – Infecting Macos Via Office Macros</strong></p>
+<p><img src="http://riusksk.me/media/屏幕快照 2020-07-05 下午1.31.01.png" alt="屏幕快照 2020-07-05 下午1.31.01"></p>
+<p><img src="http://riusksk.me/media/sdafsdfa.png" alt="img"></p>
+<p>以前Office宏病毒在Windows还是流行过一段时间的，其实macOS上也有，作者就列举了2017、2018、2019年的三次真实的宏攻击案例，也介绍了olevba之类的分析工具。</p>
+<p>除此之外，还介绍了一些mac版Office沙盒逃逸的漏洞，用户打开doc后，可以无提示无交互的实现代码执行。作者自己也挖过一个沙盒逃逸漏洞，正是利用Python这条漏网之鱼，于用它将app添加版系统的自启动项，实现非沙盒下的执行权限。</p>
+<p><strong>5、Fuzzing File System Implementations to Uncover Security Bugs</strong></p>
+<p><img src="http://riusksk.me/media/屏幕快照 2020-07-05 下午1.31.56.png" alt="屏幕快照 2020-07-05 下午1.31.56"></p>
+<p>PPT上写的关键信息不多，但重要的是作者把工具开源了，针对BSD文件系统（支持FFS、UFS、EXT、ZFS文件系统格式）进行Fuzzing，工具地址：<a href="https://github.com/0xricksanchez/fisy-fuzz" target="_blank" rel="external">https://github.com/0xricksanchez/fisy-fuzz</a>  。所以重点可以看下该工具，支持Ubuntu，要求KVM、QEMU和libvirt，采用的是暴力Fuzzing 文件系统，直接用到了radamsa，自己也作了全局的随机变异，然后尝试加载，若加载成功就调用syscall执行一些文件操作，看是否崩溃，最后再借助虚拟机快照还原运行环境。</p>
+<p><img src="http://riusksk.me/media/aaaaaa.png" alt="屏幕快照 2020-07-05 下午1.32.14"></p>
+<p><strong>完整议题列表</strong></p>
+<ol>
+<li>60 CVEs in 60 Days</li>
+<li>The State of ICS Security: then and Now</li>
+<li>Pwning Adobe Reader Multiple Times with Malformed Strings</li>
+<li>Open the Gates – the (In)Security of Cloudless Smart Door Systems</li>
+<li>Hiding in Plain Sight: Analyzing Recent Evolutions in Malware Loaders</li>
+<li>Building Next-gen Security Analysis Tools with Qiling Framework</li>
+<li>Exploiting Directory Permissions on macOS</li>
+<li>Documents of Doom – Infecting Macos Via Office Macros</li>
+<li>From Man-in-the-Middle to Privesc and Rce: Exploiting the Netlogon Protocol</li>
+<li>The Dna of Hidden Cobra – a Look at a Nation State’s Cyber Offensive Programs</li>
+<li>Prisoner Number 6</li>
+<li>Fuzzing File System Implementations to Uncover Security Bugs</li>
+<li>Breaking and Securing Cloud Platforms</li>
+<li>Army of Undead: Tailored Firmware Emulation</li>
+<li>Bugrank: a Community Bug Bounty Platform</li>
+<li>Virtual Lab: Bare-metal Reverse Engineering &amp; Hardware Hacking</li>
+</ol>
+<p>议题ppt及视频地址参见：<a href="https://conference.hitb.org/lockdown-livestream/" target="_blank" rel="external">https://conference.hitb.org/lockdown-livestream/</a></p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2020/06/07/HITB-2020：二进制漏洞挖掘仍是会议主流方向/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2020-03-01T10:48:50.000Z"><a href="/2020/03/01/持续Fuzzing在DevSecOps中的应用/">2020-03-01</a></time>
       
       
@@ -888,103 +982,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2019-08-18T05:27:14.000Z"><a href="/2019/08/18/安全研究的价值思考/">2019-08-18</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2019/08/18/安全研究的价值思考/">安全研究的价值思考</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>【注】：纯属个人言论，与公司立场无关！</p>
-<p>最近的Black Hat大会议题ppt已提供下载，里面有两个非技术议题，其视角比较有趣，一些问题值得思考，因此才有本文。</p>
-<p>这两个议题分别是”Project Zero File Years Of Make 0day Hard”和”Selling 0-days to governments and offensive security companies”，一个讲述5年来Google的Project Zero团队在漏洞研究上的工作效果，一个讲述关于漏洞交易的一些现状、流程。</p>
-<h3 id="安全研究都干啥"><a href="#安全研究都干啥" class="headerlink" title="安全研究都干啥"></a>安全研究都干啥</h3><p>安全研究并不局限于漏洞领域，但它依然是目前最主流的方向，研究范围也可以包括网络安全、反病毒、大数据安全、业务安全等诸多安全领域。这里主要聊下漏洞领域的研究，看看Project Zero的人主要都在干啥：</p>
-<p><img src="http://riusksk.me/media/image-20190818142847773.png" alt="image-20190818142847773"></p>
-<p>总结一下就是（主要指漏洞研究领域，估计很多人只干1、3、4的工作）：</p>
-<ol>
-<li>漏洞挖掘与利用</li>
-<li>方法论建设</li>
-<li>技术写作</li>
-<li>行业交流与合作</li>
-<li>软件工程化建设，可能是指DevSecOps，包括安全防御策略建设、libfuzzer自动化测试等的应用</li>
-</ol>
-<p>###从招聘职责看研究目的</p>
-<p>谈研究价值，不妨先来谈谈研究的目的，我特意从各招聘网站上搜集了一些关于安全研究岗位的招聘信息，主要统计其岗位职责描述的关键词，生成如下词云：</p>
-<p><img src="http://riusksk.me/media/职责.png" alt="职责"></p>
-<p>可以看到，当前的研究岗位普遍就是招漏洞挖掘职位的，都是搞主流系统及软件为主，但挖洞的目的又是为什么呢，这种在很少企业会写在招聘帖的。从统计结果看，主要有以下3个研究目的：</p>
-<ol>
-<li><p>挖掘主流系统/软件漏洞；</p>
-</li>
-<li><p>帮助安全产品提升检测能力；</p>
-</li>
-<li><p>为业务提供技术支持。</p>
-</li>
-</ol>
-<p>第一点是手段，等于啥也没说，第2点算是做安全产品，第3点是得看是什么业务，如第2点也算业务，但如果是一些非安全产品业务，其实所能提供的技术支持就相对比较局限，可能人家业务也不一定看得上你这研究。</p>
-<h3 id="影响力价值"><a href="#影响力价值" class="headerlink" title="影响力价值"></a>影响力价值</h3><p>搞安全研究，普遍都是为了影响力公关（PR），国内外均是如此，BlackHat上的Pwnie Awards都有一个“<em>最名不副实</em>漏洞奖”，叫做”most over-hyped bug”，就是用来批评那些过度炒作的漏洞。但是一些确实危害比较大的漏洞，及时负责任地披露反而有利于防御工作的开展。Project Zero议题中讲到一句话，开放的攻击研究相对攻击者而言，对防御者更为有利。之前国内试颁行的某提案，因可能阻碍安全研究者公开研究成果，遭到不少圈内人的反对。这跟古时候，有的国家禁止人民用刀一样，最终只是阻碍生产力的发展而已。其实只要不是急功近利，获得与研究成果相匹配的影响力也是合理的。那获得影响力之后的价值呢？对团队，对个人，可能获取得更多交流与学习的机会，也可能获得更多业务合作机会，直接点，可能找份工作防止中年危机都更有资本了。</p>
-<h3 id="商业价值"><a href="#商业价值" class="headerlink" title="商业价值"></a>商业价值</h3><p>何为商业价值？就是赚钱嘛！通过安全研究落地为产品，然后拿去卖；也可提供技术服务，比如帮助对IoT、车联网产品等新兴行业产品进行安全测试。产品一般比技术服务更值钱，技术服务经常是一波过，产品却是可以长期收费的，比如IDA一年卖几万刀，用户每年都得交钱，而若只是提供逆向服务，费劲且不持久，赚得还少。如果是漏洞交易，高质量的漏洞利用链也是可以获得不菲的利益。在0day漏洞交易感兴趣的，主要涉及以下3类角色：</p>
-<p><img src="http://riusksk.me/media/image-20190818144822263.png" alt="image-20190818144822263"></p>
-<ol>
-<li>防御型企业、漏洞奖励计划和平台</li>
-<li>黑客比赛举办者，类似漏洞收购中间商，自己可能也会去挖洞，也可能收购poc来自己写exploit，或者直接收购exploit，再转手卖出去赚差价</li>
-<li>攻击型企业、政府、黑产团伙</li>
-</ol>
-<p>现在国内已经限制参加Pwn2Own之类的国外比赛，从2018年开始，国内由”天府杯”比赛代替，主要是防止漏洞外流危害国家网络安全。这些比赛也推动了厂商对漏洞处理的态度，以及漏洞奖励计划的建设，使得报告者能够合法地获得相应的奖励和认可。</p>
-<h3 id="新型业务安全预防"><a href="#新型业务安全预防" class="headerlink" title="新型业务安全预防"></a>新型业务安全预防</h3><p>提前研究一些公司业务可能涉足的新领域，避免新兴业务产品出来后，无能力解决上面的安全问题。但整个的前提是，该新产品能活下来，否则一切都是白搭。</p>
-<h3 id="行业贡献"><a href="#行业贡献" class="headerlink" title="行业贡献"></a>行业贡献</h3><p>在安全行业贡献榜上，Project Zero无疑是佼佼者。在5年内，他们共贡献1500+个主流系统/软件漏洞，推动很多安全防御机制的诞生，甚至影响漏洞在市场上的价格。漏洞研究者有时担心手上的漏洞被撞掉，会直接报给厂商，混个致谢，搞不好年底还能混个”MSRC Top 100”，今年开始它改名叫”最具价值安全研究员”，更高大上了。这个月，我就被Project Zero的人撞掉了一个微软漏洞。在PZ分享的议题里面，提出一些衡量”make 0day hard”的标准，但毕竟是相对概念，仅当作参考：</p>
-<ol>
-<li><p>挖到品相优秀的漏洞所花费的时间；</p>
-</li>
-<li><p>漏洞平均生存时间；</p>
-</li>
-<li><p>撞洞数量；</p>
-</li>
-<li><p>漏洞利用链的长度；</p>
-</li>
-<li><p>新型高质量的攻击面的发现概率。</p>
-</li>
-</ol>
-<h3 id="个人保值防老"><a href="#个人保值防老" class="headerlink" title="个人保值防老"></a>个人保值防老</h3><p>研究本身就是一种学习方式。相信爱学习的人，最终运气都不会太差。尤其是现在鼓吹35岁中年危机的互联网时代，保持学习是最靠谱的个人保值防老方式。如果保持工作内容不变，那么通常头一年所积累的技术与工作方法足够应付绝大部分工作。若再不搞点有挑战的新工作内容，或者业余做点研究，那就要成为拿着一套技术吃N年的”老白兔”了。持续学习，保持或者超越与年龄相符的技术能力才是王道。</p>
-<p><img src="http://riusksk.me/media/gzh.png" alt=""></p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2019/08/18/安全研究的价值思考/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/随笔杂谈/">随笔杂谈</a>
-  </div>
-
-        
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -1009,6 +1006,10 @@
     
       <li>
         <a href="/2020/06/28/信息安全从业者书单推荐（2020-6-28更新）/">信息安全从业者书单推荐（2020.6.28更新）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/06/07/HITB-2020：二进制漏洞挖掘仍是会议主流方向/">HITB 2020：二进制漏洞挖掘仍是会议主流方向</a>
       </li>
     
       <li>
@@ -1043,10 +1044,6 @@
         <a href="/2019/09/07/漫谈网络安全应急指导思想/">漫谈网络安全应急要略</a>
       </li>
     
-      <li>
-        <a href="/2019/08/18/安全研究的价值思考/">安全研究的价值思考</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -1056,7 +1053,7 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/技术分享/">技术分享</a><small>64</small></li>
+    <li><a href="/categories/技术分享/">技术分享</a><small>65</small></li>
   
     <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>26</small></li>
   
