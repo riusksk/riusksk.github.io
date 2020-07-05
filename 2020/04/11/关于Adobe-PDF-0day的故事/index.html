@@ -1,0 +1,258 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8" />
+  
+  <title>关于Adobe PDF 0day的故事 | riusksk&#39;s blog</title>
+  <meta name="author" content="riusksk" />
+
+  
+  <meta name="description" content="今天StarLabs 发布了他们之前在天府杯上用的adobe pdf 完整exploit，该漏洞是一个 JS API UAF漏洞，利用代码公布在github上，以及利用思路分析文章：https://starlabs.sg/blog/2020/04/tianfu-cup-2019-adobe-read" />
+  
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <meta property="og:title" content="关于Adobe PDF 0day的故事" />
+  <meta property="og:site_name" content="riusksk&#39;s blog" />
+
+  
+  
+
+  
+    <meta property="og:image" content="undefined" />
+  
+
+  
+  <link href="/css/images/favicon.ico" rel="icon" />
+  
+
+  <link rel="alternate" href="/atom.xml" title="riusksk&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78773323-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+
+  <!-- baidu webmaster push -->
+  <script src='//push.zhanzhang.baidu.com/push.js'></script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">riusksk&#39;s blog</a></h1>
+  <h2><a href="/">攀蟾折桂摄寰宇，摘星揽月御乾坤。踏云踩雾骋宵壤，驱风逐日闯天地。 ------泉哥</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/atom.xml">RSS订阅</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2020-04-11T05:40:55.000Z"><a href="/2020/04/11/关于Adobe-PDF-0day的故事/">2020-04-11</a></time>
+      
+      
+  
+    <h1 class="title">关于Adobe PDF 0day的故事</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>今天StarLabs 发布了他们之前在天府杯上用的adobe pdf 完整exploit，该漏洞是一个 JS API UAF漏洞，利用代码公布在github上，以及利用思路分析文章：<a href="https://starlabs.sg/blog/2020/04/tianfu-cup-2019-adobe-reader-exploitation/" target="_blank" rel="external">https://starlabs.sg/blog/2020/04/tianfu-cup-2019-adobe-reader-exploitation/</a></p>
+<p>去年天府杯上，Adobe Reader应该是最大的目标了，很多人打，但临赛前，很多人却退赛了。因为当时的比赛规则是奖金池固定，所有攻破团队来平分那笔钱，所以越多人参赛就越吃亏。但即便退赛了，一些攻破团队拿到钱再平分下也没多少了，最后还不如直接报ZDI，甚至可能还不如上HackerOne报个xss。挖个xss多久？可能几天，利用都不用写。但挖个pdf漏洞多久，可能挖洞一周，写利用一个月，这性价比自不必多言，因此这届比赛，奖金规则一直被圈内人吐槽。</p>
+<p>当时在现场了解到，可能不少人的pdf 0day都是js api，这种通过js完成利用比较方便通用，当然其它非js模块的漏洞也同样可借助js堆喷利用。这些用js api漏洞的人最应该担心撞洞了，现场也有人用其它模块的pdf 0day，反正最后手上有个洞被撞没了。一个只在当最新版出现的漏洞，当时Project Zero报了一堆那个模块的漏洞，结果坑爹的Adobe修了漏洞1，却造就了漏洞2出来。在Adobe安全公告上，看到那个被撞的漏洞致谢上仍然写的是Project Zero的人（没错，未出现传说中的TFB)……</p>
+<p>至少通过这件事情告诉我们，跟着PZ有肉吃！！！</p>
+<p>Adobe的JS引擎用的是2013年左右的SpiderMonkey修改的，所以当初像domato这种js fuzzer神器出来之后，直接拿来fuzz，你都可以搞出一堆Adobe Reader的0day出来，也确实被刷了一波，看公告致谢时间，好像是我带的坏头😂…</p>
+<p>前两年，pdf中的图片解析漏洞盛行，被玄武的刘姓小哥刷爆了。当时如果我报10个此类漏洞，那么可能就会有3个撞洞，就是这么惨烈，连windows上xps这种偏门格式，都被撞，也跟360的撞过。</p>
+<p>在此之后，被刷最多的pdf 漏洞，除了常规的js api外，postscript被国外安全研究员mr_me刷了不少，他写了个ps语法模板生成器去fuzz，产量颇丰。如果没记错的话，据他自己在Twitter上公布的，其2018全年在ZDI的收益是近20万刀，相当于140万元。之前他创办了一个公司，但公司员工就一人。没错，就是他自己，基本就是专职挖洞和培训。今年他入职360 vulcan了，远程办公。</p>
+<p>最后聊点pdf的通用利用技术，毕竟本公众号是技术导向的，但请原谅我的排版和无图内容，因为本文是在手机上写的，且全程在车上完成。</p>
+<p>上文提到的文章已经给出了完整的利用思路，整体而言：</p>
+<p><strong>1. 无论何种内存破坏漏洞，一些逻辑漏洞除外，首先都设法转换成任意读写。</strong>利用js array堆喷去内存布局，实现uaf的占坑，或其它越界写的后堆块填充，以实现写内容和位置的控制，而js array本身可读，进而实现信息泄露。</p>
+<p><strong>2. 覆盖虚表指针去控制eip。</strong>寻找上下文可用的虚表指针去实现劫持，像starlabs用CTextField去创建一批对象，目的就是用来覆盖它的虚表指针</p>
+<p><strong>3.绕过DEP和CFI。</strong>2019年3月左右，Adobe终于加入了CFI，导致常规的ROP失效。每次这种新安全机制出来的时候，最佳的绕过方式一定是先寻找未受保护的模块或代码块。回望过往的DEP、ASLR、CFI和PAC，无不如此。这次starlab亦然，他们直接搜索Adobe安装目录下的pe文件，若OPTIONAL_HEADER.DllCharacteristics &amp; 0x4000 = 0，即代表无CFI保护，最后他们找到icucnv58.dll用来构造ROP，分配可执行的shellcode来达到任意代码执行。</p>
+<p>除了第一步需要依赖漏洞上下文场景来转换任意读写外，利用的难点也是在此，而后续工作都是可以套路化。</p>
+<p>可以看到，直至2020年了，Adobe的整体漏洞利用思路依然变化不大，仍是《漏洞战争》中各案例所分享过的方法，只是需要根据漏洞场景作些适配，比如寻找UAF对象同大小的对象，像starlab就用currentValueIndices方法来占坑。不好意思，这里打了下个人广告，可惜公众号app不能直接插入书籍广告，不然就广告彻底一些🤑</p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2020/04/11/关于Adobe-PDF-0day的故事/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+</section>
+
+
+ -->
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:riusksk.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2020/06/28/信息安全从业者书单推荐（2020-6-28更新）/">信息安全从业者书单推荐（2020.6.28更新）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/06/07/HITB-2020：二进制漏洞挖掘仍是会议主流方向/">HITB 2020：二进制漏洞挖掘仍是会议主流方向</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/11/关于Adobe-PDF-0day的故事/">关于Adobe PDF 0day的故事</a>
+      </li>
+    
+      <li>
+        <a href="/2020/03/01/持续Fuzzing在DevSecOps中的应用/">持续Fuzzing在DevSecOps中的应用</a>
+      </li>
+    
+      <li>
+        <a href="/2020/02/29/用AFL快速通关超级玛丽/">用afl玩超级玛丽：通过Fuzzing探索程序空间状态以发现更多执行路径</a>
+      </li>
+    
+      <li>
+        <a href="/2020/01/22/Fuzzing技术发展的这30年/">从研究者的视角看Fuzzing技术发展30年</a>
+      </li>
+    
+      <li>
+        <a href="/2020/01/21/Fuzzing平台建设的研究与设计-paper/">Fuzzing平台建设的研究与设计(paper)</a>
+      </li>
+    
+      <li>
+        <a href="/2019/11/30/Frida框架在Fuzzing中的应用/">Frida框架在Fuzzing中的应用</a>
+      </li>
+    
+      <li>
+        <a href="/2019/11/18/Fuzzing平台建设的研究与设计/">Fuzzing平台建设的研究与设计</a>
+      </li>
+    
+      <li>
+        <a href="/2019/11/02/Jandroid：半自动化Android应用逻辑漏洞挖掘/">Android应用逻辑漏洞半自动化挖掘思路</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/技术分享/">技术分享</a><small>66</small></li>
+  
+    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>26</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/0day/" style="font-size: 11.43px;">0day</a> <a href="/tags/ASLR/" style="font-size: 10px;">ASLR</a> <a href="/tags/Android/" style="font-size: 15.71px;">Android</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BlackHat/" style="font-size: 12.86px;">BlackHat</a> <a href="/tags/Bochspwn/" style="font-size: 10px;">Bochspwn</a> <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/CVE/" style="font-size: 10px;">CVE</a> <a href="/tags/CanSecWest/" style="font-size: 11.43px;">CanSecWest</a> <a href="/tags/DEP/" style="font-size: 10px;">DEP</a> <a href="/tags/EAT/" style="font-size: 10px;">EAT</a> <a href="/tags/EMET/" style="font-size: 10px;">EMET</a> <a href="/tags/Flash/" style="font-size: 14.29px;">Flash</a> <a href="/tags/Fuzzer/" style="font-size: 10px;">Fuzzer</a> <a href="/tags/Fuzzing/" style="font-size: 18.57px;">Fuzzing</a> <a href="/tags/GS/" style="font-size: 10px;">GS</a> <a href="/tags/Hacking-Team/" style="font-size: 17.14px;">Hacking Team</a> <a href="/tags/Heap-Spray/" style="font-size: 10px;">Heap Spray</a> <a href="/tags/Hook/" style="font-size: 10px;">Hook</a> <a href="/tags/MemProt/" style="font-size: 10px;">MemProt</a> <a href="/tags/OSX/" style="font-size: 12.86px;">OSX</a> <a href="/tags/PHDays/" style="font-size: 10px;">PHDays</a> <a href="/tags/Perl/" style="font-size: 11.43px;">Perl</a> <a href="/tags/SafeSEH/" style="font-size: 10px;">SafeSEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/UAF/" style="font-size: 10px;">UAF</a> <a href="/tags/UXSS/" style="font-size: 10px;">UXSS</a> <a href="/tags/Windows/" style="font-size: 11.43px;">Windows</a> <a href="/tags/XSS/" style="font-size: 10px;">XSS</a> <a href="/tags/afl/" style="font-size: 10px;">afl</a> <a href="/tags/bochspwn/" style="font-size: 10px;">bochspwn</a> <a href="/tags/fuzz/" style="font-size: 12.86px;">fuzz</a> <a href="/tags/fuzzing/" style="font-size: 11.43px;">fuzzing</a> <a href="/tags/honggfuzz/" style="font-size: 15.71px;">honggfuzz</a> <a href="/tags/iOS/" style="font-size: 11.43px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/rootkit/" style="font-size: 11.43px;">rootkit</a> <a href="/tags/shellcode/" style="font-size: 10px;">shellcode</a> <a href="/tags/v8/" style="font-size: 10px;">v8</a> <a href="/tags/winafl/" style="font-size: 10px;">winafl</a> <a href="/tags/书籍/" style="font-size: 20px;">书籍</a> <a href="/tags/信息安全/" style="font-size: 10px;">信息安全</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/写作/" style="font-size: 10px;">写作</a> <a href="/tags/历史/" style="font-size: 10px;">历史</a> <a href="/tags/威胁建模/" style="font-size: 10px;">威胁建模</a> <a href="/tags/学历/" style="font-size: 10px;">学历</a> <a href="/tags/安全大会/" style="font-size: 10px;">安全大会</a> <a href="/tags/安全审计/" style="font-size: 11.43px;">安全审计</a> <a href="/tags/安全研究/" style="font-size: 11.43px;">安全研究</a> <a href="/tags/思维导图/" style="font-size: 10px;">思维导图</a> <a href="/tags/恶意软件/" style="font-size: 11.43px;">恶意软件</a> <a href="/tags/打印机/" style="font-size: 10px;">打印机</a> <a href="/tags/攻防/" style="font-size: 10px;">攻防</a> <a href="/tags/溢出/" style="font-size: 10px;">溢出</a> <a href="/tags/漏洞/" style="font-size: 12.86px;">漏洞</a> <a href="/tags/漏洞挖掘/" style="font-size: 12.86px;">漏洞挖掘</a> <a href="/tags/监控取证/" style="font-size: 10px;">监控取证</a> <a href="/tags/程序员/" style="font-size: 10px;">程序员</a> <a href="/tags/编程/" style="font-size: 11.43px;">编程</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/职业/" style="font-size: 10px;">职业</a> <a href="/tags/虚拟机/" style="font-size: 10px;">虚拟机</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/读书笔记/" style="font-size: 10px;">读书笔记</a> <a href="/tags/逻辑/" style="font-size: 10px;">逻辑</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  <p>
+  
+  &copy; 2020 riusksk
+  
+  All rights reserved.</p>
+  <p>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+  & Hosted by <a href="http://github.com" target="_blank">GitHub</a>
+  <!--<span id="busuanzi_container_site_pv" >
+    ，本站总访问量<span id="busuanzi_value_site_pv" ></span>次
+  </span>
+  -->
+  </p>
+</div>
+<div class="clearfix"></div>
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+</footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+<div id='bg'></div>
+</body>
+</html>
