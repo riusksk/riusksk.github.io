@@ -77,6 +77,70 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2019-11-30T02:06:03.000Z"><a href="/2019/11/30/Frida框架在Fuzzing中的应用/">2019-11-30</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2019/11/30/Frida框架在Fuzzing中的应用/">Frida框架在Fuzzing中的应用</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>由于<code>Frida</code>（<a href="https://frida.re" target="_blank" rel="external">https://frida.re</a> ）动态插桩框架的跨平台、简单易用，现在已经被广泛应用于安全领域。相比<code>Xposed</code>而言，虽不能更底层地去Hook系统进程，但它可以免启动，应对App的hook完全够用，更关键的是，它完全可以用JavaScript来写代码，免去编译的烦恼，调试也方便。</p>
+<p>之前在工作中，也就用<code>Frida</code>去Hook Android与iOS应用来做安全测试，效果挺好的，开发起来也挺高效的。本文主要围绕Fuzzing领域，来分析和记录最近一些使用<code>Frida</code>的Fuzzer。</p>
+<h3 id="定制型Fuzzer"><a href="#定制型Fuzzer" class="headerlink" title="定制型Fuzzer"></a>定制型Fuzzer</h3><p>用<code>Frida</code>来Fuzzing APP的方法，首先推荐Project Zero大神写的<code>Adventures in Video Conferencing</code>系列博文，详细介绍了Hook WhatApps和iMessage的输入数据处理函数并进行Fuzzing的方法，同时也开源了Hook iMessage的工具：<a href="https://github.com/googleprojectzero/iOS-messaging-tools/tree/master/iMessage" target="_blank" rel="external">https://github.com/googleprojectzero/iOS-messaging-tools/tree/master/iMessage</a> ，提供dump和发送消息的功能，自己在额外构造变异数据去Fuzzing。</p>
+<p>这种方式特别适用于拥有私有的定制协议或数据格式的APP Fuzzing，只是需要花时间去逆向分析程序的输入数据解析流程，找到关键的处理函数。</p>
+<h3 id="通用型Fuzzer"><a href="#通用型Fuzzer" class="headerlink" title="通用型Fuzzer"></a>通用型Fuzzer</h3><p>最近又看到两款使用<code>Frida</code>的Fuzzer，出自同一人之手，用<code>Python</code>和<code>JS</code>写的，代码量不多：</p>
+<ol>
+<li>frida-js-afl-instr（<a href="https://github.com/andreafioraldi/frida-js-afl-instr" target="_blank" rel="external">https://github.com/andreafioraldi/frida-js-afl-instr</a> ）：打通<code>AFL++</code>与<code>Frida</code>实现内存Fuzzing的工具，仅限Linux平台</li>
+<li>frida-qbdi-fuzzer（<a href="https://github.com/andreafioraldi/frida-qbdi-fuzzer" target="_blank" rel="external">https://github.com/andreafioraldi/frida-qbdi-fuzzer</a> ）：基于<code>Frida</code>与<code>QBDI</code>的Android Fuzzer，借鉴AFL的代码覆盖引导思路，实现Android平台下闭源程序的覆盖引导Fuzzing。</li>
+</ol>
+<p>下面直接画时序图来看它的原理，就不贴源码分析了：</p>
+<h4 id="frida-js-afl-instr原理图"><a href="#frida-js-afl-instr原理图" class="headerlink" title="frida-js-afl-instr原理图"></a>frida-js-afl-instr原理图</h4><p><img src="http://riusksk.me/media/image-20191130121915743.png" alt="image-20191130121915743"></p>
+<h4 id="frida-qbdi-fuzzer原理图"><a href="#frida-qbdi-fuzzer原理图" class="headerlink" title="frida-qbdi-fuzzer原理图"></a>frida-qbdi-fuzzer原理图</h4><p><img src="http://riusksk.me/media/image-20191130122032208.png" alt="image-20191130122032208"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>用Frida来实现闭源程序的代码覆盖引导，代码量很少，以Python和JS就可以快速开发起来，但涉及到python等进程的启动，肯定没有纯C/C++的代码运行速度快，但对于Fuzzing，一般还是够用的，还是值得学习和使用的。</p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2019/11/30/Frida框架在Fuzzing中的应用/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Fuzzing/">Fuzzing</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2019-11-18T10:01:55.000Z"><a href="/2019/11/18/Fuzzing平台建设的研究与设计/">2019-11-18</a></time>
       
       
@@ -981,105 +1045,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2019-02-22T13:15:48.000Z"><a href="/2019/02/22/今年的OffensiveCon大会议题不错/">2019-02-22</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2019/02/22/今年的OffensiveCon大会议题不错/">今年的OffensiveCon大会议题质量不错</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>年前曾在微博上推荐过OffensiveCon 2019大会议题，议题列表与介绍可参见官网（<a href="https://www.offensivecon.org/agenda/" target="_blank" rel="external">https://www.offensivecon.org/agenda/</a>），很多专注于漏洞挖掘与利用的干货分享，目前只有部分议题ppt公开，文末附打包下载链接（包含8个议题），包括ppt、paper和code。</p>
-<p>会议结束后，Twitter上赞声一片，议题质量很赞。</p>
-<p>本文主要聊聊已公开的一些议题，学习下思路。</p>
-<h3 id="议题列表"><a href="#议题列表" class="headerlink" title="议题列表"></a>议题列表</h3><ol>
-<li><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">1. Modern Source Fuzzing</span><br><span class="line">2. IPC You Outside the Sandbox: One bug to Rule the Chrome Broker</span><br><span class="line">3. 3D Accelerated Exploitation </span><br><span class="line">4. Bugs so Nice they Patched them Twice! A (Continuing)? Story About Failed Patches </span><br><span class="line">5. Attacking Hardware Root of Trust from UEFI Firmware</span><br><span class="line">6. OSX XPC Revisited - 3rd Party Application Flaws</span><br><span class="line">7. Growing Hypervisor 0day with Hyperseed</span><br><span class="line">8. Attacking Edge Through the JavaScript Just-In-Time compiler</span><br><span class="line">9. Coverage-Guided USB Fuzzing with Syzkaller</span><br><span class="line">10. Updated Analysis of PatchGuard on Windows RS4: Is the Mouse Finally Caught?</span><br><span class="line">11. iOS Dual Booting Demystified</span><br><span class="line">12. macOS: How to Gain Root with CVE-2018-4193 in &lt; 10s</span><br><span class="line">13. Reverse Engineering of Error-Correcting Codes</span><br><span class="line">14. Glitch in the Matrix: Exploiting Bitcoin Hardware Wallets</span><br><span class="line">15. Attack Surface of a Connected Vehicle</span><br><span class="line">16. Bypass Windows Exploit Guard ASR</span><br><span class="line">17. FuzzIL: Guided Fuzzing for JavaScript Engines</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h3 id="Modern-Source-Fuzzing"><a href="#Modern-Source-Fuzzing" class="headerlink" title="Modern Source Fuzzing"></a>Modern Source Fuzzing</h3><p>这是作者Ned Willliamson在353c大会上的《Attack Chrome IPC》议题的扩展补充，我之前还写过<a href="https://mp.weixin.qq.com/s/WrSZpqgq6gvZwEIqghqggg" target="_blank" rel="external">《安全研究者的自我修养》</a>一文，里面介绍的就是作者提及的二进制漏洞研究的学习思路。</p>
-<p>目前作者没公开这次会议的ppt，大家还是看353C的演讲视频吧：<a href="https://media.ccc.de/v/35c3-9579-attacking_chrome_ipc" target="_blank" rel="external">https://media.ccc.de/v/35c3-9579-attacking_chrome_ipc</a></p>
-<p>##IPC You Outside the Sandbox: One bug to Rule the Chrome Broker</p>
-<p>作者已经在github上公布此漏洞的利用代码hack2win-chrome，点击”阅读原文“可下载到。</p>
-<p>本议题讲的是Chrome沙盒逃逸漏洞，漏洞位于应用缓存（AppCache）子系统上，主要方便从本地读取数据进行离线浏览，访问速度更快，还能缓解服务器压力。</p>
-<p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1g0g49kv5o5j30uu0gqjta.jpg" alt="img"></p>
-<p>AppCache位于沙盒之外的高权限进程browser，沙盒内低权限的renderer进程通过发送IPC消息与browser进程交互的，当AppCache出漏洞时，就有可能逃逸出沙盒。</p>
-<h4 id="漏洞成因"><a href="#漏洞成因" class="headerlink" title="漏洞成因"></a>漏洞成因</h4><p>这次的ppt写得比较模糊，没那么清楚，还是直接看patch diff：</p>
-<p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1g0g4jvylq6j30n409gab8.jpg" alt="image-20190223095905435"></p>
-<p>移动<code>CancelUpdate()</code>函数到<code>newest_complete_cache_=nullptr;</code>之后，直接看看CancelUpdate里面的逻辑：</p>
-<p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1g0g4mnl13hj31da0lf7co.jpg" alt="img"></p>
-<p>在调用<code>AppCacheGroup::RemoveCache</code>清除缓存时，<code>newest_complete_cache_</code>指向的是被销毁的对象，所以后面才要把它置空，但在销毁之前调用了<code>CancelUpdate</code> =&gt; </p>
-<p><code>AppCacheUPdateJob::~AppCacheUpdateJob</code> =&gt; <code>AppCacheGroup::SetUpdateAppCacheStatus</code> =&gt; <code>AppCacheHost::OnupdateComplete</code> =&gt; </p>
-<p><code>SetSwappableCache</code></p>
-<p>最后的<code>SetSwappableCache</code>用于设置新的交换缓存（swap cache），会引用到<code>newest_complete_cache_</code>，而此时它还未被置NULL，导致出现Use After Free漏洞。</p>
-<p>####漏洞利用：</p>
-<ol>
-<li><p><strong>【泄露地址】</strong>：使用与<code>AppCache</code>对象大小相同的<code>net::CanonicalCookie</code>对象来占用释放对象的内存，而<code>CanonicalCookie</code>对象开头是个cookie名称，即字符串指针，再从浏览器中读取cookie信息来达到信息泄露的目的，从而拿到可控数据的堆地址绕过ASLR。</p>
-</li>
-<li><p><strong>【代码执行】</strong>：使用与<code>AppCache</code>对象大小相同的<code>Blob</code>对象对占用释放内存，再伪造<code>AppCacheGroup</code>对象，当它析构释放时，在<code>~AppCacheGroup</code>中会调用到已被填充控制的虚函数指针，再结合ROP绕过DEP，从而达到代码执行。</p>
-</li>
-</ol>
-<p>整个过程还是需要自己动手调试一遍才比较清楚，估计足够调上几天了，国内似乎也没有一遍完整的文章分析过该漏洞的利用细节，期待有人分享。</p>
-<h3 id="3D-Accelerated-Exploitation"><a href="#3D-Accelerated-Exploitation" class="headerlink" title="3D Accelerated Exploitation"></a>3D Accelerated Exploitation</h3><p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1g0g92avay4j30q90epmyq.jpg" alt="image-20190223123509759"></p>
-<p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1g0g92kdcraj30qw0evmz6.jpg" alt="image-20190223123527727"></p>
-<p>该议题主要介绍VirsualBox 3D加速器的攻击面和漏洞利用，由于VBox是开源的，因此可以直接使用AFL 去Fuzzing，fuzz目标就是通过发送畸形chromium messages来触发漏洞。他们应该是自己写个构造发送消息的程序，输入文件即chromium messages内容，样本可能是收集550操作码的信息去构造，也可能通过hook去直接抓取真实数据作为样本，然后用 afl去跑。更具体的实现方式，作者也没细说。</p>
-<p>MWR Labs这几年经常曝光一些Pwn2Own级别的漏洞，分享很多经典文章，还开源了不少Fuzzer工具，连ppt都做得非常工整，具有独特风格，哪怕没logo，你看一眼都能猜出是他们写的。具备牛X的技能能力，又乐分享，这点是比较难得的。</p>
-<h3 id="Attacking-Edge-Through-the-JavaScript-Just-In-Time-compiler"><a href="#Attacking-Edge-Through-the-JavaScript-Just-In-Time-compiler" class="headerlink" title="Attacking Edge Through the JavaScript Just-In-Time compiler"></a>Attacking Edge Through the JavaScript Just-In-Time compiler</h3><p>一直以来，chakra被曝的漏洞非常多，导致微软最终还是放弃了。</p>
-<p>从今年开始，微软将打算把Edge的Chakra引擎改用Google Chromium引擎，估计最近这两个月就会发布，以后就可能没什么人再搞Chakra内核了。</p>
-<p>这议题里面讲了很多chakra的js对象内存结构等基础知识，重点讲了JIT优化编译器的漏洞原理与利用技巧，整个ppt有120页，很多。</p>
-<p>我没搞过chakra，未来可能也用不上了，有兴趣的同学可以看下，作者把exploit代码也公布了，我已附在本文的打包资料里面。</p>
-<h3 id="Coverage-Guided-USB-Fuzzing-with-Syzkaller"><a href="#Coverage-Guided-USB-Fuzzing-with-Syzkaller" class="headerlink" title="Coverage-Guided USB Fuzzing with Syzkaller"></a>Coverage-Guided USB Fuzzing with Syzkaller</h3><p><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1g0g9s9xi19j30l30bxt9q.jpg" alt="image-20190223130009940"></p>
-<p>搞过Linux/Android内核漏洞挖掘的人，应该都知道Syzkaller这款神器，发现超过2500个内核bug，它是基于代码覆盖率+API调用模板来Fuzzing内核的工具，对于发现崩溃的漏洞，还能自动生成C代码帮助复现，是由Google的Dmitry Vyukov开发的，已在Github上开源多年（<a href="https://github.com/google/syzkaller" target="_blank" rel="external">https://github.com/google/syzkaller</a>）。</p>
-<p>这次作者用syzkaller fuzz USB驱动共发现了80+个bug，它先开启kcov去收集代码覆盖率信息，写了两个usb操作的描述模板（vusb.txt用来生成usb消息，vusb_ids.txt用于提取与USB设备驱动相匹配的USB ID列表），ppt里面有链接，所有的usb fuzzer代码都已经嵌入到syzkaller项目里面了</p>
-<p><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1g0ga2by0rlj30me0c9q4g.jpg" alt="image-20190223130949191"></p>
-<p>整个syzkaller的使用过程就是先去寻找内核的攻击面，然后构造api调用模板，剩下交由syzkaller基于代码覆盖驱动的方式去Fuzzing，有点类似api fuzzing。只是这里作者又写了个USB内核模块，方便通过用户层发送USB消息去测试。</p>
-<p>作者还专门搞了个树莓派来重现漏洞，演示通过USB去让Windows/Linux系统崩溃。</p>
-<h3 id="FuzzIL-Guided-Fuzzing-for-JavaScript-Engines"><a href="#FuzzIL-Guided-Fuzzing-for-JavaScript-Engines" class="headerlink" title="FuzzIL: Guided Fuzzing for JavaScript Engines"></a>FuzzIL: Guided Fuzzing for JavaScript Engines</h3><p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1g0gbap9yltj30m40brwg6.jpg" alt="image-20190223135223721"></p>
-<p>这议题最大的亮点在于：自定义一套中间语言IL，通过IL可以翻译成JS代码，然后通过变异IL来生成JS代码，与以往基于JS语法模板生成代码的方式不同。</p>
-<p><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1g0gbd32purj30ll0aitai.jpg" alt="image-20190223135445955"></p>
-<p>直接通过一行行删除IL的方式来验证是否崩溃或产生新路径，以此用来精简样本。</p>
-<p>整个Fuzzing过程如下：</p>
-<p><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g0gbmzq8rqj30l50c4wg5.jpg" alt="image-20190223140416987"></p>
-<p>作者未来会在github上开源（<a href="https://github.com/googleprojectzero/fuzzilli" target="_blank" rel="external">https://github.com/googleprojectzero/fuzzilli</a>），拭目以待。</p>
-<h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>访问 <a href="https://github.com/riusksk/SecConArchive" target="_blank" rel="external">https://github.com/riusksk/SecConArchive</a>可获取议题的打包资料，除上述推荐的议题资料外，还有3个议题，包括”Bypass_Windows_Defender_ASR“、”macOS-How to Gain Root with CVE-2018-4193“，以及”OSX Privileged Helper Tool“，有兴趣的同学自行下载阅读。</p>
-<p><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g0gbyta5c9j307107oq3x.jpg" alt="image-20190223141538809"></p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2019/02/22/今年的OffensiveCon大会议题不错/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -1101,6 +1066,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/07/12/【书评】聊聊打CTF的那本书/">【书评】聊聊打CTF的那本书</a>
+      </li>
     
       <li>
         <a href="/2020/06/28/信息安全从业者书单推荐（2020-6-28更新）/">信息安全从业者书单推荐（2020.6.28更新）</a>
@@ -1138,10 +1107,6 @@
         <a href="/2020/01/21/Fuzzing平台建设的研究与设计-paper/">Fuzzing平台建设的研究与设计(paper)</a>
       </li>
     
-      <li>
-        <a href="/2019/11/30/Frida框架在Fuzzing中的应用/">Frida框架在Fuzzing中的应用</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -1153,7 +1118,7 @@
   
     <li><a href="/categories/技术分享/">技术分享</a><small>68</small></li>
   
-    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>26</small></li>
+    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>27</small></li>
   
   </ul>
 </div>
